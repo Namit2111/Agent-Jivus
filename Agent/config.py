@@ -1,6 +1,7 @@
-AUTH_TOKEN = '<YOUR AUTH TOKEN>'
-PHONE_NUMBER_ID = '<PHONE NUMBER ID FROM DASHBOARD>'
+import os
 
+AUTH_TOKEN = os.getenv('AUTH_TOKEN')
+PHONE_NUMBER_ID = os.getenv('PHONE_NUMBER_ID')
 HEADERS = {
     'Authorization': f'Bearer {AUTH_TOKEN}',
     'Content-Type': 'application/json',
