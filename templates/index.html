@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Call</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0e7ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .call-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        .call-container h1 {
+            margin-bottom: 25px;
+            font-size: 26px;
+            text-align: center;
+            color: #333;
+            letter-spacing: 1px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .call-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .call-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .status-message {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="call-container">
+        <h1>Make a Call</h1>
+        <div class="input-group">
+            <label for="number">Phone Number</label>
+            <input type="text" id="number" placeholder="Enter phone number">
+        </div>
+        <div class="input-group">
+            <label for="linkedin">LinkedIn Profile URL</label>
+            <input type="url" id="linkedin" placeholder="Enter LinkedIn profile URL">
+        </div>
+        <div class="input-group">
+            <label for="website">Website URL</label>
+            <input type="url" id="website" placeholder="Enter website URL">
+        </div>
+        <button class="call-button" onclick="makeCall()">Call</button>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script>
+        function makeCall() {
+            const number = document.getElementById('number').value;
+            const linkedin = document.getElementById('linkedin').value;
+            const website = document.getElementById('website').value;
+            const statusMessage = document.getElementById('statusMessage');
+
+            fetch('/make-call', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    customer_number: number,
+                    linkedin_url: linkedin,
+                    website_url: website
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                statusMessage.textContent = `Call Status: ${data.status}`;
+                statusMessage.style.color = data.status === 'success' ? 'green' : 'red';
+            })
+            .catch((error) => {
+                statusMessage.textContent = 'Error: Failed to make the call';
+                statusMessage.style.color = 'red';
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

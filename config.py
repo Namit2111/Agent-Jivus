@@ -7,4 +7,6 @@ HEADERS = {
     'Content-Type': 'application/json',
 }
 
-VAPI_CALL_URL = 'https://api.vapi.ai/call/phone'
+VAPI_CALL_URL = os.getenv('VAPI_CALL_URL')
+assistant_id = os.getenv('ASSISTANT_ID')
+NEBULA_API = os.getenv('NEBULA_API')

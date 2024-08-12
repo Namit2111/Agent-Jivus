@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Call Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+        .section p {
+            margin: 5px 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Phone Call Details</h1>
+        <div class="section" id="callsTableContainer">
+            <h2>Call Records</h2>
+            <!-- Table will be dynamically populated here -->
+        </div>
+    </div>
+
+    <script>
+        async function fetchCallDetails() {
+            try {
+                const response = await fetch('/all-calls', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+            
+                });
+
+                const data = await response.json();
+
+                const container = document.getElementById('callsTableContainer');
+                const table = document.createElement('table');
+                const thead = document.createElement('thead');
+                const tbody = document.createElement('tbody');
+
+                // Table headers
+                const headers = ['Type', 'Status', 'Started At', 'Ended At', 'Phone Number', 'Summary'];
+                const headerRow = document.createElement('tr');
+                headers.forEach(headerText => {
+                    const th = document.createElement('th');
+                    th.innerText = headerText;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+
+                // Table rows
+                data.forEach(callDetails => {
+                    const row = document.createElement('tr');
+                    const cells = [
+                    callDetails.type || 'N/A',
+                        callDetails.status || 'N/A',
+                        callDetails.startedAt || 'N/A',
+                        callDetails.endedAt || 'N/A',
+                        callDetails.customer?.number || 'N/A',
+                        callDetails.analysis?.summary || 'N/A'
+                    ];
+                    cells.forEach(cellText => {
+                        const td = document.createElement('td');
+                        td.innerText = cellText;
+                        row.appendChild(td);
+                    });
+                    tbody.appendChild(row);
+                });
+
+                table.appendChild(thead);
+                table.appendChild(tbody);
+                container.appendChild(table);
+
+            } catch (error) {
+                console.error('Error fetching call details:', error);
+            }
+        }
+
+        // Fetch call details on page load
+        window.onload = fetchCallDetails;
+    </script>
+</body>
+</html>
