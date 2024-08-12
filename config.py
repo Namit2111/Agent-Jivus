@@ -1,5 +1,8 @@
 import os
+from dotenv import load_dotenv
+load_dotenv() 
 
+#configuration variables
 AUTH_TOKEN = os.getenv('AUTH_TOKEN')
 PHONE_NUMBER_ID = os.getenv('PHONE_NUMBER_ID')
 HEADERS = {

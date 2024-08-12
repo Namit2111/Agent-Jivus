@@ -8,7 +8,7 @@ from config import HEADERS,VAPI_CALL_URL
 from utils import get_linkedin_profile_nubela,extract_text_from_website,get_calls
 # other imports
 import requests
-
+import test
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
@@ -25,7 +25,7 @@ def make_call(call_request: dict = Body(...)):
     customer_number = call_request.get("customer_number")
     linkedin_url = call_request.get("linkedin_url")
     website_url = call_request.get("website_url")
-    
+    print("here")
     #get linkedin and product data 
     # linkedin_data = get_linkedin_profile_nubela(linkedin_url)
     # product_description = extract_text_from_website(website_url)
