@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from model import CallData,preData
 # custom functions imports
 from config import HEADERS,VAPI_CALL_URL
-from utils import get_linkedin_profile_nubela,extract_text_from_website,get_calls
+from utils import get_calls,get_linkedin_summary,get_website_summary
 # other imports
 import requests
 import test
@@ -25,13 +25,13 @@ def make_call(call_request: dict = Body(...)):
     customer_number = call_request.get("customer_number")
     linkedin_url = call_request.get("linkedin_url")
     website_url = call_request.get("website_url")
-    print("here")
+ 
     #get linkedin and product data 
-    # linkedin_data = get_linkedin_profile_nubela(linkedin_url)
-    # product_description = extract_text_from_website(website_url)
+    linkedin_data = get_linkedin_summary(url=linkedin_url)
+    product_data = get_website_summary(url=website_url)
     
     #create datya for api call
-    data = preData(customer_number=customer_number).get_data()
+    data = preData(customer_number=customer_number,sales_person_name="john doe",company_name="abc",product_summary=product_data["product_description"]).get_data()
 
     #make api call
     response = requests.post(VAPI_CALL_URL, headers=HEADERS, json=data)
