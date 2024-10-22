@@ -15,6 +15,9 @@ assistant_id = os.getenv('ASSISTANT_ID')
 NEBULA_API = os.getenv('NEBULA_API')
 
 
+mongo_url = os.getenv('MONGO_URL')
+db_name=os.getenv('DB_NAME')
+collection_name=os.getenv('COLLECTION_NAME')
 test_vars = ['AUTH_TOKEN', 'PHONE_NUMBER_ID', 'VAPI_CALL_URL', 'ASSISTANT_ID', 'NEBULA_API']
 for var in test_vars:
     if os.getenv(var) is None:
