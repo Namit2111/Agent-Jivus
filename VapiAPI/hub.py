@@ -1,7 +1,7 @@
 # import requests
 
 # # Your HubSpot Private App Access Token
-# access_token = 'pat-na1-773cda42-4806-4d55-82bb-14afc47c1719'
+# access_token = 
 
 # # API endpoint for creating a contact
 # url = 'https://api.hubapi.com/crm/v3/objects/contacts'
@@ -50,7 +50,7 @@
 import requests
 
 # Your HubSpot Private App Access Token
-access_token = 'pat-na1-773cda42-4806-4d55-82bb-14afc47c1719'
+access_token =
 
 # API endpoint for retrieving contacts
 url = 'https://api.hubapi.com/crm/v3/objects/contacts'
@@ -118,10 +118,10 @@ get_contacts()
 # import requests
 
 # # Your HubSpot Private App Access Token
-# access_token = 'pat-na1-773cda42-4806-4d55-82bb-14afc47c1719'
+# access_token = 
 
 # # API endpoint for getting the current user
-# url = 'https://api.hubapi.com/oauth/v1/access-tokens/pat-na1-773cda42-4806-4d55-82bb-14afc47c1719'
+# url = 'https://api.hubapi.com/oauth/v1/access-tokens/
 
 # # Headers including the Authorization token
 # headers = {
