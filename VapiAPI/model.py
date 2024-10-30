@@ -47,15 +47,23 @@ class preData:
         self.phone_number_id = PHONE_NUMBER_ID
         self.customer_number = customer_number
         self.first_message = get_prompt_from_file(prompt_name="first_msg.txt").format(sales_person_name=sales_person_name,company_name=company_name)
-        self.prompt =get_prompt_from_file(prompt_name="main_prompt.txt").format(product_summary=product_summary,sales_person_name=sales_person_name,company_name=company_name)
+        self.prompt =get_prompt_from_file(prompt_name="ai_agent_main_prompt.txt").format(product_summary=product_summary,sales_person_name=sales_person_name,company_name=company_name)
         self.data = {
             'assistantId': self.assistant_id,
             'assistant': {
                 'firstMessage': self.first_message,
+                'analysisPlan':{
+                    "summaryPlan": {
+                        "enabled": False
+                    },
+                    "successEvaluationPlan": {
+                        "enabled": False
+                    }
+                    },
                 'model':{
-                    'provider': 'openai',
-                    # 'url':'https://api.openai.com/v1/chat/completions',
-                    'model':'gpt-4o',
+                    'provider': 'custom-llm',
+                    # 'url':'https://7fde-2409-4085-8e05-72f2-2467-7793-144f-a98.ngrok-free.app',
+                    'model':'azure-openai',
                     "messages": [
                         {
                             "role": "system",

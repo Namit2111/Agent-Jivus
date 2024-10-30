@@ -6,5 +6,9 @@
     "https://www.flipkart.com/vivo-v40-5g-lotus-purple-256-gb/p/itm444f2b97f5db4?pid=MOBH33ZXKG7VWUPG&param=46783&otracker=clp_bannerads_1_25.bannerAdCard.BANNERADS_vivo-V40-5G-EB_mobile-phones-store_HN04US5650PV": {
         "product_name": "vivo V40 5G",
         "product_description": "The vivo V40 5G offers a cutting-edge smartphone experience with ZEISS Style Portrait technology, flagship-level performance with Snapdragon 7 Gen 3 processor, and impressive features like AI Object Eraser and AI Facial Contouring. Its standout features include a 50 MP ZEISS OIS Main Camera, IP68 dust and water resistance, and a long-lasting 5500 mAh battery."
+    },
+    "https://www.google.com": {
+        "product_name": "Google",
+        "product_description": "Google offers a range of services including search, email (Gmail), and image hosting. Their business solutions and advertising services cater to businesses worldwide. Google's advanced search capabilities, privacy focus, and vast language support set them apart in the digital landscape."
     }
 }
