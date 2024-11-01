@@ -6,7 +6,7 @@ chroma_client = initialize_chromadb()
 collection_product = get_or_create_collection(chroma_client,collection_name="product")
 collection_prompt = get_or_create_collection(chroma_client,collection_name="prompts")
 
-user_query = "Can you explain how the performance review is conducted for employees in PeopleHub?"
+user_query = "Can you explain what is the selling point "
 
 ans_product = search_embeddings(collection_product, query=user_query)
 ans_prompt = search_embeddings(collection_prompt, query=user_query)
