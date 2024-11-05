@@ -1,7 +1,7 @@
 import chromadb
 from chromadb.config import Settings
 import uuid
-def initialize_chromadb():
+def initialize_chromadb(path="./db"):
     """Initialize the ChromaDB client."""
     # settings = Settings()  # Ensure only valid fields are passed
     # chroma_client = chromadb.Client(settings)
