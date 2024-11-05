@@ -1,3 +1,9 @@
+# steps to run ti flask app 
+```bash
+pip install -r requirements.txt
+python flask_app.py
+```
+
 # info
 
 - data folder contains synthetic data used to create db
