@@ -98,19 +98,73 @@ def convert_csv_to_conversation_data(csv_path):
 
 
 
+def save_conversations_to_json(doc_path, json_path):
+    doc = Document(doc_path)
+    
+    # Regular expressions for detecting conversation start and dialogue lines
+    conversation_start_pattern = re.compile(r"^Conversation\s(\d+):", re.IGNORECASE)
+    dialogue_pattern = re.compile(r"^(Prospect|SDR):\s*(.*)", re.IGNORECASE)
+    
+    conversations = []
+    conversation_id = None
+    current_conversation = []
+
+    # Iterate through each paragraph in the document
+    for para in doc.paragraphs:
+        text = para.text.strip()
+        
+        # Detect start of a new conversation
+        conversation_start_match = conversation_start_pattern.match(text)
+        if conversation_start_match:
+            # Save the current conversation if it exists
+            if current_conversation:
+                conversations.append({
+                    "page_content": " ".join(current_conversation),
+                    "metadata": {
+                        "category": "Conversation",
+                        "conversation_id": conversation_id
+                    }
+                })
+                current_conversation = []
+
+            # Update conversation ID for the new conversation
+            conversation_id = conversation_start_match.group(1)
+            continue
+
+        # Detect dialogue lines within a conversation
+        dialogue_match = dialogue_pattern.match(text)
+        if dialogue_match and conversation_id:
+            person = dialogue_match.group(1)
+            dialogue = dialogue_match.group(2)
+            current_conversation.append(f"{person}: {dialogue}")
+
+    # Add the last conversation if there's any content left
+    if current_conversation:
+        conversations.append({
+            "page_content": " ".join(current_conversation),
+            "metadata": {
+                "category": "Conversation",
+                "conversation_id": conversation_id
+            }
+        })
+
+    # Write the conversations to the JSON file
+    with open(json_path, mode='w', encoding='utf-8') as file:
+        json.dump(conversations, file, indent=4)
 
 
 if __name__ =="__main__":
+    
+    text = load_docx(file_path="./productDetails.docx")
+    chunks = chunk_text_with_overlap(text)
+    faa = format_product_details(chunks)
+    with open("productDetails.json",'w') as f:
+        json.dump(faa,f)
+    doc_path = "testConvo.docx" 
+    csv_path = "conversations.csv"  
+    split_dialogues_to_csv(doc_path, csv_path)
     data = convert_csv_to_conversation_data(csv_path="./conversations.csv")
     with open("convoDetails.json",'w') as d:
         json.dump(data,d)
-    # text = load_docx(file_path="./productDetails.docx")
-    # chunks = chunk_text_with_overlap(text)
-    # faa = format_product_details(chunks)
-    # with open("data.json",'w') as f:
-    #     json.dump(faa,f)
-    # doc_path = "testConvo.docx" 
-    # csv_path = "conversations.csv"  
-    # split_dialogues_to_csv(doc_path, csv_path)
 
-    # print("CSV file created successfully.")
+    save_conversations_to_json(doc_path=doc_path, json_path="wholeConvo.json")
