@@ -113,19 +113,28 @@
         </form>
 
         {% if ans_product %}
+         
             <h2>Product Results:</h2>
             <ul>
-                <li><strong>Details:</strong> {{ ans_product['documents'][0][0] }}</li>
-                <li><strong>Page:</strong> {{ ans_product['metadatas'][0][0]['page'] }}</li>
+                {% for i in range(ans_product['documents'][0]|length) %}
+                <li><strong>Details:</strong> {{ ans_product['documents'][0][i] }}</li>
+                <li><strong>Page:</strong> {{ ans_product['metadatas'][0][i]['page_number'] }}</li>
+                <li><strong>Distance:</strong> {{ ans_product['distances'][0][i] }}</li>
+            {% endfor %}
+                
             </ul>
+        
         {% endif %}
 
         {% if ans_prompt %}
             <h2>Prompt Results:</h2>
             <ul>
-                <li><strong>Question:</strong> {{ ans_prompt['documents'][0][0] }}</li>
-                <li><strong>Answer:</strong> {{ ans_prompt['metadatas'][0][0]['answer'] }}</li>
+                {% for i in range(ans_product['documents'][0]|length) %}
+                <li><strong>Question:</strong> {{ ans_prompt['documents'][0][i] }}</li>
+                <li><strong>Answer:</strong> {{ ans_prompt['metadatas'][0][i]['answer'] }}</li>
+                <li><strong>Distance:</strong> {{ ans_prompt['distances'][0][i] }}</li>
             </ul>
+            {% endfor %}
         {% endif %}
     </div>
 
