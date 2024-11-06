@@ -2,8 +2,18 @@ from docx import Document
 import re
 import csv
 import json
+from langchain_community.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+def load_pdf(filename):
+    loader = PyPDFLoader(filename)
+    pages = loader.load_and_split()
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
 
-def load_docx(file_path):
+    documents = text_splitter.split_documents(pages)
+
+    return documents
+
+def load_docx(file_path): #notused
     """Loads content from a .docx file and returns it as a string."""
     doc = Document(file_path)
     content = ""
@@ -12,7 +22,7 @@ def load_docx(file_path):
             content += para.text + "\n"
     return content.strip()
 
-def chunk_text_with_overlap(text, chunk_size=512, overlap_size=50):
+def chunk_text_with_overlap(text, chunk_size=128, overlap_size=20): #notused
     """Chunk text with overlap to prevent loss of context between chunks."""
     words = text.split()
     chunks = []
@@ -21,21 +31,22 @@ def chunk_text_with_overlap(text, chunk_size=512, overlap_size=50):
         chunks.append(chunk)
     return chunks
 
-def format_product_details(chunks):
-    product_details = []
-    for chunk in chunks:
+def format_product_details(documents):
+    product_details=[]
+    for doc in documents:
         product_details.append(
             {
-                "page_content":chunk,
+                "page_content":doc.page_content,
                 "metadata":{
-                    "category":"Product Details"
+                    "category":"Product Details",
+                    "page_number":doc.metadata['page'] + 1
                 }
             }
         )
     return product_details
 
-
 def split_dialogues_to_csv(doc_path, csv_path):
+    
     doc = Document(doc_path)
     
     conversation_start_pattern = re.compile(r"^Conversation\s(\d+):", re.IGNORECASE)
@@ -150,21 +161,20 @@ def save_conversations_to_json(doc_path, json_path):
 
     # Write the conversations to the JSON file
     with open(json_path, mode='w', encoding='utf-8') as file:
-        json.dump(conversations, file, indent=4)
+        json.dump(conversations, file, indent=1)
 
 
 if __name__ =="__main__":
-    
-    text = load_docx(file_path="./productDetails.docx")
-    chunks = chunk_text_with_overlap(text)
-    faa = format_product_details(chunks)
+
+    documents = load_pdf(filename="./productDetails.pdf")
+    pdata = format_product_details(documents)
     with open("productDetails.json",'w') as f:
-        json.dump(faa,f)
+        json.dump(pdata,f,indent=1)
     doc_path = "testConvo.docx" 
     csv_path = "conversations.csv"  
     split_dialogues_to_csv(doc_path, csv_path)
     data = convert_csv_to_conversation_data(csv_path="./conversations.csv")
     with open("convoDetails.json",'w') as d:
-        json.dump(data,d)
+        json.dump(data,d,indent=1)
 
     save_conversations_to_json(doc_path=doc_path, json_path="wholeConvo.json")
