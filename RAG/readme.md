@@ -31,3 +31,7 @@ python flask_app.py
 - **Queries Per Second**: The number of queries the database can handle in a second, reflecting its performance capabilities.
 - **Latency (ms)**: The average time it takes to return search results, with lower values indicating better performance.
 - **Free Hosted Tier**: Indicates if a free tier is available for users to test and use the database with limited features or capacity.
+
+
+todo 
+- add lamma support 

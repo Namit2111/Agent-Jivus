@@ -4,6 +4,7 @@ from searchEmbeddings import search_embeddings
 from loadData import load_data_from_json
 # -------------------------------- store embeddings of product details ----------------------------------------
 document_list , embeddings_list , ids_list , metadata_list = create_embeddings(load_data_from_json(file_path="./data/productDetails.json"))
+print(metadata_list)
 chroma_client = initialize_chromadb()
 collection = get_or_create_collection(chroma_client,collection_name="product")
 store_embeddings(collection, document_list, embeddings_list, ids_list, metadata_list)
