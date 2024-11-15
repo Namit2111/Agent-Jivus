@@ -35,3 +35,4 @@ python flask_app.py
 
 todo 
 - add lamma support 
+- use groq
