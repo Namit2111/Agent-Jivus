@@ -1,6 +1,6 @@
 from groq import Groq
 from PyPDF2 import PdfReader
-groq = Groq(api_key="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")
+groq = Groq(api_key="")
 
 def llama_summarize_content(content):
     prompt = "You are a summarizer based on the given file and context summarize the file relevant to the context"
