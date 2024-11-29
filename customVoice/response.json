@@ -1,0 +1,25 @@
+{
+    "id": "989bd2af-2bab-4560-881e-3e5f29d6c679",
+    "orgId": "714709d5-8b62-4e61-920c-3381f6583420",
+    "name": "New Assistant",
+    "voice": {
+        "server": {
+            "url": "https://2090-2404-7c80-64-239a-913d-d40c-c849-4f8a.ngrok-free.app/voice"
+        },
+        "provider": "custom-voice"
+    },
+    "createdAt": "2024-11-29T13:13:08.966Z",
+    "updatedAt": "2024-11-29T13:13:49.618Z",
+    "model": {
+        "model": "gpt-3.5-turbo",
+        "messages": [
+            {
+                "role": "system",
+                "content": "This is a blank template with minimal defaults, you can change the model, temperature, and messages."
+            }
+        ],
+        "provider": "openai",
+        "temperature": 0.7
+    },
+    "isServerUrlSecretSet": false
+}

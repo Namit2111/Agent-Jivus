@@ -1,8 +1,36 @@
 from groq import Groq
 from PyPDF2 import PdfReader
 import json
-groq = Groq(api_key="")
+groq = Groq(api_key="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")
 
+
+def llama_chat_json(prompt):
+  
+    chat_completion = groq.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": prompt
+            }
+        ],
+        model="llama-3.2-1b-preview",
+        response_format={"type": "json_object"},
+    )
+    return chat_completion.choices[0].message.content
+
+
+def llama_chat(prompt):
+  
+    chat_completion = groq.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": prompt
+            }
+        ],
+        model="llama-3.2-3b-preview"
+    )
+    return chat_completion.choices[0].message.content
 def llama_summarize_content(content):
     prompt = "You are a summarizer based on the given file and context summarize the file relevant to the context"
 
@@ -50,8 +78,8 @@ def get_file(file_path):
         text += page.extract_text()
     return text
 
-if __name__ == "__main__":
-    d = llama_get_category(content="what is your product")
-    d_dict = json.loads(d)
-    type_value = d_dict["type"]
-    print(json.loads(d)['type'])
+# if __name__ == "__main__":
+#     d = llama_get_category(content="what is your product")
+#     d_dict = json.loads(d)
+#     type_value = d_dict["type"]
+#     print(json.loads(d)['type'])
