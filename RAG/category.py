@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from summarizer_groq import llama_chat,llama_chat_json
 import json
 # app = Flask(__name__)
-client = MongoClient('mongodb+srv://sagar:eda6XT4A4bU9ua6D@perfectsprout-dev-qa-te.jorx2nm.mongodb.net/?retryWrites=true&w=majority')
+client = MongoClient('')
 db = client['test'] 
 collection = db['categorized_product_info']   
 

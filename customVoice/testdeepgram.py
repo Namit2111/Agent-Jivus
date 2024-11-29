@@ -11,7 +11,7 @@ def convert_to_mp3(text):
     SPEAK_TEXT = {"text": text}
     try:
         # STEP 1: Get API Key from environment variables
-        api_key = "16ac72efffcf773f0b5d11bb93b29df8617987d4"
+        api_key = ""
         if not api_key:
             raise ValueError("DEEPGRAM_API_KEY environment variable is not set")
 
