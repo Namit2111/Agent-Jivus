@@ -1,0 +1,1102 @@
+Coding Custom Modules | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+HTML + HubL (module.html)
+CSS (module.css)
+Styling based on module field values
+CSS Classes
+require_css block
+Add inline styles
+Import specific CSS files
+JavaScript (module.js)
+Scripting based on field values
+Data attributes
+require_js block
+require_js
+Related Information
+CMS Reference
+Modules
+Coding Custom Modules
+Module files
+When building a module for pages, blogs, and
+quotes
+, the module will contain three front-end related files that control the content, styling, and functionality of the module:
+module.html
+module.css
+module.js
+Email modules don't support module.css and module.js. This is because email clients don't support JavaScript and support for linked CSS files is limited.
+These files will always be rendered to the page when an instance of the module is on the page.
+When a page includes multiple instances of the same module, HubSpot will only load
+module.css
+and
+module.js
+from that module once. By default,
+module.css
+and
+module.js
+do not load asynchronously, but you can change this by including
+css_render_options and js_render_options
+in the module’s meta.json.
+Modules can be built within the design manager or locally using
+the HubSpot CLI
+. In the design manager, module files are displayed in a multi-pane editor.
+When viewing a module locally, the files are contained within module-name.module folders.
+Whether you use the design manager or CLI to create and manage modules is based on your team’s preferences. See
+creating an efficient developer workflow
+for recommendations.
+HTML + HubL (module.html)
+The module.html file is intended for HTML and HubL. In general, wherever a module is placed in the page editor or template file determines where the contents of the module.html file are rendered.
+This file acts like a
+HubL include
+in the page wherever the module is placed. The module.html file
+can access the module's field values through HubL
+.
+CSS (module.css)
+Use the
+module.css
+file to add CSS to a module.
+In general,
+module.css
+supports a very limited subset of HubL. However, you can use
+module_asset_url("my-image.png")
+for images added as module linked assets. This enables linking assets such as images, packaged with the module itself. For example:
+Copy code snippet
+.testimonial-module__wrapper {
+background: url('{{ module_asset_url('bg-pattern.png') }}');
+background-repeat: repeat;
+min-height: 200px;
+width: 100%;
+display: block;
+}
+1
+.testimonial-module__wrapper
+{
+2
+background
+:
+url
+(
+'{{ module_asset_url('
+bg-pattern
+.png
+') }}'
+);
+3
+background-repeat
+:
+repeat
+;
+4
+min-height
+:
+200px
+;
+5
+width
+:
+100%
+;
+6
+display
+:
+block
+;
+7
+}
+Below, learn how to set up a module's CSS to change dynamically based on the module's fields.
+Styling based on module field values
+There are a few ways you can influence the styling of your module based on the module’s fields. Choose the way that works best for your specific use case.
+CSS Classes
+Require_css block
+Inline styles
+CSS Classes
+To set up predefined styling for the module with the option for editors to select from those options, you can add a module field to set classes in your
+module.htm
+l file which correspond to CSS classes in your
+module.css
+file.
+For example, you may have an image and text module. You want content creators to be able to position the image to the right or left of the text based on a choice field. To do this, you could set your
+module.html
+and
+module.css
+files as follows:
+Copy code snippet
+<!-- module.html -->
+<section class="img-text__wrapper img-text--{{ module.positioning }}" aria-label="{{ module.heading }}">
+{# module.position is a choice field with two values "img-left" or "img-right". This dictates the order they appear on desktop. Controlled by CSS #}
+<div class="img-text__img">
+<img src="{{ module.image.src }}" alt="{{ module.image.alt }}">
+</div>
+<div class="img-text__text">
+<h2>
+{% inline_text field="heading" value="{{ module.heading }}" %}
+</h2>
+{% inline_rich_text field="text" value="{{ module.text }}" %}
+</div>
+</section>
+​
+x
+1
+<!-- module.html -->
+2
+​
+3
+<
+section
+class
+=
+"img-text__wrapper img-text--
+{{
+module.positioning
+}}
+"
+aria-label
+=
+"
+{{
+module.heading
+}}
+"
+>
+4
+{#
+module.position is a choice field with two values "img-left" or "img-right". This dictates the order they appear on desktop. Controlled by CSS
+#}
+5
+<
+div
+class
+=
+"img-text__img"
+>
+6
+<
+img
+src
+=
+"
+{{
+module.image.src
+}}
+"
+alt
+=
+"
+{{
+module.image.alt
+}}
+"
+>
+7
+</
+div
+>
+8
+<
+div
+class
+=
+"img-text__text"
+>
+9
+<
+h2
+>
+10
+{%
+inline_text field
+=
+"heading"
+value
+=
+"{{ module.heading }}"
+%}
+11
+</
+h2
+>
+12
+{%
+inline_rich_text field
+=
+"text"
+value
+=
+"{{ module.text }}"
+%}
+13
+</
+div
+>
+14
+</
+section
+>
+Copy code snippet
+/* module.css */
+/* CSS that makes the image show adjacent to the text,
+and positioned based on the positioning field.*/
+/* The media query ensures that on mobile the image
+will always appear above the text for
+visual consistency. */
+@media (min-width: 768px) {
+.img-text__wrapper {
+display: flex;
+align-items: row;
+}
+.img-text__img,
+.img-text__text {
+flex: 1;
+padding: 10px;
+}
+.img-text--img-right {
+flex-direction: row-reverse;
+}
+}
+xxxxxxxxxx
+23
+1
+/* module.css */
+2
+​
+3
+/* CSS that makes the image show adjacent to the text,
+4
+and positioned based on the positioning field.*/
+5
+​
+6
+/* The media query ensures that on mobile the image
+7
+will always appear above the text for
+8
+visual consistency. */
+9
+​
+10
+@media
+(
+min-width
+:
+768px
+) {
+11
+.img-text__wrapper
+{
+12
+display
+:
+flex
+;
+13
+align-items
+:
+row
+;
+14
+}
+15
+.img-text__img
+,
+16
+.img-text__text
+{
+17
+flex
+:
+1
+;
+18
+padding
+:
+10px
+;
+19
+}
+20
+.img-text--img-right
+{
+21
+flex-direction
+:
+row-reverse
+;
+22
+}
+23
+}
+require_css block
+When you need to give content creators direct control over specific properties and when classes are not ideal, style tags with
+require_css
+blocks are the best option.
+To give content creators direct control over specific properties without using classes, you can instead add styling to the
+module.html
+file within
+require_css
+tags. For example:
+Copy code snippet
+<div class="img__wrapper">
+{% if module.image.src %}
+{% set sizeAttrs = 'width="{{ module.image.width }}" height="{{ module.image.height }}"' %}
+{% if module.image.size_type == 'auto' %}
+{% set sizeAttrs = 'style="max-width: 100%; height: auto;"' %}
+{% elif module.image.size_type == 'auto_custom_max' %}
+{% set sizeAttrs = 'width="100%" height="auto" style="max-width: {{ module.image.max_width }}px; max-height: {{ module.image.max_height }}px"' %}
+{% endif %}
+<img src="{{ module.image.src }}" alt="{{ module.image.alt }}" {{ sizeAttrs }}>
+{% endif %}
+</div>
+{% require_css %}
+<style>
+img {
+border-width:{{ module.border_width }}px;
+border-color:rgba({{ module.border_color.color|convert_rgb}},{{ module.border_color.opacity/100 }});
+border-style: solid;
+}
+</style>
+{% end_require_css %}
+xxxxxxxxxx
+21
+1
+<
+div
+class
+=
+"img__wrapper"
+>
+2
+{%
+if
+module.image.src
+%}
+3
+{%
+set
+sizeAttrs
+=
+'width="{{ module.image.width }}" height="{{ module.image.height }}"'
+%}
+4
+{%
+if
+module.image.size_type
+==
+'auto'
+%}
+5
+{%
+set
+sizeAttrs
+=
+'style="max-width: 100%; height: auto;"'
+%}
+6
+{%
+elif
+module.image.size_type
+==
+'auto_custom_max'
+%}
+7
+{%
+set
+sizeAttrs
+=
+'width="100%" height="auto" style="max-width: {{ module.image.max_width }}px; max-height: {{ module.image.max_height }}px"'
+%}
+8
+{%
+endif
+%}
+9
+<
+img
+src
+=
+"
+{{
+module.image.src
+}}
+"
+alt
+=
+"
+{{
+module.image.alt
+}}
+"
+{{
+sizeAttrs
+}}
+>
+10
+{%
+endif
+%}
+11
+</
+div
+>
+12
+​
+13
+{%
+require_css
+%}
+14
+<
+style
+>
+15
+img
+{
+16
+border-width
+:
+{{
+module.border_width
+}}
+px
+;
+17
+border-color
+:
+rgba
+(
+{{
+module.border_color.color
+|
+convert_rgb
+}}
+,
+{{
+module.border_color.opacity/100
+}}
+);
+18
+border-style
+:
+solid
+;
+19
+}
+20
+</
+style
+>
+21
+{%
+end_require_css
+%}
+Because
+module.html
+can render HubL, you can use module field values as CSS variables. When a content creator updates the field in the page editor, the CSS will update to match. These block move the
+<style>
+tags into the
+<head>
+of your page within the
+standard_header_includes
+statement.
+You can also set the CSS to be scoped to only the module instance by wrapping the CSS with
+scope_css
+tags. For example, you could update the above module code as follows:
+Copy code snippet
+<div class="img__wrapper">
+{% if module.image.src %}
+{% set sizeAttrs = 'width="{{ module.image.width }}" height="{{ module.image.height }}"' %}
+{% if module.image.size_type == 'auto' %}
+{% set sizeAttrs = 'style="max-width: 100%; height: auto;"' %}
+{% elif module.image.size_type == 'auto_custom_max' %}
+{% set sizeAttrs = 'width="100%" height="auto" style="max-width: {{ module.image.max_width }}px; max-height: {{ module.image.max_height }}px"' %}
+{% endif %}
+<img src="{{ module.image.src }}" alt="{{ module.image.alt }}" {{ sizeAttrs }}>
+{% endif %}
+</div>
+{% require_css %}
+<style>
+{% scope_css %}
+img {
+border-width:{{ module.border_width }}px;
+border-color:rgba({{ module.border_color.color|convert_rgb}},{{ module.border_color.opacity/100 }});
+border-style: solid;
+}
+{% end_scope_css %}
+</style>
+{% end_require_css %}
+xxxxxxxxxx
+23
+1
+<
+div
+class
+=
+"img__wrapper"
+>
+2
+{%
+if
+module.image.src
+%}
+3
+{%
+set
+sizeAttrs
+=
+'width="{{ module.image.width }}" height="{{ module.image.height }}"'
+%}
+4
+{%
+if
+module.image.size_type
+==
+'auto'
+%}
+5
+{%
+set
+sizeAttrs
+=
+'style="max-width: 100%; height: auto;"'
+%}
+6
+{%
+elif
+module.image.size_type
+==
+'auto_custom_max'
+%}
+7
+{%
+set
+sizeAttrs
+=
+'width="100%" height="auto" style="max-width: {{ module.image.max_width }}px; max-height: {{ module.image.max_height }}px"'
+%}
+8
+{%
+endif
+%}
+9
+<
+img
+src
+=
+"
+{{
+module.image.src
+}}
+"
+alt
+=
+"
+{{
+module.image.alt
+}}
+"
+{{
+sizeAttrs
+}}
+>
+10
+{%
+endif
+%}
+11
+</
+div
+>
+12
+​
+13
+{%
+require_css
+%}
+14
+<
+style
+>
+15
+{%
+scope_css
+%}
+16
+img
+{
+17
+border-width
+:
+{{
+module.border_width
+}}
+px
+;
+18
+border-color
+:
+rgba
+(
+{{
+module.border_color.color
+|
+convert_rgb
+}}
+,
+{{
+module.border_color.opacity/100
+}}
+);
+19
+border-style
+:
+solid
+;
+20
+}
+21
+{%
+end_scope_css
+%}
+22
+</
+style
+>
+23
+{%
+end_require_css
+%}
+Add inline styles
+When you need to give content creators granular control over only a few properties and when classes are not ideal, you can directly add the values to a style attribute in the HTML.
+Copy code snippet
+{# Module.html #}
+<div style="background: rgba({{ module.bg_color.color|convert_rgb }},{{ module.bg_color.opacity/100 }});">
+{% inline_rich_text field="richtext" value="{{ module.richtext }}" %}
+</div>
+xxxxxxxxxx
+4
+1
+{#
+Module.html
+#}
+2
+<
+div
+style
+=
+"background: rgba(
+{{
+module.bg_color.color
+|
+convert_rgb
+}}
+,
+{{
+module.bg_color.opacity/100
+}}
+);"
+>
+3
+{%
+inline_rich_text field
+=
+"richtext"
+value
+=
+"{{ module.richtext }}"
+%}
+4
+</
+div
+>
+If you have many properties and the code becomes hard to read, consider switching to the
+require_css
+block method.
+Import specific CSS files
+require_css
+is a HubL function that you can add to module.html which tells HubSpot that a particular module or template requires a particular CSS file to display. A link tag pointing to the css file is added to the page's
+<head>
+inside of the
+standard_header_includes
+.
+The
+require_css
+function will only load that CSS file once, regardless of how many times that same file is required by modules and templates on a particular page. This makes it great for situations where styles may be shared across multiple modules, but where adding the CSS directly to the main stylesheets used on every page for your site may not make sense.
+require_css
+and linked CSS files fill the same purpose, but
+require_css
+can be used conditionally based on field values. This prevents loading unnecessary code.
+Copy code snippet
+<!-- module.html -->
+{{ require_css(get_asset_url("/modules/shared_layout_styles.css")) }}
+xxxxxxxxxx
+2
+1
+<!-- module.html -->
+2
+{{
+require_css(get_asset_url(
+"/modules/shared_layout_styles.css"
+))
+}}
+JavaScript (module.js)
+Use the
+module.js
+file to add JavaScript to a module.
+Like the
+module.css
+file, the
+module.js
+file does not support HubL.
+Scripting based on field values
+There are a few ways you can build modules, where the JavaScript acts differently based on field values. Understanding which method to use and when can mean performance benefits on every page the module is used.
+For example, you have a custom image module, you want to give content creators the ability to make it so the image can open in a lightbox. Content creators only want that for specific images, and not all instances of the module.
+Data attributes
+Data attributes are HTML 5 standard custom attributes that developers add to elements. Just as all elements support
+class="yourClassName"
+, all elements support
+data-your-attribute="yourValue"
+.
+Copy code snippet
+<!-- module.html-->
+<div class="img-module img-module__wrapper" data-lightbox="{{ module.is_lightbox_enabled }}" data-caption="above">
+<!-- module.is_lightbox_enabled is a boolean field, module.caption_position is a choice field. -->
+{% if module.image.src %}
+{% set sizeAttrs = 'width="{{ module.image.width }}" height="{{ module.image.height }}"' %}
+{% if module.image.size_type == 'auto' %}
+{% set sizeAttrs = 'style="max-width: 100%; height: auto;"' %}
+{% elif module.image.size_type == 'auto_custom_max' %}
+{% set sizeAttrs = 'width="100%" height="auto" style="max-width: {{ module.image.max_width }}px; max-height: {{ module.image.max_height }}px"' %}
+{% endif %}
+<img src="{{ module.image.src }}" alt="{{ module.image.alt }}" {{ sizeAttrs }}>
+{% endif %}
+</div>
+xxxxxxxxxx
+13
+1
+<!-- module.html-->
+2
+<
+div
+class
+=
+"img-module img-module__wrapper"
+data-lightbox
+=
+"
+{{
+module.is_lightbox_enabled
+}}
+"
+data-caption
+=
+"above"
+>
+3
+<!-- module.is_lightbox_enabled is a boolean field, module.caption_position is a choice field. -->
+4
+{%
+if
+module.image.src
+%}
+5
+{%
+set
+sizeAttrs
+=
+'width="{{ module.image.width }}" height="{{ module.image.height }}"'
+%}
+6
+{%
+if
+module.image.size_type
+==
+'auto'
+%}
+7
+{%
+set
+sizeAttrs
+=
+'style="max-width: 100%; height: auto;"'
+%}
+8
+{%
+elif
+module.image.size_type
+==
+'auto_custom_max'
+%}
+9
+{%
+set
+sizeAttrs
+=
+'width="100%" height="auto" style="max-width: {{ module.image.max_width }}px; max-height: {{ module.image.max_height }}px"'
+%}
+10
+{%
+endif
+%}
+11
+<
+img
+src
+=
+"
+{{
+module.image.src
+}}
+"
+alt
+=
+"
+{{
+module.image.alt
+}}
+"
+{{
+sizeAttrs
+}}
+>
+12
+{%
+endif
+%}
+13
+</
+div
+>
+You can use data attributes to pass the field values of your module instances to be handled by your module.js file.
+To use the values in your module.js file, you will need to loop through all of the instances of your module. Adding a module-specific class name to the outermost wrapper element of your module will give you a target to use, so that you can loop through each of your module instances.
+Copy code snippet
+// module.js
+let imgModules = document.getElementsByClassName('img-module');
+Array.from(imgModules).forEach(function (element) {
+// loop through each of the instances of the module
+// set data attributes to variables to make it easy to work with
+let isLightboxEnabled = element.dataset.lightbox;
+let captionStyle = element.dataset.caption;
+if (isLightboxEnabled) {
+element.addEventListener('click', function () {
+showLightbox(captionStyle); // Execute your code for the action you want to take, you can pass your data attributes into functions from libraries.
+});
+}
+});
+xxxxxxxxxx
+14
+1
+// module.js
+2
+​
+3
+let
+imgModules
+=
+document
+.
+getElementsByClassName
+(
+'img-module'
+);
+4
+Array
+.
+from
+(
+imgModules
+).
+forEach
+(
+function
+(
+element
+) {
+5
+// loop through each of the instances of the module
+6
+// set data attributes to variables to make it easy to work with
+7
+let
+isLightboxEnabled
+=
+element
+.
+dataset
+.
+lightbox
+;
+8
+let
+captionStyle
+=
+element
+.
+dataset
+.
+caption
+;
+9
+if
+(
+isLightboxEnabled
+) {
+10
+element
+.
+addEventListener
+(
+'click'
+,
+function
+() {
+11
+showLightbox
+(
+captionStyle
+);
+// Execute your code for the action you want to take, you can pass your data attributes into functions from libraries.
+12
+});
+13
+}
+14
+});
+The data attributes will allow you to retrieve the field values for each module instance in your module.js.
+require_js block
+In advanced situations, perhaps when using a JavaScript templating library or a reactive framework like Vue.js or React.js, you may prefer outputting just the data, while the framework handles rendering.
+In this case, use a script tag surrounded by a
+require_js
+block to provide variables you can access from your templating script.
+Copy code snippet
+{% require_js %}
+<script>
+let myArray = [
+{%- for item in module.repeating_text_field -%}"{{ item }}",{%- endfor -%}
+];
+</script>
+{% end_require_js %}
+xxxxxxxxxx
+7
+1
+{%
+require_js
+%}
+2
+<
+script
+>
+3
+let
+myArray
+=
+[
+4
+{%-
+for
+item
+in
+module.repeating_text_field
+-%}
+"
+{{
+item
+}}
+",
+{%-
+endfor
+-%}
+5
+];
+6
+</
+script
+>
+7
+{%
+end_require_js
+%}
+This technique can be useful for supplying advanced applications with an initial set of data from which to render. This eliminates an initial JavaScript call to retrieve data.
+require_js
+require_js
+is a HubL function that tells HubSpot that a particular module or template requires a particular JavaScript file to load properly. The function takes two parameters: the path to the file and the location the file is to be added to ("head" or "footer").
+In a module
+require_js
+can only be added to the module.html. The JavaScript file referred to in the
+require_js
+statement will only be loaded once per page, regardless of how many times it is required by modules and templates within the page. This reduces the number of HTTP requests and prevents duplicate code.
+Some situations where this becomes handy:
+If you have multiple modules or templates that require the same JavaScript, you can use
+require_js
+to share that script across modules.
+If you're working with a JavaScript bundler like webpack, it can be easier to output your js files to one specific location. Using
+require_js
+, you can associate the JavaScript with your module.
+require_js
+and linked javascript files serve the same purpose, but
+require_js
+can be done conditionally based on field values. This prevents unnecessary code from being loaded. You also have the additional option of loading JavaScript in the head, should you need that.
+Since JavaScript is render-blocking , the default location
+require_js
+places JavaScript is the "footer".
+Learn more about optimizing for performance.
+Related Information
+Optimize your CMS Hub site for speed
+Modules
+Module fields
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Reference
+Overview
+Modules
+Module files
+Configuring a module
+Default email modules
+Default module versioning
+Default web modules
+Deprecated
+export_to_template_context
+Using Modules in Templates
+HubL (templating language)
+Forms
+Fields
+Serverless functions

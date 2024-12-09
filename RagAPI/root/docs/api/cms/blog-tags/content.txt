@@ -1,0 +1,263 @@
+CMS API | Blog Tags | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Changes in V3
+Search blog tags
+Filtering
+Sorting and paginating
+Create blog tags
+Edit blog tags
+Multi-language management
+Create a new language variant
+Attach a blog tag to an existing mutli-language group
+Detach a blog tag from a multi-language group
+API Guides
+CMS
+Blogs
+CMS API | Blog Tags
+Blog Tags
+Blog tags endpoint reference
+Use the blog tags API to manage tags for your blog posts. Learn more about how to create and maintain your blog on the
+HubSpot Knowledge Base.
+Changes in V3
+The
+description
+property has been deprecated and will not be included in the response of any of the V3 endpoints.
+Search blog tags
+To retrieve blog tags, make a
+GET
+request to
+/cms/v3/blogs/tags
+. You can filter and sort the tags returned in the response using the operators and properties below. You can also use the standard filters using the
+createdAt
+and
+updatedAt
+dates.
+Filtering
+Provide any filters as query parameters in your request by adding the
+property name
+, followed by
+two underscore characters
+, then include the associated
+operator
+as a suffix. For example, you can filter the results to only include blog tags where the
+name
+property contains the word
+marketing
+using the parameter:
+&name__icontains=marketing
+.
+You can include any number of filters as query parameters in the request URL. All filters are ANDed together. ORing filters is not currently supported.
+The available filter types are listed below:
+Operator
+Description
+eq
+Equal to
+ne
+Not equal to
+contains
+Contains
+icontains
+Contains (case sensitive)
+lt
+Less than
+lte
+Less than or equal to
+gt
+Greater than
+gte
+Greater than or equal to
+is_null
+Null
+not_null
+Not null
+like
+Like
+not_like
+Not like
+startswith
+Value starts with
+in
+In
+The table below lists the properties that can be filtered on, along with their supported filter types.
+Property
+Supported filters
+id
+eq, in
+name
+eq, contains
+slug
+eq
+createdAt
+eq, gt, gte, lt, lte
+deletedAt
+eq, gt, gte, lt, lte
+createdById
+eq
+updatedById
+eq
+language
+in, not_null
+translatedFromId
+null, not_null
+To filter blog tags based on a multi-language group, you can include one of the query parameters from the table below. For example, to get blog tags from the German variation of your blog, you'd include
+language__in=de
+as a query parameter.
+Please note:
+languages with locales (e.g.,
+en-us
+) are not supported with the
+language
+filter.
+Sorting and paginating
+You can provide sorting and pagination options as query parameters. Specify the
+property name
+as the value to the sort query parameter to return the blog tags in the natural order of that property. You can reverse the sorting order by including a dash character before the property name (e.g.,
+sort=-createdAt
+).
+By combining query parameters for filtering, sorting, and paging, you can retrieve blog tags that match more advanced search criteria. For example, the request below fetches blog tags that have a language assigned, ordered by the most recently updated. Including the
+limit
+and
+offset
+parameters below returns the second page of results.
+Copy code snippet
+curl
+https://api.hubapi.com/cms/v3/blogs/tags?sort=-updatedAt&&language__not_null&limit=10&offset=10 \
+--request POST \
+--header "Content-Type: application/json"
+1
+curl
+2
+https://api.hubapi.com/cms/v3/blogs/tags
+?sort
+=
+-updatedAt
+&&language__not_null
+&limit
+=
+10
+&offset
+=
+10
+\
+3
+--request
+POST \
+4
+--header
+"Content-Type: application/json"
+Create blog tags
+To create a blog tag, make a
+POST
+request to
+/cms/v3/blog/posts
+and include a JSON payload that represents the blog tag model, as shown in the
+Endpoints
+tab at the top of this article. The
+name
+field is required when creating a blog tag. To set the URL of a blog tag listing page, you must include the
+slug
+field in your request.
+Edit blog tags
+To update a blog tag, make a
+PATCH
+request to
+/cms/v3/blog/posts/{objectId}
+where
+objectId
+is the ID of the tag you want to update. In your request, include a JSON payload should include the blog tag model, as shown in the
+Endpoints
+tab at the top of this article.
+Multi-language management
+To help you maintain blog tags across multiple languages, HubSpot's CMS allows you to group together blog tags of language variants of the same content. A tag with a language set may only be used on blog posts of the same language. Tags that do not have a language set are considered global and may be used on all blog posts.
+To learn more about working with multi-language blog tags, check out
+this Knowledge Base article
+.
+Create a new language variant
+To create a new language variant for an existing blog tag, make a
+POST
+request to
+/multi-language/create-language-variant
+and include a JSON payload containing the ID of the blog tag to clone and the language identifier of the new variant.
+Attach a blog tag to an existing mutli-language group
+To add a blog tag to an existing multi-language group, make a
+POST
+request to the
+/multi-language/attach-to-lang-group
+and include a JSON payload containing the ID of the target blog tag, the language identifier of the blog tag being added, and the
+primaryId
+of the blog tag designated as the primary blog tag in the target multi-language group.
+Detach a blog tag from a multi-language group
+To remove a blog tag from a multi-language group, make a
+POST
+request to
+/multi-language/detach-from-lang-group
+and include a JSON payload containing the ID of the target blog tag.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Blogs
+Blog authors
+Blog posts
+Blog tags
+Content audit
+Domains
+HubDB
+Media bridge
+Pages
+Performance
+Site search
+Source code
+URL redirects
+Conversations
+Library
+CRM
+Marketing
+Settings
+Legal

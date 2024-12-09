@@ -1,0 +1,352 @@
+CRM API | Goals | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Retrieve goals
+Goals properties
+API Guides
+CRM
+Objects
+CRM API | Goals
+Goals
+Goals endpoint reference
+In HubSpot, goals are used to create user-specific quotas for their sales and services teams based on templates provided by HubSpot. The goals API allow you to retrieve goals data in your HubSpot account.
+Learn more about
+using goals in HubSpot
+.
+Retrieve goals
+You can retrieve an individual goal or all goals in your account.
+To request all goals, make a
+GET
+request to
+/crm/v3/objects/goal_targets
+.
+To retrieve an individual goal, make a
+GET
+request to
+/crm/v3/objects/goal_targets/{goalTargetId}/
+.
+To retrieve goals that meet a specific set of criteria, you can make a
+POST
+request to the search endpoint and include filters in the request body. Learn more about
+searching the CRM
+.
+For example, to retrieve a goal with an ID of
+44027423340
+, the request URL would be the following:
+https://api.hubapi.com/crm/v3/objects/goal_targets/44027423340/
+The response will include a few default properties, including the create date, last modified date.
+Copy code snippet
+// Example response
+{
+"id": "87504620389",
+"properties": {
+"hs_createdate": "2021-11-30T22:18:49.923Z",
+"hs_lastmodifieddate": "2023-12-11T19:21:32.851Z",
+"hs_object_id": "87504620389"
+},
+"createdAt": "2021-11-30T22:18:49.923Z",
+"updatedAt": "2023-12-11T19:21:32.851Z",
+"archived": false
+}
+1
+// Example response
+2
+{
+3
+"id"
+:
+"87504620389"
+,
+4
+"properties"
+: {
+5
+"hs_createdate"
+:
+"2021-11-30T22:18:49.923Z"
+,
+6
+"hs_lastmodifieddate"
+:
+"2023-12-11T19:21:32.851Z"
+,
+7
+"hs_object_id"
+:
+"87504620389"
+8
+},
+9
+"createdAt"
+:
+"2021-11-30T22:18:49.923Z"
+,
+10
+"updatedAt"
+:
+"2023-12-11T19:21:32.851Z"
+,
+11
+"archived"
+:
+false
+12
+}
+To return specific properties, include a
+properties
+query parameter in the request URL along with comma-separated property names. Learn more about
+user properties below
+.
+For example, making a
+GET
+request to the following URL would result in the response below:
+crm/v3/objects/users?properties=hs_job_title,hs_additional_phone
+Copy code snippet
+// Example response
+{
+"id": "87504620389",
+"properties": {
+"hs_createdate": "2021-11-30T22:18:49.923Z",
+"hs_lastmodifieddate": "2023-12-11T19:21:32.851Z",
+"hs_object_id": "87504620389"
+},
+"createdAt": "2021-11-30T22:18:49.923Z",
+"updatedAt": "2023-12-11T19:21:32.851Z",
+"archived": false
+}
+xxxxxxxxxx
+12
+1
+// Example response
+2
+{
+3
+"id"
+:
+"87504620389"
+,
+4
+"properties"
+: {
+5
+"hs_createdate"
+:
+"2021-11-30T22:18:49.923Z"
+,
+6
+"hs_lastmodifieddate"
+:
+"2023-12-11T19:21:32.851Z"
+,
+7
+"hs_object_id"
+:
+"87504620389"
+8
+},
+9
+"createdAt"
+:
+"2021-11-30T22:18:49.923Z"
+,
+10
+"updatedAt"
+:
+"2023-12-11T19:21:32.851Z"
+,
+11
+"archived"
+:
+false
+12
+}
+Goals properties
+When making a
+GET
+request to the Goals API, you can also request specific goal properties:
+hs_goal_name:
+This is a string that denotes the name of a goal.
+hs_target_amount:
+Number that denotes the goal target value.
+hs_start_datetime:
+Goal's start date as a UTC timestamp.
+hs_end_datetime:
+Goal's end date as a UTC timestamp.
+hs_created_by_user_id:
+HubSpot UserId of the person who created the goal, not the one assigned to a goal.
+For example, if you wanted to include all properties listed above, the request URL may resemble the following:
+https://api.hubapi.com/crm/v3/objects/goal_targets/44027423340?properties=hs_goal_name,hs_target_amount,hs_start_datetime,hs_end_datetime,hs_created_by_user_id
+The response may look similar to the JSON excerpt below:
+Copy code snippet
+// Example response for GET request to /crm/v4/objects/goal_targets/{goal_target_id}/
+{
+"id": "44027423340",
+"properties": {
+"hs_created_by_user_id": "885536",
+"hs_createdate": "2023-02-15T15:53:07.080Z",
+"hs_end_datetime": "2024-01-01T00:00:00Z",
+"hs_goal_name": "Revenue Goal 2023",
+"hs_lastmodifieddate": "2023-02-16T10:02:21.131Z",
+"hs_object_id": "44027423340",
+"hs_start_datetime": "2023-12-01T00:00:00Z",
+"hs_target_amount": "2000.00"
+},
+"createdAt": "2023-02-15T15:53:07.080Z",
+"updatedAt": "2023-02-16T10:02:21.131Z",
+"archived": false
+}
+xxxxxxxxxx
+17
+1
+// Example response for GET request to /crm/v4/objects/goal_targets/{goal_target_id}/
+2
+{
+3
+"id"
+:
+"44027423340"
+,
+4
+"properties"
+: {
+5
+"hs_created_by_user_id"
+:
+"885536"
+,
+6
+"hs_createdate"
+:
+"2023-02-15T15:53:07.080Z"
+,
+7
+"hs_end_datetime"
+:
+"2024-01-01T00:00:00Z"
+,
+8
+"hs_goal_name"
+:
+"Revenue Goal 2023"
+,
+9
+"hs_lastmodifieddate"
+:
+"2023-02-16T10:02:21.131Z"
+,
+10
+"hs_object_id"
+:
+"44027423340"
+,
+11
+"hs_start_datetime"
+:
+"2023-12-01T00:00:00Z"
+,
+12
+"hs_target_amount"
+:
+"2000.00"
+13
+},
+14
+"createdAt"
+:
+"2023-02-15T15:53:07.080Z"
+,
+15
+"updatedAt"
+:
+"2023-02-16T10:02:21.131Z"
+,
+16
+"archived"
+:
+false
+17
+}
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+Custom objects
+Companies
+Contacts
+Deal splits
+Beta
+Deals
+Feedback submissions
+Goals
+New
+Leads
+Line items
+Products
+Tickets
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

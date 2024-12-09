@@ -1,0 +1,767 @@
+CRM API | Receive calls in HubSpot when using calling apps (BETA) | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+Apps
+Extensions
+Calling extensions
+CRM API | Receive calls in HubSpot when using calling apps (BETA)
+Receive calls in HubSpot when using calling apps
+Please note:
+learn how to
+ungate your account
+for this beta. By using these instructions you agree to adhere to
+HubSpot's Developer Terms
+&
+HubSpot's Developer Beta Terms
+.
+Developers using the
+Calling SDK
+can now enable inbound calling within HubSpot. When a user receives and answers a call through your app in HubSpot, they can access call records directly in HubSpot, eliminating the need to switch back to the calling app. Calls are automatically logged in the
+Call Index Page
+where users can take real-time notes and review the call after it ends.
+Prevent dropped calls and simultaneous ringing
+Since HubSpot is a multi-page web application, navigating across HubSpot pages triggers a full page refresh. This means that the iframe hosting your calling app is dropped from the DOM, and then re-rendered in the new page. In order to prevent dropped calls when navigating across HubSpot, calling apps can hold their call connection in a calling window.
+Opt out of the calling window
+This experience will be enabled by default. However, calling apps that already prevent dropped calls have the ability to opt out of the calling window. Once you have set your app settings
+using the calling settings endpoint
+, use the PATCH endpoint to change
+usesCallingWindow
+to false.
+Copy code snippet
+curl --request PATCH \
+--url 'https://api.hubapi.com/crm/v3/extensions/calling/APP_ID/settings?hapikey=DEVELOPER_ACCOUNT_API_KEY' \
+--header 'accept: application/json' \
+--header 'content-type: application/json' \
+--data '{"usesCallingWindow":false}'
+1
+curl --request PATCH \
+2
+--url 'https://api.hubapi.com/crm/v3/extensions/calling/APP_ID/settings?hapikey=DEVELOPER_ACCOUNT_API_KEY' \
+3
+--header 'accept: application/json' \
+4
+--header 'content-type: application/json' \
+5
+--data '{"usesCallingWindow":false}'
+Use the calling window to share a calling state
+HubSpot will notify your calling app of the iframe location in the
+onReady SDK event
+. You'll need to update your app as follows:
+When
+iframe location
+is
+window
+, create the call connection in the calling window and manage the shared calling state. We recommend using a
+SharedWorker
+for cross-tab communication.
+When
+iframe location
+is
+remote
+, subscribe to the shared calling state from the calling window.
+For example, when a user clicks on the answer call button in the iframe on the HubSpot navigation bar, the call is placed from the calling window and both iframes show that the user is in a call. In addition to preventing dropped calls, this solution also prevents simultaneous ringing, since this could occur because HubSpot will be hosting your calling app in an iframe in each browser tab the user has opened.
+Copy code snippet
+import CallingExtensions from "@hubspot/calling-extensions-sdk";
+const extensions = new CallingExtensions({
+eventHandlers: {
+onReady: ({ engagementId, iframeLocation, ownerId, portalId, userId}) => {
+/* HubSpot is ready to receive messages. */
+},
+});
+​
+x
+1
+import
+CallingExtensions
+from
+"@hubspot/calling-extensions-sdk"
+;
+2
+​
+3
+const
+extensions
+=
+new
+CallingExtensions
+({
+4
+eventHandlers
+: {
+5
+onReady
+: ({
+engagementId
+,
+iframeLocation
+,
+ownerId
+,
+portalId
+,
+userId
+})
+=>
+{
+6
+/* HubSpot is ready to receive messages. */
+7
+},
+8
+});
+Property
+Type
+Description
+engagementId
+Number
+A HubSpot created engagement ID.
+iframeLocation
+Enum
+widget
+: drag and drop widget shown in record pages when calling app doesn't support inbound inbound calling.
+remote
+: iframe in the navigation bar when calling app supports inbound calling.
+window
+: iframe in the calling window when calling app supports inbound calling.
+ownerId
+String or Number
+The ID of the logged in user in HubSpot.
+portalId
+Number
+The ID of the HubSpot account.
+userId
+Number
+The ID of the HubSpot user.
+1. Install the latest version of Calling SDK
+For npm, run:
+Copy code snippet
+npm i -s @hubspot/calling-extensions-sdk@latest
+xxxxxxxxxx
+npm i -s @hubspot/calling-extensions-sdk@latest
+For yarn, run:
+Copy code snippet
+yarn add @hubspot/calling-extensions-sdk@latest
+xxxxxxxxxx
+yarn add @hubspot/calling-extensions-sdk@latest
+2. Set user availability
+You can set the user's availability using on of the following events:
+Via the
+initialized
+event:
+Copy code snippet
+const payload = {
+// Optional: Whether a user is logged-in
+isLoggedIn: boolean,
+// Optional: Whether a user is available for inbound calling
+isAvailable: boolean,
+// Optional: The desired widget size
+sizeInfo: {
+height: number,
+width: number,
+},
+};
+extensions.initialized(payload);
+xxxxxxxxxx
+13
+1
+const
+payload
+=
+{
+2
+// Optional: Whether a user is logged-in
+3
+isLoggedIn
+:
+boolean
+,
+4
+// Optional: Whether a user is available for inbound calling
+5
+isAvailable
+:
+boolean
+,
+6
+// Optional: The desired widget size
+7
+sizeInfo
+: {
+8
+height
+:
+number
+,
+9
+width
+:
+number
+,
+10
+},
+11
+};
+12
+​
+13
+extensions
+.
+initialized
+(
+payload
+);
+Via the
+userAvailable
+event:
+Copy code snippet
+extensions.userAvailable();
+xxxxxxxxxx
+extensions
+.
+userAvailable
+();
+Via the
+userUnavailable
+event:
+Copy code snippet
+extensions.userUnavailable();
+xxxxxxxxxx
+extensions
+.
+userUnavailable
+();
+3. Send message to notify HubSpot that an inbound call started
+You will be able to send calling lifecycle events, such as
+callAnswered
+and
+callCompleted
+, in the same way it is done for outgoing calls.
+Copy code snippet
+const callInfo = {
+fromNumber: string, // Required: The caller's number
+toNumber: string, // Required: The recipient's number
+createEngagement: boolean, // Whether HubSpot should create an engagement for this call
+};
+extensions.incomingCall(callInfo);
+xxxxxxxxxx
+6
+1
+const
+callInfo
+=
+{
+2
+fromNumber
+:
+string
+,
+// Required: The caller's number
+3
+toNumber
+:
+string
+,
+// Required: The recipient's number
+4
+createEngagement
+:
+boolean
+,
+// Whether HubSpot should create an engagement for this call
+5
+};
+6
+extensions
+.
+incomingCall
+(
+callInfo
+);
+If you’ve set
+createEngagement
+to true, you can subscribe to
+onCreateEngagementSucceeded
+and
+onCreateEngagementFailed
+. It is recommended you do this so that you can enable your calling app to support
+custom objects
+. This will allow future integration into other areas of HubSpot.
+Copy code snippet
+onCreateEngagementSucceeded(data) {
+const {
+/* A HubSpot created engagement id. */
+engagementId: number,
+} = data;
+...
+}
+onCreateEngagementFailed(data) {
+const {
+error: { message: string }
+} = data;
+...
+}
+xxxxxxxxxx
+14
+1
+onCreateEngagementSucceeded
+(
+data
+) {
+2
+const
+{
+3
+/* A HubSpot created engagement id. */
+4
+engagementId
+:
+number
+,
+5
+}
+=
+data
+;
+6
+...
+7
+}
+8
+​
+9
+onCreateEngagementFailed
+(
+data
+) {
+10
+const
+{
+11
+error
+: {
+message
+:
+string
+}
+12
+}
+=
+data
+;
+13
+...
+14
+}
+4. Receive caller ID matches
+You will be able to subscribe to
+onCallerIdMatchSucceeded
+and
+onCalledIdMatchFailed
+. This will enable you to receive contact matching data for the incoming call that previously had to be obtained via the
+Search API
+, and will solve its rate limitations.
+Copy code snippet
+onCallerIdMatchSucceeded: data => {
+/* HubSpot has fetched caller id matches for this call. */
+const {
+callerIdMatches: (ContactIdMatch | CompanyIdMatch)[];
+} = data;
+}
+onCallerIdMatchFailed: data => {
+/* HubSpot has failed to fetch caller id matches for this call. */
+const {
+error: { message: string }
+} = data;
+}
+xxxxxxxxxx
+13
+1
+onCallerIdMatchSucceeded
+:
+data
+=>
+{
+2
+/* HubSpot has fetched caller id matches for this call. */
+3
+const
+{
+4
+callerIdMatches
+: (
+ContactIdMatch
+|
+CompanyIdMatch
+)[];
+5
+}
+=
+data
+;
+6
+}
+7
+​
+8
+onCallerIdMatchFailed
+:
+data
+=>
+{
+9
+/* HubSpot has failed to fetch caller id matches for this call. */
+10
+const
+{
+11
+error
+: {
+message
+:
+string
+}
+12
+}
+=
+data
+;
+13
+}
+Copy code snippet
+type ObjectCoordinates = {
+portalId: number;
+objectTypeId: string;
+objectId: number;
+}
+type ContactIdMatch = {
+callerIdType: 'CONTACT';
+objectCoordinates: ObjectCoordinates;
+firstName: string;
+lastName: string;
+email: string;
+}
+type CompanyIdMatch = {
+callerIdType: 'COMPANY';
+objectCoordinates: ObjectCoordinates;
+name: string;
+}
+xxxxxxxxxx
+19
+1
+type
+ObjectCoordinates
+=
+{
+2
+portalId
+:
+number
+;
+3
+objectTypeId
+:
+string
+;
+4
+objectId
+:
+number
+;
+5
+}
+6
+​
+7
+type
+ContactIdMatch
+=
+{
+8
+callerIdType
+:
+'CONTACT'
+;
+9
+objectCoordinates
+:
+ObjectCoordinates
+;
+10
+firstName
+:
+string
+;
+11
+lastName
+:
+string
+;
+12
+email
+:
+string
+;
+13
+}
+14
+​
+15
+type
+CompanyIdMatch
+=
+{
+16
+callerIdType
+:
+'COMPANY'
+;
+17
+objectCoordinates
+:
+ObjectCoordinates
+;
+18
+name
+:
+string
+;
+19
+}
+5. Navigate to a record page
+Once you receive the caller ID matches, you can send HubSpot a message to navigate to a
+contact or company record page
+.
+Copy code snippet
+const data = {
+objectCoordinates: ObjectCoordinates, // from onCallerIdMatchSucceeded
+};
+extensions.navigateToRecord(data);
+xxxxxxxxxx
+5
+1
+const
+data
+=
+{
+2
+objectCoordinates
+:
+ObjectCoordinates
+,
+// from onCallerIdMatchSucceeded
+3
+};
+4
+​
+5
+extensions
+.
+navigateToRecord
+(
+data
+);
+Once the call engagement is created, HubSpot will redirect to the contact page specified in the
+navigateToRecord
+payload and will sync with the SDK in the
+onReady
+event. You'll need to re-initialize the SDK using the engagement ID and show an incoming call within the iframe.
+Copy code snippet
+// Receive an engagementId for an existing inbound call
+type Payload = {
+engagementId: number | undefined
+}
+// Message indicating that HubSpot is ready to receive messages
+onReady(payload) {
+// Send initialized message to HubSpot to indicate that the call widget is also ready
+extensions.initialized(payload);
+if (payload.engagementId) {
+// Initialize calling state in the app for existing inbound call
+...
+}
+...
+}
+xxxxxxxxxx
+15
+1
+// Receive an engagementId for an existing inbound call
+2
+type
+Payload
+=
+{
+3
+engagementId
+:
+number
+|
+undefined
+4
+}
+5
+​
+6
+// Message indicating that HubSpot is ready to receive messages
+7
+onReady
+(
+payload
+) {
+8
+// Send initialized message to HubSpot to indicate that the call widget is also ready
+9
+extensions
+.
+initialized
+(
+payload
+);
+10
+if
+(
+payload
+.
+engagementId
+) {
+11
+// Initialize calling state in the app for existing inbound call
+12
+...
+13
+}
+14
+...
+15
+}
+In the following sections, preview how the incoming call feature will work in your calling app.
+6. Ungate your account
+If you are using a
+developer test account
+, follow the local storage instructions. To ungate your account for this beta, open your browser developer console from a HubSpot tab, and set the following:
+Copy code snippet
+localStorage['LocalSettings:Calling:supportsInboundCalling'] = true;
+xxxxxxxxxx
+localStorage['LocalSettings:Calling:supportsInboundCalling'] = true;
+If you are using another type of account,
+join the beta
+.
+7. Set the provider
+Before logging in to your calling app, you'll need to select the provider from your call settings:
+In your HubSpot account, click the
+settings icon
+in the main navigation bar.
+In the left sidebar menu, click
+General
+. Then, click the
+Calling
+tab at the top.
+Click the
+Make and receive calls through
+dropdown menu, then select your calling app.
+Once the preferred provider is selected, incoming calls will
+only
+be received through the selected provider. HubSpot will not support receiving incoming calls from multiple providers in this version.
+If you wish to change the provider for receiving calls, you'll have to go back to
+your call settings
+to make the change.
+Please note**
+:** for outbound calls, you can
+continue to switch providers
+from the contact record.
+8. Receive incoming calls
+If you've not already set up an integration with any of the
+calling apps
+, click
+here
+to learn more.
+Log in to your calling app through the call widget in HubSpot. The call widget can be accessed on the main navigation bar.
+Set availability to e HubSpot to start receiving calls.
+Answer inbound calls from the call remote.
+Please note:
+the behavior may vary slightly based on each calling apps' implementation.
+Once the call is completed, the inbound call gets logged in the Call Index page. Missed calls will also get logged here.
+Please note:
+if the call widget is minimized but you're set to
+Available
+, you will still receive calls. If the call tab is closed during an ongoing call, the call will get disconnected.
+9. Ungate users
+supportsInboundCalling
+is set to false by default. This extension setting gates users to the new inbound calling experience and instead shows the drag and drop call widget in record pages for outbound calling. Once you've set your app settings using the
+calling settings endpoint
+, use the PATCH endpoint to change
+supportsInboundCalling
+to true to ungate users to the new inbound calling experience.
+Copy code snippet
+curl --request PATCH \
+--url 'https://api.hubapi.com/crm/v3/extensions/calling/APP_ID/settings?hapikey=DEVELOPER_ACCOUNT_API_KEY' \
+--header 'accept: application/json' \
+--header 'content-type: application/json' \
+--data '{"supportsInboundCalling":true}'
+xxxxxxxxxx
+5
+1
+curl --request PATCH \
+2
+--url 'https://api.hubapi.com/crm/v3/extensions/calling/APP_ID/settings?hapikey=DEVELOPER_ACCOUNT_API_KEY' \
+3
+--header 'accept: application/json' \
+4
+--header 'content-type: application/json' \
+5
+--data '{"supportsInboundCalling":true}'
+Once the above steps are complete, you can continue to extend the functionality of your calling app in HubSpot by
+setting up third-party calling in help desk (BETA)
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+Apps
+Overview
+Authentication
+Private apps
+Public apps
+Extensions
+Overview
+Calling extensions
+Receive incoming calls
+Recordings & transcripts
+API usage
+Marketplace

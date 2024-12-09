@@ -1,0 +1,468 @@
+Error handling | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Multi-status errors
+Retries
+Webhooks
+Custom code workflow actions
+API Endpoints
+Other resources
+Error handling
+Handling errors
+Unless specified otherwise, most HubSpot endpoints will return a
+200
+OK response upon success. Any endpoints returning a different status code will specify the returned response in its documentation.
+In addition, HubSpot has several error responses that are common to multiple APIs:
+207 Multi-Status
+: returned when there are different statuses (e.g., errors and successes), which occurs when you've enabled
+multi-status error handling
+for the object API batch create endpoints.
+401 Unauthorized
+: returned when the authentication provided is invalid. See our
+Authentication Overview
+for details on authenticating API requests.
+403 Forbidden
+: returned when the authentication provided does not have the proper permissions to access the specific URL. As an example, an OAuth token that only has content access would get a
+403
+when accessing the Deals API (which requires contacts access). If you've confirmed that your API key or private app has the necessary permissions, please reach out to
+HubSpot support
+for assistance.
+423 Locked
+: returned when attempting to sync a large volume of data (e.g., upserting thousands of company records in a very short period of time). Locks will last for 2 seconds, so if you receive a
+423
+error, you should include a delay of at least 2 seconds between your API requests.
+429 Too many requests
+: returned when your account or app is over its API
+rate limits
+. Find suggestions on working within those limits
+here
+.
+477 Migration in Progress
+: returned when a HubSpot account is currently being
+migrated between data hosting locations
+. HubSpot will return a
+Retry-After
+response header indicating how many seconds to wait before retrying the request (typically up to 24 hours).
+502/504 timeouts
+: returned when HubSpot's processing limits have been met. These limits are in place to prevent a single client from causing degraded performance. These timeout responses occur when making a large number of requests over a sustained period. If you get one of these responses, you should pause your requests for a few seconds, then retry.
+503 service temporarily unavailable
+: returned when HubSpot is temporarily unavailable. If you receive this response, you should pause your requests for a few seconds, then retry.
+521 web server is down
+: returned when HubSpot's server is down, this should be a temporary issue. If you receive this response, you should pause your requests for a few seconds, then retry.
+522 connnection timed out
+: returned when the connection between HubSpot and your application has timed out. If you've received this response, please reach out to
+HubSpot support
+for assistance.
+523 origin is unreachable
+: returned when HubSpot is unable to contact your application. If you receive this response, you should pause your requests for a few seconds, then retry.
+524 timeout
+: returned when a response is not received within 100 seconds. This can occur when the HubSpot's server is overloaded, such as with a large data query. If you receive this response, you should pause your requests for a few seconds, then retry.
+525/526 SSL issues
+: returned when the SSL certificate is invalid or the SSL handshake fails. If you've received this response, please reach out to
+HubSpot support
+for assistance.
+Aside from these general errors, HubSpot error responses are intended to be human-readable. Most endpoints don't return error codes, but return a JSON formatted response with details about the error. More details for endpoint-specific errors can be found on the documentation pages for the endpoint.
+Please note:
+the fields in the example response below should all be treated as optional in any error parsing. The specific fields included can vary between different APIs, so any error parsing should allow for specific fields to be missing from the response.
+Copy code snippet
+// Structure of an example error from HubSpot
+{
+"status": "error",
+"message": "This will be a human readable message with details about the error.",
+"errors": [
+{
+"message": "This will be a message with additional details about the error",
+"in": "name"
+}
+],
+"category": "VALIDATION_ERROR",
+"correlationId": "a43683b0-5717-4ceb-80b4-104d02915d8c"
+}
+1
+// Structure of an example error from HubSpot
+2
+{
+3
+"status"
+:
+"error"
+,
+4
+"message"
+:
+"This will be a human readable message with details about the error."
+,
+5
+"errors"
+: [
+6
+{
+7
+"message"
+:
+"This will be a message with additional details about the error"
+,
+8
+"in"
+:
+"name"
+9
+}
+10
+],
+11
+"category"
+:
+"VALIDATION_ERROR"
+,
+12
+"correlationId"
+:
+"a43683b0-5717-4ceb-80b4-104d02915d8c"
+13
+}
+Multi-status errors
+For the
+object APIs'
+batch create endpoints, you can enable multi status responses that include partial failures. This means the response will show which records were created and which were not. To do so, include a unique
+objectWriteTraceId
+value for each input in your request. The
+objectWriteTraceId
+can be any unique string.
+For example, a request to create tickets could look like:
+Copy code snippet
+///Example request to POST crm/v3/objects/tickets/batch/create
+{
+"inputs": [
+{
+"objectWriteTraceId": "549b1c2a9350",
+"properties": {
+"hs_pipeline_stage": "1"
+},
+"objectWriteTraceId": "549b1c2a9351",
+"properties": {
+"missing": "1"
+}
+}
+]
+}
+xxxxxxxxxx
+15
+1
+///Example request to POST crm/v3/objects/tickets/batch/create
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"objectWriteTraceId"
+:
+"549b1c2a9350"
+,
+6
+"properties"
+: {
+7
+"hs_pipeline_stage"
+:
+"1"
+8
+},
+9
+"objectWriteTraceId"
+:
+"549b1c2a9351"
+,
+10
+"properties"
+: {
+11
+"missing"
+:
+"1"
+12
+}
+13
+}
+14
+]
+15
+}
+In the response, statuses are grouped so you can see which creates were successful and which failed. For the above request, your response would look like:
+Copy code snippet
+///Example response
+{
+"status": "COMPLETE",
+"results": [
+{
+"id": "1145814089",
+"properties": {
+"createdate": "2024-08-15T17:09:13.648Z",
+"hs_helpdesk_sort_timestamp": "2024-08-15T17:09:13.648Z",
+"hs_last_message_from_visitor": "false",
+"hs_lastmodifieddate": "2024-08-15T17:09:13.648Z",
+"hs_object_id": "1145814089",
+"hs_object_source": "API",
+"hs_object_source_label": "INTERNAL_PROCESSING",
+"hs_pipeline": "0",
+"hs_pipeline_stage": "1",
+"hs_ticket_id": "1145814089"
+},
+"createdAt": "2024-08-15T17:09:13.648Z",
+"updatedAt": "2024-08-15T17:09:13.648Z",
+"archived": false
+}
+],
+"numErrors": 1,
+"errors": [
+{
+"status": "error",
+"category": "VALIDATION_ERROR",
+"message": "Property values were not valid: [{\"isValid\":false,\"message\":\"Property \\\"missing\\\" does not exist\",\"error\":\"PROPERTY_DOESNT_EXIST\",\"name\":\"missing\",\"localizedErrorMessage\":\"Property \\\"missing\\\" does not exist\",\"portalId\":891936587}]",
+"context": {
+"objectWriteTraceId": ["549b1c2a9351"]
+}
+}
+],
+"startedAt": "2024-08-15T17:09:13.610Z",
+"completedAt": "2024-08-15T17:09:13.910Z"
+}
+xxxxxxxxxx
+37
+1
+///Example response
+2
+{
+3
+"status"
+:
+"COMPLETE"
+,
+4
+"results"
+: [
+5
+{
+6
+"id"
+:
+"1145814089"
+,
+7
+"properties"
+: {
+8
+"createdate"
+:
+"2024-08-15T17:09:13.648Z"
+,
+9
+"hs_helpdesk_sort_timestamp"
+:
+"2024-08-15T17:09:13.648Z"
+,
+10
+"hs_last_message_from_visitor"
+:
+"false"
+,
+11
+"hs_lastmodifieddate"
+:
+"2024-08-15T17:09:13.648Z"
+,
+12
+"hs_object_id"
+:
+"1145814089"
+,
+13
+"hs_object_source"
+:
+"API"
+,
+14
+"hs_object_source_label"
+:
+"INTERNAL_PROCESSING"
+,
+15
+"hs_pipeline"
+:
+"0"
+,
+16
+"hs_pipeline_stage"
+:
+"1"
+,
+17
+"hs_ticket_id"
+:
+"1145814089"
+18
+},
+19
+"createdAt"
+:
+"2024-08-15T17:09:13.648Z"
+,
+20
+"updatedAt"
+:
+"2024-08-15T17:09:13.648Z"
+,
+21
+"archived"
+:
+false
+22
+}
+23
+],
+24
+"numErrors"
+:
+1
+,
+25
+"errors"
+: [
+26
+{
+27
+"status"
+:
+"error"
+,
+28
+"category"
+:
+"VALIDATION_ERROR"
+,
+29
+"message"
+:
+"Property values were not valid: [{\"isValid\":false,\"message\":\"Property \\\"missing\\\" does not exist\",\"error\":\"PROPERTY_DOESNT_EXIST\",\"name\":\"missing\",\"localizedErrorMessage\":\"Property \\\"missing\\\" does not exist\",\"portalId\":891936587}]"
+,
+30
+"context"
+: {
+31
+"objectWriteTraceId"
+: [
+"549b1c2a9351"
+]
+32
+}
+33
+}
+34
+],
+35
+"startedAt"
+:
+"2024-08-15T17:09:13.610Z"
+,
+36
+"completedAt"
+:
+"2024-08-15T17:09:13.910Z"
+37
+}
+Retries
+If your app or integration provides an endpoint that HubSpot will call, such as webhook subscriptions, any errors that your endpoint throws will cause HubSpot to retry the request.
+Webhooks
+If your service has problems handling notifications at any time, HubSpot will attempt to resend failed notifications up to 10 times.
+HubSpot will retry in the following cases:
+Connection failed:
+HubSpot cannot open an HTTP connection to the provided webhook URL.
+Timeout:
+Your service takes longer than 5 seconds to send back a response to a batch of notifications
+Error codes:
+Your service responds with any HTTP status code (
+4xx
+or
+5xx
+)
+Workflows
+will not
+retry after receiving 4XX series response status codes. One exception to this rule is 429 rate limit errors; workflows will automatically retry after receiving a 429 response, and will respect the
+Retry-After
+header if present. Note that the
+Retry-After
+value is in miliseconds.
+Notifications will be retried up to 10 times. These retries will be spread out over the next 24 hours, with varying delays between requests. Individual notifications will have some randomization applied, to prevent a large number of concurrent failures from being retried at the exact same time.
+Custom code workflow actions
+If you're creating a
+custom code action
+in a workflow, and an API call in your action fails due to a rate limiting error, or a
+429
+or
+5XX
+error from
+axios
+or
+@hubspot/api-client
+, HubSpot will reattempt to execute your action for up to three days, starting one minute after failure. Subsequent failures will be retried at increasing intervals, with a maximum gap of eight hours between tries.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Endpoints
+Get set up
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+CRM
+Library
+Marketing
+Settings
+Other resources
+Error handling
+Legal
+Deprecated

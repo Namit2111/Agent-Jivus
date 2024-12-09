@@ -1,0 +1,630 @@
+HubDB | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+HubDB architecture
+HubDB technical limits
+Create a HubDB table
+Join multiple HubDB tables
+1. Add a Foreign ID column to the main table
+2. Add foreign table rows to your table's rows
+3. Render your joined HubDB table data
+Access HubDB data using HubL
+Getting rows
+Row attributes
+Getting table metadata
+Table attributes
+Getting column metadata
+Column attributes
+Column methods
+Rich Text columns
+HubDB tutorials and resources
+CMS Development
+Storage
+HubDB
+HubDB
+HubDB
+Supported products
+Requires one of the following products or higher.
+Content Hub
+-
+Professional
+Marketing Hub
+-
+Enterprise
+HubDB is a tool that allows you to create tables to store data in rows, columns, and cells, much like a spreadsheet. You can customize a HubDB table's columns, rows, and other settings based on your needs. For example, you could use a HubDB table to:
+Store feedback from an external mechanism to retrieve at a later time.
+Store structured data that you can use to
+build dynamic CMS pages
+(
+CMS Hub
+Professional
+and
+Enterprise
+only).
+Store data to use in a
+programmable email
+(
+**_Marketing Hub
+**_
+Enterprise
+only).
+HubDB tables can be accessed both
+within HubSpot
+and through the
+HubDB API
+, and you can retrieve a table's data in multiple ways, depending on your use case. To get data from a HubDB table, you can:
+Query the data externally via the
+HubDB API
+.
+Use HubSpot’s HubL markup tags to pull data into the CMS as structured content.
+Use the HubDB API with
+serverless functions
+to provide an interactive web app experience.
+Please note:
+To
+use HubDB data in pages
+, you need
+CMS Hub
+Professional
+or
+Enterprise
+.
+To use HubDB data in
+programmable emails
+, you need
+Marketing Hub
+Enterprise
+.
+Publishing, editing, and viewing existing tables requires
+HubDB permissions
+. Creating, clone, deleting, and editing a HubDB table's settings requires
+HubDB table settings
+permissions
+.
+HubDB architecture
+A HubDB table consists of rows, columns, and cells, similar to a spreadsheet.
+Tables:
+a table is a 2-dimensional arrangement of rows and columns. When a table is created, it is assigned a globally unique ID which you can use when needing to specify a table in HubL or through the API.
+Rows:
+rows are horizontal slices of a table. In a spreadsheet application, rows are represented by numbers, starting with 1. Each table row is given a unique ID on creation. Each row in a table comes with a few columns by default:
+Column
+Description
+hs_id
+An automatically assigned, globally unique, numeric ID for this row.
+hs_created_at
+A timestamp of when this row was created.
+hs_path
+When used with dynamic pages, this string is the last segment of the URL's path for the page.
+hs_name
+When used with dynamic pages, this is the title of the page.
+Please note:
+rich text area columns in HubDB are limited to 65,000 characters. For more information,
+view the changelog announcement
+.
+Columns:
+columns are vertical slices of a table. Each column has a type, which is used to store kinds of data. A table can include as many columns as you'd like, and each is assigned a globally unique ID on creation. Column ID start at a value of
+1
+, but are not necessarily sequential, and cannot be reused. Column types include:
+Text
+Rich text
+URL
+Image
+Select
+Multi-select
+Date
+Date and time
+Number
+Currency
+Checkbox
+Location (longitude, latitude)
+Foreign ID
+Video
+Cells:
+Cells store the values where a row and column intersect. Cells can be read or updated individually or as part of a row. Setting the value of a cell to
+null
+is equivalent to deleting the cell's value.
+HubDB technical limits
+Note the following HubDB technical limits:
+Account limits:
+1,000 HubDB tables per account.
+1 million HubDB rows per account.
+Table limits:
+250 columns per table.
+10,000 rows per HubDB table.
+700 characters per table name.
+700 characters per table label.
+Column limits:
+65,000 characters per rich text column.
+10,000 characters in each text column.
+700 characters per column name.
+700 characters per label.
+300 characters per column description.
+700 characters per selectable option within a column.
+Page limits:
+10 calls to the
+hubdb_table_rows
+HubL function per CMS page.
+10
+dynamic pages
+using the same HubDB table.
+HubDB's with dynamic pages turned on must have lowercase paths so that URLs to these pages can be case insensitive.
+Create a HubDB table
+You can create HubDB tables either
+through HubSpot's UI
+or through the
+HubDB API
+.
+All new tables created are set with a status of draft. They cannot be used to output data via HubL or API until you publish the table. When creating a table, you can also
+manage its settings
+, such as allowing public API access and whether its data will be used to
+create dynamic pages
+.
+Join multiple HubDB tables
+HubDB tables can be joined using the Foreign ID column type, which allows you to render the combined data from multiple tables. This can be helpful when some data might be shared across multiple data stores, allowing one centralized data table of this information, which can then be accessed across multiple other HubDB table data stores.
+Below, learn how to join multiple HubDB tables.
+1. Add a Foreign ID column to the main table
+In your HubSpot account, navigate to
+Marketing
+>
+Files and Templates
+>
+HubDB
+.
+Locate the table you want to add a table join to, click the
+Actions
+dropdown menu, then select
+Edit
+.
+In the top right, click
+Edit
+, then select
+Add column
+.
+Enter a
+label
+and
+name
+for the new column.
+Click the
+Column type
+dropdown menu and select
+Foreign ID
+.
+Click the
+Select table
+dropdown menu and select the
+table
+you want to join with your current table.
+Click the
+Select column
+dropdown menu, then select the
+column
+from the joining table you have selected to be visible in the Foreign ID field.
+Click
+Add column
+.
+Please note:
+the value you chose as the
+Select column
+only dictates which column value you see in the Foreign ID field in the HubDB UI. All table columns are available when rendering the joined HubDB tables.
+2. Add foreign table rows to your table's rows
+Now that you have a
+Foreign ID
+column, you will have a multi-select column field on every row in your HubDB table, which allows you to select a foreign table's rows.
+The
+Select column
+field you chose will be used in this multi-select field to identify which row you are selecting from the foreign table. In the example below, the multi-select values for the
+Expertise table join
+field are the values available from
+Name
+column of the foreign HubDB table.
+Please note:
+it's safe to edit the
+Select column
+field of your
+Foreign ID
+column, and will simply update which column's values will display in the HubDB UI.
+3. Render your joined HubDB table data
+All of a foreign table's row data is accessible via HubL for rendering, not just the
+Select column
+field. HubDB foreign row data is accessible by using a
+nested for loop
+, looping through all of the foreign rows associated with an individual row.
+Copy code snippet
+{% for row in hubdb_table_rows(tableId, filterQuery) %}
+the name for row {{ row.hs_id }} is {{ row.name }}
+{% for foreign_row in row.foreign_table %}
+the name for foreign row {{ foreign_row.hs_id }} is {{ foreign_row.name }}
+{% endfor %}
+{% endfor %}
+1
+{%
+for
+row
+in
+hubdb_table_rows(tableId, filterQuery)
+%}
+2
+the name for row
+{{
+row.hs_id
+}}
+is
+{{
+row.name
+}}
+3
+{%
+for
+foreign_row
+in
+row.foreign_table
+%}
+4
+the name for foreign row
+{{
+foreign_row.hs_id
+}}
+is
+{{
+foreign_row.name
+}}
+5
+{%
+endfor
+%}
+6
+{%
+endfor
+%}
+Access HubDB data using HubL
+Using HubL, you can pull HubDB data as to use as structured content on website pages. Below, learn more about how to retrieve table, row, and column data using HubL.
+Please note:
+drafted HubDB table data will appear in the page editor and live previews, but only published HubDB content will appear on the live page. If you're seeing table data appear in the editor or preview that isn't appearing on the live page, confirm that the table has been published since adding that table data.
+Getting rows
+To list rows of a table, use the
+hubdb_table_rows()
+HubL function. You can either access a table by its ID or name. It is recommended to reference a HubDB table by name, as this can help with code portability across HubSpot accounts. The immutable table name is set when creating a new table and can be found at any time by selecting
+Actions > Manage Settings
+within the table editor. A table's ID can be found in the address bar of the table editor or in the HubDB tables dashboard under the
+ID
+column.
+Below is an example of using
+hubdb_table_rows()
+to fetch data.
+Copy code snippet
+{% for row in hubdb_table_rows(<tableId or name>, <filterQuery>) %}
+the value for row {{ row.hs_id }} is {{ row.<column name> }}
+{% endfor %}
+xxxxxxxxxx
+3
+1
+{%
+for
+row
+in
+hubdb_table_rows(
+<
+tableId
+or
+name
+>
+,
+<
+filterQuery
+>
+)
+%}
+2
+the value for row
+{{
+row.hs_id
+}}
+is
+{{
+row.
+<
+column name
+>
+}}
+3
+{%
+endfor
+%}
+Please note:
+by default, the maximum number of rows returned is 1,000. To retrieve more rows, specify a
+limit
+in the function query. For example:
+hubdb_table_rows(12345, "orderBy=random()&limit=1500")
+.
+<filterQuery>
+uses the same syntax as the HTTP API. For example,
+hubdb_table_rows(123, "employees__gt=10&orderBy=count")
+would return a list of rows where the "employees" column is greater than 10, ordered by the "count" column. A complete list of optional
+<filterQuery>
+parameters
+can be found here
+.
+Instead of using multiple row queries with different
+<filterQuery>
+parameters, you should make one query and use the
+selectattr()
+or
+rejectattr()
+filters to filter your rows:
+Copy code snippet
+{% set all_cars = hubdb_table_rows(<tableId or name>) %}
+{% set cars_with_windows = all_cars|selectattr('windows') %}
+{% set teslas = all_cars|selectattr('make','equalto','tesla') %}
+​
+x
+1
+{%
+set
+all_cars
+=
+hubdb_table_rows(
+<
+tableId
+or
+name
+>
+)
+%}
+2
+​
+3
+{%
+set
+cars_with_windows
+=
+all_cars
+|
+selectattr(
+'windows'
+)
+%}
+4
+​
+5
+{%
+set
+teslas
+=
+all_cars
+|
+selectattr(
+'make'
+,
+'equalto'
+,
+'tesla'
+)
+%}
+To get a single row, use the
+hubdb_table_row()
+HubL function.
+Copy code snippet
+{% set row = hubdb_table_row(<tableId or name>, <rowId>) %}
+the value for {{ row.hs_id }} is {{ row.<column name> }}
+xxxxxxxxxx
+2
+1
+{%
+set
+row
+=
+hubdb_table_row(
+<
+tableId
+or
+name
+>
+,
+<
+rowId
+>
+)
+%}
+2
+the value for
+{{
+row.hs_id
+}}
+is
+{{
+row.
+<
+column name
+>
+}}
+Built-in and custom column names are case insensitive.
+HS_ID
+will work the same as
+hs_id
+.
+Row attributes
+Attribute
+Description
+row.hs_id
+The globally unique id for this row.
+row.hs_path
+When using dynamic pages, this string is the Page Path column value and the last segment of the url's path.
+row.hs_name
+When using dynamic pages, this string is the Page Title column value for the row.
+row.hs_created_at
+Unix timestamp for when the row was created.
+row.hs_child_table_id
+When using dynamic pages, this is the ID of the other table that is populating data for the row.
+row.column_name
+Get the value of the custom column by the name of the column.
+row["column name"]
+Get the value of the custom column by the name of the column.
+Getting table metadata
+To get a table's metadata, including its name, columns, last updated, etc, use the
+hubdb_table()
+function.
+Copy code snippet
+{% set table_info = hubdb_table(<tableId or name>) %}
+xxxxxxxxxx
+{%
+set
+table_info
+=
+hubdb_table(
+<
+tableId
+or
+name
+>
+)
+%}
+Table attributes
+The attributes listed below are in reference to the variable that
+hubdb_table()
+was assigned to in the above code. Your variable may differ.
+Note: It is recommended assigning this to a variable for easier use. If you don't want to do that, you can use
+{{ hubdb_table(<tableId>).attribute }}
+Attribute
+Description
+table_info.id
+The id of the table.
+table_info.name
+The name of the table.
+table_info.columns
+List of column information. You can use a
+for loop
+to iterate through the information available in this attribute.
+table_info.created_at
+Timestamp of when the table was first created.
+table_info.published_at
+Timestamp of when this table was published.
+table_info.updated_at
+Timestamp of when this table was last updated.
+table_info.row_count
+Number of rows in the table.
+Getting column metadata
+Copy code snippet
+{% set table_info = hubdb_table_column(<tableId or name>, <columnId or column name>) %}
+xxxxxxxxxx
+{%
+set
+table_info
+=
+hubdb_table_column(
+<
+tableId
+or
+name
+>
+,
+<
+columnId
+or
+column name
+>
+)
+%}
+To get information on a column in table such as its label, type and options, use the
+hubdb_table_column()
+function
+Column attributes
+The attributes listed below are in reference to the variable that
+hubdb_table_column()
+was assigned to in the above code. Your variable may differ.
+Note: It is recommended assigning this to a variable for easier use. If you don't want to do that, you can use
+{{ hubdb_table_column(<tableId>,<columnId or column name>).attribute }}
+Attribute
+Description
+table_info.id
+The ID of the column.
+table_info.name
+The name of the column.
+table_info.label
+The label to be used for the column.
+table_info.type
+Type of this column.
+table_info.options
+For select column type, this is a map of
+optionId
+to
+option
+information.
+table_info.foreignIds
+For foreignId column types, a list of foreignIds (with
+id
+and
+name
+properties).
+Column methods
+Method
+Description
+getOptionByName("
+For select column types, get option information by the options name.
+Rich Text columns
+The
+richtext
+column type functions similar to the rich text field you see for modules.
+The data is stored as HTML, and the HubDB UI provides a text editing interface. However, when editing a HubDB table through HubSpot's UI, you cannot edit source code directly. This prevents situations where a non-technical user may input invalid HTML, preventing unintended issues with the appearance or functionality of your site. For situations where you need an embed code or more custom HTML you can use the embed feature in the rich text editor to place your custom code.
+HubDB tutorials and resources
+Event Registration App
+How to build a dynamic team member page with HubDB
+How to add videos to dynamic pages
+How to build multilevel dynamic pages using HubDB
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+File manager
+HubDB
+Overview
+Location-based pages
+Content and structure
+Debugging
+Improve older sites
+Marketplace

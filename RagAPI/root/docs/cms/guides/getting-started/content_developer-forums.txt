@@ -1,0 +1,211 @@
+Quickstart guide to developing on the HubSpot CMS | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Before you begin
+1. Install the HubSpot CLI
+2. Configure the local development tools
+3. Create a theme
+4. Upload your theme to HubSpot
+5. Create a website page
+6. Edit a CSS file
+What's next?
+Join the HubSpot CMS developer community
+Developer Slack community
+Developer forums
+CMS Development
+Quickstart guide to developing on the HubSpot CMS
+HubSpot CMS quickstart guide
+HubSpot's CMS is a powerful, flexible platform for creating HubSpot websites, including website pages, blogs, and lightweight apps. It features built-in security and reliability features, along with a globally distributed Content Delivery Network (CDN) that ensures fast page load times.
+When developing on the HubSpot CMS, you can use your preferred tools, technologies, and workflows, such as
+GitHub
+, while developing websites. Content creators can then create pages and publish content using drag and drop editors. And because the CMS is integrated with the CRM, you can
+create dynamic website experiences
+for your visitors based on the data you already have.
+Before you begin
+Before you start, ensure you've done the following:
+Create a free test account to build without impacting a production environment. You can use either of the following types of accounts:
+Create a
+developer account
+, then create a
+test account
+within it. Because you can also build private apps in developer test accounts, along with building public apps in developer accounts, you'll have one home for both CMS and app development.
+Create a
+CMS developer sandbox account
+.
+Install
+Node.js
+, which enables HubSpot's local development tools. Versions 18 or higher are supported.
+1. Install the HubSpot CLI
+Once you're ready to begin, open a terminal window and create or navigate to the directory where you want your local HubSpot files to live. This working directory is where the theme and its associated files will be placed.
+Next, run
+npm install -g @hubspot/cli@latest
+to install the HubSpot CLI, which introduces an
+hs
+command that allows you to easily interact with your HubSpot account.
+2. Configure the local development tools
+Run
+hs init
+to connect the tools to your HubSpot account. This command will walk you through the following steps:
+First you’ll be guided to create a personal access key to enable authenticated access to your account via the local development tools. You’ll be prompted to press "Enter" when you’re ready to open the
+Personal Access Key page
+in your default browser. This page will allow you to view or generate your personal access key, if necessary. (Note: You’ll need to select at least the "Design Manager" permission in order to complete this tutorial.) Copy your access key and paste it in the terminal.
+Next, you’ll enter a name for the account. This name is only seen and used by you, For example, you might use "sandbox" if you're using a developer sandbox or "company.com" if you’re using a full customer account. This name will be used when running commands.
+Once you've completed this simple
+init
+flow, you'll see a success message confirming that a configuration file,
+hubspot.config.yml
+, has been created in your current directory.
+3. Create a theme
+Run
+hs create website-theme my-website-theme
+to create a
+my-website-theme
+directory populated with files from the
+CMS theme boilerplate
+.
+4. Upload your theme to HubSpot
+Run
+hs upload my-website-theme my-website-theme
+to upload your new theme to a
+my-website-theme
+folder in your HubSpot account.
+Once this task has completed, you can view these files in the design manager of your HubSpot account. The design manager is an in-app code editor that displays the developer file system, and can be found by navigating to
+Content > Design Manger
+in the left sidebar of your account.
+5. Create a website page
+To experience how content creators will use your templates and modules, create a website page using the theme you just uploaded.
+In your HubSpot account, navigate to
+Content > Website Pages
+In the upper right, click
+Create
+, then select
+Website page
+.
+In the dialog box, enter a
+name
+for your page, then click
+Create page
+.
+On the next page, select the
+my-website-theme
+theme if it's not already selected. Then, hover over the
+Homepage
+template and click
+Select template
+.
+You'll then be brought to the website page editor where you can explore all of the options that content creators will have when working with the template. Learn more about using the editor to build and customize pages on
+HubSpot's Knowledge Base
+.
+Click the
+Settings
+tab in the editor, then select
+General
+. Enter a
+Page title
+, then set a
+Content slug
+to finalize the page's URL. Then, close out the dialog box by clicking
+X
+or pressing the
+Escape key
+.
+In the upper right, click
+Publish
+to take your page live.
+6. Edit a CSS file
+Run
+hs watch my-website-theme my-website-theme
+. While
+watch
+is running, every time you save a file, it’ll be automatically uploaded. Open your theme's
+/css/components/_footer.css
+file in your editor, make a change (such as updating the
+.footer__copyright
+selector to have
+color: red;
+), and save your changes. Your terminal will show that the saved file has been uploaded.
+Reload your published page to see the CSS change reflected on your website.
+What's next?
+You're encouraged to continue to explore and experiment with the boilerplate theme and the page-building experience. The sandbox account you created is yours to play around in and experiment with.
+You can checkout
+HubSpot's Inspire gallery
+to see websites, landing pages, and web apps built on HubSpot.
+You might also want to check out the following documentation:
+CMS developer tutorials
+HubSpot CMS overview
+Join the HubSpot CMS developer community
+Learning is easier when you can learn from those who came before you.
+HubSpot is driven by its
+Culture Code
+, embodied by the attributes in HEART:
+H
+umble,
+E
+mpathetic,
+A
+daptable,
+R
+emarkable, and
+T
+ransparent. This culture extends to our ever-growing developer community, with thousands of brilliant and helpful developers around the world.
+Developer Slack community
+Join the
+Developer Slack
+to collaborate with 9,000+ developers and members of the HubSpot product team.
+Developer forums
+Ask questions, learn from fellow developers, and submit ideas in the
+CMS developer forums
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Debugging
+Improve older sites
+Marketplace

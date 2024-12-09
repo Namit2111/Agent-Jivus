@@ -1,0 +1,364 @@
+How to provide a good experience in the page editor | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Test in the editor
+Be specific
+CSS specificity
+Avoid using !important tags
+Include editor-specific code
+Rendering CSS with .hs-inline-edit
+Rendering JavaScript window.hsInEditor
+Rendering content with HubL
+CMS Development
+Content and structure
+How to provide a good experience in the page editor
+How to provide a good experience in the page editor
+The page editor provides an inline editing experience to help content authors create and edit their content in a what you see is what you get (WYSIWYG) interface. To do this, HubSpot renders content within an iframe with a preview of the page that includes code from modules and templates as well as the HubSpot application CSS/JavaScript. Because of this extra iframe layer and HubSpot app code, sometimes CSS/JavaScript from a template or module renders unexpectedly in the editors.
+Below, learn about best practices to avoid issues when your code is rendered in the context of HubSpot's editors.
+Test in the editor
+It’s important to test your assets in HubSpot’s content editors before delivering them. By testing in the editor, you can identify styling conflicts to create a more seamless experience for the content creator.
+I's recommended to test the following functionalities in the editor to ensure your asset works as expected:
+Text formatting using the
+Style
+dropdown menu as well as other toolbar options such as alignment and colors.
+Insert options in the rich text toolbar, such as embed codes, images, links, and personalization tokens.
+Inline rich text element configuration options that appear on click, such as when editing an inserted hyperlink or image.
+Be specific
+Broadly speaking, you may run into issues in the content editor when your CSS or JavaScript is not specific enough. This can manifest differently depending on how the code is written. Consider the function below as an example.
+Copy code snippet
+$('body').click(function (event) {
+$('.blog-listing-wrapper .post-listing .post-item')
+.siblings()
+.find('.right')
+.removeClass('social-active');
+event.stopPropagation();
+});
+​
+x
+1
+$
+(
+'body'
+).
+click
+(
+function
+(
+event
+) {
+2
+$
+(
+'.blog-listing-wrapper .post-listing .post-item'
+)
+3
+.
+siblings
+()
+4
+.
+find
+(
+'.right'
+)
+5
+.
+removeClass
+(
+'social-active'
+);
+6
+​
+7
+event
+.
+stopPropagation
+();
+8
+});
+This function will run when there’s a click on the body element. Because the code calls
+event.stopPropagation()
+, the event will not bubble up to the
+document
+or
+window
+. If there are event listeners on those elements, the code in those listeners will not run. The issue with the above code is that the click handler will run on every click, which causes problems in the inline editor because it adds click handlers to the window element via React. Instead of listening for every click, it would be more appropriate to only add the click handler when needed — for example, after a user has clicked a button to open a side menu — and then removing the handler once the click has fired.
+CSS specificity
+Problems can occur in CSS when using selectors that are generic like
+label
+. When possible, you should instead use selectors that are specific to a portion of the webpage, such as
+.hs-form label
+.
+Being more specific with CSS selectors allows you to pinpoint the elements you want to style without impacting other elements unintentionally. You can also take advantage of our
+boilerplate CSS file
+to have a better sense of selectors that should be used to avoid CSS bleed issues.
+Avoid using !important tags
+!important
+tags are used to make styling rules take precedence over others. While you can use an
+!important
+tag when styling is being overridden, it's not recommended to use this tag on bare element selectors like
+label
+or
+input[type="text"]
+.
+For example, you might consider applying an
+!important
+tag for styling the
+<label>
+element, with the intent to ensure that all
+<label>
+elements in a form are white.
+Copy code snippet
+label,
+legend {
+color: white !important;
+}
+xxxxxxxxxx
+4
+1
+label
+,
+2
+legend
+{
+3
+color
+:
+white
+!important
+;
+4
+}
+While this rule theoretically works when content is rendered on your live website page, it will also render all
+<label>
+tags in the content editor as white, as shown below.
+Instead, you should use more specific selectors, as shown in the code below, to target only the form module labels.
+Copy code snippet
+.hs-form label,
+.hs-form .hs-form-field > label,
+.hs-form .hs-field-desc {
+color: white;
+}
+xxxxxxxxxx
+5
+1
+.hs-form
+label
+,
+2
+.hs-form
+.hs-form-field
+>
+label
+,
+3
+.hs-form
+.hs-field-desc
+{
+4
+color
+:
+white
+;
+5
+}
+Include editor-specific code
+When developing a theme, template, or module, you can use CSS classes, JavaScript variables, and HubL to change how content is rendered with content editors and preview screens. This enables you to provide extra context for users in the content editors and preview pages, while still controlling the output on the live page. In addition, you can use these methods to prevent problematic code from rendering within HubSpot.
+Below, learn about the different methods of conditionally rendering content based on whether it's rendered in HubSpot or on the live page.
+Rendering CSS with .hs-inline-edit
+The editor uses an iframe to load a preview of the content into HubSpot’s content editor, and the
+<html>
+element within this iframe is assigned a class of
+.hs-inline-edit
+. Using this class, you can write CSS that conditionally renders based on the presence of that iframe.
+For example, the following CSS takes advantage of the pseudo-class
+:not()
+so that the rule does not apply when loaded in the editor:
+Copy code snippet
+:not(.hs-inline-edit) label {
+color: white;
+}
+xxxxxxxxxx
+3
+1
+:
+not
+(
+.hs-inline-edit
+)
+label
+{
+2
+color
+:
+white
+;
+3
+}
+As another example, if you're seeing that the rich text toolbar in the editor is being hidden behind a page's header due to a z-index rule, you could update your CSS to apply a lower z-index value to the header. By using the
+.hs-inline-edit class
+, the new rule will only apply in the editor, not the live page. For reference, the rich text toolbar's z-index is
+2147483647
+.
+Copy code snippet
+.hs-inline-edit .header {
+z-index: 2147483600;
+}
+xxxxxxxxxx
+3
+1
+.hs-inline-edit
+.header
+{
+2
+z-index
+:
+2147483600
+;
+3
+}
+Rendering JavaScript window.hsInEditor
+When content is loaded in the editor,
+window.hsInEditor
+will return
+true
+. You can include this variable in your JavaScript to conditionally run code based on whether the content is within the context of the editor. This can be useful when JavaScript is negatively impacting the in-app editing experience.
+For example, you might find that your JavaScript isn't working as expected because it's running before the page editor has loaded. If your site uses jQuery, you could use the document ready handler to run the code only once the page editor has loaded fully.
+Copy code snippet
+jQuery(document).ready(function ($) {
+if (window.hsInEditor) {
+return;
+}
+// other stuff
+$('.some_widget').fancyThing();
+});
+xxxxxxxxxx
+7
+1
+jQuery
+(
+document
+).
+ready
+(
+function
+(
+$
+) {
+2
+if
+(
+window
+.
+hsInEditor
+) {
+3
+return
+;
+4
+}
+5
+// other stuff
+6
+$
+(
+'.some_widget'
+).
+fancyThing
+();
+7
+});
+Rendering content with HubL
+HubSpot provides a
+set of HubL variables
+that will return
+true
+in various editor and preview contexts. This includes variables that can check for any editor or preview context, as well as specific editor and preview contexts.
+For example, the if statement below would render its content only when the user is in the blog post editor.
+Copy code snippet
+{% if is_in_blog_post_editor %}
+Helpful contextual information for blog authors.
+{% endif %}
+xxxxxxxxxx
+3
+1
+{%
+if
+is_in_blog_post_editor
+%}
+2
+Helpful contextual information for blog authors.
+3
+{%
+endif
+%}
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Templates
+Modules
+Fields
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

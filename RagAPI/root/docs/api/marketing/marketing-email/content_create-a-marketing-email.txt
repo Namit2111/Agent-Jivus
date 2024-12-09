@@ -1,0 +1,155 @@
+Marketing API | Marketing Email (BETA) | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create a marketing email
+Retrieve a marketing email
+API Guides
+Marketing
+Emails
+Marketing API | Marketing Email (BETA)
+Marketing Email
+Marketing emails endpoint reference
+If you have a
+Marketing Hub
+Professional
+or
+Enterprise
+account, you can use the Marketing Emails API to programmatically create, update, and get details about marketing emails. You can also query details about the post-send statistics of a specific email or set of emails. These statistics should match what you can access in the app on the
+Details
+section of a particular email and will be returned under the stats object in your JSON response.
+The Marketing Email API cannot be used to create or retrieve data for sales emails that are created and sent via the contact record. To get details for sales emails, use the Engagements API.
+Please note:
+To programmatically send transactional emails to contacts, use the
+Single-send API
+.
+To use the
+/publish
+and
+/unpublish
+endpoints, you must have a
+Marketing Hub
+Enterprise
+account or the
+transactional email add-on
+.
+Create a marketing email
+To create an email, make a
+POST
+request to
+/marketing/v3/emails
+and include the following fields in the body of your request:
+Copy code snippet
+// Example request body for POST request to /marketing/v3/emails
+{
+"name": "A new marketing email",
+"subject": "Behold the latest version of our newsletter!",
+"templatePath": "@hubspot/email/dnd/welcome.html"
+}
+1
+// Example request body for POST request to /marketing/v3/emails
+2
+{
+3
+"name"
+:
+"A new marketing email"
+,
+4
+"subject"
+:
+"Behold the latest version of our newsletter!"
+,
+5
+"templatePath"
+:
+"@hubspot/email/dnd/welcome.html"
+6
+}
+Please note:
+if you purchased the
+business units add-on
+, you must include the
+businessUnitId
+field in the request body. You can get a list of business units in your account using the
+business units API
+.
+Retrieve a marketing email
+You can retrieve existing emails in your account individually or in batches:
+To retrieve an individual email, make a
+GET
+request to
+/marketing/v3/emails/{emailId}
+To retrieve a list of all emails, make a
+GET
+request to
+/marketing/v3/emails
+, and include any filters as query parameters in your request (e.g., add
+createdAfter
+and a date in ISO8601 format to get all emails created after a specific date).
+Click the
+Endpoints
+tab at the top of this article for a full list of endpoints and the associated parameters available.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Marketing
+Campaigns
+Emails
+Marketing emails
+Single send API
+Transactional emails
+Forms
+Marketing events
+Subscriptions preferences
+Subscriptions
+Settings
+Legal

@@ -1,0 +1,174 @@
+List and update templates in the HubSpot Template Marketplace | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create a template listing
+Update a template listing
+CMS Development
+Marketplace
+List and update templates in the HubSpot Template Marketplace
+List and update templates in the HubSpot Template Marketplace
+Once you’ve created a
+Template Marketplace provider account
+, you can use it to create template listings and submit them for approval to be listed on the
+HubSpot Template Marketplace
+.
+Please note:
+you can only have
+one
+new submission of each type (module or template) in review at a time. A submission is considered “new” if it’s not currently published or approved.
+Before listing your template on the Template Marketplace, fill out your Provider profile:
+In your Template Marketplace provider account, navigate to
+Template Marketplace
+>
+Provider profile
+.
+In the
+Company Info
+section, fill out all the fields. These fields will appear on your template listings. You will not be able to edit your company name once it's been chosen and will need to contact HubSpot Support to change it.
+In the
+Contact Info
+section, fill out all the fields for both the
+Main contact
+and
+Developer contact
+sections. This information will only be used if HubSpot needs to contact you about a listing and
+will not
+appear on any listing pages.
+In the
+Payment Info
+section, add your supported payment methods. You can connect either PayPal or Stripe as a payment gateway. If your payment information causes the payment gateway to stop working, your templates will be temporarily delisted to avoid a negative customer impact.
+Create a template listing
+To create and submit a theme or module listing:
+In your Template Marketplace provider account, navigate to
+Template Marketplace
+.
+In the upper right, click
+Create listing
+.
+Select either
+Create theme listing
+or
+Create module listing
+.
+Review the information on the
+Provider Information
+page, then click
+Next
+.
+Review your payment information on the
+Payment Information
+page, then click
+Next
+.
+Select the
+theme or module
+you want to list, then click
+Save and continue
+. You'll then be brought to the listing editor
+The listing editor is broken up into five tabs:
+Listing Info
+,
+Theme/Module Details
+,
+Category
+,
+Support
+, and
+Review
+. All information is required unless otherwise indicated. Review all listing page requirements
+here
+.
+On the
+Review
+tab, validate your template’s code and preview your listing. If everything looks good, click
+Submit for review.
+Please note:
+do not change the template folder name once submitted. The template listing is directly linked to this folder upon submission. You will not be able to resubmit or update the template after changing the folder name.
+Update a template listing
+After creating a template listing, you can update it in your Template Marketplace provider account. If you've made changes to a template, you'll need to revalidate it before those changes are pushed out. If you do not revalidate, only the content on the Marketplace listing page will be updated.
+To update a template listing:
+In your Template Marketplace provider account, navigate to
+Template Marketplace
+>
+Listings
+.
+Click the
+name
+of the listing you want to update. You'll be redirected to the listing editor.
+Make any needed changes to the listing information, template details, categories, and support options, then click the
+Review
+tab to review your changes.
+On the
+Review
+tab, check whether your template's code has changed since its last validation:
+If you've made no changes to the template, HubSpot will display a confirmation message in the
+Theme source code
+tile or
+Module source code
+tile showing that your validation is up to date.
+If you've made changes to the template, HubSpot will display an alert in the source code tiles. To send these changes to the Marketplace, you'll first need to click
+Run validation
+.
+5.
+On the upper right, click
+Submit for review
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Debugging
+Improve older sites
+Marketplace
+Template marketplace guidelines
+General listing requirements
+Template marketplace policies
+Theme requirements
+List and update templates in the HubSpot Template Marketplace
+Module requirements

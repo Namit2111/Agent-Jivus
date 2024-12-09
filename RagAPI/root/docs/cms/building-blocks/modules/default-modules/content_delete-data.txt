@@ -1,0 +1,3211 @@
+Default web modules | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Blog comments
+Blog email subscription
+Blog posts
+Blog post filter
+Blog post listing
+Button
+Call-to-Action
+Delete data
+Divider
+Download data
+Form
+Header
+Horizontal spacer
+Icon
+Image
+Image grid
+Image gallery
+Image slider gallery
+Language switcher
+Logo
+Logo grid
+Meetings
+Membership social logins
+Menu
+Page footer
+Password prompt
+Payments
+Product
+Quote download
+Quote payment
+Quote signature
+Line items
+Rich text
+RSS listing
+Site search input
+Search results
+Section header
+Simple menu
+Social follow
+Social sharing
+Tabbed card
+One line of text
+Video
+Video embed (landing page)
+WhatsApp link
+CMS Reference
+Modules
+Default web modules
+Default web modules
+Below, learn about the default modules that HubSpot provides for building templates for website pages, blog posts, and blog listing pages. You'll also find default modules that can be used to build quote templates.
+When developing locally, you can
+fetch
+a specific default module using the module path (e.g.
+hs fetch @hubspot/linked_image.module
+).
+To view a default module's code, you can view and clone the module within the
+@hubspot
+folder of the design manager.
+Please note:
+default web modules are separate from
+default email modules
+, which are for email templates. If your email templates include any of the following default web modules, you should
+replace them with the corresponding email-specific module
+:
+cta
+header
+linked_image
+logo
+post_filter
+post_listing
+section_header
+social_sharing
+text
+Blog comments
+Supported in blog posts and blog listings.
+Copy code snippet
+{% module "blog_comments" path="@hubspot/blog_comments" %}
+{%
+module
+"blog_comments"
+path
+=
+"@hubspot/blog_comments"
+%}
+Blog email subscription
+Supported in pages, blog posts, and blog listings.
+Copy code snippet
+{% module "blog_subscribe" path="@hubspot/blog_subscribe" %}
+xxxxxxxxxx
+{%
+module
+"blog_subscribe"
+path
+=
+"@hubspot/blog_subscribe"
+%}
+Parameter
+Type
+Description
+Default
+select_blog
+Blog
+The blog to use for the module.
+title
+String
+Title for the module (wrapped in a h3 tag)
+"Subscribe Here!"
+response_message
+Rich Text
+The message that is shown upon submitting the form.
+Thanks for subscribing!
+Blog posts
+Add this module to blog listing pages to display blog post previews containing each post's title, featured image, author, publish date, and more with a clickable button that navigates to the post.
+This default module has built using React, and you can
+view its source code on GitHub
+.
+Please note:
+This module cannot be accessed from the design manager. The module can be referenced with HubL in coded templates and added within the
+blog listing page editor
+.
+This module replaces the previous
+blog_listing
+module, which has been deprecated.
+Copy code snippet
+{% module "blog_posts"
+path="@hubspot/blog_posts"
+layout="grid",
+columns=4,
+displayForEachListItem=[
+"image",
+"title",
+"authorName",
+"tags",
+"publishDate",
+"description",
+"button"
+]
+%}
+xxxxxxxxxx
+14
+1
+{%
+module
+"blog_posts"
+2
+path
+=
+"@hubspot/blog_posts"
+3
+layout
+=
+"grid"
+,
+4
+columns
+=
+4
+,
+5
+displayForEachListItem
+=
+[
+6
+"image"
+,
+7
+"title"
+,
+8
+"authorName"
+,
+9
+"tags"
+,
+10
+"publishDate"
+,
+11
+"description"
+,
+12
+"button"
+13
+]
+14
+%}
+Parameter
+Type
+Description
+Default
+layout
+Required
+Choice
+The content layout for each blog post preview.
+grid
+(default): aligns posts in a basic grid.
+singleColumn
+: aligns posts in a single column. with featured images on their own row above the rest of the post content.
+sideBySide
+: aligns posts in a column with featured images aligned horizontally with the post content.
+grid
+columns
+Number
+When using the
+grid
+layout, the number of posts per row. Can be
+2
+,
+3
+, or
+4
+.
+3
+alternateImage
+Boolean
+When using the
+sideBySide
+layout, set to
+true
+to align the featured image on the right and left side of the post preview, alternating.
+false
+fullImage
+Boolean
+When using the
+grid
+or
+singleColumn
+layouts, set this field to
+true
+to make the featured image the background of the post preview.
+false
+displayForEachListItem
+Array
+The content to include in each blog post preview. Choices include:
+image
+: the post's featured image.
+title
+: the post's title.
+authorImage
+: the post author's image.
+authorName
+: the post author's name.
+tags
+: the post's blog tags.
+publishDate
+: the post's publish date.
+description
+: the post's meta description.
+button
+: the read more button that links to the blog post.
+[ 'image', 'title', 'authorImage', 'authorName', 'tags', 'publishDate', 'description', 'button' ]
+buttonText
+String
+The text that displays on the read more button, if included.
+Read more
+Blog post filter
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "post_filter" path="@hubspot/post_filter" %}
+xxxxxxxxxx
+{%
+module
+"post_filter"
+path
+=
+"@hubspot/post_filter"
+%}
+Parameter
+Type
+Description
+Default
+select_blog
+Blog
+Select a blog to display. Default will use the current blog when used in a blog template or the primary blog when used elsewhere.
+filter_type
+Choice
+Type of filtering links to show. Choices include:
+tag
+month
+author
+tag
+order_by
+Choice
+Ordering for the values of filter links. Choices include:
+post_count
+name
+post_count
+list_title
+Text
+An H3 heading.
+"Posts by Tag"
+max_links
+Number
+Number of filter links to show. Leave blank to show all.
+5
+expand_link_text
+Text
+Text to display if more than the
+max_links
+value to display are available.
+"See all"
+Blog post listing
+Supported in pages, blog listings, and blog posts.
+Please note:
+a new version of this module was release at the end of March 2024. Learn more about the
+new default post listing module
+.
+Copy code snippet
+{% module "post_listing" path="@hubspot/post_listing" %}
+xxxxxxxxxx
+{%
+module
+"post_listing"
+path
+=
+"@hubspot/post_listing"
+%}
+Parameter
+Type
+Description
+Default
+select_blog
+Blog
+Select a blog to display. Default will use the current blog when used in a blog template or the primary blog when used elsewhere.
+listing_type
+Choice
+The type of listing for your posts. Choices include:
+recent
+: most recent.
+popular_all_time
+: most popular of all time.
+popular_past_year
+: most popular the past year.
+popular_past_six_months
+: most popular the past six months.
+popular_past_month
+: most popular the past month.
+recent
+list_title
+Text
+An H3 heading.
+"Recent Posts"
+max_links
+Number
+Maximum number of posts to display.
+5
+Button
+Supported in pages, blog posts, and blog listings.
+Copy code snippet
+{% module "button" path="@hubspot/button" %}
+xxxxxxxxxx
+{%
+module
+"button"
+path
+=
+"@hubspot/button"
+%}
+Parameter
+Type
+Description
+Default
+link
+Link
+The URL that the button redirects to.
+{ "url": { "type": "EXTERNAL", "href": "www.hubspot.com", "content_id": null }, "open_in_new_tab": false, "no_follow": false }
+button_text
+Text
+Text that will be displayed on the button.
+"Add a button link here"
+style
+Object
+override_default_style
+(Boolean)
+button_font
+(Font)
+button_color
+(Color)
+text_hover_color
+(Color)
+button_hover_color
+(Color)
+{ "override_default_style": false, "button_font": { "color": "#FFFFFF", "size_unit": "px" }, "button_color": { "color": "#000000", "opacity": 100 }, "text_hover_color": { "color": "#000000", "opacity": 100 }, "button_hover_color": { "color": "#CCCCCC", "opacity": 100 } }
+Call-to-Action
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "cta" path="@hubspot/cta" %}
+xxxxxxxxxx
+{%
+module
+"cta"
+path
+=
+"@hubspot/cta"
+%}
+Parameter
+Type
+Description
+guid
+String
+Globally Unique Identifier of the CTA.
+Delete data
+You can add this module to your subscription preferences page to allow contacts to request that their data be deleted. This function is required under certain data privacy laws. Once a contact requests that their data be deleted, they have 30 minutes to confirm in an email that will automatically be sent.
+Users with
+super admin permissions
+will receive a notification email about these requests. Learn how to
+allow contacts to request a download of their data
+.
+Copy code snippet
+{% module "delete_data" path="@hubspot/delete_data", label="delete_data.module" %}
+xxxxxxxxxx
+{%
+module
+"delete_data"
+path
+=
+"@hubspot/delete_data"
+, label
+=
+"delete_data.module"
+%}
+Parameter
+Type
+Description
+Default
+content
+Rich Text
+Message displayed above the button.
+### Delete Data  Permanently delete your personal data stored by {{ site_settings.company_name}}. Personal data is information that can be used to identify you and doesn't include anonymized data.  You'll get a follow-up email where you'll need to verify your request.
+button_text
+Text
+Button text.
+Request data deletion
+group_alerts
+Field group
+The success and fail alert field group. Including the following field groups:
+group_success_alert
+:
+content
+: rich text content of success alert.
+group_fail_alert
+:
+content
+: rich text content of fail alert.
+group_close_icon
+:
+icon
+: the icon to close the alert.
+Divider
+Supported in pages. There's a
+new version of this module
+available in accounts created after August 25th, 2022.
+Learn more about this change
+.
+Copy code snippet
+{% module "divider" path="@hubspot/divider" %}
+xxxxxxxxxx
+{%
+module
+"divider"
+path
+=
+"@hubspot/divider"
+%}
+Parameter
+Type
+Description
+Default
+height
+Number
+Pixel (px) height of the divider line.
+1
+width
+Number
+Percentage (%) width of the divider line.
+50
+color
+Color
+Color (hex) and opacity (number) of the divider line.
+{ "color": "#000000", "opacity": 100 }
+line_type
+Choice
+Line type. Choices include:
+solid
+dotted
+dashed
+solid
+alignment
+Choice
+Horizontal alignment of divider line. Choices include:
+left
+center
+right
+center
+show_padding
+Boolean
+Show/hide top and bottom margining on the divider.
+false
+padding
+Number
+Pixel (px) value for the margining on top and bottom of divider line. Option available when
+show_padding
+equals
+true
+.
+5
+Download data
+You can add this module to your subscription preferences page to allow contacts to request a copy of their data. This function is required under certain data privacy laws. Users with
+super admin permissions
+will receive a notification email about these requests. Learn how to
+allow contacts to request that their data be deleted
+.
+Copy code snippet
+{% module "download_data" path="@hubspot/download_data", label="download_data.module" %}
+xxxxxxxxxx
+{%
+module
+"download_data"
+path
+=
+"@hubspot/download_data"
+, label
+=
+"download_data.module"
+%}
+Parameter
+Type
+Description
+Default
+content
+Rich Text
+Message displayed above the button.
+### Download Data  Download your personal data stored by {{ site_settings.company_name}}.  Personal data is information that can be used to identify you and doesn't include anonymized data.
+button_text
+Text
+Button text.
+Request data download
+group_alerts
+Field group
+The success and fail alert field group. Including the following field groups:
+group_success_alert
+:
+content
+: rich text content of success alert.
+group_fail_alert
+:
+content
+: rich text content of fail alert.
+group_close_icon
+:
+icon
+: the icon to close the alert.
+Form
+Supported in pages, blog posts, and blog listings.
+Copy code snippet
+{% module "form"
+path="@hubspot/form"
+form={
+"form_id": "9e633e9f-0634-498e-917c-f01e355e83c6",
+"response_type": "redirect",
+"message": "Thanks for submitting the form.",
+"redirect_id": null,
+"redirect_url": "http://www.google.com"
+}
+%}
+xxxxxxxxxx
+10
+1
+{%
+module
+"form"
+2
+path
+=
+"@hubspot/form"
+3
+form
+=
+{
+4
+"form_id"
+:
+"9e633e9f-0634-498e-917c-f01e355e83c6"
+,
+5
+"response_type"
+:
+"redirect"
+,
+6
+"message"
+:
+"Thanks for submitting the form."
+,
+7
+"redirect_id"
+: null,
+8
+"redirect_url"
+:
+"http://www.google.com"
+9
+}
+10
+%}
+Parameter
+Type
+Description
+Default
+title
+Text
+H3 heading
+form
+Object
+Form object including:
+form_id
+: ID for form to use
+response_type
+: what the visitor will see after submitting the form:
+inline
+redirect
+message
+: inline message if
+response_type
+is set to
+inline
+redirect_id
+: ID of page to be redirected to if
+response_type
+is set to
+redirect
+.
+redirect_url
+: URL to be redirected to if
+response_type
+is set to
+redirect
+{ "form_id": "", "response_type": "redirect", "message": "Thanks for submitting the form.", "redirect_id": null, "redirect_url": "http://www.google.com" }
+notifications_are_overridden
+Boolean
+Email to send form notification to instead of form defaults.
+false
+notifications_override_email_addresses
+Email
+Comma-separated list of emails to send to when
+notifications_are_overridden
+equals
+true
+.
+follow_up_type_simple
+Boolean
+Enabled sending a follow up email.
+false
+simple_email_for_live_id
+Followupemail
+ID of the follow-up email. Available when
+follow_up_type_simple
+equals
+true
+.
+sfdc_campaign
+Salesforcecampaign
+When Salesforce integration is active, the campaign ID.
+Header
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "header" path="@hubspot/header" %}
+xxxxxxxxxx
+{%
+module
+"header"
+path
+=
+"@hubspot/header"
+%}
+Parameter
+Type
+Description
+Default
+value
+Text
+Text for the heading.
+"A clear and bold header"
+header_tag
+Choice
+Choose a heading level. Choice include
+h1
+through
+h6
+.
+h1
+Horizontal spacer
+Supported in pages, blog listings, blog posts, and emails.
+Copy code snippet
+{% module "horizontal_spacer" path="@hubspot/horizontal_spacer" %}
+xxxxxxxxxx
+{%
+module
+"horizontal_spacer"
+path
+=
+"@hubspot/horizontal_spacer"
+%}
+Icon
+Supported in pages, blog listings, and blog posts. Icons can be pulled from the Font Awesome 5.0.10 and 5.14.0 icon sets.
+Copy code snippet
+{% module "icon" path="@hubspot/icon" %}
+xxxxxxxxxx
+{%
+module
+"icon"
+path
+=
+"@hubspot/icon"
+%}
+Parameter
+Type
+Description
+Default
+name
+String
+The name of the icon.
+"hubspot"
+purpose
+Choice
+An accessibility option that categorizes the purpose of the icon for screen readers. Available values are:
+decorative:
+ignored by the screen reader.
+semantic:
+read by the screen reader.
+"decorative"
+title
+String
+An accessibility option that assigns the icon a title.
+style
+String
+The type of icon. Can be one of
+solid
+,
+regular
+,
+light
+,
+thin
+, or
+duotone
+.
+"solid"
+unicode
+String
+The icon's unicode value.
+f3b2
+Image
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "linked_image" path="@hubspot/linked_image" %}
+xxxxxxxxxx
+{%
+module
+"linked_image"
+path
+=
+"@hubspot/linked_image"
+%}
+Parameter
+Type
+Description
+Default
+img
+Image
+Image object containing:
+src
+: image url
+alt
+: alt text for image
+loading
+: lazy loading options include:
+disabled
+lazy
+width
+: px value
+height
+: px value
+{ "src": "https://static.hubspot.com/final/img/content/email-template-images/placeholder_200x200.png", "alt": "placeholder_200x200", "loading": "disabled", "width": 200, "height": 200 }
+link
+Text
+Optional link for the image.
+target
+Boolean
+Opens link in a new tab.
+false
+Image grid
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "image_grid" path="@hubspot/image_grid", label="image_grid.module" %}
+xxxxxxxxxx
+{%
+module
+"image_grid"
+path
+=
+"@hubspot/image_grid"
+, label
+=
+"image_grid.module"
+%}
+Parameter
+Type
+Description
+Default
+slides
+Object
+Object containing information for each slide. Object contains:
+img
+: image URL.
+link_url
+: URL where the slide should link.
+hover_messages
+: text that overlays on the image on hover.
+[ { "show_caption": false, "open_in_new_tab": false } ]
+display_mode
+Choice
+Display mode of the Image Gallery. Choices include:
+standard
+: standard slider.
+thumbnail
+: thumbnail navigator.
+lightbox
+: lightbox gallery.
+standard
+lightboxRows
+Number
+Number of rows in the Lightbox gallery when
+display_mode
+equals
+lightbox
+.
+3
+loop_slides
+Boolean
+Enables looping through the slides with next/prev when
+display_mode
+equals
+standard
+or
+thumbnail
+.
+true
+auto_advance
+Boolean
+Automatically advances to the next slide when
+display_mode
+equals
+standard
+or
+thumbnail
+.
+true
+num_seconds
+Number
+Amount of time (seconds) between advancing to the next slide when
+display_mode
+equals
+standard
+or
+thumbnail
+.
+5
+show_pagination
+Boolean
+Show navigation buttons when
+display_mode
+equals
+standard
+or
+thumbnail
+.
+true
+sizing
+Choice
+Sets the height of the slides when
+display_mode
+equals
+standard
+or
+thumbnail
+. Choices include:
+static
+: fixed height.
+resize
+: variable height.
+static
+transition
+Choice
+Slide transition styles when
+display_mode
+equals
+standard
+or
+thumbnail
+. Choices include:
+slide
+: slide transition.
+fade
+: fade transition.
+slide
+caption_position
+Choice
+Position of the slide captions when
+display_mode
+equals
+standard
+or
+thumbnail
+. Choices include:
+below
+: always keep captions below the image.
+superimpose
+: superimpose captions on top of images.
+below
+Image gallery
+Supported in pages, blog posts, and blog listings.
+Copy code snippet
+{% module "gallery" path="@hubspot/gallery" %}
+xxxxxxxxxx
+{%
+module
+"gallery"
+path
+=
+"@hubspot/gallery"
+%}
+Parameter
+Type
+Description
+Default
+slides
+Object
+Object containing information for each slide. Object contains:
+img
+: image URL.
+show_caption
+: boolean to show slide caption.
+caption
+: rich text for caption.
+link_url
+: URL where the slide should link.
+open_in_new_tab
+: boolean to direct if the link should open in a new tab.
+[ { "show_caption": false, "open_in_new_tab": false } ]
+display_mode
+Choice
+Display mode of the Image Gallery. Choices include:
+standard
+: standard slider.
+thumbnail
+: thumbnail navigator.
+lightbox
+: lightbox gallery.
+standard
+lightboxRows
+Number
+Number of rows in the Lightbox gallery when
+display_mode
+equals
+lightbox
+.
+3
+loop_slides
+Boolean
+Enables looping through the slides with next/prev when
+display_mode
+equals
+standard
+or
+thumbnail
+.
+true
+auto_advance
+Boolean
+Automatically advances to the next slide when
+display_mode
+equals
+standard
+or
+thumbnail
+.
+true
+num_seconds
+Number
+Amount of time (seconds) between advancing to the next slide when
+display_mode
+equals
+standard
+or
+thumbnail
+.
+5
+show_pagination
+Boolean
+Show navigation buttons when
+display_mode
+equals
+standard
+or
+thumbnail
+.
+true
+sizing
+Choice
+Sets the height of the slides when
+display_mode
+equals
+standard
+or
+thumbnail
+. Choices include:
+static
+: fixed height.
+resize
+: variable height.
+static
+transition
+Choice
+Slide transition styles when
+display_mode
+equals
+standard
+or
+thumbnail
+. Choices include:
+slide
+: slide transition.
+fade
+: fade transition.
+slide
+caption_position
+Choice
+Position of the slide captions when
+display_mode
+equals
+standard
+or
+thumbnail
+. Choices include:
+below
+: always keep captions below the image.
+superimpose
+: superimpose captions on top of images.
+below
+Image slider gallery
+Supported in pages, blog posts, and blog listings.
+Copy code snippet
+{% module "unique_name"
+path="@hubspot/image_slider_gallery",
+slides=[
+{
+"img": {
+"src": "",
+"alt": "Default image alt text"
+},
+"caption": "<strong>1</strong> An optional caption for the image that will be added to the gallery. Enter any descriptive text for this image that you would like visitors to be able to read.",
+"link_url": ""
+},
+{
+"img": {
+"src": "",
+"alt": "Default image alt text"
+},
+"caption": "<strong>2</strong> An optional caption for the image that will be added to the gallery. Enter any descriptive text for this image that you would like visitors to be able to read.",
+"link_url": ""
+}
+]
+slideshow_settings={
+"slides": {
+"per_page": 1,
+"sizing": "natural",
+"aspect_ratio": "16/9",
+"show_captions": true,
+"caption_position": "below"
+},
+"movement": {
+"transition": "slide",
+"loop_slides": false,
+"auto_advance": false,
+"auto_advance_speed_seconds": 5
+},
+"navigation": {
+"show_main_arrows": true,
+"show_thumbnails": false,
+"show_dots": false
+}
+}
+%}
+xxxxxxxxxx
+41
+1
+{%
+module
+"unique_name"
+2
+path
+=
+"@hubspot/image_slider_gallery"
+,
+3
+slides
+=
+[
+4
+{
+5
+"img"
+: {
+6
+"src"
+:
+""
+,
+7
+"alt"
+:
+"Default image alt text"
+8
+},
+9
+"caption"
+:
+"<strong>1</strong> An optional caption for the image that will be added to the gallery. Enter any descriptive text for this image that you would like visitors to be able to read."
+,
+10
+"link_url"
+:
+""
+11
+},
+12
+{
+13
+"img"
+: {
+14
+"src"
+:
+""
+,
+15
+"alt"
+:
+"Default image alt text"
+16
+},
+17
+"caption"
+:
+"<strong>2</strong> An optional caption for the image that will be added to the gallery. Enter any descriptive text for this image that you would like visitors to be able to read."
+,
+18
+"link_url"
+:
+""
+19
+}
+20
+]
+21
+slideshow_settings
+=
+{
+22
+"slides"
+: {
+23
+"per_page"
+:
+1
+,
+24
+"sizing"
+:
+"natural"
+,
+25
+"aspect_ratio"
+:
+"16/9"
+,
+26
+"show_captions"
+:
+true
+,
+27
+"caption_position"
+:
+"below"
+28
+},
+29
+"movement"
+: {
+30
+"transition"
+:
+"slide"
+,
+31
+"loop_slides"
+:
+false
+,
+32
+"auto_advance"
+:
+false
+,
+33
+"auto_advance_speed_seconds"
+:
+5
+34
+},
+35
+"navigation"
+: {
+36
+"show_main_arrows"
+:
+true
+,
+37
+"show_thumbnails"
+:
+false
+,
+38
+"show_dots"
+:
+false
+39
+}
+40
+}
+41
+%}
+Parameter
+Type
+Description
+slides
+Field group
+A field group containing the following fields:
+img
+: image URL.
+caption
+: rich text for image caption.
+link_url
+: URL that the slide links to.
+slideshow_settings
+Field group
+The image slider settings field group. Includes the following field groups:
+slides
+: slide settings, including:
+per_page
+: number of slides per page.
+sizing
+: image sizing.
+aspect_ratio
+: image aspect ratio.
+show_captions
+: a boolean
+movement
+: image sliding behavior settings.
+navigation
+: image navigation settings.
+default_text
+Field group
+The module's default text elements, including:
+default_caption
+: image caption.
+default_image_alt_text
+: image text.
+slider_aria_label
+: the module's default aria label.
+arial_label_thumbnails
+: the module's default aria thumbnail.
+slider_nav_aria_label
+: the module navigation's default aria label.
+prev
+: previous slide text.
+next
+: next slide text.
+first
+: go to first slide text.
+slideX
+: go to X slide text.
+pageX
+: go to X page text.
+play
+: start autoplay text.
+pause
+: pause autoplay text.
+carousel
+: carousel text.
+select
+: text for selecting a slide to show.
+slide
+: slide text.
+slidelabel
+: slide label.
+Language switcher
+Supported in pages.
+Copy code snippet
+{% module "language_switcher" path="@hubspot/language_switcher" %}
+xxxxxxxxxx
+{%
+module
+"language_switcher"
+path
+=
+"@hubspot/language_switcher"
+%}
+Parameter
+Type
+Description
+Default
+display_mode
+Choice
+The language of the text in the language switcher. Options include:
+pagelang
+: the names of languages will display in the language of the page the switcher is on.
+localized
+: the name of each language will display in that language.
+hybrid
+: a combination of the two.
+localized
+Logo
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "logo" path="@hubspot/logo" %}
+xxxxxxxxxx
+{%
+module
+"logo"
+path
+=
+"@hubspot/logo"
+%}
+Parameter
+Type
+Description
+Default
+img
+Image
+Image object containing:
+override_inherited_src
+: override the default logo from settings
+src
+: image url
+alt
+: alt-text for logo
+{ "override_inherited_src": false, "src": null, "alt": null }
+link
+Text
+Optional link for the logo. If no URL is specified, your logo will link to the
+Logo URL
+set in your
+brand settings
+.
+open_in_new_tab
+Boolean
+Opens link in a new tab.
+false
+suppress_company_name
+Boolean
+Hide the company name when an image is not selected.
+true
+heading_level
+Choice
+Choose a heading level when no image is selected and
+suppress_company_name
+equals
+false
+. Choices include
+h1
+through
+h6
+.
+h1
+Logo grid
+A customizable grid of containers to display logos uniformly. Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "logo grid"
+path="@hubspot/logo_grid"
+group_logos=[
+{
+"logo": {
+"loading": "lazy",
+"alt": "company_logo",
+"src": "https://www.example.com/Logos/color/logo.png"
+}
+},
+{
+"logo": {
+"loading": "lazy",
+"alt": "company2_logo",
+"src": "https://www.example.com/Logos/color/logo2.png"
+}
+},
+{
+"logo": {
+"alt": "lorem-logo",
+"height": 40,
+"loading": "lazy",
+"max_height": 40,
+"max_width": 175,
+"src": "https://www.example.com/Logos/color/logo3.png",
+"width": 175
+}
+}
+],
+styles={
+"group_logo": {
+"group_background": {
+"aspect_ratio": "1/1",
+"background_color": {
+"color": "#8E7CC3",
+"opacity": 100
+}
+},
+"group_spacing": {
+"padding": {
+"padding": {
+"bottom": {
+"units": "px",
+"value": 75
+},
+"left": {
+"units": "px",
+"value": 75
+},
+"right": {
+"units": "px",
+"value": 75
+},
+"top": {
+"units": "px",
+"value": 75
+}
+}
+}
+},
+"max_logo_height": 85
+},
+"group_logo_grid": {
+"column_count": 3,
+"grid_gap": 54
+}
+}
+%}
+xxxxxxxxxx
+68
+1
+{%
+module
+"logo grid"
+2
+path
+=
+"@hubspot/logo_grid"
+3
+group_logos
+=
+[
+4
+{
+5
+"logo"
+: {
+6
+"loading"
+:
+"lazy"
+,
+7
+"alt"
+:
+"company_logo"
+,
+8
+"src"
+:
+"https://www.example.com/Logos/color/logo.png"
+9
+}
+10
+},
+11
+{
+12
+"logo"
+: {
+13
+"loading"
+:
+"lazy"
+,
+14
+"alt"
+:
+"company2_logo"
+,
+15
+"src"
+:
+"https://www.example.com/Logos/color/logo2.png"
+16
+}
+17
+},
+18
+{
+19
+"logo"
+: {
+20
+"alt"
+:
+"lorem-logo"
+,
+21
+"height"
+:
+40
+,
+22
+"loading"
+:
+"lazy"
+,
+23
+"max_height"
+:
+40
+,
+24
+"max_width"
+:
+175
+,
+25
+"src"
+:
+"https://www.example.com/Logos/color/logo3.png"
+,
+26
+"width"
+:
+175
+27
+}
+28
+}
+29
+],
+30
+styles
+=
+{
+31
+"group_logo"
+: {
+32
+"group_background"
+: {
+33
+"aspect_ratio"
+:
+"1/1"
+,
+34
+"background_color"
+: {
+35
+"color"
+:
+"#8E7CC3"
+,
+36
+"opacity"
+:
+100
+37
+}
+38
+},
+39
+"group_spacing"
+: {
+40
+"padding"
+: {
+41
+"padding"
+: {
+42
+"bottom"
+: {
+43
+"units"
+:
+"px"
+,
+44
+"value"
+:
+75
+45
+},
+46
+"left"
+: {
+47
+"units"
+:
+"px"
+,
+48
+"value"
+:
+75
+49
+},
+50
+"right"
+: {
+51
+"units"
+:
+"px"
+,
+52
+"value"
+:
+75
+53
+},
+54
+"top"
+: {
+55
+"units"
+:
+"px"
+,
+56
+"value"
+:
+75
+57
+}
+58
+}
+59
+}
+60
+},
+61
+"max_logo_height"
+:
+85
+62
+},
+63
+"group_logo_grid"
+: {
+64
+"column_count"
+:
+3
+,
+65
+"grid_gap"
+:
+54
+66
+}
+67
+}
+68
+%}
+Parameter
+Type
+Description
+group_logos
+Array
+An array containing an object for each logo in the grid.
+logo
+Object
+In
+group_logos
+, an object for each logo in the grid. Each logo can include the following parameters:
+src
+: the file path of the logo.
+loading
+: the
+lazy load
+behavior of the logo.
+alt
+: the logo's alt-text.
+height
+: the logo's height.
+width
+: the logo's width.
+max_height
+: the logo's maximum height.
+max_width
+: the logo's maximum width.
+styles
+Array
+An array containing the style fields that affect the grid layout, logo containers, and logo images. This array contains the following style groups:
+group_logo
+: styles that affect the logo containers and logo images. Contains the following:
+group_background
+: styles that set the aspect ratio and background color of the grid containers. Aspect ratios include:
+1/1
+,
+4/3
+,
+16/9
+.
+group_spacing
+: styles that set the inner padding of the logo container. For wider logos, higher padding value may decrease logo width.
+max_logo_height
+: the maximum height of each logo.
+group_logo_grid
+: styles that set the grid layout, including:
+column_count
+: the number of columns in the grid.
+grid_gap
+: the spacing between grid items.
+Meetings
+Supported in pages, blog posts, and blog listings.
+Copy code snippet
+{% module "meetings" path="@hubspot/meetings" %}
+xxxxxxxxxx
+{%
+module
+"meetings"
+path
+=
+"@hubspot/meetings"
+%}
+Parameter
+Type
+Description
+meeting
+Meeting
+Select a meeting link.
+Membership social logins
+This module provides Google and Facebook login capability to memberships sites. The user must sign-in with an account linked to the email for the contact in the CRM. You can choose which social logins to enable.
+Supported in membership login pages.
+Copy code snippet
+{% module "social" path="@hubspot/membership_social_logins",
+clientid=""
+appid=""
+facebook_enabled=true
+google_enabled=true
+%}
+xxxxxxxxxx
+6
+1
+{%
+module
+"social"
+path
+=
+"@hubspot/membership_social_logins"
+,
+2
+clientid
+=
+""
+3
+appid
+=
+""
+4
+facebook_enabled
+=
+true
+5
+google_enabled
+=
+true
+6
+%}
+Facebook requires having a
+Facebook developer account
+, and a
+facebook app created
+, with basic settings. Once you've done that your app id is what you pass to the module.
+Google requires a Google account, and
+authorization credentials created
+, once you have that your app's client id is what you pass to the module.
+Parameter
+Type
+Description
+Default
+facebook_appid
+String
+Your facebook app ID.
+facebook_enabled
+boolean
+Enable the button for Facebook login.
+facebook_appid
+is required**.**
+False
+google_clientid
+String
+Your Google client ID.
+google_enabled
+Boolean
+Enable the button for Google login.
+google_clientid
+is required**.**
+False
+Menu
+Supported in pages, blog posts, and blog listings.
+Looking to build your own custom menu? Try our
+menu() function
+.
+Copy code snippet
+{% module "menu" path="@hubspot/menu" %}
+xxxxxxxxxx
+{%
+module
+"menu"
+path
+=
+"@hubspot/menu"
+%}
+Parameter
+Type
+Description
+Default
+id
+Menu
+ID of the menu.
+root_type
+Choice
+Advanced menu type. Choices include:
+site_root
+: always show top-level pages in menu.
+top_parent
+: show pages in menu that are related to section being viewed.
+parent
+: show pages in menu that are related to page being viewed.
+breadcrumb
+: breadcrumb style path menu (uses horizontal flow).
+site_root
+max_levels
+Choice
+Determines the number of menu tree children that can be expanded in the menu. Choices include
+1
+through
+10
+2
+flow
+Choice
+Orientation of the menu. Choices include:
+horizontal
+vertical
+horizontal
+flyouts
+Boolean
+Enabled hover over functionality for child menu items.
+true
+Page footer
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "page_footer" path="@hubspot/page_footer" %}
+xxxxxxxxxx
+{%
+module
+"page_footer"
+path
+=
+"@hubspot/page_footer"
+%}
+Password prompt
+Supported in pages, blog posts, and blog listings.
+Copy code snippet
+{% module "password_prompt" path="@hubspot/password_prompt" %}
+xxxxxxxxxx
+{%
+module
+"password_prompt"
+path
+=
+"@hubspot/password_prompt"
+%}
+Parameter
+Type
+Description
+Default
+submit_button_text
+Text
+Text that appears on the submit button.
+"Submit"
+password_placeholder
+Text
+Placeholder text for the password field.
+"Password"
+bad_password_message
+Rich Text
+Message to show when a password is entered incorrectly.
+"Sorry, please try again. "
+Payments
+Supported in pages, blog posts, and blog listings.
+Copy code snippet
+{% module "payments" path="@hubspot/payments" %}
+xxxxxxxxxx
+{%
+module
+"payments"
+path
+=
+"@hubspot/payments"
+%}
+Parameter
+Type
+Description
+Default
+payment
+String
+To set the module to use a specific payment link, include the ID of the payment link. You can
+find the ID
+in the URL while editing the payment link.
+checkout_location
+String
+Set whether the payment form opens in a new tab or in an overlay. Available values are:
+new_tab
+: opens the payment form in a new tab.
+overlay
+: opens the payment form in a sliding overlay.
+"new_tab"
+button_text
+String
+Sets the text of the checkout button.
+"Checkout"
+button_target
+Choice
+Whether the button uses a HubSpot payment link or an external link. Choices include:
+payment_link
+custom_link
+"payment_link"
+button_link
+Link
+When
+button_target
+is set to
+custom_link
+, sets the destination of the external link. Supported link types include:
+EXTERNAL
+CONTENT
+EXTERNAL
+Product
+Displays a product from the account's
+product library
+. Supported in pages, blog posts, and blog listings.
+Copy code snippet
+{% module
+path="@hubspot/product",
+product={
+"id" : 2124070179
+},
+group_button={
+"button_text" : "Buy",
+"override_product_button" : true,
+"button_override" : {
+"no_follow" : false,
+"open_in_new_tab" : false,
+"sponsored" : false,
+"url" : {
+"href" : "https://www.test.com",
+"type" : "EXTERNAL"
+}
+},
+group_description={
+"description_override" : "Monthly gym membership with access to shared locker facilities.",
+"override_product_description" : true
+},
+group_name={
+"heading_level" : "h3",
+"name_override" : "Gym membership",
+"override_product_name" : true
+},
+group_image={
+"image_override" : {
+"alt" : "360_F_317724775_qHtWjnT8YbRdFNIuq5PWsSYypRhOmalS",
+"height" : 360,
+"loading" : "lazy",
+"src" : "https://2272014.fs1.hubspotusercontent-na1.net/hubfs/2272014/360_F_317724775_qHtWjnT8YbRdFNIuq5PWsSYypRhOmalS.jpg",
+"width" : 640
+},
+"override_product_image" : true
+}
+%}
+xxxxxxxxxx
+37
+1
+{%
+module
+2
+path
+=
+"@hubspot/product"
+,
+3
+product
+=
+{
+4
+"id"
+:
+2124070179
+5
+},
+6
+group_button
+=
+{
+7
+"button_text"
+:
+"Buy"
+,
+8
+"override_product_button"
+:
+true
+,
+9
+"button_override"
+: {
+10
+"no_follow"
+:
+false
+,
+11
+"open_in_new_tab"
+:
+false
+,
+12
+"sponsored"
+:
+false
+,
+13
+"url"
+: {
+14
+"href"
+:
+"https://www.test.com"
+,
+15
+"type"
+:
+"EXTERNAL"
+16
+}
+17
+},
+18
+group_description
+=
+{
+19
+"description_override"
+:
+"Monthly gym membership with access to shared locker facilities."
+,
+20
+"override_product_description"
+:
+true
+21
+},
+22
+group_name
+=
+{
+23
+"heading_level"
+:
+"h3"
+,
+24
+"name_override"
+:
+"Gym membership"
+,
+25
+"override_product_name"
+:
+true
+26
+},
+27
+group_image
+=
+{
+28
+"image_override"
+: {
+29
+"alt"
+:
+"360_F_317724775_qHtWjnT8YbRdFNIuq5PWsSYypRhOmalS"
+,
+30
+"height"
+:
+360
+,
+31
+"loading"
+:
+"lazy"
+,
+32
+"src"
+:
+"https://2272014.fs1.hubspotusercontent-na1.net/hubfs/2272014/360_F_317724775_qHtWjnT8YbRdFNIuq5PWsSYypRhOmalS.jpg"
+,
+33
+"width"
+:
+640
+34
+},
+35
+"override_product_image"
+:
+true
+36
+}
+37
+%}
+Parameter
+Type
+Description
+product
+Product
+The product to display, specified by product ID.
+group_button
+Field group
+By default, the module includes a button that directs users to the product's set URL. To customize the button destination, include this optional field group along with the following fields:
+button_text
+: a string that sets the button's text.
+override_product_button
+: set to
+true
+to override the default button link settings. Then, include a
+button_override
+object. Learn more about
+button_override
+below.
+button_override
+Object
+In the
+group_button
+field group, this sets the button's URL behavior when
+override_product_button
+is set to
+true
+.Includes the following fields:
+no_follow
+: boolean field for the link's
+no_follow
+behavior.
+open_link_in_new_tab
+: boolean field for the link's open behavior.
+url
+: an object that specifies the button's destination.
+In the
+url
+field, you can set the type of destination through the
+type
+field, which supports the following content types:
+EXTERNAL
+: a standard URL. Include the URL in an
+href
+field.
+CONTENT
+: a HubSpot page. Include the page ID in a
+content_id
+field.
+PAYMENT
+: a payment link. Include the payment link in an
+href
+field.
+EMAIL_ADDRESS
+: an email address. Include the address in an
+href
+field.
+group_name
+Field group
+By default, the module will display the product name at the top of the module as an h3. To customize the name, include this optional field group along with the following fields:
+heading_level
+: the heading size. Can be
+h1
+-
+h6
+.
+override_product_name
+: set to
+true
+to specify text rather than the product name.
+name_override
+: the string that you want to display at the top of the module.
+group_description
+Field group
+By default, the module will display the product's set description. To customize the description, include this optional field group along with the following fields:
+override_product_description
+: set to
+true
+to customize the product description.
+description_override
+: a string containing your new description.
+group_image
+Field group
+By default, the module will display the product's set image. To customize this image, include this optional field group with the following fields:
+override_product_image
+: set to
+true
+to specify a new image.
+image_override
+: an object that specifies the new image, including the following properties:
+alt
+height
+loading
+src
+width
+Quote download
+Supported in quote templates.
+Copy code snippet
+{% module "download" path="@hubspot/quote_download" %}
+xxxxxxxxxx
+{%
+module
+"download"
+path
+=
+"@hubspot/quote_download"
+%}
+Parameter
+Type
+Description
+Default
+button_text
+String
+The text displayed on the download button.
+Download
+download_error
+String
+Error message displayed if the download fails.
+There was a problem downloading the quote. Please try again.
+Quote payment
+Supported in quote templates.
+Copy code snippet
+{% module "payment" path="@hubspot/quote_payment" %}
+xxxxxxxxxx
+{%
+module
+"payment"
+path
+=
+"@hubspot/quote_payment"
+%}
+Parameter
+Type
+Description
+Default
+heading_text
+String
+The heading displayed above the payment section of a quote template.
+Payment
+heading_tag
+Choice
+The type of heading used to display
+heading_text
+. Values include
+h1
+,
+h2
+,
+h3
+,
+h4
+,
+h5
+,
+h6
+.
+h3
+checkout
+String
+The payment button text.
+Pay now
+needs_signature
+String
+Button text when a signature is required.
+Payment can't be made because the quote isn't fully signed.
+checkout_error
+Rich text
+Message that displays when there's an error during checkout.
+There was a problem setting up checkout. Please contact the person who sent you this quote.
+payment_status_error
+Rich text
+Message that displays when there's an error when trying to make a payment.
+There was a problem loading the payment status for this quote. Please try refreshing the page.
+paid
+String
+A successful payment status indicator.
+Paid
+payment_processing
+String
+A payment processing status indicator.
+Payment processing
+Quote signature
+Supported in quote templates.
+Copy code snippet
+{% module "signature" path="@hubspot/quote_signature" %}
+xxxxxxxxxx
+{%
+module
+"signature"
+path
+=
+"@hubspot/quote_signature"
+%}
+When a quote requires an e-signature, the following fields are available within an
+esignature
+object:
+Parameter
+Type
+Description
+Default
+pretext
+Rich text
+E-signature explanation text.
+Before you sign this quote, an email must be sent to you to verify your identity. Find your profile below to request a verification email.
+verify_button
+String
+Text that displays on the verification button.
+Verify to sign
+failure
+String
+Alert text that displays when the signature information can't be retrieved.
+There was a problem retrieving the signature information. Please reload the page.
+verification_sent
+String
+A status indicator that appears when the verification request has been successfully sent to the quote signer.
+Verification sent
+signed
+String
+Text that displays when the quote has been successfully signed.
+Signed
+When a quote requires a printed signature, the following fields are available within a
+print_signature
+object:
+Parameter
+Type
+Description
+Default
+header
+Rich text
+Text displayed at the top of the signature section.
+Signature
+signature
+String
+Text that displays next to the signature field.
+Signature
+date
+String
+Text that displays next to the date field.
+Date
+printed_name
+String
+Text that displays next to the printed name field.
+Printed name
+countersignature
+Object
+An object containing content for the countersignature section. This object can contain the following fields:
+header
+: text that displays at the top of the countersignature section.
+countersignature
+: Text that displays next to the countersignature field.
+date
+: text that displays next to the date field.
+printed_name
+: text that displays next to the printed name field.
+Signed
+Line items
+Supported in quote templates. This module also includes the default text used on custom quotes.
+Copy code snippet
+{% module "module_165350106057652" path="@hubspot/line_items", label="line_items.module" %}
+xxxxxxxxxx
+{%
+module
+"module_165350106057652"
+path
+=
+"@hubspot/line_items"
+, label
+=
+"line_items.module"
+%}
+Parameter
+Type
+Description
+Default
+title
+Text
+The title of the line item column.
+Column description
+use_additional_product_property
+Boolean
+Display checkbox to allow users to select additional line item columns from product properties.
+False
+additional_product_properties
+Choice
+A product property. Choices include:
+price
+: price of line item.
+item_description
+: description of line item.
+quantity
+: number of line items.
+amount
+: total cost of line items.
+hs_recurring_billing_start_date
+: billing start date for recurring line items.
+discount
+: discount amount applies to the line item.
+crm_product_property
+CRM object property
+Select any product property to appear as a line item column header.
+Rich text
+Supported in all template types.
+Copy code snippet
+{% module "rich_text" path="@hubspot/rich_text" %}
+xxxxxxxxxx
+{%
+module
+"rich_text"
+path
+=
+"@hubspot/rich_text"
+%}
+Parameter
+Type
+Description
+Default
+html
+Rich Text
+HTML block.
+## Something Powerful  \n  ### Tell The Reader More  \n  The headline and subheader tells us what you're [offering](\"#\"), and the form header closes the deal. Over here you can explain why your offer is so great it's worth filling out a form for.  \n  Remember:  \n<ul>\n<li>Bullets are great</li>\n<li>For spelling out [benefits](\"#\") and</li>\n<li>Turning visitors into leads.</li>\n</ul>
+RSS listing
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "rss_listing" path="@hubspot/rss_listing" %}
+xxxxxxxxxx
+{%
+module
+"rss_listing"
+path
+=
+"@hubspot/rss_listing"
+%}
+Parameter
+Type
+Description
+Default
+title
+Text
+An H3 heading.
+"Test"
+rss_feed_type
+Choice
+Type of RSS feed. Choices include:
+blog
+- HubSpot hosted blog.
+external
+- An external RSS feed.
+blog
+rss_url
+Text
+RSS URL to use when
+rss_feed_type
+equals
+external
+.
+content_group_id
+Blog
+Id of the blog to use when
+rss_feed_type
+equals
+blog
+.
+topic_id
+Tag
+(optional) Id of the tag to filter by when
+rss_feed_type
+equals
+blog
+.
+number_of_items
+Number
+Maximum number of posts to display.
+5
+include_featured_image
+Boolean
+Include the featured image.
+false
+show_author
+Boolean
+Show the author name.
+true
+attribution_text
+Text
+Text that attributes an author to a post. Displayed when
+show_author
+equals
+true
+.
+"by"
+show_detail
+Boolean
+Show post summary text.
+true
+limit_to_chars
+Number
+Limits the length of the summary text when
+show_detail
+equals
+true
+.
+200
+click_through_text
+Text
+The text which will be displayed for the clickthrough link at the end of a post summary when
+show_detail
+equals
+true
+.
+"Read more"
+show_date
+Boolean
+Show publish date.
+true
+publish_date_format
+Choice
+Format for the publish date when
+show_date
+equals
+true
+. Choices include:
+short
+(ex: 06/11/06 12:00PM)
+medium
+(ex: Jun 6, 2006 12:00:00 pm)
+long
+(ex: June 6, 2017 12:00:00 pm EDT)
+MMMM d, yyyy 'at' h:mm a
+(ex: June 6, 2006 at 12:00 pm)
+h:mm a 'on' MMMM d, yyyy
+(ex: 12:00 pm on June 6, 2006)
+short
+publish_date_text
+Text
+The text that indicates when a post was published when
+show_date
+equals
+true
+.
+"posted at"
+Site search input
+Supported in pages, blog posts, and blog listings.
+Copy code snippet
+{% module "search_input" path="./local-search_input"
+placeholder="Search"
+include_search_button=true
+results={
+"use_custom_search_results_template": "true",
+"path_id": "77977569400"
+}
+%}
+xxxxxxxxxx
+8
+1
+{%
+module
+"search_input"
+path
+=
+"./local-search_input"
+2
+placeholder
+=
+"Search"
+3
+include_search_button
+=
+true
+4
+results
+=
+{
+5
+"use_custom_search_results_template"
+:
+"true"
+,
+6
+"path_id"
+:
+"77977569400"
+7
+}
+8
+%}
+Parameter
+Type
+Description
+Default
+field_label
+Text
+Search input label text
+placeholder
+Text
+Placeholder text for the input field.
+"Search"
+include_search_button
+Boolean
+Include a search button.
+false
+content_types
+Object
+Which content types to include in search results. Object contains the following keys with boolean values:
+website_pages
+landing_pages
+blog_posts
+knowledge_articles
+{ "website_pages": true, "landing_pages": false, "blog_posts": true, "knowledge_articles": false }
+results
+Object
+An object that enables controls for using a custom search results page. Includes the following properties:
+use_custom_search_results_template
+(boolean):
+when set to
+true
+, users can select a custom search results page. Default is
+false
+.
+path_id
+(string):
+the ID of the page that will be used for search results. The referenced page must contain the search results module.
+Search results
+Supported in pages, blog posts, and blog listings.
+Copy code snippet
+{% module "search_results" path="@hubspot/search_results" %}
+xxxxxxxxxx
+{%
+module
+"search_results"
+path
+=
+"@hubspot/search_results"
+%}
+Parameter
+Type
+Description
+Default
+display_featured_images
+Boolean
+Display featured images for items.
+false
+Section header
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "section_header" path="@hubspot/section_header" %}
+xxxxxxxxxx
+{%
+module
+"section_header"
+path
+=
+"@hubspot/section_header"
+%}
+Parameter
+Type
+Description
+Default
+header
+Text
+Section header content.
+"A clear and bold header"
+heading_level
+Choice
+Heading level for the
+header
+. Choices include
+h1
+through
+h6
+.
+h1
+subheader
+Text
+Subheading paragraph text for the section.
+"A more subdued subheader"
+Simple menu
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "simple_menu" path="@hubspot/simple_menu" %}
+xxxxxxxxxx
+{%
+module
+"simple_menu"
+path
+=
+"@hubspot/simple_menu"
+%}
+Parameter
+Type
+Description
+Default
+menu_tree
+Simple Menu
+Simple menu object.
+[]
+orientation
+Choice
+Orientation of the menu. Choices include:
+horizontal
+vertical
+horizontal
+Social follow
+Add links to your social media profiles, with drag and drop reordering in the content editor. Automatically inserts icons based on the social URL, but icons can be overridden.
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "social_follow" path="@hubspot/social_follow" %}
+xxxxxxxxxx
+{%
+module
+"social_follow"
+path
+=
+"@hubspot/social_follow"
+%}
+Parameter
+Type
+Description
+Default
+link
+Text
+The destination link for the social page added in the editor.
+open_in_new_window
+Boolean
+When set to
+false
+, link will open in the same browser tab.
+true
+is_podcast
+Boolean
+Set to
+true
+to display a podcast icon instead of a default or custom icon.
+false
+customize_alt_text
+Boolean
+By default, alt-text is automatically generated. When set to
+true
+, you can override the default alt-text with a custom value using the
+aria_label
+field.
+false
+aria-label
+String
+When
+customize_alt_text
+is
+true
+, this field sets the icon alt-text (e.g.,
+Follow us on Facebook
+). This is used by screen readers to describe the icon to users who are visually impaired.
+False
+customize_icon
+Boolean
+By default, icons are auto-populated based on the link URL. When set to
+true
+, you can use the
+custom_icon
+field to select one of the other provided icons (Font Awesome 6.4.2).
+false
+custom_icon
+Icon
+When
+customize_icon
+is
+true
+and
+is_podcast
+is
+false
+, use this field to specify a custom icon from the provided set. Available icons are from Font Awesome 6.4.2.
+Social sharing
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "social_sharing" path="@hubspot/social_sharing" %}
+xxxxxxxxxx
+{%
+module
+"social_sharing"
+path
+=
+"@hubspot/social_sharing"
+%}
+Note: The variable
+social_link_url
+in the default column below is the same value as the
+link
+parameter.
+Parameter
+Type
+Description
+Default
+link
+Text
+This is the destination link that will be shortened for easier sharing on social networks.
+facebook
+Object
+Object containing:
+enabled
+: boolean to enable social item
+custom_link_format
+: custom URL for socials sharer URL
+{ "enabled": false, "custom_link_format": "http://www.facebook.com/share.php?u={{ social_link_url }}" }
+twitter
+Object
+Object containing:
+enabled
+: boolean to enable social item
+custom_link_format
+: custom URL for socials sharer URL
+{ "enabled": false, "custom_link_format": "
+https://twitter.com/intent/tweet?original_referer=\{\{
+social_link_url }}&url={{ social_link_url }}&source=tweetbutton&text={{ social_page_title|urlencode }}" }
+linkedin
+Object
+Object containing:
+enabled
+: boolean to enable social item
+custom_link_format
+: custom URL for socials sharer URL
+{ "enabled": false, "custom_link_format": "http://www.linkedin.com/shareArticle?mini=true&url={{ social_link_url }}" }
+pinterest
+Object
+Object containing:
+enabled
+: boolean to enable social item.
+custom_link_format
+: custom URL for socials sharer URL.
+pinterest_media
+: image object including:
+src
+: image URL.
+alt
+: alt-text for the image.
+{ "enabled": false, "custom_link_format": "http://pinterest.com/pin/create/button/?url={{ social_link_url }}&media={{ pinterest_media }}", "pinterest_media": { "src": "", "alt": null } }
+email
+Object
+Object containing:
+enabled
+: boolean to enable social item
+custom_link_format
+: custom URL for socials sharer URL
+{ "enabled": false, "custom_link_format": "mailto:?subject=Check out {{ social_link_url }} &body=Check out {{ social_link_url }}" }
+Tabbed card
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module
+path="@hubspot/tabbed_card",
+tabs=[
+{
+"content" : "<p>This is the descriptive text contained in tab 1.</p>",
+"tab_label" : "Tab 1 label"
+},
+{
+"content" : "<p>This is the descriptive text contained in tab 2.</p>",
+"tab_label" : "Tab 2 label"
+}
+],
+fixed_height=false
+%}
+xxxxxxxxxx
+14
+1
+{%
+module
+2
+path
+=
+"@hubspot/tabbed_card"
+,
+3
+tabs
+=
+[
+4
+{
+5
+"content"
+:
+"<p>This is the descriptive text contained in tab 1.</p>"
+,
+6
+"tab_label"
+:
+"Tab 1 label"
+7
+},
+8
+{
+9
+"content"
+:
+"<p>This is the descriptive text contained in tab 2.</p>"
+,
+10
+"tab_label"
+:
+"Tab 2 label"
+11
+}
+12
+],
+13
+fixed_height
+=
+false
+14
+%}
+Parameter
+Type
+Description
+Default
+tabs
+Field group
+A field group that contains the tab label and text content of each tab. Contains the following fields:
+tab_label
+: the label of the tab.
+content
+: the tab's rich text content.
+"Some additional information in one line"
+fixed_height
+Boolean
+By default, the tabs will be set at a fixed height so that the container height stays the same when switching between tabs. You can set this to
+false
+if you want the tabbed card container height to be based on the active tab's content.
+False
+One line of text
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "text" path="@hubspot/text" %}
+xxxxxxxxxx
+{%
+module
+"text"
+path
+=
+"@hubspot/text"
+%}
+Parameter
+Type
+Description
+Default
+value
+Text
+Add your text to this parameter.
+"Some additional information in one line"
+Video
+Supported in pages, blog listings, and blog posts.
+Copy code snippet
+{% module "video" path="@hubspot/video" %}
+xxxxxxxxxx
+{%
+module
+"video"
+path
+=
+"@hubspot/video"
+%}
+Parameter
+Type
+Description
+Default
+video_type
+Choice
+Type of video. Choices include:
+embed
+: embed code from an external source.
+hubspot_video
+: HubSpot hosted video.
+embed
+hubspot_video
+Video Player
+HubSpot hosted video. Used when
+video_type
+equals
+hubspot_video
+.
+embed_field
+Embed
+Supports embed types:
+oembed
+video
+: URL for video.
+html
+: embed code for video.
+oembed_thumbnail
+Image
+Override oembed thumbnail image when
+video_type
+equals
+embed
+and
+embed_field
+equals
+oembed
+.
+style_options
+Object
+Object containing
+oembed_thumbnail_play_button_color
+- Color field.
+{"oembed_thumbnail_play_button_color":"#ffffff"}
+placeholder_fields
+Object
+Object containing:
+placeholder_title
+: text field.
+placeholder_description
+: text field.
+{"placeholder_title":"No video selected", "placeholder_description":"Select a video type in the sidebar."}
+Video embed (landing page)
+Supported in pages.
+Copy code snippet
+{% module "video_embed_lp" path="@hubspot/video_embed_lp" %}
+xxxxxxxxxx
+{%
+module
+"video_embed_lp"
+path
+=
+"@hubspot/video_embed_lp"
+%}
+Parameter
+Type
+Description
+Default
+url
+Text
+URL for video. URLs from Vimeo and YouTube are supported.
+"https://www.youtube.com/watch?v=X1Rr5BFO5rg"
+is_full_width
+Boolean
+Sets the video to full width (
+true
+) or manually set width and height (
+false
+).
+true
+max_width
+Number
+Max width (px)
+800
+max_height
+Number
+Max height (px)
+450
+WhatsApp link
+Supported in pages, blog posts, and blog listing pages. Requires a
+connected WhatsApp channel
+.
+Copy code snippet
+{% module "whatsapp_link" path="@hubspot/whatsapp_link", label="whatsapp_link" %}
+xxxxxxxxxx
+{%
+module
+"whatsapp_link"
+path
+=
+"@hubspot/whatsapp_link"
+, label
+=
+"whatsapp_link"
+%}
+Parameter
+Type
+Description
+Default
+whatsapp_number
+URL
+Select from the
+WhatsApp channels connected to the account
+.
+optin_text
+Choice
+The
+opt-in and opt-out text
+.
+whatsapp_display
+Choice
+Select whether the button displays text, a WhatsApp icon, or both. Choices include:
+text_and_icon
+text
+icon
+text_and_icon
+icon_position
+Choice
+The position of the icon on the button. Choices include
+left
+and
+right
+.
+left
+button_text
+String
+The button's text.
+Chat on WhatsApp
+whatsapp_icon_title
+String
+The icon text for screen readers.
+WhatsApp Icon
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Reference
+Overview
+Modules
+Module files
+Configuring a module
+Default email modules
+Default module versioning
+Default web modules
+Deprecated
+export_to_template_context
+Using Modules in Templates
+HubL (templating language)
+Forms
+Fields
+Serverless functions

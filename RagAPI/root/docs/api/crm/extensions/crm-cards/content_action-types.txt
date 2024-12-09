@@ -1,0 +1,1938 @@
+CRM API | CRM cards | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Scope requirements
+Create a CRM card
+Data request
+Example request
+Example response
+Request signatures
+Card properties
+Currency properties
+Date properties
+Datetime properties
+Email properties
+Link properties
+Numeric properties
+Status properties
+String properties
+Custom actions
+Action types
+Iframe actions
+Action hook actions
+Confirmation actions
+API Guides
+CRM
+Extensions
+CRM API | CRM cards
+CRM cards
+CRM cards endpoint reference
+Within a
+public app
+, you can create custom CRM cards to display information from other systems on HubSpot contact, company, deal, and ticket records. Each app can include up to 25 CRM cards.
+Please note:
+the CRM cards referenced in this article are different from the custom cards you can
+create as UI extensions with projects
+. The CRM cards included in this article are intended for use with public apps, while UI extensions offer more flexibility, customizability, and interactivity using a more modern toolset.
+If you're not building a public app, check out the check out the
+CRM development tools overview
+to see if React-based UI extensions will work better for your use case.
+Example use case:
+you're building an integration for the App Marketplace for your bug tracking software. You want to be able to surface tracked bugs on contact records so that support reps can reference them when working with customers. Your app can define a custom card that displays this info right on the HubSpot contact record.
+Cards can be defined as part of your app’s feature settings. Once the app is installed and a user views the target CRM records, HubSpot makes an outbound request to the app, retrieves the relevant data, and displays it in a card on the record page. Apps can also specify custom actions the user can take based on this information. For example, your app could include an action to open a modal for displaying the app's own UI in HubSpot.
+Scope requirements
+To create custom CRM cards, your app has to request the OAuth scopes needed to modify the CRM records where your card will appear. For example, for a CRM card to appear on contact records, the app must have the
+crm.objects.contacts.read
+and
+crm.objects.contacts.write
+scopes. If you later need to remove CRM object scopes from your app, you'll first need to delete all existing cards for those object types.
+See the OAuth documentation for
+more details about scopes
+and setting up the authorization URL for your app.
+Create a CRM card
+You can create CRM cards for your app either through the API or by editing your app in your developer account. To learn more about configuring a card through the API, check out the
+Endpoints
+tab at the top of the article.
+To create a CRM card using HubSpot's UI:
+In your HubSpot developer account, navigate to
+Apps
+in the main navigation.
+Select the
+app
+where you want to add a card.
+In the left sidebar menu, select
+CRM cards
+.
+In the upper right, click
+Create CRM card
+.
+Below, learn more about the configuration options in each tab.
+UI extensions built using developer projects offer more flexible ways to display data and allow user interaction, including displaying external content in frames. If using a private app is feasible for your integration, check out the
+UI extensions quickstart guide
+to get started, or
+view HubSpot's example projects
+to see examples of what's possible.
+Data request
+When a user HubSpot views a CRM record that the CRM card is on, HubSpot will make a data fetch request to the integration. This request is made to the specified target URL, which includes a set of default query parameters, along with extra parameters containing property data as specified in the card's settings.
+In the
+Data fetch URL
+field, enter the
+URL
+that you'll be fetching data from. In the API, this URL is added to the
+targetUrl
+field.
+In the
+Target record types
+section, click to toggle the
+switches
+on to select which CRM records the card will appear on. Then, Use the
+Properties sent from HubSpot
+dropdown menus to select the
+HubSpot properties
+that will be included as query parameters in the request URL. In the API, each record type and its corresponding properties are added as objects in the
+objectTypes
+array.
+Copy code snippet
+// Example data fetch configuration
+{
+"title": "New CRM Card",
+"fetch": {
+"targetUrl": "https://www.example.com/demo-fetch",
+"objectTypes": [
+{
+"name": "contacts",
+"propertiesToSend": [
+"firstname",
+"email",
+"lastname"
+]
+}
+]
+}
+...
+}
+1
+// Example data fetch configuration
+2
+{
+3
+"title"
+:
+"New CRM Card"
+,
+4
+"fetch"
+: {
+5
+"targetUrl"
+:
+"https://www.example.com/demo-fetch"
+,
+6
+"objectTypes"
+: [
+7
+{
+8
+"name"
+:
+"contacts"
+,
+9
+"propertiesToSend"
+: [
+10
+"firstname"
+,
+11
+"email"
+,
+12
+"lastname"
+13
+]
+14
+}
+15
+]
+16
+}
+17
+...
+18
+}
+Example request
+The above configuration would result in HubSpot sending its
+GET
+request as follows.
+Copy code snippet
+https://www.example.com/demo-fetch?userId=12345&userEmail=loggedinuser@hubspot.com&associatedObjectId=53701&associatedObjectType=CONTACT&portalId=987654&firstname=Tim&email=timrobinson@itysl.com&lastname=Robinson
+xxxxxxxxxx
+https://www.example.com/demo-fetch?userId=12345
+&userEmail
+=loggedinuser@hubspot.com
+&associatedObjectId
+=53701
+&associatedObjectType
+=CONTACT
+&portalId
+=987654
+&firstname
+=Tim
+&email
+=timrobinson@itysl.com
+&lastname
+=Robinson
+Parameter
+Type
+Description
+userId
+Default
+The ID of the HubSpot user that loaded the CRM record.
+userEmail
+Default
+The email address of the user that loaded the CRM record.
+associatedObjectId
+Default
+The ID of the CRM record that loaded.
+associatedObjectType
+Default
+The type of CRM record that loaded (e.g., contact, company, deal).
+portalId
+Default
+The ID of the HubSpot account where the CRM record loaded.
+firstname
+Custom
+The contact's first name, as specified in the
+Properties sent from HubSpot
+dropdown menu (in-app) and
+propertiesToSend
+array (API).
+email
+Custom
+The contact's email address, as specified in the
+Properties sent from HubSpot
+dropdown menu (in-app) and
+propertiesToSend
+array (API).
+lastname
+Custom
+The contact's last name, as specified in the
+Properties sent from HubSpot
+dropdown menu (in-app) and
+propertiesToSend
+array (API).
+Please note:
+requests will timeout after five seconds. Within that, a connection must be made within three seconds.
+Example response
+Below is an example response that the integrator might provide to the above request.
+results
+array
+An array of up to five valid
+card properties
+. If more card properties are available for a specific CRM object, your app can link to them.
+objectId
+number
+(required)
+A unique ID for this object.
+title
+string
+(required)
+The title of this object.
+link
+string
+The URL that the user can follow to get more details about the object. This property is optional, but if no objects have a link, you should provide a value of
+null
+.
+created
+string
+(required)
+A
+custom property
+as defined in the card's settings that denotes the date of the object's creation.
+priority
+string
+(required)
+A
+custom property
+as defined in the card's settings that denotes external ticket's priority level.
+actions
+array
+A list of available
+actions
+a user can take.
+properties
+string
+A list of custom properties that aren't defined in the card settings. You can use this list to display a specific object's unique properties. These properties will be shown in the order they're provided, but after the properties defined in the card settings.
+settingsAction
+object
+An iframe action that enables users to update the app's settings.
+primaryAction
+object
+The primary action for a record type, typically a creation action.
+secondaryActions
+array
+A list of actions displayed on the card.
+Copy code snippet
+// Example response
+{
+"results": [
+{
+"objectId": 245,
+"title": "API-22: APIs working too fast",
+"link": "http://example.com/1",
+"created": "2016-09-15",
+"priority": "HIGH",
+"project": "API",
+"description": "Customer reported that the APIs are just running too fast. This is causing a problem in that they're so happy.",
+"reporter_type": "Account Manager",
+"status": "In Progress",
+"ticket_type": "Bug",
+"updated": "2016-09-28",
+"actions": [
+{
+"type": "IFRAME",
+"width": 890,
+"height": 748,
+"uri": "https://example.com/edit-iframe-contents",
+"label": "Edit",
+"associatedObjectProperties": []
+},
+{
+"type": "IFRAME",
+"width": 890,
+"height": 748,
+"uri": "https://example.com/reassign-iframe-contents",
+"label": "Reassign",
+"associatedObjectProperties": []
+},
+{
+"type": "ACTION_HOOK",
+"httpMethod": "PUT",
+"associatedObjectProperties": [],
+"uri": "https://example.com/tickets/245/resolve",
+"label": "Resolve"
+},
+{
+"type": "CONFIRMATION_ACTION_HOOK",
+"confirmationMessage": "Are you sure you want to delete this ticket?",
+"confirmButtonText": "Yes",
+"cancelButtonText": "No",
+"httpMethod": "DELETE",
+"associatedObjectProperties": ["protected_account"],
+"uri": "https://example.com/tickets/245",
+"label": "Delete"
+}
+]
+},
+{
+"objectId": 988,
+"title": "API-54: Question about bulk APIs",
+"link": "http://example.com/2",
+"created": "2016-08-04",
+"priority": "HIGH",
+"project": "API",
+"reported_by": "ksmith@hubspot.com",
+"description": "Customer is not able to find documentation about our bulk Contacts APIs.",
+"reporter_type": "Support Rep",
+"status": "Resolved",
+"ticket_type": "Bug",
+"updated": "2016-09-23",
+"properties": [
+{
+"label": "Resolved by",
+"dataType": "EMAIL",
+"value": "ijones@hubspot.com"
+},
+{
+"label": "Resolution type",
+"dataType": "STRING",
+"value": "Referred to documentation"
+},
+{
+"label": "Resolution impact",
+"dataType": "CURRENCY",
+"value": "94.34",
+"currencyCode": "GBP"
+}
+],
+"actions": [
+{
+"type": "IFRAME",
+"width": 890,
+"height": 748,
+"uri": "https://example.com/edit-iframe-contents",
+"label": "Edit"
+},
+{
+"type": "CONFIRMATION_ACTION_HOOK",
+"confirmationMessage": "Are you sure you want to delete this ticket?",
+"confirmButtonText": "Yes",
+"cancelButtonText": "No",
+"httpMethod": "DELETE",
+"associatedObjectProperties": ["protected_account"],
+"uri": "https://example.com/tickets/245",
+"label": "Delete"
+}
+]
+}
+],
+"settingsAction": {
+"type": "IFRAME",
+"width": 890,
+"height": 748,
+"uri": "https://example.com/settings-iframe-contents",
+"label": "Settings"
+},
+"primaryAction": {
+"type": "IFRAME",
+"width": 890,
+"height": 748,
+"uri": "https://example.com/create-iframe-contents",
+"label": "Create Ticket"
+}
+}
+xxxxxxxxxx
+118
+1
+// Example response
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"objectId"
+:
+245
+,
+6
+"title"
+:
+"API-22: APIs working too fast"
+,
+7
+"link"
+:
+"http://example.com/1"
+,
+8
+"created"
+:
+"2016-09-15"
+,
+9
+"priority"
+:
+"HIGH"
+,
+10
+"project"
+:
+"API"
+,
+11
+"description"
+:
+"Customer reported that the APIs are just running too fast. This is causing a problem in that they're so happy."
+,
+12
+"reporter_type"
+:
+"Account Manager"
+,
+13
+"status"
+:
+"In Progress"
+,
+14
+"ticket_type"
+:
+"Bug"
+,
+15
+"updated"
+:
+"2016-09-28"
+,
+16
+"actions"
+: [
+17
+{
+18
+"type"
+:
+"IFRAME"
+,
+19
+"width"
+:
+890
+,
+20
+"height"
+:
+748
+,
+21
+"uri"
+:
+"https://example.com/edit-iframe-contents"
+,
+22
+"label"
+:
+"Edit"
+,
+23
+"associatedObjectProperties"
+: []
+24
+},
+25
+{
+26
+"type"
+:
+"IFRAME"
+,
+27
+"width"
+:
+890
+,
+28
+"height"
+:
+748
+,
+29
+"uri"
+:
+"https://example.com/reassign-iframe-contents"
+,
+30
+"label"
+:
+"Reassign"
+,
+31
+"associatedObjectProperties"
+: []
+32
+},
+33
+{
+34
+"type"
+:
+"ACTION_HOOK"
+,
+35
+"httpMethod"
+:
+"PUT"
+,
+36
+"associatedObjectProperties"
+: [],
+37
+"uri"
+:
+"https://example.com/tickets/245/resolve"
+,
+38
+"label"
+:
+"Resolve"
+39
+},
+40
+{
+41
+"type"
+:
+"CONFIRMATION_ACTION_HOOK"
+,
+42
+"confirmationMessage"
+:
+"Are you sure you want to delete this ticket?"
+,
+43
+"confirmButtonText"
+:
+"Yes"
+,
+44
+"cancelButtonText"
+:
+"No"
+,
+45
+"httpMethod"
+:
+"DELETE"
+,
+46
+"associatedObjectProperties"
+: [
+"protected_account"
+],
+47
+"uri"
+:
+"https://example.com/tickets/245"
+,
+48
+"label"
+:
+"Delete"
+49
+}
+50
+]
+51
+},
+52
+{
+53
+"objectId"
+:
+988
+,
+54
+"title"
+:
+"API-54: Question about bulk APIs"
+,
+55
+"link"
+:
+"http://example.com/2"
+,
+56
+"created"
+:
+"2016-08-04"
+,
+57
+"priority"
+:
+"HIGH"
+,
+58
+"project"
+:
+"API"
+,
+59
+"reported_by"
+:
+"ksmith@hubspot.com"
+,
+60
+"description"
+:
+"Customer is not able to find documentation about our bulk Contacts APIs."
+,
+61
+"reporter_type"
+:
+"Support Rep"
+,
+62
+"status"
+:
+"Resolved"
+,
+63
+"ticket_type"
+:
+"Bug"
+,
+64
+"updated"
+:
+"2016-09-23"
+,
+65
+"properties"
+: [
+66
+{
+67
+"label"
+:
+"Resolved by"
+,
+68
+"dataType"
+:
+"EMAIL"
+,
+69
+"value"
+:
+"ijones@hubspot.com"
+70
+},
+71
+{
+72
+"label"
+:
+"Resolution type"
+,
+73
+"dataType"
+:
+"STRING"
+,
+74
+"value"
+:
+"Referred to documentation"
+75
+},
+76
+{
+77
+"label"
+:
+"Resolution impact"
+,
+78
+"dataType"
+:
+"CURRENCY"
+,
+79
+"value"
+:
+"94.34"
+,
+80
+"currencyCode"
+:
+"GBP"
+81
+}
+82
+],
+83
+"actions"
+: [
+84
+{
+85
+"type"
+:
+"IFRAME"
+,
+86
+"width"
+:
+890
+,
+87
+"height"
+:
+748
+,
+88
+"uri"
+:
+"https://example.com/edit-iframe-contents"
+,
+89
+"label"
+:
+"Edit"
+90
+},
+91
+{
+92
+"type"
+:
+"CONFIRMATION_ACTION_HOOK"
+,
+93
+"confirmationMessage"
+:
+"Are you sure you want to delete this ticket?"
+,
+94
+"confirmButtonText"
+:
+"Yes"
+,
+95
+"cancelButtonText"
+:
+"No"
+,
+96
+"httpMethod"
+:
+"DELETE"
+,
+97
+"associatedObjectProperties"
+: [
+"protected_account"
+],
+98
+"uri"
+:
+"https://example.com/tickets/245"
+,
+99
+"label"
+:
+"Delete"
+100
+}
+101
+]
+102
+}
+103
+],
+104
+"settingsAction"
+: {
+105
+"type"
+:
+"IFRAME"
+,
+106
+"width"
+:
+890
+,
+107
+"height"
+:
+748
+,
+108
+"uri"
+:
+"https://example.com/settings-iframe-contents"
+,
+109
+"label"
+:
+"Settings"
+110
+},
+111
+"primaryAction"
+: {
+112
+"type"
+:
+"IFRAME"
+,
+113
+"width"
+:
+890
+,
+114
+"height"
+:
+748
+,
+115
+"uri"
+:
+"https://example.com/create-iframe-contents"
+,
+116
+"label"
+:
+"Create Ticket"
+117
+}
+118
+}
+Request signatures
+To ensure that the requests are actually coming from HubSpot, the following request header is included. This header will contain a hash of the of the app secret for your application and the details of the request.
+X-HubSpot-Signature: <some base64 string>
+To verify this signature, perform the following steps:
+Create a string that concatenates together the following:
+<app secret>
++
+<HTTP method>
++
+<URL>
++
+<request body> (if present)
+.
+Create a SHA-256 hash of the resulting string.
+Compare the hash value to the signature. If they're equal, the request passed validation. If the values do not match, the request may have been tampered with in transit or someone may be spoofing requests to your endpoint.
+Learn more about
+validating requests from HubSpot
+.
+Card properties
+On the
+Card Properties
+tab, define any custom properties that you want HubSpot to display on the CRM card. Once defined, the integration can fill these properties by including them in its response.
+Click
+Add property
+to add a new property for the card to display. The payload you provide in response to the data fetch call should contain values for all of these properties.
+In the right panel, set the property's unique name, display label, and data type. You can select from the following types:
+Currency
+,
+Date
+,
+Datetime
+,
+Email
+,
+Link
+,
+Numeric
+,
+Status
+, and
+String**.**
+Learn more about
+using extension property types
+.
+Click
+Add
+to save the property.
+When HubSpot sends its data request, the integration can provide values for these properties in its response alongside other values in each object in
+results
+. In addition to the properties configured on this tab, the integration can also include its own custom properties without needing them to be defined in the card's settings.
+For example, in the response below,
+created
+and
+priority
+are both defined in the
+Card properties
+tab, while the
+properties
+array sends its own property definitions and values. These object-specific properties must be defined per object.
+Copy code snippet
+// Example object within a response
+{
+"objectId": 988,
+"title": "API-54: Question about bulk APIs",
+"link": "http://example.com/2",
+"created": "2016-08-04",
+"priority": "HIGH",
+"properties": [
+{
+"label": "Resolved by",
+"dataType": "EMAIL",
+"value": "ijones@hubspot.com"
+},
+{
+"label": "Resolution type",
+"dataType": "STRING",
+"value": "Referred to documentation"
+},
+{
+"label": "Resolution impact",
+"dataType": "CURRENCY",
+"value": "94.34",
+"currencyCode": "GBP"
+}
+],
+"actions": [
+...
+]
+}
+xxxxxxxxxx
+29
+1
+// Example object within a response
+2
+{
+3
+"objectId"
+:
+988
+,
+4
+"title"
+:
+"API-54: Question about bulk APIs"
+,
+5
+"link"
+:
+"http://example.com/2"
+,
+6
+"created"
+:
+"2016-08-04"
+,
+7
+"priority"
+:
+"HIGH"
+,
+8
+"properties"
+: [
+9
+{
+10
+"label"
+:
+"Resolved by"
+,
+11
+"dataType"
+:
+"EMAIL"
+,
+12
+"value"
+:
+"ijones@hubspot.com"
+13
+},
+14
+{
+15
+"label"
+:
+"Resolution type"
+,
+16
+"dataType"
+:
+"STRING"
+,
+17
+"value"
+:
+"Referred to documentation"
+18
+},
+19
+{
+20
+"label"
+:
+"Resolution impact"
+,
+21
+"dataType"
+:
+"CURRENCY"
+,
+22
+"value"
+:
+"94.34"
+,
+23
+"currencyCode"
+:
+"GBP"
+24
+}
+25
+],
+26
+"actions"
+: [
+27
+...
+28
+]
+29
+}
+When sending custom properties, the
+dataType
+field for each property can be set to one of:
+CURRENCY
+,
+DATE
+,
+DATETIME
+,
+EMAIL
+,
+LINK
+,
+NUMERIC
+,
+STATUS
+,
+STRING
+. Depending on the property type, the integration may need to provide additional fields. Below, learn more about each property type.
+Currency properties
+CURRENCY
+properties must include a
+currencyCode
+, which needs to be a valid
+ISO 4217
+code. This will ensure the user sees the correct currency symbol and number formatting.
+Copy code snippet
+// Example custom currency property
+{
+"results": [
+{
+"properties": [
+{
+"label": "Resolution impact",
+"dataType": "CURRENCY",
+"value": "94.34",
+"currencyCode": "GBP"
+}
+]
+}
+]
+}
+xxxxxxxxxx
+15
+1
+// Example custom currency property
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"properties"
+: [
+6
+{
+7
+"label"
+:
+"Resolution impact"
+,
+8
+"dataType"
+:
+"CURRENCY"
+,
+9
+"value"
+:
+"94.34"
+,
+10
+"currencyCode"
+:
+"GBP"
+11
+}
+12
+]
+13
+}
+14
+]
+15
+}
+Date properties
+DATE
+properties should be in the format
+yyyy-mm-dd
+. These properties will be displayed in a format appropriate to the user's locale. If you need to include a timestamp, you should instead use a
+DATETIME
+property.
+Copy code snippet
+// Example custom date property
+{
+"results": [
+{
+"properties": [
+{
+"label": "Date",
+"dataType": "DATE",
+"value": "2023-10-13"
+}
+]
+}
+]
+}
+xxxxxxxxxx
+14
+1
+// Example custom date property
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"properties"
+: [
+6
+{
+7
+"label"
+:
+"Date"
+,
+8
+"dataType"
+:
+"DATE"
+,
+9
+"value"
+:
+"2023-10-13"
+10
+}
+11
+]
+12
+}
+13
+]
+14
+}
+Datetime properties
+DATETIME
+properties indicate a specific time and must be provided as milliseconds since epoch. These properties will be displayed in a format appropriate to the user's locale.
+Copy code snippet
+// Example custom datetime property
+{
+"results": [
+{
+"properties": [
+{
+"label": "Timestamp",
+"dataType": "DATETIME",
+"value": "1697233678777"
+}
+]
+}
+]
+}
+xxxxxxxxxx
+14
+1
+// Example custom datetime property
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"properties"
+: [
+6
+{
+7
+"label"
+:
+"Timestamp"
+,
+8
+"dataType"
+:
+"DATETIME"
+,
+9
+"value"
+:
+"1697233678777"
+10
+}
+11
+]
+12
+}
+13
+]
+14
+}
+Email properties
+EMAIL
+properties are for values that contain an email address. These properties will be displayed as mailto links.
+Copy code snippet
+// Example custom email property
+{
+"results": [
+{
+"properties": [
+{
+"label": "Email address",
+"dataType": "EMAIL",
+"value": "hobbes.baron@gmail.com"
+}
+]
+}
+]
+}
+xxxxxxxxxx
+14
+1
+// Example custom email property
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"properties"
+: [
+6
+{
+7
+"label"
+:
+"Email address"
+,
+8
+"dataType"
+:
+"EMAIL"
+,
+9
+"value"
+:
+"hobbes.baron@gmail.com"
+10
+}
+11
+]
+12
+}
+13
+]
+14
+}
+Link properties
+LINK
+properties display hyperlinks and open in a new window. You can specify a
+linkLabel
+, otherwise the URL itself will be displayed.
+Copy code snippet
+// Example custom link property
+{
+"results": [
+{
+"properties": [
+{
+"label": "Link property",
+"dataType": "LINK",
+"value": "https://www.hubspot.com",
+"linkLabel": "Test link"
+}
+]
+}
+]
+}
+xxxxxxxxxx
+15
+1
+// Example custom link property
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"properties"
+: [
+6
+{
+7
+"label"
+:
+"Link property"
+,
+8
+"dataType"
+:
+"LINK"
+,
+9
+"value"
+:
+"https://www.hubspot.com"
+,
+10
+"linkLabel"
+:
+"Test link"
+11
+}
+12
+]
+13
+}
+14
+]
+15
+}
+Numeric properties
+NUMERIC
+properties display numbers.
+Copy code snippet
+// Example custom datetime property
+{
+"results": [
+{
+"properties": [
+{
+"label": "Number",
+"dataType": "NUMERIC",
+"value": "123.45"
+}
+]
+}
+]
+}
+xxxxxxxxxx
+14
+1
+// Example custom datetime property
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"properties"
+: [
+6
+{
+7
+"label"
+:
+"Number"
+,
+8
+"dataType"
+:
+"NUMERIC"
+,
+9
+"value"
+:
+"123.45"
+10
+}
+11
+]
+12
+}
+13
+]
+14
+}
+Status properties
+STATUS
+properties display as colored indicators. To define a status property, the integration must provide an
+optionType
+that describes the possible statuses. Statuses include:
+DEFAULT
+: Grey
+SUCCESS
+: Green
+WARNING
+: Yellow
+DANGER
+: Red
+INFO
+: Blue
+Copy code snippet
+// Example custom datetime property
+{
+"results": [
+{
+"properties": [
+{
+"label": "Status",
+"dataType": "STATUS",
+"value": "Errors occurring",
+"optionType": "DANGER"
+}
+]
+}
+]
+}
+xxxxxxxxxx
+15
+1
+// Example custom datetime property
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"properties"
+: [
+6
+{
+7
+"label"
+:
+"Status"
+,
+8
+"dataType"
+:
+"STATUS"
+,
+9
+"value"
+:
+"Errors occurring"
+,
+10
+"optionType"
+:
+"DANGER"
+11
+}
+12
+]
+13
+}
+14
+]
+15
+}
+String properties
+STRING
+properties display text.
+Copy code snippet
+// Example custom datetime property
+{
+"results": [
+{
+"properties": [
+{
+"label": "First name",
+"dataType": "STRING",
+"value": "Tim Robinson"
+}
+]
+}
+]
+}
+xxxxxxxxxx
+14
+1
+// Example custom datetime property
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"properties"
+: [
+6
+{
+7
+"label"
+:
+"First name"
+,
+8
+"dataType"
+:
+"STRING"
+,
+9
+"value"
+:
+"Tim Robinson"
+10
+}
+11
+]
+12
+}
+13
+]
+14
+}
+Custom actions
+On the
+Custom actions
+tab, you can define the base URLs that will be requested when a user clicks an action button.. You can include multiple action URLs for various actions in your CRM card. Card actions must call an endpoint specified on this tab.
+Action hooks and confirmation hook requests will include a
+X-HubSpot-Signature
+header for verifying the request. Iframe action requests will not include a request signature. See
+request signatures
+for more information.
+Action URLs are accessed in the
+uri
+field in an action. Similar to the
+data fetch request,
+action hooks will include a default set of query parameters. You can include other query parameters by including an
+associatedObjectProperties
+field in the action.
+The response will vary depending on type of action. Below, learn more about action types.
+Action types
+Iframe actions
+IFRAME
+actions will open a modal containing an iframe pointing at the provided URL. No request signature is sent when the iframe is opened from the CRM UI. This is because the iframe URL is returned in the original data fetch request, and no additional proxy requests are needed.
+Copy code snippet
+// Example iframe action
+{
+"type": "IFRAME",
+"width": 890,
+"height": 748,
+"uri": "https://example.com/iframe-contents",
+"label": "Edit",
+"associatedObjectProperties": ["some_crm_property"]
+}
+xxxxxxxxxx
+9
+1
+// Example iframe action
+2
+{
+3
+"type"
+:
+"IFRAME"
+,
+4
+"width"
+:
+890
+,
+5
+"height"
+:
+748
+,
+6
+"uri"
+:
+"https://example.com/iframe-contents"
+,
+7
+"label"
+:
+"Edit"
+,
+8
+"associatedObjectProperties"
+: [
+"some_crm_property"
+]
+9
+}
+When the user is done completing an action inside the iframe, the modal should close and return the user to the CRM record they started from. To close the modal, the integration can use
+window.postMessage
+to signal to the CRM that the user is done. The following messages are accepted:
+{"action": "DONE"}
+: the user has successfully competed the action.
+{"action": "CANCEL"}
+: the user has canceled the action.
+Copy code snippet
+// Example iframe close message
+window.parent.postMessage(JSON.stringify({"action": "DONE"}), "*");
+xxxxxxxxxx
+2
+1
+// Example iframe close message
+2
+window
+.
+parent
+.
+postMessage
+(
+JSON
+.
+stringify
+({
+"action"
+:
+"DONE"
+}),
+"*"
+);
+Action hook actions
+ACTION_HOOK
+actions send a server-side request to the integrator. The only UI a users sees for this action is a success or error message. This type of action is useful for simple operations that require no further input from the user. An
+X-HubSpot-Signature
+header will be included in the request for verification. Learn more about
+request signatures
+.
+Copy code snippet
+// Example action hook action
+{
+"type": "ACTION_HOOK",
+"httpMethod": "POST",
+"uri": "https://example.com/action-hook",
+"label": "Example action",
+"associatedObjectProperties": ["some_crm_property"]
+}
+xxxxxxxxxx
+8
+1
+// Example action hook action
+2
+{
+3
+"type"
+:
+"ACTION_HOOK"
+,
+4
+"httpMethod"
+:
+"POST"
+,
+5
+"uri"
+:
+"https://example.com/action-hook"
+,
+6
+"label"
+:
+"Example action"
+,
+7
+"associatedObjectProperties"
+: [
+"some_crm_property"
+]
+8
+}
+The
+httpMethod
+can be set to
+GET
+,
+POST
+,
+PUT
+,
+DELETE
+, or
+PATCH
+. If using
+GET
+or
+DELETE
+, the
+associatedObjectProperties
+values will be appended to the request URL as query parameters. Otherwise, the properties will be sent in the request body.
+Copy code snippet
+// Example iframe close message
+window.parent.postMessage(JSON.stringify({"action": "DONE"}), "*");
+xxxxxxxxxx
+2
+1
+// Example iframe close message
+2
+window
+.
+parent
+.
+postMessage
+(
+JSON
+.
+stringify
+({
+"action"
+:
+"DONE"
+}),
+"*"
+);
+Confirmation actions
+CONFIRMATION_ACTION_HOOK
+actions behave the same as
+ACTION_HOOK
+actions, except that a confirmation dialog is shown to the user before running the server-side request. An
+X-HubSpot-Signature
+header will be included in the request for verification. Learn more about
+request signatures
+.
+Copy code snippet
+// Example action hook action
+{
+"type": "CONFIRMATION_ACTION_HOOK",
+"httpMethod": "POST",
+"uri": "https://example.com/action-hook",
+"label": "Example action",
+"associatedObjectProperties": ["some_crm_property"],
+"confirmationMessage": "Are you sure you want to run example action?",
+"confirmButtonText": "Yes",
+"cancelButtonText": "No"
+}
+xxxxxxxxxx
+11
+1
+// Example action hook action
+2
+{
+3
+"type"
+:
+"CONFIRMATION_ACTION_HOOK"
+,
+4
+"httpMethod"
+:
+"POST"
+,
+5
+"uri"
+:
+"https://example.com/action-hook"
+,
+6
+"label"
+:
+"Example action"
+,
+7
+"associatedObjectProperties"
+: [
+"some_crm_property"
+],
+8
+"confirmationMessage"
+:
+"Are you sure you want to run example action?"
+,
+9
+"confirmButtonText"
+:
+"Yes"
+,
+10
+"cancelButtonText"
+:
+"No"
+11
+}
+The
+httpMethod
+can be set to
+GET
+,
+POST
+,
+PUT
+,
+DELETE
+, or
+PATCH
+. If using
+GET
+or
+DELETE
+, the
+associatedObjectProperties
+values will be appended to the request URL as query parameters. Otherwise, the properties will be sent in the request body.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Calling SDK
+CRM cards
+Timeline events
+Third-party calling
+Beta
+Video conferencing extension
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

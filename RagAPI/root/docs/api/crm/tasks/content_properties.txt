@@ -1,0 +1,472 @@
+Engagements | Tasks | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create a task
+Properties
+Associations
+Retrieve tasks
+Update tasks
+Associate existing tasks with records
+Remove an association
+Pin a task on a record
+Delete tasks
+API Guides
+CRM
+Engagements
+Engagements | Tasks
+Tasks
+Tasks endpoint reference
+Use the tasks API to create and manage tasks. You can create tasks
+in HubSpot
+or via the tasks API.
+Below, learn the basic methods of managing tasks through the API. To view all available endpoints and their requirements, click the
+Endpoints
+tab at the top of this article.
+Create a task
+To create a task, make a
+POST
+request to
+/crm/v3/objects/tasks
+.
+In the request body, add task details in a
+properties
+object. You can also add an
+associations
+object to associate your new task with an existing record (e.g., contacts, companies).
+Properties
+In the properties object, you can include the following fields:
+Field
+Description
+hs_timestamp
+Required. This field marks the task's due date. You can use either a Unix timestamp in milliseconds or UTC format.
+hs_task_body
+The task
+notes.
+hubspot_owner_id
+The
+owner ID
+of the user assigned to the task.
+hs_task_subject
+The title of the task.
+hs_task_status
+The status of the task, either
+COMPLETED
+or
+NOT_STARTED
+.
+hs_task_priority
+The priority of the task. Values include
+LOW
+,
+MEDIUM
+, or
+HIGH
+.
+hs_task_type
+The type of task. Values include
+EMAIL
+,
+CALL
+, or
+TODO
+.
+hs_task_reminders
+The timestamp for when to send a reminder for the due date of the task. You must use Unix timestamp in milliseconds.
+Associations
+To create and associate a task with existing records, include an associations object in your request. For example, to create a task and associate it with two contacts, your request body might look similar to the following:
+Copy code snippet
+// Example request body
+{
+"properties": {
+"hs_timestamp": "2019-10-30T03:30:17.883Z",
+"hs_task_body": "Send Proposal",
+"hubspot_owner_id": "64492917",
+"hs_task_subject": "Follow-up for Brian Buyer",
+"hs_task_status": "WAITING",
+"hs_task_priority": "HIGH",
+"hs_task_type": "CALL"
+},
+"associations": [
+{
+"to": {
+"id": 101
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 204
+}
+]
+},
+{
+"to": {
+"id": 102
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 204
+}
+]
+}
+]
+}
+1
+// Example request body
+2
+{
+3
+"properties"
+: {
+4
+"hs_timestamp"
+:
+"2019-10-30T03:30:17.883Z"
+,
+5
+"hs_task_body"
+:
+"Send Proposal"
+,
+6
+"hubspot_owner_id"
+:
+"64492917"
+,
+7
+"hs_task_subject"
+:
+"Follow-up for Brian Buyer"
+,
+8
+"hs_task_status"
+:
+"WAITING"
+,
+9
+"hs_task_priority"
+:
+"HIGH"
+,
+10
+"hs_task_type"
+:
+"CALL"
+11
+},
+12
+"associations"
+: [
+13
+{
+14
+"to"
+: {
+15
+"id"
+:
+101
+16
+},
+17
+"types"
+: [
+18
+{
+19
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+20
+"associationTypeId"
+:
+204
+21
+}
+22
+]
+23
+},
+24
+{
+25
+"to"
+: {
+26
+"id"
+:
+102
+27
+},
+28
+"types"
+: [
+29
+{
+30
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+31
+"associationTypeId"
+:
+204
+32
+}
+33
+]
+34
+}
+35
+]
+36
+}
+In the associations object, you should include the following:
+Field
+Description
+to
+The record you want to associate with the task, specified by its unique
+id
+value.
+types
+The type of the association between the task and the record. Include the
+associationCategory
+and
+associationTypeId
+. Default association type IDs are listed
+here
+, or you can retrieve the value for custom association types (i.e. labels) via the
+associations API
+.
+Learn more about batch creating tasks by clicking the
+Endpoints
+tab at the top of this article.
+Retrieve tasks
+You can retrieve tasks individually or in bulk. Learn more about batch retrieval by clicking the
+Endpoints
+tab at the top of this article.
+To retrieve an individual task by its task ID, make a
+GET
+request to
+/crm/v3/objects/tasks/{taskId}
+. You can also include the following parameters in the request URL:
+Parameter
+Description
+properties
+A comma separated list of the properties to be returned.
+associations
+A comma separated list of object types to retrieve associated IDs for. Any specified associations that don't exist will not be returned in the response. Learn more about the
+associations API.
+To request a list of all of tasks, make a
+GET
+request to
+crm/v3/objects/tasks
+. You can include the following parameters in the request URL:
+Parameter
+Description
+limit
+The maximum number of results to display per page.
+properties
+A comma separated list of the properties to be returned.
+Update tasks
+You can update tasks individually or in batches. To update an individual task by its task ID, make a
+PATCH
+request to
+/crm/v3/objects/tasks/{taskId}
+.
+In the request body, include the task properties that you want to update. For example, your request body might look similar to the following:
+Copy code snippet
+//Example PATCH request to https://api.hubspot.com/crm/v3/objects/tasks/{taskId}
+{
+"properties": {
+"hs_timestamp": "2019-10-30T03:30:17.883Z",
+"hs_task_body": "Send Proposal",
+"hubspot_owner_id": "64492917",
+"hs_task_subject": "Close deal",
+"hs_task_status": "COMPLETED",
+"hs_task_priority": "HIGH"
+}
+}
+xxxxxxxxxx
+11
+1
+//Example PATCH request to https://api.hubspot.com/crm/v3/objects/tasks/{taskId}
+2
+{
+3
+"properties"
+: {
+4
+"hs_timestamp"
+:
+"2019-10-30T03:30:17.883Z"
+,
+5
+"hs_task_body"
+:
+"Send Proposal"
+,
+6
+"hubspot_owner_id"
+:
+"64492917"
+,
+7
+"hs_task_subject"
+:
+"Close deal"
+,
+8
+"hs_task_status"
+:
+"COMPLETED"
+,
+9
+"hs_task_priority"
+:
+"HIGH"
+10
+}
+11
+}
+HubSpot will ignore values for read-only and non-existent properties. To clear a property value, pass an empty string for the property in the request body.
+Learn more about batch updating by clicking the
+Endpoints
+tab at the top of this article.
+Associate existing tasks with records
+To associate an existing task with records (e.g., contacts, deals, etc.), make a
+PUT
+request to
+/crm/v3/objects/tasks/{taskId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}
+. The request URL should contains the following fields:
+Field
+Description
+taskId
+The ID of the task.
+toObjectType
+The type of object that you want to associate the task with (e.g., contact or company)
+toObjectId
+The ID of the record that you want to associate the task with.
+associationTypeId
+A unique identifier to indicate the association type between the task and the other object. The ID can be represented numerically or in snake case (e.g.,
+task_to_contact
+). You can retrieve the value through the
+associations API
+.
+For example, your request URL might look similar to the following:
+https://api.hubspot.com/crm/v3/objects/tasks/17687016786/associations/contacts/104901/204
+Remove an association
+To remove an association between a task and a record, make a
+DELETE
+request to the same URL as above:
+/crm/v3/objects/tasks/{taskId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}
+Pin a task on a record
+You can
+pin a task
+on a record so it remains on the top of the record's timeline. The task must already be associated with the record prior to pinning, and you an only pin one activity per record. To pin a task, include the task's
+id
+in the
+hs_pinned_engagement_id
+field when creating or updating a record via the object APIs. Learn more about using the
+companies,
+contacts
+,
+deals
+,
+tickets
+, and
+custom objects
+APIs.
+Delete tasks
+You can delete tasks individually or in batches, which will add the task to the recycling bin in HubSpot. You can later
+restore the task from the record timeline
+.
+To delete an individual task by its task ID, make a
+DELETE
+request to
+/crm/v3/objects/tasks/{taskId}
+.
+Learn more about batch deleting by clicking the
+Endpoints
+tab at the top of this article.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Engagement details
+Calls
+Communications
+Email
+Meetings
+Notes
+Postal mail
+Tasks
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

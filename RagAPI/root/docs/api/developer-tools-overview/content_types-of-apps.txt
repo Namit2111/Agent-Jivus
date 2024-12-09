@@ -1,0 +1,210 @@
+Building apps overview | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Types of apps
+Private apps
+Private apps in projects (BETA)
+Public apps
+Public apps in projects (BETA)
+Supported extensions by app type
+Types of accounts for app development
+Authentication
+Developer API keys
+Delete a developer account
+Apps
+Building apps overview
+Building apps overview
+Apps enable you to authenticate API calls to your HubSpot account, subscribe to events with webhooks, and extend the HubSpot UI, such as with custom cards. HubSpot offers several types of apps and extensions depending on your integration's needs. Below, learn more about the types of apps and extensions you can build with HubSpot, how to get started building them, and how to manage them in HubSpot.
+Types of apps
+Depending on the type of integration you want to build, you’ll need to choose the right type of app. Below, learn more about the types of apps that you can build and the functionalities that they support.
+For building extensions,
+view the reference table below
+for a quick overview of which extensions can be built with which types of apps.
+Private apps
+Private apps can be created for a single HubSpot account, and are best suited for one-off scripts or single-purpose extensions. In general, private apps are simpler to implement than public apps. Private apps authenticate with access tokens and cannot be listed on the HubSpot App Marketplace.
+For example, you might build a private app for your HubSpot account to:
+Create a new custom object through the API.
+Import CRM records from a CSV file.
+Authenticate API requests in custom automation actions and chat bots.
+Create and edit webhook subscriptions
+.
+Learn more about
+when to build private apps
+. If this type of app fits your needs,
+get started creating a private app in your HubSpot account
+.
+Private apps in projects (BETA)
+Private apps built using the developer projects framework enable you to create UI extensions for CRM records and help desk preview panels. You'll need a
+Sales Hub
+or
+Service Hub
+Enterprise
+subscription to build a UI extension in for a private app in a standard HubSpot account. However, you can try these tools out for free in a
+developer test account
+.
+To get started,
+enroll your account into the beta
+, then follow the
+quickstart guide
+.
+Public apps
+Public apps can be installed in multiple accounts. In addition to the types of extensions you can build with a private app, public apps support advanced functionality, such as:
+Subscribing to account-wide events using the webhooks API.
+Creating custom timeline events on CRM records using the timeline events API.
+Creating custom app settings pages in HubSpot.
+Public apps authenticate with OAuth and can be listed on the HubSpot App Marketplace. Learn more about
+when to build public apps
+.
+If this type of app fits your needs,
+get started creating a public app in your app developer account
+.
+Public apps in projects (BETA)
+Public apps built using the developer projects framework enable you to create UI extensions for CRM records and help desk preview panels. You can also include other extensions in a public app created this way, but you'll need to manage those extensions in HubSpot and through the API as before.
+If you're enrolled in the beta, get started by following the
+quickstart guide
+, or learn how to
+migrate an existing public app to the projects framework
+.
+Supported extensions by app type
+App type
+Supported extensions
+Private app
+UI extensions
+are supported in
+private apps created with projects (BETA)
+.
+Public app
+Calling SDK
+Classic CRM cards
+Timeline events
+Video conference extension
+UI extensions
+are supported in
+public apps created with projects (BETA)
+.
+* Classic CRM cards are different from the app cards you can create as
+UI extensions with projects (BETA)
+. UI extensions offer more advanced functionality and customizable components.
+Types of accounts for app development
+While app developer and test accounts work together, they each serve a distinct purpose.
+App developer accounts are intended for building and listing apps on the App Marketplace.
+Developer test accounts, which can be created in developer accounts, are intended for testing APIs and apps you’re building without impacting data in a real HubSpot account.
+If you have a
+Sales Hub
+or
+Service Hub
+Enterprise
+subscription, you can use
+development sandboxes
+in a standard HubSpot account to quickly iterate without impacting the account's data or assets.
+Learn more about
+HubSpot's account types
+.
+Authentication
+If you want to build a custom integration with a single HubSpot account, you can create a
+private app
+and use its
+access token
+to authenticate API calls, or you can use
+OAuth
+with a public app. Any app designed for installation by multiple HubSpot accounts or listing on the App Marketplace must use OAuth.
+Please note:
+as of November 30, 2022, HubSpot API Keys have been deprecated and are no longer supported. Continued use of HubSpot API Keys is a security risk to your account and data.
+You should instead authenticate using a private app access token or OAuth. Learn more about
+this change
+and how to
+migrate an API key integration
+to use a private app instead.
+If you want to subscribe to webhooks or set up
+OAuth for your app
+, you should
+create a developer account
+. With developer accounts, you can also
+list your apps
+on the App Marketplace or
+create a test account
+.
+Developer API keys
+To manage your app's settings through the API, you can use a developer API key. This API key is separate from standard API keys, which have been deprecated. Developer API keys can be used for managing subscriptions for the
+Webhooks API
+and
+creating or updating event types for the timeline events feature
+. All other API calls need to be made using a
+private app access token
+or OAuth.
+To access your app developer account API key:
+In your app developer account, navigate to
+Apps
+in the top navigation bar.
+In the upper right, click
+Get HubSpot API key
+.
+In the dialog box, click
+Show key
+. The key will be revealed, and you can then click
+Copy
+next to the key.
+You can also deactivate the previous API key and generate a new one by clicking
+Regenerate key
+.
+Delete a developer account
+You can delete app developer accounts if they don’t contain apps with installations or active marketplace listings. If your account has apps with installations or active marketplace listings and you’d like to delete your account, please reach out to support for assistance.
+Once you delete your account, you will no longer be able to access that account. If you can switch between multiple HubSpot accounts, the deleted account will no longer appear.
+In your HubSpot API developer account, click your account name in the top right corner, then click on
+Account.
+Click
+Delete account.
+If your account has any apps with installations or active marketplace listings this button will be disabled.
+In the dialog box, enter your account ID then click
+Delete developer account
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+Apps
+Overview
+Authentication
+Private apps
+Public apps
+Extensions
+API usage
+Marketplace

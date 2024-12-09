@@ -1,0 +1,776 @@
+CRM API | Properties | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Default properties
+Property groups
+Property type and fieldType values
+Create a property
+Create unique identifier properties
+Create calculation properties
+Calculation property syntax
+Literal syntax
+Property syntax
+Operators
+Functions
+Conditional statements
+Example formulas
+Retrieve properties
+Update or clear a property's values
+Add values to date and datetime properties
+Add values to checkbox type properties
+Assign record owners with user properties
+Clear a property value
+API Guides
+CRM
+CRM API | Properties
+Properties
+Properties endpoint reference
+Use properties to store information on CRM records. HubSpot provides a set of default properties for each CRM object, and you can also create and manage your own custom properties either
+in HubSpot
+or using the properties API.
+When creating properties, it’s important to consider how to architect your data. In many cases, creating custom properties for HubSpot's standard objects is the right course of action. However, there may be times when you'll need to create a separate
+custom object
+with its own set of properties.
+Default properties
+CRM objects are defined by a primary
+type
+and a set of
+properties
+. Each type has a unique set of standard properties, represented by a map of name-value pairs.
+Learn more about default properties for different objects:
+Contacts
+Companies
+Deals
+Tickets
+Activities
+(Calls, Emails, Meetings, Notes, Tasks)
+Leads
+(
+Sales Hub
+Professional
+and
+Enterprise
+)
+Property groups
+Property
+groups
+are used to group related properties. Any grouped properties will appear next to each other on HubSpot records. If your integration creates any custom object properties, a custom property group will make it easy to identify that data.
+Property type and fieldType values
+When creating or updating properties, both
+type
+and
+fieldType
+values are required. The
+type
+value determines the type of the property, i.e. a string or a number. The
+fieldType
+property determines how the property will appear in HubSpot or on a form, i.e. as a plain text field, a dropdown menu, or a date picker.
+In the table below, learn about the available property
+type
+and corresponding
+fieldType
+values.
+type
+Description
+Valid
+fieldType
+values
+bool
+A field containing binary options (e.g.,
+Yes
+or
+No
+,
+True
+or
+False
+).
+booleancheckbox
+,
+calculation_equation
+enumeration
+A string representing a set of options, with options separated by a semicolon.
+booleancheckbox
+,
+checkbox
+,
+radio
+,
+select
+,
+calculation_equation
+date
+A value representing a specific day, month, and year. Values must be represented in UTC time and can be formatted as
+ISO 8601 strings or EPOCH-timestamps in milliseconds (i.e. midnight UTC).
+date
+dateTime
+A value representing a specific day, month, year and time of day. Values must be represented in UTC time and can be formatted as
+ISO 8601 strings or UNIX-timestamps in milliseconds.
+date
+string
+A plain text string, limited to 65,536 characters.
+file
+,
+text
+,
+textarea
+,
+calculation_equation
+,
+html
+,
+phonenumber
+number
+A number value containing numeric digits and at most one decimal.
+number
+,
+calculation_equation
+object_coordinates
+A text value used to reference other HubSpot objects, used only for internal properties. Properties of this type cannot be created or edited, and are not visible in HubSpot.
+text
+json
+A text value stored as formatted JSON, used only for internal properties. Properties of this type cannot be created or edited, and are not visible in HubSpot.
+text
+Valid values for
+fieldType
+include:
+Fieldtype
+Description
+booleancheckbox
+An input that will allow users to selected one of either Yes or No. When used in a form, it will be displayed as a single checkbox. Learn how to
+add a value to single checkbox properties
+.
+calculation_equation
+A custom equation that can calculate values based on other property values and/or associations. Learn how to define
+calculation properties
+.
+checkbox
+A list of checkboxes that will allow a user to select multiple options from a set of options allowed for the property. Learn how to
+format values when updating multiple checkbox properties
+.
+date
+A date value, displayed as a date picker.
+file
+Allows for a file to be uploaded on a record or via a form. Stores a file ID.
+html
+A string, rendered as sanitized html, that enables the use of a rich text editor for the property.
+number
+A string of numerals or numbers written in decimal or scientific notation.
+phonenumber
+A plain text string, displayed as a formatted phone number.
+radio
+An input that will allow users to select one of a set of options allowed for the property. When used in a form, this will be displayed as a set of radio buttons.
+select
+A dropdown input that will allow users to select one of a set of options allowed for the property.
+text
+A plain text string, displayed in a single line text input.
+textarea
+A plain text string, displayed as a multi-line text input.
+Create a property
+To create a property, make a
+POST
+request to
+/crm/v3/properties/{objectType}
+. In your request body, include the following required fields:
+groupName
+: the
+property group
+the property will be in.
+name
+: the internal name of the property (e.g., favorite_food).
+label
+: the name of the property as it appears in HubSpot (e.g., Favorite Food).
+type
+: the
+type
+of property.
+fieldType
+: the
+field type
+of the property.
+For example, to create a contact property called
+Favorite Food
+, your request would look like:
+JSON
+JSON
+More
+Copy code snippet
+/// Example request body POST crm/v3/properties/contacts
+{
+"groupName": "contactinformation",
+"name": "favorite_food",
+"label": "Favorite Food",
+"type": "string",
+"fieldType": "text"
+}
+1
+/// Example request body POST crm/v3/properties/contacts
+2
+{
+3
+"groupName"
+:
+"contactinformation"
+,
+4
+"name"
+:
+"favorite_food"
+,
+5
+"label"
+:
+"Favorite Food"
+,
+6
+"type"
+:
+"string"
+,
+7
+"fieldType"
+:
+"text"
+8
+}
+Create unique identifier properties
+When a record is created in HubSpot, a unique
+Record ID
+(
+hs_object_id
+) is automatically generated and should be treated as a string. These IDs are unique only within that object, so there can be both a contact and company with the same ID. For contacts and companies, there are additional unique identifiers, including a contact's email address (
+email
+) and a company's domain name (
+domain
+).
+In some cases, you want may to create your own unique identifier property so that you can't enter the same value for multiple records. You can have up to ten unique ID properties per object. To create a property requiring unique values via API:
+Make a
+POST
+request to
+/crm/v3/properties/{objectType}
+.
+In your request body, for the
+hasUniqueValue
+field, set the value to
+true
+.
+JSON
+JSON
+More
+Copy code snippet
+/// Example request body
+{
+"groupName": "dealinformation",
+"name": "system_a_unique",
+"label": "Unique ID for System A",
+"hasUniqueValue": true,
+"type": "string",
+"fieldType": "text"
+}
+xxxxxxxxxx
+9
+1
+/// Example request body
+2
+{
+3
+"groupName"
+:
+"dealinformation"
+,
+4
+"name"
+:
+"system_a_unique"
+,
+5
+"label"
+:
+"Unique ID for System A"
+,
+6
+"hasUniqueValue"
+:
+true
+,
+7
+"type"
+:
+"string"
+,
+8
+"fieldType"
+:
+"text"
+9
+}
+Once you've created your unique ID property, you can use it in an API call to retrieve specific records. The request URL could look like this:
+GET
+https://api.hubapi.com/crm/v3/objects/deals/abc?idProperty=system_a_unique
+. This will return the deal with the value of
+abc
+in the
+system_a_unique
+field.
+You can then use this unique identifier property value to identify and update specific records in the same way you could use
+hs_object_id
+,
+email
+(contacts), or
+domain
+(companies).
+Create calculation properties
+Calculation properties define a property value based on other properties within the same object record. They are defined using a formula, which may include operations like min, max, count, sum, or average. You can use the properties API to read or create calculation properties in your HubSpot account, using a field type of
+calculation_equation
+and a type of
+number
+,
+bool
+,
+string
+, or
+enumeration
+.
+You can define the property's calculation formula with the
+calculationFormula
+field.
+Please note
+: calculation properties created via API
+cannot
+be edited within HubSpot. You can only edit these properties via the properties API.
+Calculation property syntax
+Using
+calculationFormula
+, you can write your formula with arithmetic operators, comparison operators, logic operators, conditional statements, and other functions.
+Literal syntax
+String literal
+: constant strings can be represented with either single quotes (
+'constant'
+) or double quotes (
+"constant"
+).
+Number literal
+: constant numbers can be any real numbers, and can include point notation.
+1005
+and
+1.5589
+are both valid constant numbers.
+Boolean literal
+: constant booleans can be
+true
+or
+false
+.
+Property syntax
+String property variables:
+for an identifier string to be interpreted as a string property, it must be wrapped in the
+string
+function. For example,
+string(var1)
+will be interpreted as the value for the string property var1.
+Number property variables
+: all identifiers will be interpreted as number property variables. For example,
+var1
+will be interpreted as the value for the number property var1.
+Boolean property variables
+: for an identifier to be interpreted as a bool property, it must be wrapped in the
+bool
+function. For example, the identifier
+bool(var1)
+will be interpreted as the value for the boolean property var1.
+Please note:
+the language used is case sensitive for all types
+except
+strings. For example,
+If A ThEn B
+is exactly the same as
+if a then b
+but
+'a'
+is not the same as
+'A'
+. Spaces, tabs, and new lines will be used for tokenization but will be ignored.
+Operators
+Operators can be used with literal and property values. For arithmetic operators, you can use prefix notation to multiply, and parenthesis can be used to specify the order of operations.
+Operator
+Description
+Examples
++
+Add numbers or strings.
+property1 + 100
+-
+Subtract numbers.
+property1 + 100 - property2
+*
+Multiply numbers.
+10property1
+=
+10 * property1
+/
+Divide numbers.
+property1 * (100 - property2/(50 - property3))
+<
+Checks if a value is less than another. Supported by number properties or constants.
+a < 100
+>
+Checks if a value is greater than another. Supported by number properties or constants.
+a > 50
+<=
+Checks if a value is less than or equal to another. Supported by number properties or constants.
+a <= b
+>=
+Checks if a value is greater than or equal to another. Supported by number properties or constants.
+b>= c
+=
+Checks if a value is equal to another. Supported by both numbers and strings.
+(a + b - 100c * 150.652) = 150-230b
+equals
+Checks if a value is equal to another. Supported by both numbers and strings.
+a + b - 100.2c * 150 equals 150 - 230
+!=
+Checks if a value is not equal to another. Supported by both numbers and strings.
+string(property1) != 'test_string'
+or
+Checks if either or two values are true.
+a > b or b <= c
+and
+Checks if both values are true.
+bool(a) and bool(c)
+not
+Checks if none of the values are true.
+not (bool(a) and bool(c))
+Functions
+The following are supported functions:
+Function
+Description
+Examples
+max
+Will have between 2 and 100 input numbers, and will return the maximum number out of all the inputs.
+max(a, b, c, 100)
+or
+max(a, b)
+min
+Will have between 2 and 100 input numbers, and will return the minimum number of out all the inputs.
+min(a, b, c, 100)
+or
+min(a, b)
+is_present
+Evaluates whether an expression can be evaluated.
+is_present(bool(a))
+= true if the property is boolean, but
+is_present(bool(a))
+= false if the property is empty or not boolean.
+contains
+Has two strings as inputs and will return true if the first input contains the second.
+contains('hello', 'ello')
+=
+true
+while
+contains('ello', 'hello')
+= false.
+concatenate
+Joins a list of strings. The list of inputs can go from 2 up to 100.
+concatenate('a', 'b', string(a), string(b))
+There are also two parsing functions:
+number_to_string
+: tries to convert the input number expression to a string.
+string_to_number
+: tries to convert the input string expression to a number.
+For example,
+"Number of cars: " + num_cars
+is not a valid property because you can't add a string with a number, but
+"Number of cars: " + number_to_string(num_cars)
+is.
+Conditional statements
+You can also write your formula with conditional statements using
+if
+,
+elseif
+,
+endif
+, and
+else
+.
+For example, a conditional statement could look like:
+if boolean_expression then statement [elseif expression then statement]* [else statement | endif]
+where the
+[a]
+brackets represent that a is optional, the
+a|b
+represent that either a or b will work, and
+*
+means 0 or more.
+endif
+can be used to finish a conditional statement prematurely, ensuring that the parser can identify which
+if
+the next
+elseif
+belongs to.
+Example formulas
+The following are examples you can use to help define your own calculation formulas:
+Copy code snippet
+//Example formula
+"calculationFormula": "closed - started"
+xxxxxxxxxx
+2
+1
+//Example formula
+2
+"calculationFormula"
+:
+"closed - started"
+A more advanced example with conditionals:
+Copy code snippet
+//Example formula
+"calculationFormula": "if is_present(hs_latest_sequence_enrolled_date) then
+if is_present(hs_sequences_actively_enrolled_count) an hs_sequences_actively_enrolled_count >= 1 then
+true
+else
+false
+else
+''"
+xxxxxxxxxx
+8
+1
+//Example formula
+2
+"calculationFormula"
+:
+"if is_present(hs_latest_sequence_enrolled_date) then
+3
+if
+is_present
+(
+hs_sequences_actively_enrolled_count
+)
+an
+hs_sequences_actively_enrolled_count
+>=
+1
+then
+4
+true
+5
+else
+6
+false
+7
+else
+8
+''"
+Retrieve properties
+You can retrieve information for individual properties or all properties within an object.
+To retrieve an individual property, make a
+GET
+request to
+crm/v3/properties/{object}/{propertyName}
+. For example, to retrieve the Favorite Food property, your request URL would be https://
+api.hubspot.com/crm/v3/properties/contacts/favorite_food
+.
+To retrieve all properties for an object, make a
+GET
+request to
+/crm/v3/properties/{objectType}
+.
+Please note
+: when retriving all properties, by default only non-sensitive properties are returned. To retrieve sensitive data properties, include the
+dataSensitivity
+query parameter with the value
+sensitive
+. Learn more about
+managing sensitive data via API
+(BETA,
+Enterprise
+only).
+Update or clear a property's values
+To update a property value for a record, make a
+PATCH
+request to
+crm/v3/objects/{objectType}/{recordId}
+. In your request body, include the properties and their values in an array. Learn more about updating records via the
+object APIs
+.
+Add values to date and datetime properties
+Time values are represented in ISO 8601 format in responses, but HubSpot APIs will accept either of two formats for date and time values:
+ISO 8601 formatted strings
+: depending on the type of data, these will be one of two different formats:
+For values that represent a specific date, the complete date format will be used: YYYY-MM-DD (e.g.
+2020-02-29
+)
+For values that represent a specific date and time, the complete date plus hours, minutes, seconds, and a decimal fraction of a second format will be used: YYYY-MM-DDThh:mm:ss.sTZD (e.g.
+2020-02-29T03:30:17.000Z
+). All times are represented in UTC, so the values will always use the UTC designator "Z."
+UNIX-formatted timestamps in milliseconds
+: timestamp values in milliseconds, which are represented in UTC time. For example, the timestamp value
+1427997766000
+translates to
+02 Apr 2015 18:02:46 UTC
+, or
+April 2nd, 2015, 2:02:46 PM EDT
+(Eastern Daylight Saving Time).
+There are two types of properties for storing dates (
+date
+and
+datetime
+) which also affect how you format values:
+date
+properties store the date,
+not
+the time.
+date
+properties display the date they're set to, regardless of the time zone setting of the account or user. For
+date
+property values, it is recommended to use the ISO 8601 complete date format. If you use the UNIX timestamp format, you must use an EPOCH millisecond timestamp (i.e. the value must be set to midnight UTC for the date). For example, to represent May 1, 2015 in either format:
+IOS 8601
+: 2015-05-01
+UNIX millisecond timestamp
+: 1430438400000
+datetime
+properties store
+both
+the date and time. Either timestamp format will be accepted. In HubSpot,
+datetime
+properties are displayed based on the time zone of the user viewing the record, so the value will be converted to the local time zone of the user.
+Add values to checkbox type properties
+When updating values for a record's checkbox type properties, format the values in the following ways:
+Boolean
+checkbox property
+: to display as
+Yes
+, or checked in HubSpot, your value must be
+true
+. To display as
+No
+or not checked in HubSpot, your value must be
+false
+.
+Multiple select
+checkbox property
+: to add or append values to a multiple checkboxes property, add a semicolon before the first value, and separate the values with semicolons without a space between. If the property has an existing value, the leading semicolon will append the values instead of overwriting the value. For example, a contact has the existing value
+DECISION_MAKER
+for the
+hs_buying_role
+property. To add additional values without replacing the existing value, your request would look like this:
+JSON
+JSON
+More
+Copy code snippet
+///Example body for PATCH request to /crm/v3/objects/contacts/{contactId}
+{
+"properties": {
+"hs_buying_role": ";BUDGET_HOLDER;END_USER"
+}
+}
+xxxxxxxxxx
+6
+1
+///Example body for PATCH request to /crm/v3/objects/contacts/{contactId}
+2
+{
+3
+"properties"
+: {
+4
+"hs_buying_role"
+:
+";BUDGET_HOLDER;END_USER"
+5
+}
+6
+}
+Assign record owners with user properties
+When assigning users to CRM records via API, your value must be user's owner
+id
+, which you can find in your
+property settings
+or via the
+owners API
+. For example, to assign a user as owner of a contact, send a
+PATCH
+request to
+crm/v3/objects/contacts/{contactId}
+, with the body
+{ "properties":{ "hubspot_owner_id": "41629779"}}
+.
+Clear a property value
+You can clear an object property value via the API by setting the property value to an empty string.
+For example, to clear the
+firstname
+from a contact object, send a
+PATCH
+request to
+https://api.hubapi.com/crm/v3/objects/contacts/{contactId}
+with the body
+{ "properties": { "firstname": ""}}
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

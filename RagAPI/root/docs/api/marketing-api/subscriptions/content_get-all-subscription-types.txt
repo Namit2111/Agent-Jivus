@@ -1,0 +1,1557 @@
+Marketing API | Subscriptions v4 | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Scope requirements
+Get all subscription types
+Get subscription preferences for a specific contact
+Get contacts who unsubscribed from all email communications
+Get a specific contact who unsubscribed from all email communications
+Update subscription preferences for a specific contact
+Update a contact's "Opted out of all email" status
+Using batch subscription endpoints
+Get "Opted out of all communication" subscription status for a list of contacts
+Get specific subscription statuses for multiple contacts
+Update the "Opted out of all email" status for multiple contacts
+Unsubscribe multiple contacts from specific subscription types
+API Guides
+Marketing
+Marketing API | Subscriptions v4
+Subscriptions v4 API
+Subscriptions endpoint reference
+Subscription types represent the lawful basis to communicate with your contacts through email. Contacts can
+manage their email preferences
+so they're only opted in to emails they want to receive. The v4 subscriptions APIs allow you to programmatically subscribe or unsubscribe contacts from your email subscription types, or unsubscribe a contact from all email communication. These APIs also provide support for
+business units
+.
+Scope requirements
+The following scopes are required to use the v4 subscription API endpoints, based on the endpoint you're using:
+communication_preferences.read
+: provides access to fetch subscription type definitions and subscription preferences for a contact.
+communication_preferences.write
+: provides access to update subscription preferences for a contact.
+communication_preferences.read_write
+: provides access to both fetch and update subscription preferences for a contact and fetch all subscription definitions in your account.
+communication_preferences.statuses.batch.read
+: provides access to fetch subscription statuses in bulk.
+communication_preferences.statuses.batch.write
+: provides access to manage and update subscription statuses in bulk.
+For a full list of available endpoints and example requests and responses, click the
+Endpoints
+tab at the top of this article.
+Get all subscription types
+To get a list of all email subscription types in your account, make a
+GET
+request to
+/communication-preferences/v4/definitions
+.
+If you have the
+Business Units add-on
+, you can filter subscription types by business unit by including the
+businessUnitId
+as a query parameter in your request. The default
+Account
+business unit ID will always use
+"businessUnitId": 0
+.
+The subscription types will be returned within the
+results
+field of the response.
+Copy code snippet
+// Example response for GET request to /communication-preferences/v4/definitions
+{
+"status": "COMPLETE",
+"results": [
+{
+"businessUnitId": 41857,
+"id": "33583163",
+"name": "Marketing Information",
+"description": "Marketing offers and updates.",
+"purpose": "Marketing",
+"communicationMethod": "Email",
+"isActive": true,
+"isDefault": true,
+"isInternal": false,
+"createdAt": "2022-02-09T21:06:59.247Z",
+"updatedAt": "2022-02-09T21:06:59.247Z"
+},
+{
+"businessUnitId": 0,
+"id": "39644612",
+"name": "New recipe newsletter",
+"description": "Subscription for new recipes and kitchen updates",
+"purpose": "Marketing",
+"communicationMethod": "Email",
+"isActive": true,
+"isDefault": false,
+"isInternal": false,
+"createdAt": "2022-04-14T20:37:03.073Z",
+"updatedAt": "2022-04-14T20:37:03.073Z"
+}
+]
+}
+1
+// Example response for GET request to /communication-preferences/v4/definitions
+2
+{
+3
+"status"
+:
+"COMPLETE"
+,
+4
+"results"
+: [
+5
+{
+6
+"businessUnitId"
+:
+41857
+,
+7
+"id"
+:
+"33583163"
+,
+8
+"name"
+:
+"Marketing Information"
+,
+9
+"description"
+:
+"Marketing offers and updates."
+,
+10
+"purpose"
+:
+"Marketing"
+,
+11
+"communicationMethod"
+:
+"Email"
+,
+12
+"isActive"
+:
+true
+,
+13
+"isDefault"
+:
+true
+,
+14
+"isInternal"
+:
+false
+,
+15
+"createdAt"
+:
+"2022-02-09T21:06:59.247Z"
+,
+16
+"updatedAt"
+:
+"2022-02-09T21:06:59.247Z"
+17
+},
+18
+{
+19
+"businessUnitId"
+:
+0
+,
+20
+"id"
+:
+"39644612"
+,
+21
+"name"
+:
+"New recipe newsletter"
+,
+22
+"description"
+:
+"Subscription for new recipes and kitchen updates"
+,
+23
+"purpose"
+:
+"Marketing"
+,
+24
+"communicationMethod"
+:
+"Email"
+,
+25
+"isActive"
+:
+true
+,
+26
+"isDefault"
+:
+false
+,
+27
+"isInternal"
+:
+false
+,
+28
+"createdAt"
+:
+"2022-04-14T20:37:03.073Z"
+,
+29
+"updatedAt"
+:
+"2022-04-14T20:37:03.073Z"
+30
+}
+31
+]
+32
+}
+You can optionally include the
+includeTranslations=true
+query parameter in your request to retrieve any subscription translations associated with each definition.
+For example, if you made a
+GET
+request to
+/communication-preferences/v4/definitions?includeTranslations=true
+, the response would resemble the following:
+Copy code snippet
+// Example response for GET request to /communication-preferences/v4/definitions with subscription translations included
+{
+"status": "COMPLETE",
+"results": [
+{
+"subscriptionTranslations": [
+{
+"subscriptionId": 88249125,
+"languageCode": "ar",
+"name": "test",
+"description": "test",
+"updatedAt": 1724702359758,
+"createdAt": 0
+}
+],
+"businessUnitId": 0,
+"id": "88249125",
+"name": "test",
+"description": "test",
+"purpose": "",
+"communicationMethod": "",
+"isActive": false,
+"isDefault": false,
+"isInternal": false,
+"createdAt": "2022-12-22T21:06:03.522Z",
+"updatedAt": "2024-08-26T19:59:39.926Z"
+}
+],
+"startedAt": "2024-08-30T20:17:36.744Z",
+"completedAt": "2024-08-30T20:17:36.753Z"
+}
+xxxxxxxxxx
+31
+1
+// Example response for GET request to /communication-preferences/v4/definitions with subscription translations included
+2
+{
+3
+"status"
+:
+"COMPLETE"
+,
+4
+"results"
+: [
+5
+{
+6
+"subscriptionTranslations"
+: [
+7
+{
+8
+"subscriptionId"
+:
+88249125
+,
+9
+"languageCode"
+:
+"ar"
+,
+10
+"name"
+:
+"test"
+,
+11
+"description"
+:
+"test"
+,
+12
+"updatedAt"
+:
+1724702359758
+,
+13
+"createdAt"
+:
+0
+14
+}
+15
+],
+16
+"businessUnitId"
+:
+0
+,
+17
+"id"
+:
+"88249125"
+,
+18
+"name"
+:
+"test"
+,
+19
+"description"
+:
+"test"
+,
+20
+"purpose"
+:
+""
+,
+21
+"communicationMethod"
+:
+""
+,
+22
+"isActive"
+:
+false
+,
+23
+"isDefault"
+:
+false
+,
+24
+"isInternal"
+:
+false
+,
+25
+"createdAt"
+:
+"2022-12-22T21:06:03.522Z"
+,
+26
+"updatedAt"
+:
+"2024-08-26T19:59:39.926Z"
+27
+}
+28
+],
+29
+"startedAt"
+:
+"2024-08-30T20:17:36.744Z"
+,
+30
+"completedAt"
+:
+"2024-08-30T20:17:36.753Z"
+31
+}
+Get subscription preferences for a specific contact
+To get the current subscription preferences for a specific contact, make a
+GET
+request to
+/communication-preferences/v4/statuses/{subscriberIdString}?channel=EMAIL
+where the
+subscriberIdString
+is the email address of the contact.
+For example, to get the subscription preferences for a contact with an email address of
+jdoe@example.com
+, you'd make a
+GET
+request to
+/preferences/v4/statuses/jdoe@example.com?channel=EMAIL
+.
+The response will include a full list of the current subscription preferences for the contact in the
+results
+field. An example response is included below:
+Copy code snippet
+// Example response for GET request to /communication-preferences/v4/statuses/jdoe@example.com?channel=EMAIL
+{
+"status": "SUCCESS",
+"results": [
+{
+"businessUnitId": 41857,
+"channel": "EMAIL",
+"subscriberIdString": "jdoe@example.com",
+"subscriptionId": 33583163,
+"status": "NOT_SPECIFIED",
+"source": "Not specified",
+"legalBasis": null,
+"legalBasisExplanation": null,
+"setStatusSuccessReason": null,
+"timestamp": "2024-06-05T13:39:29.495Z"
+},
+{
+"businessUnitId": 0,
+"channel": "EMAIL",
+"subscriberIdString": "jdoe@example.com",
+"subscriptionId": 39644612,
+"status": "SUBSCRIBED",
+"source": "Self Service Resubscription",
+"legalBasis": "CONSENT_WITH_NOTICE",
+"legalBasisExplanation": "Contact provided explicit consent via form.",
+"setStatusSuccessReason": null,
+"timestamp": "2023-02-09T20:13:19.046Z"
+}
+]
+}
+xxxxxxxxxx
+30
+1
+// Example response for GET request to /communication-preferences/v4/statuses/jdoe@example.com?channel=EMAIL
+2
+{
+3
+"status"
+:
+"SUCCESS"
+,
+4
+"results"
+: [
+5
+{
+6
+"businessUnitId"
+:
+41857
+,
+7
+"channel"
+:
+"EMAIL"
+,
+8
+"subscriberIdString"
+:
+"jdoe@example.com"
+,
+9
+"subscriptionId"
+:
+33583163
+,
+10
+"status"
+:
+"NOT_SPECIFIED"
+,
+11
+"source"
+:
+"Not specified"
+,
+12
+"legalBasis"
+:
+null
+,
+13
+"legalBasisExplanation"
+:
+null
+,
+14
+"setStatusSuccessReason"
+:
+null
+,
+15
+"timestamp"
+:
+"2024-06-05T13:39:29.495Z"
+16
+},
+17
+{
+18
+"businessUnitId"
+:
+0
+,
+19
+"channel"
+:
+"EMAIL"
+,
+20
+"subscriberIdString"
+:
+"jdoe@example.com"
+,
+21
+"subscriptionId"
+:
+39644612
+,
+22
+"status"
+:
+"SUBSCRIBED"
+,
+23
+"source"
+:
+"Self Service Resubscription"
+,
+24
+"legalBasis"
+:
+"CONSENT_WITH_NOTICE"
+,
+25
+"legalBasisExplanation"
+:
+"Contact provided explicit consent via form."
+,
+26
+"setStatusSuccessReason"
+:
+null
+,
+27
+"timestamp"
+:
+"2023-02-09T20:13:19.046Z"
+28
+}
+29
+]
+30
+}
+Based on whether the contact explicitly opted in or opted out to a given a subscription, they can have the following
+status
+for a subscription type:
+SUBSCRIBED
+: contact opted into the subscription type.
+UNSUBSCRIBED
+: contact opted out of the subscription type.
+NOT_SPECIFIED
+: contact hasn't provided opt-in preference for the subscription type.
+Learn more about
+opt-in consent for email
+.
+Get contacts who unsubscribed from all email communications
+Contacts can also opt out of all email communications from your business. To get a list of all contacts who are currently opted out of all email subscription types, make a
+POST
+request to
+/communication-preferences/v4/statuses/batch/unsubscribe-all/read
+.
+If you have the
+Business Units add-on
+, you'll see the
+wideStatusType: "BUSINESS_UNIT_WIDE"
+field in the response. Note that the default
+Account
+business unit will always use
+"businessUnitId": 0
+.
+Get a specific contact who unsubscribed from all email communications
+To check whether a specific contact is unsubscribed from all email subscription types, make a
+GET
+request to
+/communication-preferences/v4/statuses/{subscriberIdString}/unsubscribe-all
+, where the subscriberIdString is the email address of the contact.
+If you have the
+Business Units add-on
+, you'll see the
+wideStatusType: "BUSINESS_UNIT_WIDE"
+field in the response. Note that the default
+Account
+business unit will always use
+"businessUnitId": 0
+.
+For example, to check whether a contact with an email address of
+jdoe@example.com
+has opted out of all email communications, you'd make a
+GET
+request to
+/communication-preferences/v4/statuses/jdoe@example.com/unsubscribe-all
+.
+Update subscription preferences for a specific contact
+To update the subscription preferences for a contact, make a
+POST
+request to
+/communication-preferences/v4/statuses/{subscriberIdString}
+, where the
+subscriberIdString
+is the email address of the contact. In the request body, you'll need to include the fields listed the table below:
+Parameter
+Type
+Description
+subscriptionId
+Number
+The internal ID of the subscription type. You can get a full list of subscription IDs by making a
+GET
+request to
+/communication-preferences/v4/statuses/&#123;subscriberIdString&#125;
+.
+statusState
+string
+The opt-in or opt-out state that you want to update the contact's subscription to. The possible values are
+SUBSCRIBED
+,
+UNSUBSCRIBED
+, or
+NOT_SPECIFIED
+.
+legalBasis
+string
+The legal reason for changing the subscriber's status. If you data privacy settings turned on, this field is required, along with the
+legalBasisExplanation
+field.
+legalBasisExplanation
+string
+An explanation for the legal basis you provided for updating the subscriber status.
+channel
+string
+The channel type for the subscription type. Currently, the only supported channel type is
+EMAIL
+.
+For example, the request body below would subscribe a contact into the subscription associated with the internal ID of
+39644612
+. You can fetch a list of all subscription types available to get their IDs by making a
+GET
+request to
+/communication-preferences/v4/definitions
+.
+Copy code snippet
+// Example request body for POST request to /communication-preferences/v4/statuses/jdoe@exampl.ecom
+{
+"subscriptionId": 39644612,
+"statusState": "SUBSCRIBED",
+"legalBasis": "LEGITIMATE_INTEREST_OTHER",
+"legalBasisExplanation": "Contact mentioned that they mistakenly unsubscribed and they'd like to opt back into our newsletter.",
+"channel": "EMAIL"
+}
+xxxxxxxxxx
+8
+1
+// Example request body for POST request to /communication-preferences/v4/statuses/jdoe@exampl.ecom
+2
+{
+3
+"subscriptionId"
+:
+39644612
+,
+4
+"statusState"
+:
+"SUBSCRIBED"
+,
+5
+"legalBasis"
+:
+"LEGITIMATE_INTEREST_OTHER"
+,
+6
+"legalBasisExplanation"
+:
+"Contact mentioned that they mistakenly unsubscribed and they'd like to opt back into our newsletter."
+,
+7
+"channel"
+:
+"EMAIL"
+8
+}
+Update a contact's "Opted out of all email" status
+To unsubscribe a contact from all email communication in an account or specific business unit (i.e., "Opted out of all"), make a
+POST
+request to
+/communications-preferences/v4/statuses/{subscriberIdString}/unsubscribe-all
+, where the
+subscriberIdString
+is the email address of the contact.
+If you have the
+Business Units add-on
+, you'll also need to include the
+businessUnitId
+query parameter in your request. Note that the
+Account
+business unit ID will always use
+"businessUnitId": 0
+.
+You can optionally include the
+verbose
+query parameter to include the details of the updated subscription statuses the contact has unsubscribed from in the response. If you don't use the
+verbose
+query parameter, the resulting response will be empty.
+Following a successful
+POST
+request, the contact will be unsubscribed from all email communication from your account. If you have the Business Units add-on, the contact will be unsubscribed from all email from the business unit specified in your request, but will still be eligible to receive email from other business units in your account.
+Using batch subscription endpoints
+If you have an
+Marketing Hub
+Enterprise
+account, you can use the bulk subscription endpoints detailed below to fetch and manage subscription statuses for multiple contacts in a single API request.
+Get "Opted out of all communication" subscription status for a list of contacts
+To get a list of the
+Opted out of all communication
+statuses for multiple contacts across an account or for a specific business unit, you can make a
+POST
+request to
+/communication-preferences/v4/statuses/batch/unsubscribe-all/read
+, and provide the following query parameters:
+businessUnitId
+: if you have the
+Business Units add-on
+, you can include this parameter to specify which business unit your contacts will be opted out of all subscription types from. If you don't provide this query parameter in the URL of your request, then all statuses for the account will be returned across all business units.
+channel
+: the communication type to unsubscribe all contacts out of. Currently, the only the supported channel is
+EMAIL
+.
+In the body of your request, provide a list of the email addresses for the associated contacts you want to retrieve using the
+inputs
+field:
+Copy code snippet
+// Example request body for unsubscribing multiple contacts from all subscriptions in an account or business unit
+{
+"inputs": ["test1@hubspot.com"]
+}
+xxxxxxxxxx
+4
+1
+// Example request body for unsubscribing multiple contacts from all subscriptions in an account or business unit
+2
+{
+3
+"inputs"
+: [
+"test1@hubspot.com"
+]
+4
+}
+For example, if you made a
+POST
+request to
+/communication-preferences/v4/statuses/batch/unsubscribe-all/read?channel=EMAIL
+, the resulting response would resemble the following:
+Copy code snippet
+// Example response body for POST request to /communication-preferences/v4/statuses/batch/unsubscribe-all/read
+{
+"status": "COMPLETE",
+"results": [
+{
+"subscriberIdString": "test1@husbpot.com",
+"wideStatuses": [
+{
+"businessUnitId": 0,
+"wideStatusType": "PORTAL_WIDE",
+"subscriberIdString": "string",
+"status": "SUBSCRIBED",
+"channel": "EMAIL",
+"timestamp": "2024-08-02T21:37:58.597Z"
+}
+]
+},
+{
+"subscriberIdString": "test2@hubspot.com",
+"wideStatuses": [
+{
+"businessUnitId": 0,
+"wideStatusType": "PORTAL_WIDE",
+"subscriberIdString": "string",
+"status": "SUBSCRIBED",
+"channel": "EMAIL",
+"timestamp": "2024-05-22T12:151:01.145Z"
+}
+]
+}
+],
+"startedAt": "2024-08-02T19:25:35.063Z",
+"completedAt": "2024-08-02T19:25:35.114Z"
+}
+xxxxxxxxxx
+34
+1
+// Example response body for POST request to /communication-preferences/v4/statuses/batch/unsubscribe-all/read
+2
+{
+3
+"status"
+:
+"COMPLETE"
+,
+4
+"results"
+: [
+5
+{
+6
+"subscriberIdString"
+:
+"test1@husbpot.com"
+,
+7
+"wideStatuses"
+: [
+8
+{
+9
+"businessUnitId"
+:
+0
+,
+10
+"wideStatusType"
+:
+"PORTAL_WIDE"
+,
+11
+"subscriberIdString"
+:
+"string"
+,
+12
+"status"
+:
+"SUBSCRIBED"
+,
+13
+"channel"
+:
+"EMAIL"
+,
+14
+"timestamp"
+:
+"2024-08-02T21:37:58.597Z"
+15
+}
+16
+]
+17
+},
+18
+{
+19
+"subscriberIdString"
+:
+"test2@hubspot.com"
+,
+20
+"wideStatuses"
+: [
+21
+{
+22
+"businessUnitId"
+:
+0
+,
+23
+"wideStatusType"
+:
+"PORTAL_WIDE"
+,
+24
+"subscriberIdString"
+:
+"string"
+,
+25
+"status"
+:
+"SUBSCRIBED"
+,
+26
+"channel"
+:
+"EMAIL"
+,
+27
+"timestamp"
+:
+"2024-05-22T12:151:01.145Z"
+28
+}
+29
+]
+30
+}
+31
+],
+32
+"startedAt"
+:
+"2024-08-02T19:25:35.063Z"
+,
+33
+"completedAt"
+:
+"2024-08-02T19:25:35.114Z"
+34
+}
+Get specific subscription statuses for multiple contacts
+To get the subscription statuses of multiple contacts in an account or for a specific business unit, make a
+POST
+request to
+/communication-preferences/v4/statuses/batch/read
+. If you have the Business Units add-on, you can include the
+businessUnitId
+query parameter to specify which business unit your contacts will be opted out of all subscription types from.
+In the body of your request, provide a list of the email addresses for the associated contacts you want to opted out of all email communications using the
+inputs
+field:
+Copy code snippet
+// Example request body for unsubscribing multiple contacts from all subscriptions in an account or business unit
+{
+"inputs": ["test1@hubspot.com"]
+}
+xxxxxxxxxx
+4
+1
+// Example request body for unsubscribing multiple contacts from all subscriptions in an account or business unit
+2
+{
+3
+"inputs"
+: [
+"test1@hubspot.com"
+]
+4
+}
+For example, if you made a
+POST
+request to
+/communication-preferences/v4/statuses/batch/read?channel=EMAIL
+, the resulting response would resemble the following:
+Copy code snippet
+// Example response body for POST request to /communication-preferences/v4/statuses/batch/read
+{
+"status": "COMPLETE",
+"results": [
+{
+"subscriberIdString": "test@husbpot.com",
+"statuses": [
+{
+"businessUnitId": 0,
+"channel": "EMAIL",
+"subscriberIdString": "test@husbpot.com",
+"subscriptionId": 88221657,
+"status": "UNSUBSCRIBED",
+"source": "Public status API",
+"legalBasis": null,
+"legalBasisExplanation": null,
+"setStatusSuccessReason": null,
+"timestamp": "2024-08-02T19:28:39.390Z"
+}
+]
+}
+],
+"startedAt": "2024-08-02T21:50:28.203Z",
+"completedAt": "2024-08-02T21:50:28.245Z"
+}
+xxxxxxxxxx
+25
+1
+// Example response body for POST request to /communication-preferences/v4/statuses/batch/read
+2
+{
+3
+"status"
+:
+"COMPLETE"
+,
+4
+"results"
+: [
+5
+{
+6
+"subscriberIdString"
+:
+"test@husbpot.com"
+,
+7
+"statuses"
+: [
+8
+{
+9
+"businessUnitId"
+:
+0
+,
+10
+"channel"
+:
+"EMAIL"
+,
+11
+"subscriberIdString"
+:
+"test@husbpot.com"
+,
+12
+"subscriptionId"
+:
+88221657
+,
+13
+"status"
+:
+"UNSUBSCRIBED"
+,
+14
+"source"
+:
+"Public status API"
+,
+15
+"legalBasis"
+:
+null
+,
+16
+"legalBasisExplanation"
+:
+null
+,
+17
+"setStatusSuccessReason"
+:
+null
+,
+18
+"timestamp"
+:
+"2024-08-02T19:28:39.390Z"
+19
+}
+20
+]
+21
+}
+22
+],
+23
+"startedAt"
+:
+"2024-08-02T21:50:28.203Z"
+,
+24
+"completedAt"
+:
+"2024-08-02T21:50:28.245Z"
+25
+}
+Update the "Opted out of all email" status for multiple contacts
+To unsubscribe multiple contacts from all subscription types in an account or for a specific business unit, make a
+POST
+request to
+/communication-preferences/v4/statuses/batch/unsubscribe-all
+, and provide the following query parameters in your request:
+businessUnitId
+: if you have the
+Business Units add-on
+, you can include this parameter to specify which business unit your contacts will be opted out of all subscription types from.
+channel
+: the communication type to unsubscribe all contacts out of. Currently, the only the supported channel is
+EMAIL
+.
+verbose
+: an optional boolean value that controls if the endpoint returns all the subscriptions that were impacted for all contacts.
+In the body of your request, provide a list of the email addresses for the associated contacts you want to opted out of all email communications using the
+inputs
+field:
+Copy code snippet
+// Example request body for unsubscribing multiple contacts from all subscriptions in an account or business unit
+{
+"inputs": ["test1@hubspot.com", "test2@hubspot.com"]
+}
+xxxxxxxxxx
+4
+1
+// Example request body for unsubscribing multiple contacts from all subscriptions in an account or business unit
+2
+{
+3
+"inputs"
+: [
+"test1@hubspot.com"
+,
+"test2@hubspot.com"
+]
+4
+}
+For example, if you made a
+POST
+request to
+/communication-preferences/v4/statuses/batch/unsubscribe-all?channel=EMAIL&verbose=true
+, the resulting response would resemble the following:
+Copy code snippet
+// Example response for POST request to /communication-preferences/v4/statuses/batch/unsubscribe-all?channel=EMAIL&verbose=true
+{
+"status": "COMPLETE",
+"results": [
+{
+"subscriberIdString": "test1@husbpot.com",
+"statuses": [
+{
+"businessUnitId": 0,
+"channel": "EMAIL",
+"subscriberIdString": "test@husbpot.com",
+"subscriptionId": 87914424,
+"status": "UNSUBSCRIBED",
+"source": "Public status API",
+"legalBasis": null,
+"legalBasisExplanation": null,
+"setStatusSuccessReason": "UNSUBSCRIBE_FROM_ALL_OCCURRED",
+"timestamp": "2024-08-02T19:28:39.390Z"
+}
+]
+},
+{
+"subscriberIdString": "test2@husbpot.com",
+"statuses": [
+{
+"businessUnitId": 0,
+"channel": "EMAIL",
+"subscriberIdString": "test2@husbpot.com",
+"subscriptionId": 87914424,
+"status": "UNSUBSCRIBED",
+"source": "Public status API",
+"legalBasis": null,
+"legalBasisExplanation": null,
+"setStatusSuccessReason": "UNSUBSCRIBE_FROM_ALL_OCCURRED",
+"timestamp": "2024-08-02T19:28:39.390Z"
+}
+]
+}
+],
+"startedAt": "2024-08-02T19:25:35.063Z",
+"completedAt": "2024-08-02T19:25:35.114Z"
+}
+xxxxxxxxxx
+42
+1
+// Example response for POST request to /communication-preferences/v4/statuses/batch/unsubscribe-all?channel=EMAIL&verbose=true
+2
+{
+3
+"status"
+:
+"COMPLETE"
+,
+4
+"results"
+: [
+5
+{
+6
+"subscriberIdString"
+:
+"test1@husbpot.com"
+,
+7
+"statuses"
+: [
+8
+{
+9
+"businessUnitId"
+:
+0
+,
+10
+"channel"
+:
+"EMAIL"
+,
+11
+"subscriberIdString"
+:
+"test@husbpot.com"
+,
+12
+"subscriptionId"
+:
+87914424
+,
+13
+"status"
+:
+"UNSUBSCRIBED"
+,
+14
+"source"
+:
+"Public status API"
+,
+15
+"legalBasis"
+:
+null
+,
+16
+"legalBasisExplanation"
+:
+null
+,
+17
+"setStatusSuccessReason"
+:
+"UNSUBSCRIBE_FROM_ALL_OCCURRED"
+,
+18
+"timestamp"
+:
+"2024-08-02T19:28:39.390Z"
+19
+}
+20
+]
+21
+},
+22
+{
+23
+"subscriberIdString"
+:
+"test2@husbpot.com"
+,
+24
+"statuses"
+: [
+25
+{
+26
+"businessUnitId"
+:
+0
+,
+27
+"channel"
+:
+"EMAIL"
+,
+28
+"subscriberIdString"
+:
+"test2@husbpot.com"
+,
+29
+"subscriptionId"
+:
+87914424
+,
+30
+"status"
+:
+"UNSUBSCRIBED"
+,
+31
+"source"
+:
+"Public status API"
+,
+32
+"legalBasis"
+:
+null
+,
+33
+"legalBasisExplanation"
+:
+null
+,
+34
+"setStatusSuccessReason"
+:
+"UNSUBSCRIBE_FROM_ALL_OCCURRED"
+,
+35
+"timestamp"
+:
+"2024-08-02T19:28:39.390Z"
+36
+}
+37
+]
+38
+}
+39
+],
+40
+"startedAt"
+:
+"2024-08-02T19:25:35.063Z"
+,
+41
+"completedAt"
+:
+"2024-08-02T19:25:35.114Z"
+42
+}
+Unsubscribe multiple contacts from specific subscription types
+To update the specific subscription types of multiple contacts in an account or for a specific business unit, make a
+POST
+request to
+/communication-preferences/v4/statuses/batch/write
+, and provide the details of the subscription updates in the inputs field in the body of your request. For example, the following request body would subscribe the contact with an email address of
+test@hubspot.com
+to the subscription with an ID of 123:
+Copy code snippet
+// Example request body for POST request to /communication-preferences/v4/statuses/batch/write
+{
+"inputs": [
+{
+"subscriptionId": 123,
+"statusState": "SUBSCRIBED",
+"legalBasis": "LEGITIMATE_INTEREST_PQL",
+"legalBasisExplanation": "string",
+"channel": "EMAIL",
+"subscriberIdString": "test@hubspot.com"
+}
+]
+}
+xxxxxxxxxx
+13
+1
+// Example request body for POST request to /communication-preferences/v4/statuses/batch/write
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"subscriptionId"
+:
+123
+,
+6
+"statusState"
+:
+"SUBSCRIBED"
+,
+7
+"legalBasis"
+:
+"LEGITIMATE_INTEREST_PQL"
+,
+8
+"legalBasisExplanation"
+:
+"string"
+,
+9
+"channel"
+:
+"EMAIL"
+,
+10
+"subscriberIdString"
+:
+"test@hubspot.com"
+11
+}
+12
+]
+13
+}
+For the example request body above, the resulting response would resemble the following:
+Copy code snippet
+// Example response for POST request to /communication-preferences/v4/statuses/batch/write
+{
+"status": "COMPLETE",
+"results": [
+{
+"businessUnitId": 0,
+"channel": "EMAIL",
+"subscriberIdString": "test@husbpot.com",
+"subscriptionId": 63722844,
+"status": "UNSUBSCRIBED",
+"source": "Public status API",
+"legalBasis": null,
+"legalBasisExplanation": null,
+"setStatusSuccessReason": "RESUBSCRIBE_OCCURRED",
+"timestamp": "2024-08-02T21:46:29.110Z"
+}
+],
+"startedAt": "2024-08-02T21:46:29.088Z",
+"completedAt": "2024-08-02T21:46:29.228Z"
+}
+xxxxxxxxxx
+20
+1
+// Example response for POST request to /communication-preferences/v4/statuses/batch/write
+2
+{
+3
+"status"
+:
+"COMPLETE"
+,
+4
+"results"
+: [
+5
+{
+6
+"businessUnitId"
+:
+0
+,
+7
+"channel"
+:
+"EMAIL"
+,
+8
+"subscriberIdString"
+:
+"test@husbpot.com"
+,
+9
+"subscriptionId"
+:
+63722844
+,
+10
+"status"
+:
+"UNSUBSCRIBED"
+,
+11
+"source"
+:
+"Public status API"
+,
+12
+"legalBasis"
+:
+null
+,
+13
+"legalBasisExplanation"
+:
+null
+,
+14
+"setStatusSuccessReason"
+:
+"RESUBSCRIBE_OCCURRED"
+,
+15
+"timestamp"
+:
+"2024-08-02T21:46:29.110Z"
+16
+}
+17
+],
+18
+"startedAt"
+:
+"2024-08-02T21:46:29.088Z"
+,
+19
+"completedAt"
+:
+"2024-08-02T21:46:29.228Z"
+20
+}
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Marketing
+Campaigns
+Emails
+Forms
+Marketing events
+Subscriptions preferences
+Subscriptions
+Settings
+Legal

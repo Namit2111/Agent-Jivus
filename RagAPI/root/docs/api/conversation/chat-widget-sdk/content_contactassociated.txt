@@ -1,0 +1,1269 @@
+Conversations | Chat Widget SDK | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Initializing
+Configure conversations settings
+Inline embed styling
+Widget behavior
+widget.load
+widget.refresh
+Example
+widget.open
+widget.close
+widget.remove
+widget.status
+Clear chat cookies
+Chat events
+conversationStarted
+conversationClosed
+userSelectedThread
+unreadConversationCountChanged
+contactAssociated
+userInteractedWithWidget
+widgetLoaded
+quickReplyButtonClick
+widgetClosed
+API Endpoints
+Conversations
+Conversations | Chat Widget SDK
+Conversations SDK
+To chat with customers and leads on your website using HubSpot's conversation inbox, you can set up a
+live chat widget
+. With the conversations SDK, you can provide a more tailored experience for visitors by customizing the behavior of the chat widget.
+At a high level, the conversations SDK enables you to do the following:
+Configure chat widget settings
+Control the widget's behavior
+Clear chat cookies
+Listen for and respond to widget events
+Initializing
+The API is housed in the
+window.HubSpotConversations
+object, which provides access to all available methods. The object is created by the
+HubSpot tracking code
+, but may not be available immediately on page load. To defer accessing the API until it's initialized, you can use the
+window.hsConversationsOnReady
+helper.
+window.hsConversationsOnReady
+is an optional field you can define on the
+window
+object which enables you to specify code to be executed as soon as the widget becomes available. This field takes an array functions to be executed once the API has been initialized.
+Copy code snippet
+<script type="text/javascript">
+function onConversationsAPIReady() {
+console.log(`HubSpot Conversations API: ${window.HubSpotConversations}`);
+}
+/*
+configure window.hsConversationsSettings if needed.
+*/
+window.hsConversationsSettings = {};
+/*
+If external API methods are already available, use them.
+*/
+if (window.HubSpotConversations) {
+onConversationsAPIReady();
+} else {
+/*
+Otherwise, callbacks can be added to the hsConversationsOnReady on the window object.
+These callbacks will be called once the external API has been initialized.
+*/
+window.hsConversationsOnReady = [onConversationsAPIReady];
+}
+</script>
+1
+<
+script
+type
+=
+"text/javascript"
+>
+2
+function
+onConversationsAPIReady
+() {
+3
+console
+.
+log
+(
+`HubSpot Conversations API: ${
+window
+.
+HubSpotConversations
+}`
+);
+4
+}
+5
+/*
+6
+configure window.hsConversationsSettings if needed.
+7
+*/
+8
+window
+.
+hsConversationsSettings
+=
+{};
+9
+/*
+10
+If external API methods are already available, use them.
+11
+*/
+12
+if
+(
+window
+.
+HubSpotConversations
+) {
+13
+onConversationsAPIReady
+();
+14
+}
+else
+{
+15
+/*
+16
+Otherwise, callbacks can be added to the hsConversationsOnReady on the window object.
+17
+These callbacks will be called once the external API has been initialized.
+18
+*/
+19
+window
+.
+hsConversationsOnReady
+=
+[
+onConversationsAPIReady
+];
+20
+}
+21
+<
+/script>
+Configure conversations settings
+hsConversationsSettings
+This optional object enables you to provide some configuration options to the widget before it initializes.
+Copy code snippet
+window.hsConversationsSettings = {
+loadImmediately: false,
+inlineEmbedSelector: '#some-id',
+enableWidgetCookieBanner: true,
+disableAttachment: true,
+};
+window.hsConversationsOnReady = [
+() => {
+window.HubSpotConversations.widget.load();
+},
+];
+xxxxxxxxxx
+11
+1
+window
+.
+hsConversationsSettings
+=
+{
+2
+loadImmediately
+:
+false
+,
+3
+inlineEmbedSelector
+:
+'#some-id'
+,
+4
+enableWidgetCookieBanner
+:
+true
+,
+5
+disableAttachment
+:
+true
+,
+6
+};
+7
+window
+.
+hsConversationsOnReady
+=
+[
+8
+()
+=>
+{
+9
+window
+.
+HubSpotConversations
+.
+widget
+.
+load
+();
+10
+},
+11
+];
+Field
+Type
+Default
+Description
+loadImmediately
+Boolean
+true
+Whether the widget should implicitly load or wait until the
+widget.load
+method is called.
+inlineEmbedSelector
+String
+""
+Specify a selector (
+#some-id
+) to embed the chat widget in a specific location on the page. Widget will be embedded inline within that DOM node and will remain open until it is removed with
+widget.remove
+. Learn more about
+styling embedded chat widgets
+.
+enableWidgetCookieBanner
+Enumeration
+false
+Control behavior of the cookie banner for all chat widgets on the page. Options include:
+false
+(default): uses the
+chat widget's settings
+.
+true
+: presents cookie banners when the widget is loaded.
+ON_WIDGET_LOAD
+: same as
+true
+.
+ON_EXIT_INTENT
+: enable cookie banners when the user exhibits an exit intent.
+disableAttachment
+Boolean
+false
+Whether to hide the upload attachment button in the chat widget.
+disableInitialInputFocus
+Boolean
+false
+Whether to automatically prevent focusing on the widget's input field after an inline embedded widget is initially loaded.
+avoidInlineStyles
+Boolean
+false
+When set to
+true
+, injects a link tag with externally hosted CSS instead of a direct dynamic insertion of a style tag.
+Inline embed styling
+When the widget is embedded in a specific location using
+inlineEmbedSelector
+, several DOM elements are added and can be styled (e.g. height, width, border).
+For example, if you embed the chat widget using the
+#some-id
+selector, it would be loaded with the following containers and IDs:
+Copy code snippet
+<div id="some-id">
+<div id="hubspot-conversations-inline-parent">
+<iframe id="hubspot-conversations-inline-iframe">
+<!-- rest of iframe content -->
+</iframe>
+</div>
+</div>
+xxxxxxxxxx
+7
+1
+<
+div
+id
+=
+"some-id"
+>
+2
+<
+div
+id
+=
+"hubspot-conversations-inline-parent"
+>
+3
+<
+iframe
+id
+=
+"hubspot-conversations-inline-iframe"
+>
+4
+<!-- rest of iframe content -->
+5
+</
+iframe
+>
+6
+</
+div
+>
+7
+</
+div
+>
+You can then customize the chat widget using those selectors, such as:
+Copy code snippet
+#hubspot-conversations-inline-iframe {
+width: 300px;
+height: 500px;
+border: none;
+}
+xxxxxxxxxx
+5
+1
+#hubspot-conversations-inline-iframe
+{
+2
+width
+:
+300px
+;
+3
+height
+:
+500px
+;
+4
+border
+:
+none
+;
+5
+}
+Widget behavior
+HubSpotConversations.widget
+The widget object contains a number of methods that allow you to manipulate the chat widget on your page, including:
+widget.load
+widget.refresh
+widget.open
+widget.close
+widget.remove
+widget.status
+Below, learn more about each method.
+widget.load
+The
+widget.load
+method handles the initial load on the page. This method is only necessary if you set
+loadImmediately
+to
+false
+. Otherwise, the widget will load itself automatically.
+This method is throttled to one call per second.
+Copy code snippet
+window.HubSpotConversations.widget.load();
+/* ... */
+// Force the widget to load in an open state
+window.HubSpotConversations.widget.load({ widgetOpen: true });
+​
+x
+1
+window
+.
+HubSpotConversations
+.
+widget
+.
+load
+();
+2
+​
+3
+/* ... */
+4
+​
+5
+// Force the widget to load in an open state
+6
+window
+.
+HubSpotConversations
+.
+widget
+.
+load
+({
+widgetOpen
+:
+true
+});
+Field
+Type
+Default
+Description
+widgetOpen
+Boolean
+false
+Whether the widget should load in an open state.
+widget.refresh
+The
+widget.refresh
+method handles refreshing and re-rendering the widget's information, given the current page URL. This method can be useful for chat widgets embedded in single-page applications when you need to refresh the widget on route changes. This method also enables you to
+specify different chat widgets on different page routes
+.
+If you call
+widget.refresh
+on a route where there is no chat widget, and the user isn't engaged in a chat, the widget will be removed. It will
+not
+remove the widget when there is a currently active chat.
+This method is throttled to one call per second.
+Copy code snippet
+window.HubSpotConversations.widget.refresh();
+/* ... */
+// Force the widget to open to a specific chat flow
+window.HubSpotConversations.widget.refresh({ openToNewThread: true });
+xxxxxxxxxx
+6
+1
+window
+.
+HubSpotConversations
+.
+widget
+.
+refresh
+();
+2
+​
+3
+/* ... */
+4
+​
+5
+// Force the widget to open to a specific chat flow
+6
+window
+.
+HubSpotConversations
+.
+widget
+.
+refresh
+({
+openToNewThread
+:
+true
+});
+Field
+Type
+Default
+Description
+openToNewThread
+Boolean
+false
+Whether to force a new thread to be created.
+Example
+Using this method, you could create buttons and links to open specific chatflows on a page by adding query parameters to the page URL.
+For example, you could add the following code to your pages to generate the buttons:
+Copy code snippet
+<div class="chat-buttons">
+<button
+onclick="window.history.pushState({}, 'talk_to_sales', '?sales_chat=true'); window.HubSpotConversations.widget.refresh({openToNewThread: true});"
+>
+Talk to sales
+</button>
+<button
+onclick="window.history.pushState({}, 'talk_to_customer_support', '?cs_chat=true'); window.HubSpotConversations.widget.refresh({openToNewThread: true});"
+>
+Talk to customer support
+</button>
+<button
+onclick="window.history.pushState({}, 'talk_to_the_ceo', '?ceo_chat=true'); window.HubSpotConversations.widget.refresh({openToNewThread: true});"
+>
+Talk to the CEO
+</button>
+</div>
+xxxxxxxxxx
+17
+1
+<
+div
+class
+=
+"chat-buttons"
+>
+2
+<
+button
+3
+onclick
+=
+"window.history.pushState({}, 'talk_to_sales', '?sales_chat=true'); window.HubSpotConversations.widget.refresh({openToNewThread: true});"
+4
+>
+5
+Talk to sales
+6
+</
+button
+>
+7
+<
+button
+8
+onclick
+=
+"window.history.pushState({}, 'talk_to_customer_support', '?cs_chat=true'); window.HubSpotConversations.widget.refresh({openToNewThread: true});"
+9
+>
+10
+Talk to customer support
+11
+</
+button
+>
+12
+<
+button
+13
+onclick
+=
+"window.history.pushState({}, 'talk_to_the_ceo', '?ceo_chat=true'); window.HubSpotConversations.widget.refresh({openToNewThread: true});"
+14
+>
+15
+Talk to the CEO
+16
+</
+button
+>
+17
+</
+div
+>
+Then, in each chat's
+target settings
+, you would set the chat to display when the query parameter matches the one you've set in your button code.
+widget.open
+The
+widget.open
+method opens the widget if it is not already open or isn't currently loaded.
+Copy code snippet
+window.HubSpotConversations.widget.open();
+xxxxxxxxxx
+window
+.
+HubSpotConversations
+.
+widget
+.
+open
+();
+widget.close
+The
+widget.close
+method closes the widget if it isn't already closed.
+Copy code snippet
+window.HubSpotConversations.widget.close();
+xxxxxxxxxx
+window
+.
+HubSpotConversations
+.
+widget
+.
+close
+();
+widget.remove
+The
+widget.remove
+method removes the widget from the page. If the widget isn't present on the page, this method does nothing. The widget will display again on page refresh or if
+widget.load
+is invoked.
+Copy code snippet
+window.HubSpotConversations.widget.remove();
+xxxxxxxxxx
+window
+.
+HubSpotConversations
+.
+widget
+.
+remove
+();
+widget.status
+The
+widget.status
+method returns an object containing properties related to the current status of the widget.
+Copy code snippet
+const status = window.HubSpotConversations.widget.status();
+if (status.loaded) {
+window.HubSpotConversations.widget.refresh();
+} else {
+window.HubSpotConversations.widget.load();
+}
+xxxxxxxxxx
+7
+1
+const
+status
+=
+window
+.
+HubSpotConversations
+.
+widget
+.
+status
+();
+2
+​
+3
+if
+(
+status
+.
+loaded
+) {
+4
+window
+.
+HubSpotConversations
+.
+widget
+.
+refresh
+();
+5
+}
+else
+{
+6
+window
+.
+HubSpotConversations
+.
+widget
+.
+load
+();
+7
+}
+Field
+Type
+Default
+Description
+loaded
+Boolean
+false
+Whether the widget iframe has loaded.
+Clear chat cookies
+The
+clear
+method deletes cookies related to the chat widget and returns it to its default state on subsequent load.
+The chat widget creates several cookies to preserve its state across site visits and page refreshes. These cookies are scoped to the domain of the page hosting the widget, and are used to support the following features:
+Referencing historical conversations.
+Persisting the open state of the chat widget across page loads.
+Persisting the open state of the welcome message across page loads.
+The following cookies are cleared with this method:
+messagesUtk
+hs-messages-is-open
+hs-messages-hide-welcome-message
+For more information about these cookies, see
+check out HubSpot's Knowledge Base
+.
+Copy code snippet
+window.HubSpotConversations.clear();
+xxxxxxxxxx
+window
+.
+HubSpotConversations
+.
+clear
+();
+Additionally, you can pass
+{resetWidget:true}
+to the
+clear()
+function to clear all chat related cookies, remove the widget from the page, and create a new instance of the chat widget.
+Copy code snippet
+window.HubSpotConversations.clear({ resetWidget: true });
+xxxxxxxxxx
+window
+.
+HubSpotConversations
+.
+clear
+({
+resetWidget
+:
+true
+});
+Chat events
+The chat widget emits various events you can listen and respond to throughout its lifecycle. These events include:
+conversationStarted
+conversationClosed
+userSelectedThread
+unreadConversationCountChanged
+contactAssociated
+userInteractedWithWidget
+widgetLoaded
+quickReplyButtonClick
+widgetClosed
+To register and remove event listeners, you'll use
+on
+and
+off
+, as shown below.
+Copy code snippet
+const handleEvent = (eventPayload) => console.log(eventPayload);
+window.HubSpotConversations.on('conversationStarted', handleEvent);
+/* ... */
+window.HubSpotConversations.off('conversationStarted', handleEvent);
+xxxxxxxxxx
+7
+1
+const
+handleEvent
+=
+(
+eventPayload
+)
+=>
+console
+.
+log
+(
+eventPayload
+);
+2
+​
+3
+window
+.
+HubSpotConversations
+.
+on
+(
+'conversationStarted'
+,
+handleEvent
+);
+4
+​
+5
+/* ... */
+6
+​
+7
+window
+.
+HubSpotConversations
+.
+off
+(
+'conversationStarted'
+,
+handleEvent
+);
+Learn more about each event below.
+conversationStarted
+The
+conversationStarted
+event triggers when a new conversation has been successfully started.
+Copy code snippet
+window.HubSpotConversations.on('conversationStarted', (payload) => {
+console.log(
+`Started conversation with id ${payload.conversation.conversationId}`
+);
+});
+xxxxxxxxxx
+5
+1
+window
+.
+HubSpotConversations
+.
+on
+(
+'conversationStarted'
+, (
+payload
+)
+=>
+{
+2
+console
+.
+log
+(
+3
+`Started conversation with id ${
+payload
+.
+conversation
+.
+conversationId
+}`
+4
+);
+5
+});
+Field
+Type
+Description
+payload.conversation.conversationId
+Number
+The thread ID of the conversation that was started. You can use this ID when making calls to the
+conversations API
+.
+conversationClosed
+The
+conversationClosed
+event triggers when a new conversation has
+marked as closed
+from the conversations inbox.
+Site visitors minimizing or closing the chat widget will not trigger this event. For that event, use
+widgetClosed
+instead.
+Copy code snippet
+window.HubSpotConversations.on('conversationClosed', (payload) => {
+console.log(
+`Conversation with id ${payload.conversation.conversationId} has been closed!`
+);
+});
+xxxxxxxxxx
+5
+1
+window
+.
+HubSpotConversations
+.
+on
+(
+'conversationClosed'
+, (
+payload
+)
+=>
+{
+2
+console
+.
+log
+(
+3
+`Conversation with id ${
+payload
+.
+conversation
+.
+conversationId
+}
+has been closed!`
+4
+);
+5
+});
+Field
+Type
+Description
+payload.conversation.conversationId
+Number
+The thread ID of the conversation that was started. You can use this ID when making calls to the
+conversations API
+.
+userSelectedThread
+The
+userSelectedThread
+event triggers when creating a thread or selecting an existing thread.
+Copy code snippet
+window.HubSpotConversations.on('userSelectedThread', (payload) => {
+console.log(
+`User selected thread with ID ${payload.conversation.conversationId}!`
+);
+});
+xxxxxxxxxx
+5
+1
+window
+.
+HubSpotConversations
+.
+on
+(
+'userSelectedThread'
+, (
+payload
+)
+=>
+{
+2
+console
+.
+log
+(
+3
+`User selected thread with ID ${
+payload
+.
+conversation
+.
+conversationId
+}!`
+4
+);
+5
+});
+Field
+Type
+Description
+payload.conversation.conversationId
+Number
+The thread ID of the conversation that was started. You can use this ID when making calls to the
+conversations API
+.
+unreadConversationCountChanged
+The
+unreadConversationCountChanged
+event is triggered when the number of conversations with unread messages increases or decreases.
+Copy code snippet
+window.HubSpotConversations.on('unreadConversationCountChanged', (payload) => {
+console.log(`New unread count is ${payload.unreadCount}!`);
+});
+xxxxxxxxxx
+3
+1
+window
+.
+HubSpotConversations
+.
+on
+(
+'unreadConversationCountChanged'
+, (
+payload
+)
+=>
+{
+2
+console
+.
+log
+(
+`New unread count is ${
+payload
+.
+unreadCount
+}!`
+);
+3
+});
+Field
+Type
+Description
+unreadCount
+Number
+The total number of conversations with at least one unread message.
+contactAssociated
+The
+contactAssociated
+event is triggered when the visitor is associated with a contact in the CRM.
+Copy code snippet
+window.HubSpotConversations.on('contactAssociated', (payload) => {
+console.log(payload.message);
+});
+xxxxxxxxxx
+3
+1
+window
+.
+HubSpotConversations
+.
+on
+(
+'contactAssociated'
+, (
+payload
+)
+=>
+{
+2
+console
+.
+log
+(
+payload
+.
+message
+);
+3
+});
+Field
+Type
+Description
+message
+String
+A confirmation message that the visitor has been associated with a contact.
+userInteractedWithWidget
+The
+userInteractedWithWidget
+event is triggered when the visitor interacts with the widget, such as clicking to open the widget or closing the initial welcome message.
+Copy code snippet
+window.HubSpotConversations.on(‘userInteractedWithWidget’, payload => {
+console.log(payload.message);
+});
+xxxxxxxxxx
+3
+1
+window
+.
+HubSpotConversations
+.
+on
+(
+‘userInteractedWithWidget’
+,
+payload
+=>
+{
+2
+console
+.
+log
+(
+payload
+.
+message
+);
+3
+});
+Field
+Type
+Description
+message
+String
+A confirmation message that the visitor has been interacted with the widget.
+widgetLoaded
+The
+widgetLoaded
+event is triggered when the widget iframe is loaded.
+Copy code snippet
+window.HubSpotConversations.on(‘widgetLoaded’, payload => {
+console.log(payload.message);
+});
+xxxxxxxxxx
+3
+1
+window
+.
+HubSpotConversations
+.
+on
+(
+‘widgetLoaded’
+,
+payload
+=>
+{
+2
+console
+.
+log
+(
+payload
+.
+message
+);
+3
+});
+Field
+Type
+Description
+message
+String
+A confirmation message that the widget iframe has loaded.
+quickReplyButtonClick
+The
+quickReplyButtonClick
+event is triggered when the visitor clicks a
+quick reply
+in a bot conversation.
+Field
+Type
+Description
+value
+Array
+An array containing the text of the quick reply option that was clicked.
+Copy code snippet
+window.HubSpotConversations.on('quickReplyButtonClick', (event) => {
+console.log(`The text content of the clicked button is ${payload.value[0]}`);
+});
+xxxxxxxxxx
+3
+1
+window
+.
+HubSpotConversations
+.
+on
+(
+'quickReplyButtonClick'
+, (
+event
+)
+=>
+{
+2
+console
+.
+log
+(
+`The text content of the clicked button is ${
+payload
+.
+value
+[
+0
+]
+}`
+);
+3
+});
+In the example screenshot above, the bot chatflow contains three quick reply options. If the user selects
+Learn more
+, the resulting event payload would be:
+Copy code snippet
+// Example event payload when a quick reply option is selected
+{
+"name": "QUICK_REPLIES",
+"multiSelect": false,
+"value": ["Learn more"]
+}
+xxxxxxxxxx
+6
+1
+// Example event payload when a quick reply option is selected
+2
+{
+3
+"name"
+:
+"QUICK_REPLIES"
+,
+4
+"multiSelect"
+:
+false
+,
+5
+"value"
+: [
+"Learn more"
+]
+6
+}
+widgetClosed
+The
+widgetClosed
+event is triggered when the visitor closes the chat widget.
+Copy code snippet
+window.HubSpotConversations.on('widgetClosed', (event) => {
+console.log(event);
+});
+xxxxxxxxxx
+3
+1
+window
+.
+HubSpotConversations
+.
+on
+(
+'widgetClosed'
+, (
+event
+)
+=>
+{
+2
+console
+.
+log
+(
+event
+);
+3
+});
+Field
+Type
+Description
+message
+String
+A confirmation message that the visitor has closed the chat widget.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Endpoints
+Get set up
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Chat widget SDK
+Create custom channels
+Beta
+Inbox & messages
+Visitor identification
+CRM
+Library
+Marketing
+Settings
+Other resources
+Legal
+Deprecated

@@ -1,0 +1,482 @@
+Deprecated default modules | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Blog listing
+Follow Me
+Follow Me - LP
+Gallery
+CMS Reference
+Modules
+Deprecated default modules
+Deprecated default modules
+Below, learn more about the
+HubSpot default web modules
+that have been deprecated. These modules can still be cloned in the design manager, and existing instances of these modules will continue to function on live pages, but they no longer appear in the page editor for content creators to use.
+Blog listing
+As of February 2024, the Blog Listing module was deprecated in favor of the
+Blog Posts module
+.
+Copy code snippet
+{% module "blog_listing" path="@hubspot/blog_listing", label="blog_listing.module" %}
+{%
+module
+"blog_listing"
+path
+=
+"@hubspot/blog_listing"
+, label
+=
+"blog_listing.module"
+%}
+Parameter
+Type
+Description
+layout
+Choice
+The content layout for each blog post preview.
+basic_grid
+(default): aligns posts in a basic grid.
+single_column
+: aligns posts in a single column. with featured images on their own row above the rest of the post content.
+side_by_side
+: aligns posts in a column with featured images aligned horizontally with the post content.
+columns
+Number
+When using the
+basic_grid
+layout, the number of posts per row. Can be
+2
+,
+3
+(default), or
+4
+.
+alternate_image
+Boolean
+When
+layout
+is set to
+side_by_side
+and display_for_each_item is set to
+image
+, set this field to
+true
+to align the featured image on the right and left side of the post preview, alternating. By default, this field is set to
+false
+.
+full_image
+String
+When
+layout
+is set to
+basic_grid
+or single_column and
+display_for_each_item
+is set to
+image
+, set this field to
+true
+to make the featured image the background of the post preview. By default, this field is set to
+false
+.
+display_for_each_list_item
+Array
+The content to include in each blog post preview. Choices include:
+image
+: the post's featured image.
+title
+: the post's title.
+author_image
+: the post author's image.
+author_name
+: the post author's name.
+tags
+: the post's blog tags.
+publish_date
+: the post's publish date.
+description
+: the post's meta description.
+button
+: the read more button that links to the blog post.
+button_text
+String
+The text that displays on the read more button when
+display_for_each_list_item
+is set to
+button
+. By default, text is set to
+Read more
+.
+default_text
+Field group
+A field group containing default values for various text elements. Below are the default values set for each text element:
+blog_post_summary_text
+:
+"Blog post summary:"
+featured_image_text
+:
+"Featured image:"
+read_full_post_text
+:
+"Read full post:"
+picture_of_text
+:
+"Picture of"
+author_alt_text
+:
+"{{ picture_of_text }} {{ content.blog_author.display_name }}"
+read_full_post_aria_label
+:
+"{{ read_full_post_text }} {{ content.name }}"
+full_featured-image_aria_label
+:
+"{{ featured_image_text }} {{ content.featured_image_alt_text }}"
+full_blog_post_summary_text
+:
+"{{ blog_post_summary_text }} {{ content.name }}"
+gated_content_describedby_text
+:
+"This content is only available to logged in members."
+Follow Me
+On August 7th, 2024, the Follow Me module was deprecated in favor of the
+Social Follow module
+.
+Copy code snippet
+{% module
+path="@hubspot/follow_me",
+title="Follow me"
+%}
+xxxxxxxxxx
+4
+1
+{%
+module
+2
+path
+=
+"@hubspot/follow_me"
+,
+3
+title
+=
+"Follow me"
+4
+%}
+Parameter
+Type
+Description
+title
+String
+The h3 heading displayed at the top of the module.
+links
+Boolean
+By default, clicked links will open in a new window. Set this to
+false
+to open clicked links in the same browser window.
+Follow Me - LP
+On August 7th, 2024, the Follow Me - LP module was deprecated in favor of the
+Social Follow module
+.
+Copy code snippet
+{% module "follow_me_lp" path="@hubspot/follow_me_lp" %}
+xxxxxxxxxx
+{%
+module
+"follow_me_lp"
+path
+=
+"@hubspot/follow_me_lp"
+%}
+Parameter
+Type
+Description
+social
+Field group
+A field group containing details for each social network to include. Includes the following fields:
+network
+: a choice field for selecting the social network.
+link
+: the link to the profile.
+network_image
+: the social network image to display.
+supporting_text
+: text to display the name of the social network, if
+display
+is set to
+icon_text
+or
+text_only
+.
+display
+Choice
+Display options for showing social networks. Choices include:
+icon
+(default)
+icon_text
+text_only
+scale
+Number
+The size of the icon in
+px
+value (
+25
+by default).
+spacing
+Number
+Left and right padding for items in
+px
+value (
+5
+by default).
+alignment
+Choice
+the alignment of the items on the page. Choices include:
+left
+center
+(default)
+right
+color_scheme
+Choice
+Color scheme to use for icons. Choices include:
+color
+(default)
+black
+(black and white)
+grey
+white
+custom
+custom_color
+Color
+Custom color to use when
+color_scheme
+is set to
+custom
+(
+#000000
+by default).
+icon_shape
+Choice
+Shape of the social icons. Choices include:
+circle
+(default)
+square
+original
+font_style
+Object
+Font options for the social network text, when
+display
+is set to
+icon_text
+or
+text_only
+.Contains the following fields:
+size
+value
+: the size number.
+units
+: the unit of measure.
+color
+: text color in hex value.
+styles
+bold
+: a boolean that makes font bold.
+italic
+: a boolean field that makes font italicized.
+underline
+: a boolean field that makes font underlined.
+font
+: the name of the font.
+Gallery
+This module was deprecated as of
+March 2023
+in favor of the
+Image Grid
+,
+Image Slider
+, and
+Tabbed Card
+modules.
+Please note:
+this also applies to the Growth theme's gallery module (
+@hubspot/growth/modules/image-gallery.module
+). The same replacement modules listed above are recommended.
+Copy code snippet
+{% module "gallery" path="@hubspot/gallery", label="gallery.module" %}
+xxxxxxxxxx
+{%
+module
+"gallery"
+path
+=
+"@hubspot/gallery"
+, label
+=
+"gallery.module"
+%}
+Parameter
+Type
+Description
+slides
+Field group
+A field group containing fields for each slide. Contains the following fields:
+img
+: the image URL.
+show_caption
+: a boolean that sets whether to display the slide caption. Set to
+false
+by default.
+caption
+: the slide caption.
+link_url
+: the URL the slide leads to when clicked.
+open_in_new_tab
+: a boolean that sets whether to open the link in a new tab. Set to
+false
+by default.
+display_mode
+Choice
+Display mode of the gallery. Choices include:
+standard
+(default)
+thumbnail
+lightbox
+lightboxRows
+Number
+Number of rows in the gallery when
+display_mode
+is set to
+lightbox
+.
+loop_slides
+Boolean
+Enables looping through the slides with next/prev when
+display_mode
+equals
+standard
+or
+thumbnail
+.
+auto_advance
+Boolean
+Automatically advances to the next slide when
+display_mode
+equals
+standard
+or
+thumbnail
+.
+num_seconds
+Number
+Amount of time in seconds between advancing to the next slide when
+display_mode
+equals
+standard
+or
+thumbnail
+.
+show_pagination
+Boolean
+Show navigation buttons when
+display_mode
+is set to
+standard
+or
+thumbnail
+.
+sizing
+Choice
+Sets the height of the slides when
+display_mode
+is set to
+standard
+or
+thumbnail
+. Choices include:
+static
+: fixed height (default).
+resize
+: variable height.
+transition
+Choice
+Slide transition styles when
+display_mode
+is set to
+standard
+or
+thumbnail
+. Choices include:
+slide
+: slide transition (default).
+fade
+: fade transition.
+caption_position
+Choice
+Position of the slide captions when
+display_mode
+is set to
+standard
+or
+thumbnail
+. Choices include:
+below
+: always keep captions below the image (default).
+superimpose
+: superimpose captions on top of images.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Reference
+Overview
+Modules
+Module files
+Configuring a module
+Default email modules
+Default module versioning
+Default web modules
+Deprecated
+export_to_template_context
+Using Modules in Templates
+HubL (templating language)
+Forms
+Fields
+Serverless functions

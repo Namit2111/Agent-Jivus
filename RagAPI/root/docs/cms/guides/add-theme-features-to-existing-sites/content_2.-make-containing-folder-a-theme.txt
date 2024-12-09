@@ -1,0 +1,217 @@
+How to add theme capabilities to an existing HubSpot CMS website | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Theme
+1. Place existing files in a containing folder
+2. Make containing folder a theme
+3. Add theme fields
+Clone design manager drag and drop as HTML
+Drag and drop areas
+Does it make sense to convert every existing page to use drag and drop areas?
+Converting existing templates
+How do I migrate existing pages?
+Global partials
+Code Alerts
+CMS Development
+Improve older sites
+How to add theme capabilities to an existing HubSpot CMS website
+How to add theme capabilities to an existing HubSpot CMS website
+One of the benefits of HubSpot is that you don't need to perpetually update it. CMS Hub is always using the latest version. The new features introduced with CMS Hub are additive. So the templates, modules, etc. for existing HubSpot CMS websites work the same as you built them. They're better even, as behind the scenes the CMS is always getting better, faster, and easier to edit.
+There are some specific features of CMS Hub that a developer needs to add. You may implement some of these features different than you would for a brand new website. This tutorial will guide you in adding these features into your existing website(s).
+Before you continue:
+Review the
+key concepts of CMS Hub
+, even if you've been building on HubSpot for a long time. You will gain a better understanding of how all the pieces fit.
+You will also need to use the
+CMS CLI
+, so if you don't have it installed,
+go set it up
+.
+You can add and use these features independently. Start at the heading for specific features you need. You do not need to follow this tutorial completely linearly.
+Theme
+CMS Hub
+themes
+are a package of templates, modules, CSS, JSON, and JS files. Themes being a package has meaning throughout the content editor experience.
+When creating a new website or landing page the content creator is presented with a grid of the themes in their account. The select the theme they're using and then are shown a grid of just the templates in that theme.
+When editing a page using a template from a theme, the modules in that theme get special treatment making them stand out in the add module panel.
+1. Place existing files in a containing folder
+You make your templates, modules, CSS and JS files a theme if they are within the same containing folder. It does not matter if they are organized into sub-folders, it only matters that those assets are contained within a folder. If they are already stored that way great, if not create this folder and move your assets into it. Name that folder what you want to name your theme. The name is fully up to you, but perhaps naming it after the company's brand that the site reflects, and the year of the redesign or update.
+2. Make containing folder a theme
+Themes require two JSON files, and only one of them needs actual content initially.
+Theme.json
+- contains your theme's settings.
+Fields.json
+- contains fields that can be used to make design changes across an entire site.
+JSON files are special and can't currently be created in the design manager. These files CAN be uploaded through the
+CMS CLI
+.
+Fetch the containing folder you created in step "place existing files in a containing folder" to your computer.
+Inside of the folder on your computer, create a new file name it
+theme.json
+.
+Copy the
+example
+theme.json
+file on the themes doc
+.
+Paste the example code into your
+theme.json
+file.
+Change the value of
+"label"
+to be the name of the theme, as you want content creators to see it.
+Change
+"preview_path"
+to the path of either your homepage template or your most frequently used template.
+Take a screenshot of the website's homepage. Name the image
+thumb.jpg
+. Place the image inside of the same folder as your
+theme.json
+file.
+Change
+"screenshot_path"
+in theme.json to the path of your
+thumb.png
+image.
+Save the file.
+Inside of the same folder as your
+theme.json
+create a new file, name it fields.json. Inside of this file enter just
+[]
+and save the file.
+To see your changes in the design manager run the
+hs upload command
+. You now have a basic theme. Modules and templates within that theme will display associated to the theme.
+3. Add theme fields
+Theme fields are controls you can provide to a content creator to enable them to make theme-wide styling changes.
+During the initial build out of a website these theme controls enable content creators to be involved helping nail down the site wide branding. Teams may find this frees the developer up to focus on the more technical aspects of the site development.
+For existing websites, theme fields may be unnecessary. After-all if the website was already custom built, there likely is no purpose to adding site wide color, and typography controls. If a site's branding is changing significantly then it may be more appropriate to do a redesign than add fields retroactively. Ultimately though this is a decision you should make mutually with the other stakeholders involved in the website.
+To add fields to the theme, add their JSON to your fields.json file. The fields follow the same structure as module fields.
+Ensure that the users that should have access to change the theme field values, have the "Edit global content and themes" permission. Users who you do not want to be able to edit these settings you should make sure they do NOT have this enabled.
+Clone design manager drag and drop as HTML
+Drag and drop areas
+, and
+global partials
+require the use of
+coded HTML + HubL
+files. If your existing website may be built using the old drag and drop design manager system, and you want to use those new features, those templates may need to be cloned as HTML.
+To clone these templates as HTML + HubL template:
+Open the design manager, and find the template in the finder.
+Right click the template.
+In the context menu that appears, choose "Clone as HTML"
+You're now ready to work on adding the drag and drop areas and global partials.
+Drag and drop areas
+Drag and drop areas
+can be added to templates to provide content creators a way to place modules both horizontally and vertically on a page. Drag and drop areas also provide additional styling control for the content creator. Because a template with a drag and drop area can be used to create many different layouts, this frees up the developer to focus on the technical aspects of site creation and updating.
+Drag and drop areas are a new feature and are not the same as
+Design Manager drag and drop templates
+. They are also not supported in Design Manager drag and drop templates. To add them to templates previously built using the drag and drop template builder see clone design manager drag and drop as HTML.
+Does it make sense to convert every existing page to use drag and drop areas?
+That completely depends on if the page is meeting your business goals. In other words the old adage of "If it isn't broken, don't fix it" applies. If the layout of the page needs changing, then yes it's probably wise to convert the page to use drag and drop areas. If the page is serving its purpose and doesn't need layout changes - it's probably fine as is.
+Converting existing templates
+It's relatively easy to create a clone of an old template, and change the flexible column to a drag and drop area. That is a good idea, as that opens up a lot of possibilities for the content creators. That gives content creators a lot of creative control for new pages. If your template is a design manager drag and drop template see
+clone design manager drag and drop as HTML
+.
+The easiest solution is to find the instances of flexible columns, which use the HubL tag
+{% widget_container "my_unique_column_name" %}
+.
+Replace each instance as necessary with
+{% dnd_area "my_unique_area_name" %}
+.
+If you do not care to set the default modules, leave the
+dnd_area
+empty. If you want to carry over the default modules for the region or set new useful defaults, within the
+dnd_area
+add a
+dnd_section
+, and inside of that a
+dnd_column
+.
+For each module tag within the old
+widget_container
+you will want to create a
+dnd_row
+, containing a
+dnd_module
+with a matching path to the modules you want to display by default. This will create the same vertical layout the flexible column had.
+How do I migrate existing pages?
+If you are changing templates built with flexible columns to now use drag and drop areas there's a few things you should understand.
+Flexible columns are not the same as drag and drop areas, you can't swap from a template that only has a flex column to one that only has a drag and drop area
+. We don't allow this as a safety precaution. The content would not map from the flex column to the drag and drop area. To illustrate why this is, suppose you built your new template so you have a sidebar and a main content area. Your sidebar is a flexible column, your main content is a drag and drop area. The swapping tool would map the flexible column to the flexible column.
+If you want to convert a page to using drag and drop areas the safest way to do it, is to use
+content staging
+.
+Open the content staging tool
+, find the existing page, stage it. Choose "Stage blank page".
+Select your new template that uses the drag and drop area.
+Copy and paste the information from the original version of the page, creating the layout you want.
+When done publish to staging.
+In the content staging tool, navigate to the "Publish" tab. Select your page, and publish from staging.
+Global partials
+Global Partials
+are pieces of HTML & HubL content that can be reused across your entire website. The most common types of global partials are website headers, sidebars, and footers. For content creators global partials manifest themselves in the content editor as regions they can select to edit in the global content editor. The global content editor looks just like the page editor but is used to edit global content.
+To illustrate, you might implement the header as a global partial with modules for the navigation and other content. To the content creator if they need to add a link to the navigation, they could click on the header in the page editor, then click on the menu module and update the menu.
+Ensure that the users that
+should
+have access to edit global content have the "Edit global content and themes" permission.
+Code Alerts
+For accounts on CMS Hub Enterprise,
+Code Alerts
+provides a centralized location for developers and IT managers to see an overview of issues that affect performance and rendering of pages and assets on the account.
+Since you are actively optimizing the site to take advantage of the new features. It's a great idea to review the code alerts for your account and resolve any that exist.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Debugging
+Improve older sites
+Convert a WordPress theme to a HubSpot CMS theme
+Add theme features to existing sites
+Upgrade to the latest jQuery
+Marketplace

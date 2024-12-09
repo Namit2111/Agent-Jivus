@@ -1,0 +1,245 @@
+Integrate the HubSpot mobile chat SDK into your Android app (BETA) | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Set up and run the demo app
+Install and configure the SDK
+Open HubSpot chat view
+Identify users with the HubSpot visitor identification token
+Add custom chat data properties
+Clear data on logout
+Reference documentation
+API Guides
+Conversations
+Mobile chat SDK
+Integrate the HubSpot mobile chat SDK into your Android app (BETA)
+Integrate the HubSpot mobile chat SDK into your Android app (BETA)
+Please note:
+This functionality is currently in development
+. It is subject to change based on testing and feedback. By using these instructions you agree to adhere to
+HubSpot's Developer Terms
+&
+HubSpot's Developer Beta Terms
+.
+To ask questions or provide feedback on the beta, you can join the
+HubSpot Developer Slack Community
+and join the
+#mobile-chat-sdk-beta
+channel.
+Learn how to opt your account into this beta
+here
+.
+You can use the HubSpot mobile chat SDK to integrate your Android mobile application with HubSpot's live chat functionality.
+The mobile chat SDK allows you to:
+Integrate HubSpot chat into your mobile app to deliver real-time, in-app customer support.
+Leverage the
+bot
+and
+knowledge base
+tools to help deflect customer inquires when your support agents are unavailable.
+Alert users of new messages via push notifications.
+Customize the chat experience to align with your business's brand and UI.
+Set up and run the demo app
+To set up the mobile chat SDK dependencies to your project:
+Add your
+google-services.json
+in the
+app/
+folder, and ensure that the
+package_name
+field in the file is set to
+com.example.demo
+.
+Create your
+hubspot-info.json
+file in the
+app/
+folder. The full path of the file should be
+app/src/main/assets/hubspot-info.json
+.
+Add the HubSpot package to your build gradle file:
+Copy code snippet
+implementation "com.hubspot.mobilechatsdk:mobile-chat-sdk-android::LATEST_VERSION"
+implementation "com.hubspot.mobilechatsdk:mobile-chat-sdk-android::LATEST_VERSION"
+Sync
+your Android project with its gradle files.
+Build and run the app.
+Install and configure the SDK
+The SDK needs to be configured once per app launch. The most convenient time to configure the SDK is during app initialization.
+Start by getting an instance of the
+HubSpotManager
+class, then call the
+configure
+method
+Copy code snippet
+val manager = HubspotManager.getInstance(context)
+manager.configure()
+try! HubspotManager.configure()
+return true
+}
+​
+x
+1
+val manager = HubspotManager.getInstance(context)
+2
+manager.configure()
+3
+try! HubspotManager.configure()
+4
+​
+5
+return true
+6
+}
+Failure to include the config file, or forgetting to include the file as being part of your apps target will cause initialization to throw an errors. The
+HubspotConfigError
+class represents different errors when missing properties.
+Open HubSpot chat view
+The chat view can be opened by
+HubspotWebActivity
+which extends the
+Activity
+class. You can open it by using any of the following approaches:
+Directly calling
+startActivity
+via intent
+Create any button type, then within an
+onClick
+listener of that button, open the
+HubspotWebActivity
+.
+Add
+HubspotFloatingActionButton
+in the file which handle the clicks and open the
+HubspotWebActivity
+automatically.
+For example, if you wanted to go with the second approach above and specify the behavior within an
+onClick
+listener of a button:
+Copy code snippet
+binding.anybutton.setOnClickListener {
+startActivity(Intent(requireContext(), HubspotWebActivity::class.java))
+}
+xxxxxxxxxx
+3
+1
+binding.anybutton.setOnClickListener {
+2
+startActivity(Intent(requireContext(), HubspotWebActivity::class.java))
+3
+}
+Identify users with the HubSpot visitor identification token
+You can identify users by using the visitor identification API, detailed in this article. This API is best implemented in your own server project, where you can pass the identity token to your app based on whether suits your specific setup (i.e., passing a token in response to a visitor going through a login page as a result of a dedicated API that you own).
+Once a token is generated, it can be associated with a contact's email address by calling
+HubspotManager.setUserIdentity(email, identityToken)
+. This should be called before opening a chat view.
+Add custom chat data properties
+The SDK supports setting key-value pairs to keep track of data you might need to track while a chat session is open. You can set your own custom values, or declare common permission preferences such as photo or notification permissions.
+Use the
+HubspotManager.setChatProperties(key, value)
+method and provide the associated key and value you want to set. This is best called before starting a chat, and will apply to all new chats. You could set an account status, or other identifiers when setting up your user. These will then appear in all chats opened for the remainder of the app launch.
+For example, the following code would set permissions for camera, photo, notifications, and location data to
+"false"
+.
+Copy code snippet
+val keyValuePair = mapOf(
+ChatPropertyKey.CameraPermissions.chatPropertyValue to "false",
+ChatPropertyKey.PhotoPermissions.chatPropertyValue to "false",
+ChatPropertyKey.NotificationPermissions.chatPropertyValue to "false",
+ChatPropertyKey.LocationPermissions.chatPropertyValue to "false"
+)
+hubspotManager.setChatProperties(keyValuePair)
+xxxxxxxxxx
+8
+1
+val keyValuePair = mapOf(
+2
+ChatPropertyKey.CameraPermissions.chatPropertyValue to "false",
+3
+ChatPropertyKey.PhotoPermissions.chatPropertyValue to "false",
+4
+ChatPropertyKey.NotificationPermissions.chatPropertyValue to "false",
+5
+ChatPropertyKey.LocationPermissions.chatPropertyValue to "false"
+6
+)
+7
+​
+8
+hubspotManager.setChatProperties(keyValuePair)
+Clear data on logout
+The SDK stores in memory identification tokens, email address, and any properties set. The push token for the app is also associated with the current user, if applicable. You may want to clear this data when a user is logging out, or changing users in a multi user app. To clear this data, call
+HubspotManager.logout()
+at an appropriate time in in your app.
+Please note:
+calling the
+HubspotManager.logout()
+only impacts the data used for future chat sessions. It has no impact on data or chat sessions already stored in HubSpot.
+Reference documentation
+You can consult the
+reference documentation
+for details on how to use each of the components in the HubSpot mobile SDK. The binary file is also hosted
+here
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Create custom channels
+Beta
+Inbox & messages
+Mobile chat SDK
+Android
+iOS
+Visitor identification
+Working with chatbots
+Library
+CRM
+Marketing
+Settings
+Legal

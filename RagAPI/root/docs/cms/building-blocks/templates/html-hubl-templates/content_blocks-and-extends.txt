@@ -1,0 +1,406 @@
+HTML + HubL Templates | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Familiarity and tooling
+Template annotations
+Header and footer includes
+Partials
+Standard partials
+Global partials
+Blocks and extends
+Global groups
+CMS Development
+Content and structure
+Templates
+Template types
+HTML + HubL Templates
+HTML + HubL templates
+HTML + HubL templates can be used for
+every type of template
+on the HubSpot CMS. These templates are .html files that support the
+HubL templating language
+. Because these coded templates support HubL the best previewing experience is using the
+template preview in the Design Manager
+or viewing pages on a sandbox account. HTML + HubL templates can contain
+partials
+, which can be used to separate commonly used chunks of code, such as a header or footer.
+Having trouble watching this video?
+HTML + HubL templates give greater control to developers than
+visual design manager drag and drop templates
+. Developers in-turn can provide better experiences for content creators through
+drag and drop functionality
+, which is only possible with HTML + HubL templates.
+The above template is the
+base.html template
+included in the
+HubSpot CMS boilerplate
+, which is a great way to get started developing with HubSpot.
+Familiarity and tooling
+Since HTML + HubL templates are coded files, you can use your preferred tools to edit them locally. It's recommended to use HubSpot's own
+local development tools
+so that you can
+upload
+,
+fetch
+,
+watch
+,
+create
+and otherwise securely manage files in the developer file system as well as the file manager.
+Building HTML + HubL templates with HubSpot is similar to using other templating language you may have used before. The core difference is that HubSpot takes an opinionated stance on the best ways to do some things to offer the best experience for content creators, and also takes much of the maintenance and performance optimization work off of the developer.
+For example, if you want to load CSS file on a page for certain modules, instead of using
+<link rel="stylesheet" type="text/css" href="theme.css">
+, you should include the stylesheet through
+css_assets
+in the
+module's meta.json file
+. This enables HubSpot to conditionally load the CSS only when the module is present on a page, minimizing the amount of unnecessary CSS loaded.
+Learn more about
+optimizing your HubSpot development workflow
+.
+Template annotations
+Template annotations, included at the top of a template, configure important template settings, such as the template type and whether it can be used to create new content. Template annotations can be changed at any time during the development process. Below, learn more about available template annotations.
+Copy code snippet
+<!--
+templateType: page
+isAvailableForNewContent: false
+enableDomainStylesheets: false
+label: Homepage
+screenshotPath: ../images/template-previews/home.png
+-->
+<!doctype html>
+<html>
+...
+</html>
+​
+x
+1
+<!--
+2
+templateType: page
+3
+isAvailableForNewContent: false
+4
+enableDomainStylesheets: false
+5
+label: Homepage
+6
+screenshotPath: ../images/template-previews/home.png
+7
+-->
+8
+​
+9
+<!doctype html>
+10
+​
+11
+<
+html
+>
+12
+...
+13
+</
+html
+>
+Annotation
+Type
+Description
+templateType
+String
+Specifies which template type a file is. Values include:
+Standard templates:
+page
+email
+blog_listing
+blog_post
+blog
+Partials:
+global_partial
+System templates:
+error_page
+password_prompt_page
+membership_login_page
+membership_register_page
+membership_reset_page
+membership_reset_request_page
+email_subscription_preferences_page
+email_backup_unsubscribe_page
+email_subscriptions_confirmation_page
+search_results_page
+isAvailableForNewContent
+String
+Specifies if a template is available for selection in the content creation process. Values include:
+true
+,
+false
+.Templates set to
+false
+do not need to include the
+required variables
+. Templates of the
+page
+type that are set to false can also be used as
+standard partials
+.
+enableDomainStylesheets
+String
+Specifies if the template should load
+domain stylesheets
+. Values include:
+true
+,
+false
+.
+Label
+String
+User-friendly description of the template, displayed in the template selection screen. For example,
+About Page
+,
+Homepage
+,
+Pricing
+.
+screenshotPath
+String
+The screenshot to display when a content creator is selecting a template. This screenshot should make it easy to differentiate between your templates.
+Header and footer includes
+HubSpot's templates require two tags to be present unless the file is a template partial. The two tags are:
+{{ standard_header_includes }}
+- Used to intelligently add combined and minified required CSS.
+{{ standard_footer_includes }}
+- Used to intelligently add javascript to the bottom of a page dynamically, for things like the HubSpot tracking script, and modules.
+These tags must be present in a template or it's
+partial
+children to be published and used.
+Partials
+Template partials are HTML + HubL files that can be included in other coded files. Partials enable you to take a more modular approach by sharing markup between multiple templates. For example, a header can be made into a partial so that you can easily include it as a component without needed to code it again.
+Standard partials
+A standard partial is a reusable template or component containing content that can be edited on individual pages. This enables content creators to change the content as needed, as opposed to global partials which always share content. For example, the following code would pull the sidebar module into another template file.
+Standard partials must include the following
+annotations
+at the top of the template file:
+templateType: page
+isAvailableForNewContent: false
+Copy code snippet
+{% include "../partial/sidebar.html" %}
+xxxxxxxxxx
+{%
+include
+"../partial/sidebar.html"
+%}
+Global partials
+A global partial is a type of
+global content
+that can be used across multiple templates with content that is shared across all instances of the partial. Global partials are often used for headers and footers, which you can see an example of in the HubSpot CMS Boilerplate
+header
+and
+footer
+. These partials are then called in
+base.html
+using the
+global_partial
+tag.
+Global partials must include the
+annotation
+templateType: global_partial
+at the top of the file.
+Copy code snippet
+{% global_partial path="../partials/header.html" %}
+xxxxxxxxxx
+{%
+global_partial path
+=
+"../partials/header.html"
+%}
+Blocks and extends
+When creating complex templates, you can create compartmentalized blocks that extend a parent template.
+For example, you can create a parent template that includes the required
+standard_header_includes
+and
+standard_footer_includes
+variables. Within that template, you define a unique block using the following syntax where
+body
+is a unique name:
+Copy code snippet
+{% block body %}
+<!-- Content to display -->
+{% endblock body %}
+xxxxxxxxxx
+3
+1
+{%
+block
+body
+%}
+2
+<!-- Content to display -->
+3
+{%
+endblock
+body
+%}
+Then, in the child template, you can extend the parent template, then insert more content into the
+body
+block.
+Copy code snippet
+{% extends "./layouts/base.html" %}
+{% block body %}
+<h3>Page Content</h3>
+<ul>
+<li>Bullet 1<li>
+<li>Bullet 2<li>
+<li>Bullet 3<li>
+</ul>
+{% endblock %}
+xxxxxxxxxx
+9
+1
+{%
+extends
+"./layouts/base.html"
+%}
+2
+{%
+block
+body
+%}
+3
+<
+h3
+>
+Page Content
+</
+h3
+>
+4
+<
+ul
+>
+5
+<
+li
+>
+Bullet 1
+<
+li
+>
+6
+<
+li
+>
+Bullet 2
+<
+li
+>
+7
+<
+li
+>
+Bullet 3
+<
+li
+>
+8
+</
+ul
+>
+9
+{%
+endblock
+%}
+This method is used in the
+base.html
+template of the HubSpot CMS boilerplate, which then is extended by the other templates in the
+templates folder
+.
+Global groups
+Global groups
+created using the drag and drop template builder in the Design Manager, can also be included. The syntax is displayed below:
+Copy code snippet
+{% include "/path/to/global_header.template.json" %}
+xxxxxxxxxx
+{%
+include
+"/path/to/global_header.template.json"
+%}
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Templates
+Overview
+Default email modules
+Template types
+Blog templates
+Quotes
+Drag and drop templates
+Email templates
+HTML + HubL templates
+Drag and drop
+Modules
+Fields
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

@@ -1,0 +1,343 @@
+Lazy loading assets for performance | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Lazy loading images
+Browser Compatibility
+Add lazy loading to Image fields using the CLI
+Add lazy loading to image and logo fields in HubSpot
+Image loading
+Available loading options
+CMS Development
+Content and structure
+Performance
+Lazy loading assets for performance
+Lazy loading assets for performance
+Lazy loading assets allows you to defer the loading of the assets until the time when they are actually needed. On the web, this often means downloading the designated content only once the user has gotten sufficiently close to where in the HTML document the asset displays. This technique is one of many suggested for
+optimizing page performance
+.
+Lazy loading images
+Lazy loading options are available for the
+image and logo fields
+in custom modules for use in HubL tags and also available in the
+default image module.
+When building custom modules, you have the option to enable
+browser built-in lazy loading
+on image fields. When enabled, you can choose whether to show or hide controls to the content editor enabling them to change the loading behavior in the page editor.
+Browser Compatibility
+Lazy loading of images via the
+loading
+attribute is supported by most of the popular Chromium-powered browsers (Chrome, Edge, Opera) and Firefox. To learn more about what browsers are supported you can visit
+caniuse.com
+. Browsers that do not support the
+loading
+attribute will simply ignore it without side-effects.
+Add lazy loading to Image fields using the CLI
+To enable lazy loading of images while building with the CMS CLI, add the
+show_loading
+and
+loading
+keys to the
+image
+or
+logo
+field in the module's
+fields.json
+file.
+Copy code snippet
+// fields.json file
+{
+"id": "357bacfa-2bb8-e996-4589-f55e10d4f1d4",
+"name": "image_field",
+"label": "Image",
+"required": false,
+"locked": false,
+"responsive": true,
+"resizable": true,
+"show_loading": false,
+"type": "image",
+"default": {
+"size_type": "auto",
+"src": "",
+"alt": null,
+"loading": "disabled"
+}
+}
+1
+// fields.json file
+2
+{
+3
+"id"
+:
+"357bacfa-2bb8-e996-4589-f55e10d4f1d4"
+,
+4
+"name"
+:
+"image_field"
+,
+5
+"label"
+:
+"Image"
+,
+6
+"required"
+:
+false
+,
+7
+"locked"
+:
+false
+,
+8
+"responsive"
+:
+true
+,
+9
+"resizable"
+:
+true
+,
+10
+"show_loading"
+:
+false
+,
+11
+"type"
+:
+"image"
+,
+12
+"default"
+: {
+13
+"size_type"
+:
+"auto"
+,
+14
+"src"
+:
+""
+,
+15
+"alt"
+:
+null
+,
+16
+"loading"
+:
+"disabled"
+17
+}
+18
+}
+Parameter
+Type
+Description
+Default
+show_loading
+Boolean
+Controls showing/hiding lazy load controls to the content editor.
+False
+loading
+String
+Determines whether to use lazy loading. Options include:
+"disabled"
+or
+"lazy"
+"disabled"
+You can then reference these variables in your
+module.html
+file using the following syntax:
+Copy code snippet
+{% set loadingAttr = module.image_field.loading != 'disabled' ? 'loading="{{ module.image_field.loading }}"' : '' %}
+<img src="{{ module.image_field.src }}" alt="{{ module.image_field.alt }}" {{ loadingAttr }}>
+xxxxxxxxxx
+2
+1
+{%
+set
+loadingAttr
+=
+module.image_field.loading
+!=
+'disabled'
+?
+'loading="{{ module.image_field.loading }}"'
+:
+''
+%}
+2
+<
+img
+src
+=
+"
+{{
+module.image_field.src
+}}
+"
+alt
+=
+"
+{{
+module.image_field.alt
+}}
+"
+{{
+loadingAttr
+}}
+>
+Add lazy loading to image and logo fields in HubSpot
+To enable lazy loading, add an image or logo field to your custom module, then navigate to the
+Content options
+section in the
+Inspector pane
+. Then use the
+Image loading
+and
+Available loading options
+dropdown menus to configure the image loading behavior.
+Image loading
+The
+Image loading
+option will set the value of the
+loading
+attribute in the browser. Options for this include "Default" (default option) which is the default browser loading behavior for the asset. When enabling lazy loading, the image will load once the image reaches a certain distance from the viewport as defined in the
+distance-from-viewport threshold
+.
+Available loading options
+The
+Available loading options
+will determine if content editors will be able to see and set the
+Image loading
+option while inside of the page, global, and theme content editor panes. Options for this include
+Do Not Show Controls
+(default) or
+Show all controls
+. Below is a sample of what the page editor would look like with
+Show all controls
+selected:
+You can then reference these variables in the
+module.html
+file using the following syntax:
+Copy code snippet
+{% set loadingAttr = module.image_field.loading != 'disabled' ? 'loading="{{ module.image_field.loading }}"' : '' %}
+<img src="{{ module.image_field.src }}" alt="{{ module.image_field.alt }}" {{ loadingAttr }}>
+xxxxxxxxxx
+2
+1
+{%
+set
+loadingAttr
+=
+module.image_field.loading
+!=
+'disabled'
+?
+'loading="{{ module.image_field.loading }}"'
+:
+''
+%}
+2
+<
+img
+src
+=
+"
+{{
+module.image_field.src
+}}
+"
+alt
+=
+"
+{{
+module.image_field.alt
+}}
+"
+{{
+loadingAttr
+}}
+>
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Overview
+Lazy loading
+Optimize site performance
+Prerendering
+Reverse proxy support
+Themes
+Templates
+Modules
+Fields
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

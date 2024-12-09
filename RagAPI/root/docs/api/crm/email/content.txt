@@ -1,0 +1,641 @@
+Engagements | Email | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create an email
+Properties
+Read only properties
+Set email headers
+Associations
+Retrieve emails
+Update emails
+Associate existing emails with records
+Remove an association
+Pin an email on a record
+Delete emails
+API Guides
+CRM
+Engagements
+Engagements | Email
+Email
+Email endpoint reference
+Use the email engagement API to log and manage emails on CRM records. You can log email activities either
+in HubSpot
+or through the emails API.
+Below, learn the basic methods of managing emails through the API. To view all available endpoints and their requirements, click the
+Endpoints
+tab at the top of this article.
+Create an email
+To create an email engagement, make a
+POST
+request to
+/crm/v3/objects/emails
+.
+In the request body, add email details in a
+properties
+object. You can also add an
+associations
+object to associate your new email with an existing record (e.g., contacts, companies).
+Properties
+In the properties object, you can include the following fields:
+Field
+Description
+hs_timestamp
+Required. This field marks the email's time of creation and determines where the email sits on the record timeline. You can use either a Unix timestamp in milliseconds or UTC format.
+hubspot_owner_id
+The
+ID of the owner
+associated with the email. This field determines the user listed as the email creator on the record timeline.
+hs_email_direction
+The direction the email was sent in. Possible values include:
+EMAIL
+: the email was sent from the CRM or sent and logged to the CRM with the
+BCC address.
+INCOMING_EMAIL
+: the email was a reply to a logged outgoing email.
+FORWARDED_EMAIL
+: the email was
+forwarded to the CRM.
+hs_email_html
+The body of an email if it is sent from a CRM record.
+hs_email_status
+The send status of the email. The value can be
+BOUNCED
+,
+FAILED
+,
+SCHEDULED
+,
+SENDING
+, or
+SENT
+.
+hs_email_subject
+The subject line of the logged email.
+hs_email_text
+The body of the email.
+hs_attachment_ids
+The IDs of the email's attachments. Multiple attachment IDs are separated by a semi-colon.
+hs_email_headers
+The email's headers. The value for this property will automatically populate certain read only email properties. Learn how to
+set email headers.
+Learn more about batch creating email engagements by clicking the
+Endpoints
+tab at the top of this article.
+Read only properties
+There are also some email properties that are read only, which are automatically populated by HubSpot. The properties in the table below are all automatically populated from the
+hs_email_headers
+value.
+Field
+Description
+hs_email_from_email
+The email address of the email's sender.
+hs_email_from_firstname
+The email sender's first name.
+hs_email_from_lastname
+The email sender's last name.
+hs_email_to_email
+The email addresses of the email's recipients.
+hs_email_to_firstname
+The first names of the email's recipients.
+hs_email_to_lastname
+The last names of the email recipient.
+Please note:
+when retrieving an email header, you may notice there are values both for
+From
+and
+Sender
+. These are often the same, but because
+Sender
+identifies what actually submitted an email, there are scenarios where the values may differ. For example, if an email is sent from an email alias, the
+From
+value will refer to the user's actual email address, and the
+Sender
+value will refer to the email alias.
+Set email headers
+Since headers automatically populate the read only properties, you may want to manually set the email headers. To set the
+hs_email_headers
+value, you can use a JSON escaped string with the following data:
+Copy code snippet
+//Example data
+{
+"from": {
+"email": "from@domain.com",
+"firstName": "FromFirst",
+"lastName": "FromLast"
+},
+"to": [
+{
+"email": "ToFirst ToLast<to@test.com>",
+"firstName": "ToFirst",
+"lastName": "ToLast"
+}
+],
+"cc": [],
+"bcc": []
+}
+1
+//Example data
+2
+{
+3
+"from"
+: {
+4
+"email"
+:
+"from@domain.com"
+,
+5
+"firstName"
+:
+"FromFirst"
+,
+6
+"lastName"
+:
+"FromLast"
+7
+},
+8
+"to"
+: [
+9
+{
+10
+"email"
+:
+"ToFirst ToLast<to@test.com>"
+,
+11
+"firstName"
+:
+"ToFirst"
+,
+12
+"lastName"
+:
+"ToLast"
+13
+}
+14
+],
+15
+"cc"
+: [],
+16
+"bcc"
+: []
+17
+}
+For example, your request to create an email may look like:
+Copy code snippet
+//Example request body
+{
+"properties": {
+"hs_timestamp": "2019-10-30T03:30:17.883Z",
+"hubspot_owner_id": "47550177",
+"hs_email_direction": "EMAIL",
+"hs_email_status": "SENT",
+"hs_email_subject": "Let's talk",
+"hs_email_text": "Thanks for youremail",
+"hs_email_headers": "{\"from\":{\"email\":\"from@domain.com\",\"firstName\":\"FromFirst\",\"lastName\":\"FromLast\"},\"sender\":{\"email\":\"sender@domain.com\",\"firstName\":\"SenderFirst\",\"lastName\":\"SenderLast\"},\"to\":[{\"email\":\"ToFirst+ToLast<to@test.com>\",\"firstName\":\"ToFirst\",\"lastName\":\"ToLast\"}],\"cc\":[],\"bcc\":[]}"
+}
+}
+xxxxxxxxxx
+12
+1
+//Example request body
+2
+{
+3
+"properties"
+: {
+4
+"hs_timestamp"
+:
+"2019-10-30T03:30:17.883Z"
+,
+5
+"hubspot_owner_id"
+:
+"47550177"
+,
+6
+"hs_email_direction"
+:
+"EMAIL"
+,
+7
+"hs_email_status"
+:
+"SENT"
+,
+8
+"hs_email_subject"
+:
+"Let's talk"
+,
+9
+"hs_email_text"
+:
+"Thanks for youremail"
+,
+10
+"hs_email_headers"
+:
+"{\"from\":{\"email\":\"from@domain.com\",\"firstName\":\"FromFirst\",\"lastName\":\"FromLast\"},\"sender\":{\"email\":\"sender@domain.com\",\"firstName\":\"SenderFirst\",\"lastName\":\"SenderLast\"},\"to\":[{\"email\":\"ToFirst+ToLast<to@test.com>\",\"firstName\":\"ToFirst\",\"lastName\":\"ToLast\"}],\"cc\":[],\"bcc\":[]}"
+11
+}
+12
+}
+Associations
+To create and associate an email with existing records, include an associations object in your request. For example, to create an email and associate it with a deal and a contact, your request body might look like the following:
+Copy code snippet
+// Example request body
+{
+"properties": {
+"hs_timestamp": "2019-10-30T03:30:17.883Z",
+"hubspot_owner_id": "11349275740",
+"hs_email_direction": "EMAIL",
+"hs_email_status": "SENT",
+"hs_email_subject": "Let's talk",
+"hs_email_text": "Thanks for your interest let's find a time to connect"
+},
+"associations": [
+{
+"to": {
+"id": 601
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 210
+}
+]
+},
+{
+"to": {
+"id": 602
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 198
+}
+]
+}
+]
+}
+xxxxxxxxxx
+35
+1
+// Example request body
+2
+{
+3
+"properties"
+: {
+4
+"hs_timestamp"
+:
+"2019-10-30T03:30:17.883Z"
+,
+5
+"hubspot_owner_id"
+:
+"11349275740"
+,
+6
+"hs_email_direction"
+:
+"EMAIL"
+,
+7
+"hs_email_status"
+:
+"SENT"
+,
+8
+"hs_email_subject"
+:
+"Let's talk"
+,
+9
+"hs_email_text"
+:
+"Thanks for your interest let's find a time to connect"
+10
+},
+11
+"associations"
+: [
+12
+{
+13
+"to"
+: {
+14
+"id"
+:
+601
+15
+},
+16
+"types"
+: [
+17
+{
+18
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+19
+"associationTypeId"
+:
+210
+20
+}
+21
+]
+22
+},
+23
+{
+24
+"to"
+: {
+25
+"id"
+:
+602
+26
+},
+27
+"types"
+: [
+28
+{
+29
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+30
+"associationTypeId"
+:
+198
+31
+}
+32
+]
+33
+}
+34
+]
+35
+}
+In the associations object, you should include the following:
+Field
+Description
+to
+The record you want to associate with the email, specified by its unique
+id
+value.
+types
+The type of the association between the email and the record. Include the
+associationCategory
+and
+associationTypeId
+. Default association type IDs are listed
+here
+, or you can retrieve the value for custom association types (i.e. labels) via the
+associations API
+.
+Retrieve emails
+You can retrieve emails individually or in bulk. Learn more about batch retrieval by clicking the
+Endpoints
+tab at the top of this article.
+To retrieve an individual email by its email ID, make a
+GET
+request to
+/crm/v3/objects/emails/{emailId}
+. You can also include the following parameters in the request URL:
+Parameter
+Description
+properties
+A comma separated list of the properties to be returned.
+associations
+A comma separated list of object types to retrieve associated IDs for. Any specified associations that don't exist will not be returned in the response. Learn more about the
+associations API.
+To request a list of all of emails, make a
+GET
+request to
+crm/v3/objects/emails
+. You can include the following parameters in the request URL:
+Parameter
+Description
+limit
+The maximum number of results to display per page.
+properties
+A comma separated list of the properties to be returned.
+Update emails
+You can update emails individually or in batches. To update an individual email by its email ID, make a
+PATCH
+request to
+/crm/v3/objects/emails/{emailId}
+.
+In the request body, include the email properties that you want to update. For example, your request body might look similar to the following:
+Copy code snippet
+// Example request body
+{
+"properties": {
+"hs_timestamp": "2019-10-30T03:30:17.883Z",
+"hubspot_owner_id": "11349275740",
+"hs_email_direction": "EMAIL",
+"hs_email_status": "SENT",
+"hs_email_subject": "Let's talk tomorrow",
+"hs_email_text": "Thanks for your interest let's find a time to connect!"
+}
+}
+xxxxxxxxxx
+11
+1
+// Example request body
+2
+{
+3
+"properties"
+: {
+4
+"hs_timestamp"
+:
+"2019-10-30T03:30:17.883Z"
+,
+5
+"hubspot_owner_id"
+:
+"11349275740"
+,
+6
+"hs_email_direction"
+:
+"EMAIL"
+,
+7
+"hs_email_status"
+:
+"SENT"
+,
+8
+"hs_email_subject"
+:
+"Let's talk tomorrow"
+,
+9
+"hs_email_text"
+:
+"Thanks for your interest let's find a time to connect!"
+10
+}
+11
+}
+HubSpot will ignore values for read-only and non-existent properties. To clear a property value, pass an empty string for the property in the request body.
+Learn more about batch updating by clicking the
+Endpoints
+tab at the top of this article.
+Associate existing emails with records
+To associate an email with records, such as a contact and its associated companies, make a
+PUT
+request to
+/crm/v3/objects/emails/{emailId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}
+. The request URL contains the following fields:
+Field
+Description
+emailId
+The ID of the email.
+toObjectType
+The type of object that you want to associate the email with (e.g., contact or company)
+toObjectId
+The ID of the record that you want to associate the email with.
+associationTypeId
+A unique identifier to indicate the association type between the email and the other object. The ID can be represented numerically or in snake case (e.g.,
+email_to_contact
+). You can retrieve the value through the
+associations API
+.
+For example, your request URL might look similar to the following:
+https://api.hubspot.com/crm/v3/objects/emails/17691787884/associations/contact/104901/198
+Remove an association
+To remove an association between an email and a record, make a
+DELETE
+request to the same URL as above:
+/crm/v3/objects/emails/{emailId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}
+Pin an email on a record
+You can
+pin an email
+on a record so it remains on the top of the record's timeline. The email must already be associated with the record prior to pinning, and you an only pin one activity per record. To pin an email, include the email's
+id
+in the
+hs_pinned_engagement_id
+field when creating or updating a record via the object APIs. Learn more about using the
+companies,
+contacts
+,
+deals
+,
+tickets
+, and
+custom objects
+APIs.
+Delete emails
+When you delete an email, it is permanently deleted and
+cannot
+be restored. You can delete emails individually or in batches.
+To delete an individual email by its email ID, make a
+DELETE
+request to
+/crm/v3/objects/emails/{emailId}
+.
+Learn more about batch deleting by clicking the
+Endpoints
+tab at the top of this article.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Engagement details
+Calls
+Communications
+Email
+Meetings
+Notes
+Postal mail
+Tasks
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

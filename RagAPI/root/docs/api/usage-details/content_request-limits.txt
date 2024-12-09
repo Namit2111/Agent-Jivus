@@ -1,0 +1,323 @@
+HubSpot APIs | Usage guidelines | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Authentication and security
+Checking API usage
+Private apps
+Public apps using OAuth
+Rate Limits
+Public apps
+Private apps
+Other limits
+Request limits
+Service Limits
+Error Responses
+Use batch APIs and cache results when possible
+Use webhooks to get updated data from HubSpot
+Apps
+API usage
+HubSpot APIs | Usage guidelines
+API usage guidelines
+HubSpot closely monitors usage of our public APIs to ensure a quality experience for every user. All app and integration developers must comply with the
+HubSpot Acceptable Use Policy
+and
+API Terms
+. While HubSpot reserves the right to change or deprecate the APIs over time, updates will always be provided in advance through the
+Developer Changelog
+.
+Authentication and security
+For optimal security, all apps must use HubSpot’s
+OAuth protocol
+directly, or use your app's access token if you're building a
+private app
+. Apps are responsible for storing time-to-live (TTL) data and refreshing user access tokens in accordance with this protocol. When an access token is generated, it will include an
+expires_in
+parameter indicating how long it can be used to make API calls before refreshing.
+Unauthorized (401)
+requests are not a valid indicator that a new access token must be retrieved.
+Checking API usage
+Private apps
+To view API usage for a private app:
+In your HubSpot account, click the
+settings icon
+in the main navigation bar.
+In the left sidebar menu, navigate to
+Integrations
+>
+Private Apps
+.
+Click the
+name
+of the private app.
+On the app details page, click the
+Logs
+tab.
+Review the API calls listed in the table. You can also use the
+search bar
+,
+filters
+, and
+date pickers
+to further refine the displayed API calls.
+Learn more about
+checking API usage in private apps
+.
+Public apps using OAuth
+To view API usage for a public app using OAuth:
+In your developer account, navigate to
+Apps
+in the main navigation bar.
+Click the
+name
+of the app.
+In the left sidebar menu, navigate to
+Monitoring
+.
+Use the
+tabs
+to view different types of requests being made to or from the app. While viewing these logs, you can click an
+individual request
+to view more information.
+Learn more about
+monitoring API usage for public apps
+.
+Rate Limits
+Public apps
+For OAuth apps, each HubSpot account that installs your app is limited to 110 requests every 10 seconds. This excludes the
+Search API
+, as noted in the
+Other Limits
+section below. Limits related to the
+API limit increase
+don't apply.
+Private apps
+The number of calls your private app can make is based on your account subscription and whether you've purchased the
+API limit increase
+:
+Product Tier
+Per 10 Seconds
+Per Day
+Private Apps
+(Any Hub)
+Free and Starter
+100 / private app
+250,000 / account
+(Any Hub)
+Professional
+190 / private app
+625,000 / account
+(Any Hub)
+Enterprise
+190 / private app
+1,000,000 / account
+Private Apps with
+API Limit Increase
+(Any Hub)
+Free, Starter, Professional, and Enterprise
+250 / private app
+1,000,000 / account on top of your base subscription, for each limit increase. You can purchase a maximum of two API limit increases.
+Please note:
+purchasing an API Limit Increase will increase the maximum number of requests you can make to the
+associations API
+to 1,000,000 daily requests and 200 requests per 10 seconds, but these limits
+cannot
+be increased further with an additional API Limit Increase purchase.
+Other limits
+You can create up to 100 apps per developer account.
+You can create up to 20 private apps per HubSpot account.
+You can create up to 1,000 webhook subscriptions per app.
+You can create up to 25 CRM extension settings per app.
+You can create up to 750 timeline event types per app.
+You can create up to 500 properties per timeline event type.
+Request limits
+Keep the following general limits in mind when making requests to HubSpot's API endpoints. Some APIs may also have their own, more specific limits which will be listed on the API reference page under
+Limits
+.
+The
+search API
+endpoints are rate limited to
+five
+requests per second per authentication token, and 200 records per page request. Learn more about
+search limits
+.
+API requests that are exempt from daily or secondary limits will
+not
+be logged in HubSpot. If you want to store these exempted requests, you'll need to log these requests externally.
+Batch requests to CRM object endpoints are limited to 100 records per request. For example, you can't batch read more than 100 contacts per request.
+Service Limits
+Learn more about service limits and pricing
+here
+.
+Error Responses
+Any app or integration exceeding its rate limits will receive a
+429
+error response for all subsequent API calls. Requests resulting in an error response shouldn’t exceed 5% of your total daily requests. If you plan on listing your app in the
+HubSpot App Marketplace
+, it must stay under this 5% limit to be certified.
+The
+429
+response will have the following format:
+Copy code snippet
+//Example
+{
+"status": "error",
+"message": "You have reached your daily limit.",
+"errorType": "RATE_LIMIT",
+"correlationId": "c033cdaa-2c40-4a64-ae48-b4cec88dad24",
+"policyName": "DAILY",
+"requestId": "3d3e35b7-0dae-4b9f-a6e3-9c230cbcf8dd"
+}
+1
+//Example
+2
+{
+3
+"status"
+:
+"error"
+,
+4
+"message"
+:
+"You have reached your daily limit."
+,
+5
+"errorType"
+:
+"RATE_LIMIT"
+,
+6
+"correlationId"
+:
+"c033cdaa-2c40-4a64-ae48-b4cec88dad24"
+,
+7
+"policyName"
+:
+"DAILY"
+,
+8
+"requestId"
+:
+"3d3e35b7-0dae-4b9f-a6e3-9c230cbcf8dd"
+9
+}
+The
+message
+and
+policyName
+will indicate which limit you hit (either daily or secondly).
+The
+daily
+limit resets at midnight based on your
+time zone setting
+.
+The following table details the rate limit headers included in the response of each API request to HubSpot, subject to the exceptions listed below the table.
+Header
+Description
+X-HubSpot-RateLimit-Daily
+The number of API requests that are allowed per day. Note that this header is not included in the response to API requests authorized using
+OAuth
+.
+X-HubSpot-RateLimit-Daily-Remaining
+The number of API requests still allowed for the current day. Note that this header is not included in the response to API requests authorized using
+OAuth
+.
+X-HubSpot-RateLimit-Interval-Milliseconds
+The window of time that the
+X-HubSpot-RateLimit-Max
+and
+X-HubSpot-RateLimit-Remaining
+headers apply to.For example, a value of 10000 would be a window of 10 seconds.
+X-HubSpot-RateLimit-Max
+The number of requests allowed in the window specified in
+X-HubSpot-RateLimit-Interval-Milliseconds
+.For example, if this header had a value of 100, and the
+X-HubSpot-RateLimit-Interval-Milliseconds
+header was 10000, the enforced limit would be 100 requests per 10 seconds.
+X-HubSpot-RateLimit-Remaining
+The number of API requests still allowed for the window specified in
+X-HubSpot-RateLimit-Interval-Milliseconds
+Please note:
+The
+X-HubSpot-RateLimit-Secondly
+and
+X-HubSpot-RateLimit-Secondly-Remaining
+headers are still included and will still have accurate data, but the limit referenced by these headers is no longer enforced and these two headers should be considered deprecated.
+Responses from the
+search API endpoints
+will
+not
+include any of the rate limit headers listed above.
+You can also check the number of calls used during the current day using
+this endpoint
+.
+If you're running into the
+TEN_SECONDLY_ROLLING
+limit, you should throttle the requests that your app is making to stay under that limit. In addition to throttling the requests, or if you're running into the daily limit, check out the suggestions below.
+If you find that you're still hitting the call limits after looking through these suggestions, please post on HubSpot's
+developer forums
+. You should include as many details as possible about the APIs you're using, how you're using them, and which limit you're hitting.
+Use batch APIs and cache results when possible
+If your site or app uses data from HubSpot on each page load, that data should be cached and loaded from that cache instead of being requested from the HubSpot APIs each time. If you're making repeated calls to get settings from your account for a batch job (such as getting your object properties, owners, or settings for a form), those settings should also be cached when possible.
+Use webhooks to get updated data from HubSpot
+If you have a HubSpot Marketing Enterprise subscription, you can use webhook actions in workflows to have data for contact records sent to your system. Webhooks can be triggered as an action in any workflow, so you can use any workflow
+starting conditions
+as the criteria to have contact data sent to your system. More details about using webhooks can be found
+here
+and example webhooks data is
+here
+. Webhook calls made via workflows do not count towards the API rate limit.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+Apps
+Overview
+Authentication
+Private apps
+Public apps
+Extensions
+API usage
+Breaking change guidelines
+Usage guidelines & rate limits
+Marketplace

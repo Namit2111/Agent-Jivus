@@ -1,0 +1,179 @@
+HubSpot Account Types | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+On this page
+Standard HubSpot accounts
+App developer accounts
+Developer test accounts
+Create a developer test account
+Renew a developer test account
+Sandbox accounts
+Standard sandbox accounts
+CMS sandbox accounts
+Development sandbox accounts (BETA)
+Marketplace provider accounts
+Getting Started
+HubSpot Account Types
+HubSpot Account Types
+There are several types of HubSpot accounts, each with a distinct purpose. Below, learn about each account type and what they're intended for.
+Standard HubSpot accounts
+A standard HubSpot account is the most common type of account. It’s where you’ll find all the tools, features, and settings included with your HubSpot plan. It can be free or paid, and is used as your production environment.
+A standard HubSpot account will have access to all the tools and features included with your plan.
+App developer accounts
+App developer accounts are free accounts intended for creating and managing apps, integrations, and developer test accounts. They're also where you can create and manage App Marketplace listings. However, app developer accounts and their associated test accounts aren’t connected to a standard HubSpot account. They can’t sync data or assets to or from another HubSpot account.
+App developer accounts can be identified by a banner at the top of any page that says
+This
+is an app
+developer account
+.
+Get started by creating an
+app developer account
+.
+Developer test accounts
+Within
+app developer accounts
+, you can create developer test accounts to test apps and integrations without affecting any real HubSpot data. Developer test accounts do not mirror production accounts, but are instead free HubSpot accounts with access to a 90-day trial of many enterprise features, with the following limitations:
+Marketing
+Hub:
+you can only send marketing emails to addresses of users who you've added to your developer test account.
+CMS Hub:
+the number of pages you can create are subject to the following limits:
+Website pages:
+25
+Blogging tools:
+1 blog with up to 100 posts
+Landing pages:
+25
+Workflows:
+a maximum of 100,000 records can be enrolled per day in workflows created in a developer test account. If this daily limit is reached:
+Any additional attempted enrollment beyond this limit will be dropped.
+Users will be informed in app that they reached the daily record enrollment limit, as well as what time the limit will be refreshed.
+You can create up to 10 test accounts per developer account. This type of account cannot sync data with other accounts, and they can't be connected to a standard HubSpot account. Test accounts can be identified by a banner at the top of the page, which includes how many days are left before it expires.
+Below, learn more about creating and managing test accounts.
+Create a developer test account
+To create a developer test account:
+In the left navigation sidebar of your app developer account, click
+Test accounts
+.
+In the upper right, click
+Create an app test account
+.
+Enter an
+account name
+, then click
+Create
+.
+To access and manage your developer test accounts:
+In the top navigation bar of your app developer account, click
+Testing
+.
+Hover over the
+account
+you want to manage, then select an action:
+To delete the account, click
+Delete
+.
+To copy the account ID, renew the account, or rename it, click the
+More
+dropdown menu.
+Renew a developer test account
+Developer test accounts will expire after 90 days if no API calls are made to the account. You can either manually renew the account from the
+Testing
+page in HubSpot, or by making an API call to the account. Keep the following in mind when attempting to renew the account via API call:
+This only applies to API requests made using
+OAuth tokens
+generated from an application in the same developer account as the test account you want to renew.
+Renewals must be made no more than 30 days before the test account’s expiration date.
+Sandbox accounts
+Sandbox accounts allow you to test out changes without impacting your standard account. Learn more about the different types of sandbox accounts in the sections below.
+Standard sandbox accounts
+If you have an
+Enterprise
+subscription, you can create a standard sandbox account that provides a safe and secure environment where you can test new workflows, integrations, website pages, and other important changes without impacting anything in your standard account. These sandboxes copy the structure of your standard account.
+These accounts can be identified by a yellow banner at the top of the page that includes the label:
+You're in [name of sandbox], which is a standard sandbox account
+. The banner will also include a link back to your production account for easy switching.
+Learn more about standard sandbox accounts on
+HubSpot's Knowledge Base
+.
+CMS sandbox accounts
+CMS sandboxes are free accounts intended for building and testing website changes without impacting your standard account or live website. Similar to app developer accounts, CMS sandbox accounts are
+not
+connected to your standard HubSpot account.
+You can
+create a CMS sandbox account for free
+.
+CMS sandboxes don’t have a banner, but they only have access to HubSpot’s free tools and
+CMS Hub
+Enterprise
+, minus the ability to connect a domain.
+Development sandbox accounts (BETA)
+If you have a
+Sales Hub
+or
+Service Hub
+Enterprise
+subscription, you can create a development sandbox account through the CLI for local development. You can gain access to development sandbox accounts by
+opting into the CRM developer tools beta
+in your standard HubSpot account.
+Development sandboxes can be identified by a yellow banner at the top of the page that reads:
+You're in [name of sandbox], which is a development sandbox account
+. Learn more about creating and using
+development sandbox accounts
+.
+Marketplace provider accounts
+Marketplace Provider accounts are intended for creating and managing
+Template Marketplace listings
+and transactions. To get started selling on the Template Marketplace,
+create a Template Marketplace provider account
+. If you're a
+HubSpot Partner
+, you already have Marketplace Provider functionality in your Partner account.
+A Marketplace Provider account can be identified by a
+Template
+Marketplace
+item in the top navigation menu.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Slack

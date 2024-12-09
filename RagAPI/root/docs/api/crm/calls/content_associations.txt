@@ -1,0 +1,591 @@
+Engagements | Calls | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create a call engagement
+Properties
+Associations
+Retrieve calls
+Identify voicemails vs. recorded calls
+Update calls
+Associate existing calls with records
+Remove an association
+Pin a call on a record
+Delete calls
+API Guides
+CRM
+Engagements
+Engagements | Calls
+Calls
+Calls endpoint reference
+Use the calls engagement API to log and manage calls on CRM records and on the
+calls index page
+. You can log calls either
+in HubSpot
+or through the calls API. Below, learn the basic methods of managing calls through the API. To view all available endpoints and their requirements, click the
+Endpoints
+tab at the top of this article.
+Create a call engagement
+To create a call engagement, make a
+POST
+request to
+/crm/v3/objects/calls
+.
+In the request body, add call details in a
+properties
+object. You can also add an
+associations
+object to associate your new call with an existing record (e.g.,contacts, companies).
+Properties
+Below is a list of HubSpot default calling properties that you can include in the properties object. You can also create custom properties using the
+properties API
+.
+Field
+Description
+hs_timestamp
+Required. This field marks the call's time of creation and determines where the call sits on the record timeline. You can use either a Unix timestamp in milliseconds or UTC format.
+hs_call_body
+The description of the call, including any notes that you want to add.
+hs_call_callee_object_id
+The ID of the HubSpot record associated with the call. This will be the recipient of the call for
+OUTBOUND
+calls, or the dialer of the call for
+INBOUND
+calls.
+hs_call_callee_object_type
+The type of the object to which the call's associated record belongs (e.g., specifies if the record is a contact or company). This will be the object of the recipient for
+OUTBOUND
+calls, or the object of the dialer for
+INBOUND
+calls.
+hs_call_direction
+The direction of the call from the perspective of the HubSpot user. If the user is the call recipient, the direction should be set to
+INBOUND
+. If the user initiated the call, the direction should be set to
+OUTBOUND
+.
+hs_call_disposition
+The outcome of the call. To set the call disposition, you need to use the internal GUID value. If your account has set up
+custom call outcomes
+, you can find their disposition GUIDs using
+this API
+. The default HubSpot outcome labels and their internal values are:
+Busy:
+9d9162e7-6cf3-4944-bf63-4dff82258764
+Connected:
+f240bbac-87c9-4f6e-bf70-924b57d47db7
+Left live message:
+a4c4c377-d246-4b32-a13b-75a56a4cd0ff
+Left voicemail:
+b2cf5968-551e-4856-9783-52b3da59a7d0
+No answer:
+73a0d17f-1163-4015-bdd5-ec830791da20
+Wrong number:
+17b47fee-58de-441e-a44c-c6300d46f273
+hs_call_duration
+The duration of the call in milliseconds.
+hs_call_from_number
+The phone number that the call was made from.
+hs_call_recording_url
+The URL that stores the call recording. URLS to .mp3 or .wav files can be played back on CRM records. Only HTTPS, secure URLs will be accepted.
+hs_call_status
+The status of the call. The statuses are
+BUSY
+,
+CALLING_CRM_USER
+,
+CANCELED
+,
+COMPLETED
+,
+CONNECTING
+,
+FAILED
+,
+IN_PROGRESS
+,
+NO_ANSWER
+,
+QUEUED
+, and
+RINGING
+.
+hs_call_title
+The title of the call.
+hs_call_source
+The source of the call. This is not required, but it is required to leverage the
+recording and transcriptions pipeline
+. If the property is set, it must be set to
+INTEGRATIONS_PLATFORM
+.
+hs_call_to_number
+The phone number that received the call.
+hubspot_owner_id
+The
+ID of the owner
+associated with the call. This field determines the user listed as the call creator on the record timeline.
+hs_activity_type
+The type of call. The options are based on the
+call types set in your HubSpot account.
+hs_attachment_ids
+The IDs of the call's attachments. Multiple attachment IDs are separated by a semi-colon.
+Associations
+To create and associate a call with existing records, include an associations object in your request. For example, to create a call and associate it with a contact and a ticket, your request body might look similar to the following:
+Copy code snippet
+// Example request body
+{
+"properties": {
+"hs_timestamp": "2021-03-17T01:32:44.872Z",
+"hs_call_title": "Support call",
+"hubspot_owner_id": "11349275740",
+"hs_call_body": "Resolved issue",
+"hs_call_duration": "3800",
+"hs_call_from_number": "(857) 829 5489",
+"hs_call_to_number": "(509) 999 9999",
+"hs_call_recording_url": "https://api.twilio.com/2010-04-01/Accounts/AC890b8e6fbe0d989bb9158e26046a8dde/Recordings/RE3079ac919116b2d22",
+"hs_call_status": "COMPLETED"
+},
+"associations": [
+{
+"to": {
+"id": 500
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 194
+}
+]
+},
+{
+"to": {
+"id": 1234
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 220
+}
+]
+}
+]
+}
+1
+// Example request body
+2
+{
+3
+"properties"
+: {
+4
+"hs_timestamp"
+:
+"2021-03-17T01:32:44.872Z"
+,
+5
+"hs_call_title"
+:
+"Support call"
+,
+6
+"hubspot_owner_id"
+:
+"11349275740"
+,
+7
+"hs_call_body"
+:
+"Resolved issue"
+,
+8
+"hs_call_duration"
+:
+"3800"
+,
+9
+"hs_call_from_number"
+:
+"(857) 829 5489"
+,
+10
+"hs_call_to_number"
+:
+"(509) 999 9999"
+,
+11
+"hs_call_recording_url"
+:
+"https://api.twilio.com/2010-04-01/Accounts/AC890b8e6fbe0d989bb9158e26046a8dde/Recordings/RE3079ac919116b2d22"
+,
+12
+"hs_call_status"
+:
+"COMPLETED"
+13
+},
+14
+"associations"
+: [
+15
+{
+16
+"to"
+: {
+17
+"id"
+:
+500
+18
+},
+19
+"types"
+: [
+20
+{
+21
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+22
+"associationTypeId"
+:
+194
+23
+}
+24
+]
+25
+},
+26
+{
+27
+"to"
+: {
+28
+"id"
+:
+1234
+29
+},
+30
+"types"
+: [
+31
+{
+32
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+33
+"associationTypeId"
+:
+220
+34
+}
+35
+]
+36
+}
+37
+]
+38
+}
+In the associations object, you should include the following:
+Field
+Description
+to
+The record you want to associate with the call, specified by its unique
+id
+value.
+types
+The type of the association between the call and the record. Include the
+associationCategory
+and
+associationTypeId
+. Default association type IDs are listed
+here
+, or you can retrieve the value for custom association types (i.e. labels) via the
+associations API
+.
+Learn more about batch creating calls by clicking the
+Endpoints
+tab at the top of this article.
+Retrieve calls
+You can retrieve calls individually or in bulk. Learn more about batch retrieval by clicking the
+Endpoints
+tab at the top of this article.
+To retrieve an individual call by its call ID, make a
+GET
+request to
+/crm/v3/objects/calls/{callId}
+. You can include the following parameters in the request URL:
+Parameter
+Description
+properties
+A comma separated list of the
+properties
+to be returned.
+associations
+A comma separated list of object types to retrieve associated IDs for. Any specified associations that don't exist will not be returned in the response. Learn more about the
+associations API.
+To request a list of all of calls, make a
+GET
+request to
+/crm/v3/objects/calls
+. You can include the following parameters in the request URL:
+Parameter
+Description
+limit
+The maximum number of results to display per page.
+properties
+A comma separated list of the
+properties
+to be returned.
+When you make a successful request, the response will include the
+callId
+which you can use to retrieve, update, and delete the call.
+Identify voicemails vs. recorded calls
+For recorded calls and voicemails, a recording is stored in the
+hs_call_recording_url
+property. If your account has access to
+inbound calling
+, to differentiate between calls that were completed and recorded vs. inbound calls with a voicemail, include the following properties in your request:
+hs_call_status
+and
+hs_call_has_voicemail
+.
+If a call has a voicemail, the
+hs_call_status
+value will be
+missed
+, and the
+hs_call_has_voicemail
+value will be
+true
+. The
+hs_call_has_voicemail
+value will be
+false
+for an inbound call where no voicemail was left, or
+null
+if the call has a status other than missed.
+Update calls
+You can update calls individually or in batches. To update an individual call by its call ID, make a
+PATCH
+request to
+/crm/v3/objects/calls/{callId}
+.
+In the request body, include the call properties that you want to update:
+Copy code snippet
+//Example PATCH request to https://api.hubspot.com/crm/v3/objects/calls/{callID}
+{
+"properties": {
+"hs_timestamp": "2021-03-17T01:32:44.872Z",
+"hs_call_title": "Discovery call",
+"hubspot_owner_id": "11349275740",
+"hs_call_body": " Decision maker out, will call back tomorrow",
+"hs_call_duration": "3800",
+"hs_call_from_number": "(857) 829 5489",
+"hs_call_to_number": "(509) 999 9999",
+"hs_call_recording_url": "https://api.twilio.com/2010-04-01/Accounts/AC890b8e6fbe0d989bb9158e26046a8dde/Recordings/RE3079ac919116b2d22",
+"hs_call_status": "COMPLETED"
+}
+}'
+xxxxxxxxxx
+14
+1
+//Example PATCH request to https://api.hubspot.com/crm/v3/objects/calls/{callID}
+2
+{
+3
+"properties"
+: {
+4
+"hs_timestamp"
+:
+"2021-03-17T01:32:44.872Z"
+,
+5
+"hs_call_title"
+:
+"Discovery call"
+,
+6
+"hubspot_owner_id"
+:
+"11349275740"
+,
+7
+"hs_call_body"
+:
+" Decision maker out, will call back tomorrow"
+,
+8
+"hs_call_duration"
+:
+"3800"
+,
+9
+"hs_call_from_number"
+:
+"(857) 829 5489"
+,
+10
+"hs_call_to_number"
+:
+"(509) 999 9999"
+,
+11
+"hs_call_recording_url"
+:
+"https://api.twilio.com/2010-04-01/Accounts/AC890b8e6fbe0d989bb9158e26046a8dde/Recordings/RE3079ac919116b2d22"
+,
+12
+"hs_call_status"
+:
+"COMPLETED"
+13
+}
+14
+}
+'
+HubSpot will ignore values for read-only and non-existent properties. To clear a property value, pass an empty string for the property in the request body.
+Learn more about batch updating by clicking the
+Endpoints
+tab at the top of this article.
+Associate existing calls with records
+To associate a call with records, such as a contact and its associated companies, make a
+PUT
+request to
+/crm/v3/objects/calls/{callId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}
+. The request URL contains the following fields:
+Field
+Description
+callId
+The ID of the call.
+toObjectType
+The type of object that you want to associate the call with (e.g., contact or company)
+toObjectId
+The ID of the record that you want to associate the call with.
+associationTypeId
+A unique identifier to indicate the association type between the call and the other object. The ID can be represented numerically or in snake case (e.g.,
+call_to_contact
+). You can retrieve the value through the
+associations API
+.
+For example, your request URL might look similar to the following:
+https://api.hubspot.com/crm/v3/objects/calls/17591596434/associations/contact/104901/194
+Remove an association
+To remove an association between a call and a record, make a
+DELETE
+request to the same URL as above:
+/crm/v3/objects/calls/{callId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}
+Pin a call on a record
+You can
+pin a call
+on a record so it remains on the top of the record's timeline. The call must already be associated with the record prior to pinning, and you an only pin one activity per record. To pin a call, include the call's
+id
+in the
+hs_pinned_engagement_id
+field when creating or updating a record via the object APIs. Learn more about using the
+companies,
+contacts
+,
+deals
+,
+tickets
+, and
+custom objects
+APIs.
+Delete calls
+You can delete calls individually or in batches, which will add the call to the recycling bin in HubSpot. You can later
+restore the call from the record timeline
+.
+To delete an individual call by its call ID, make a
+DELETE
+request to
+/crm/v3/objects/calls/{callId}
+.
+Learn more about batch deleting by clicking the
+Endpoints
+tab at the top of this article.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Engagement details
+Calls
+Communications
+Email
+Meetings
+Notes
+Postal mail
+Tasks
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

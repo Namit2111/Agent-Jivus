@@ -1,0 +1,976 @@
+HubL variables | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Variables available in all templates
+Email variables
+Required email template variables
+Color and font settings
+Email content
+Private content email variables
+Website page variables
+Required page template variables
+Content and contact variables
+HTTP request variables
+Blog variables
+CRM object dynamic pages
+HubDB variables
+Menu node variables
+In-app editor and preview variables
+CMS Reference
+HubL (templating language)
+HubL variables
+HubL variables
+HubSpot templates can use a host of predefined variables that can be used to render useful website and email elements. This page is a reference listing of those variables.
+Learn more about creating your own variables
+in a
+HubL template
+or
+module
+.
+While most of the variables listed on this page are optional, there are a few variables that are required for creating emails and pages from your templates.
+The variables listed below can be used individually by wrapping them in the
+}}
+delimiter as noted on our
+Variables and Macros page
+. You can optionally use these variables with other parts of the HubL Templating Language such as
+loops
+,
+filters
+,
+functions
+,
+tags
+, and more.
+Variables available in all templates
+The HubL variables below can be used in email, page, or blog templates.
+To see additional information about what these variables output, you can use the
+pprint filter
+, as shown below.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% set variable = content %}
+{{variable|pprint}}
+1
+{%
+set
+variable
+=
+content
+%}
+2
+{{
+variable
+|
+pprint
+}}
+Variable
+Type
+Description
+account
+Dict
+This variable is a dictionary that stores company personalization properties for a known contact. Properties can be accessed from this dict, by adding a period and the property name. For example,
+account.name
+would print the company name of a contact.
+Use of this variable will disable page caching.
+company_domain
+String
+Prints the company domain from
+Website
+> Pages > Branding > Logo Link
+.
+contact
+Dict
+This variable is a dictionary that stores contact personalization properties for a known contact. Properties can be accessed from this dict, by adding a period and the property name. For example,
+contact.firstname
+would print the first name of a contact.
+Use of this variable will disable page caching.
+content
+Dict
+This variable is a dictionary that stores various properties pertaining to a specific piece of content such as an email, a page, or a post.
+content.absolute_url
+String
+Prints the full URL of a page, post, or web page version of an email.
+content.archived
+Boolean
+This variable evaluates to True, if the page or email was marked as archived by the user.
+content.author_email
+String
+The email address of the content creator.
+content.author_name
+String
+The first and last name of the content creator.
+content.author_username
+String
+The HubSpot username of the content creator.
+content.campaign
+String
+The GUID for the marketing campaign that this page or email is associated with. This unique ID can be found in the URL of a particular campaign in the Campaign's tool.
+content.campaign_name
+String
+The name of the marketing campaign that this page, this post, or this email is associated with.
+content.created
+Datetime
+A datetime object for when the content was originally created, in UTC time. This variable can be formatted with the
+datetime filter
+.
+content.meta_description
+String
+When pulling the meta description of a page, it is better to use the variable
+page_meta.meta_description
+.
+content.name
+String
+The name of a post, email, or page. For pages and emails this will print the internal content name, while for posts this will print the post title. For blog posts, this is the post title that displays. For other types of content, this is generally an internal name. This variable includes a wrapper so that it is editable via the UI, when included in blog posts. If you want to print the content name without a wrapper, use page_meta.name.
+content.publish_date
+Datetime
+A datetime object representing when the content was published, in UTC time. This variable can be formatted with the
+format_datetime filter
+.
+content.publish_date_localized
+String
+A string representing the datetime when the content was published using the time zone defined in the account's
+default settings
+. This variable is also subject to the language and date format settings in
+Settings > Website > Blog > Date Formats
+.
+content.template_path
+String
+The Design Manager file path to your template (ie
+custom/page/web_page_basic/my_template.html
+).
+content.slug
+String
+The URL slug of a page, post, or web page version of an email. This is the value that follows the domain. For example, in
+https://example.com/about-us
+, the slug is
+about-us
+.For the full URL, use
+content.absolute_url
+instead.
+content.updated
+Datetime
+A datetime object for when the user last updated the content, in UTC time. This variable can be formatted with the datetime filter.
+Does not equal
+content.publish_date
+on initial publish. Use
+|between_times
+filter to test if a post has been updated after publishing.
+content_id
+String
+Prints the unique ID for a page, post, or email. This ID can be found in the URL of the editor. You can use this variable as an alias for content.id.
+favicon_link
+String
+Prints the source URL of the favicon. This image is set in
+Settings > Website > Pages > Branding
+.
+hub_id
+String
+The portal ID of your HubSpot account.
+hubspot_analytics_tracking_code
+String
+Includes the analytics tracking code. This tag is not necessary, because
+standard_footer_includes
+, already renders the tracking code.
+local_dt
+Datetime
+A datetime object of the current time in the time zone defined in your Report Settings.
+Usage of this variable will disable page caching in order to return the current time. May hurt page performance. Use JavaScript instead to get current date and time in a cacheable way.
+local_time_zone
+String
+The time zone, as configured in your HubSpot Report Settings.
+page_meta.canonical_url
+String
+The official URL that this page should be accessed at. Usually does not include any query string parameters. Use this for the
+rel="canonical"
+tag. HubSpot automatically canonicalizes URLs.
+page_meta.html_title
+String
+The title of the page. This variable should be used in the
+<title>
+tag of HTML templates.
+page_meta.meta_description
+String
+The meta description of a page. This variable should be used in the "description"
+<meta>
+tag of HTML templates.
+page_meta.name
+String
+An alias for
+content.name
+.
+portal_id
+String
+An alias for hub_id
+request_contact
+Dict
+A dictionary containing data about the requested contact.
+Use of this variable will disable page caching.
+Not available in email templates.
+site_settings
+Dict
+The site_settings dict contains various settings from such as colors and fonts (see below).
+year
+String
+Prints the current year.
+Email variables
+Below are the HubL variables that can be used in email templates. Some variables, such as the
+color and font settings variables
+, can be used in other content types if you want to reference your email color and font settings elsewhere.
+Required email template variables
+To be
+CAN-SPAM
+compliant, all emails sent through HubSpot require certain company and opt-out information. This information is set by the following variables, which must be included.
+There are additional email variables that are optional which are listed
+further down this page
+.
+Variable
+Type
+Description
+site_settings.company_city
+String
+Prints the company city (set in
+Settings > Marketing > Email > Configuration > Footer
+).
+site_settings.company_name
+String
+Prints the company name (set in
+Settings > Marketing > Email > Configuration > Footer
+).
+site_settings.company_state
+String
+Prints the company state (set in
+Settings > Marketing > Email > Configuration > Footer
+).
+site_settings.company_street_address_1
+String
+Prints the company address (set in
+Settings > Marketing > Email > Configuration > Footer
+).
+unsubscribe_link
+String
+Prints the URL of the page that allows recipients to manage subscription preferences or unsubscribe from email communications. This variable should be used in the href attribute of an <a>.
+Color and font settings
+There are several basic color and font controls in your
+marketing email settings
+that can be printed to emails. Where noted, you can use some of these variables on page and blog templates by adding
+site_settings.
+before the variable.
+Variable
+Type
+Description
+background_color
+String
+Background color setting as a hex value.To print this value in page or blog templates, use:
+site_settings.background_color
+body_border_color
+String
+Body border color setting as a hex value. This option becomes available when you select
+Manually set email border color
+under the
+Border color options
+dropdown menu in settings.To print this value in page or blog templates, use:
+site_settings.body_border_color
+body_border_color_choice
+String
+The value for this variable is controlled by the
+Border color options
+dropdown menu in settings. Values are:
+BORDER_AUTOMATIC
+,
+BORDER_MANUAL
+,
+BORDER_NONE
+.To print this value in page or blog templates, use:
+site_settings.body_border_color_choice
+body_color
+String
+Body color setting as a hex value.To print this value in page or blog templates, use:
+site_settings.body_color
+primary_accent_color
+String
+Primary accent color setting as a hex value.To print this value in page or blog templates, use:
+site_settings.primary_accent_color
+primary_font
+Enumeration
+Primary font setting as a string.To print this value in page or blog templates, use:
+site_settings.primary_font
+primary_font_color
+String
+Primary font color setting as a hex value.To print this value in page or blog templates, use:
+site_settings.primary_font_color
+primary_font_size
+String
+Primary font size setting as a
+px
+value.To print this value in page or blog templates, use:
+site_settings.primary_font_size
+primary_font_size_num
+Number
+Primary font size number, excluding
+px
+.
+secondary_accent_color
+String
+Secondary accent color setting as a hex value.To print this value in page or blog templates, use:
+site_settings.secondary_accent_color
+secondary_font
+Enumeration
+Secondary font setting as a string.To print this value in page or blog templates, use:
+site_settings.secondary_font
+secondary_font_color
+String
+Secondary font color setting as a hex value.To print this value in page or blog templates, use:
+site_settings.secondary_font_color
+secondary_font_size_num
+String
+Secondary font size number, excluding
+px
+.
+Email content
+Variable
+Type
+Description
+content.create_page
+Boolean
+Will be
+True
+if there is a web page version of the email.
+content.email_body
+Richtext
+The main body of the email. This variable renders a rich text module.
+content.emailbody_plaintext
+String
+The optional override of the plain text email body
+content.from_name
+String
+The from name of the email sender
+content.reply_to
+String
+The reply to address for the email
+content.subject
+String
+The subject of the email
+email_body_padding
+string
+The
+email body padding setting
+.
+email_body_width
+String
+The
+email body width setting
+.
+site_settings.company_street_address_2
+String
+Prints the address line 2 from the account's
+CAN-SPAM footer settings
+.
+site_settings.office_location_name
+String
+Prints the office location name from the account's
+CAN-SPAM footer settings
+.
+subscription_confirmation_url
+String
+Prints the URL of the subscription preferences confirmation page. This URL is dynamically generated on send.
+subscription_name
+String
+Prints the name of the email type specified for that email.
+unsubscribe_anchor
+String
+Generates an anchor tag with the word "unsubscribe" linked to your unsubscribe page.
+unsubscribe_link_all
+String
+Renders a link to unsubscribe from all email communications, as opposed to a link to manage subscription preferences.
+unsubscribe_section
+String
+Renders an unsubscribe section that includes an unsubscribe link, as well as help text.
+view_as_page_section
+String
+Generates a link with help text that leads to a webpage version of an email.
+view_as_page_url
+String
+Generates a link that leads to a webpage version of an email.
+Private content email variables
+The following list of variables are only available inside of email templates that are used for
+private content email templates
+.
+Variable
+Type
+Description
+membership_company_name
+String
+The company name, as set in the account's
+private content settings
+.
+membership_domain
+String
+The domain of the private content website.
+membership_logo_src
+String
+The URL of the logo to display, as set in the account's
+brand kit settings
+.
+membership_logo_alt
+String
+The logo's
+alt
+attribute, as set in the account's
+brand kit settings
+.
+membership_registration_link
+URL
+Link to the registration page for the private content website.
+membership_password_saved_link
+URL
+Link to the password saved page. The link will redirect the visitor to a random restricted page that they have access to.
+membership_password_reset_link
+URL
+Link to the reset password page for the private content website.
+membership_passwordless_auth_link
+URL
+Link to the password-less member login page.
+membership_verify_registration_link
+URL
+Link for the registration verification page.
+membership_website_admin
+String
+The name of the website admin, as set in the account's
+private content settings
+.
+Website page variables
+The following variables are available for site pages, landing pages, system pages, and blogs.
+Required page template variables
+To publish a coded file as an editable page or blog template, the following variables must be included. To publish an HTML file without these variables, to use within another template, include
+isAvailableForNewContent: false
+in the
+template annotations
+.
+Variable
+Type
+Description
+standard_footer_includes
+String
+Renders the
+HubSpot tracking code
+and any other code included in your Footer HTML in
+Content Settings
+or the options of a particular page. This tag should be inserted directly before the closing body tag.
+standard_header_includes
+String
+Adds
+jQuery, layout.css
+, any attached stylesheets, a meta viewport tag, Google Analytics tracking code, other page meta information, and code added to the head tag at the domain/template/page level. This variable should be added to the <head> of HTML templates.
+Content and contact variables
+Variable
+Type
+Description
+builtin_body_classes
+String
+This variable dynamicaly prints helpful classes that help differentiate the markup of content created with that template (ie type of content, content name, etc). This makes styling different types of content or particular pages easier. This variable should be used in the class attribute of the body tag on coded templates.
+request_contact.is_logged_in
+String
+This variable defines whether or not the requesting contact is logged in to a website's gated content (see
+control audience access documentation
+for further information). The value of this variable will return true if the requesting contact is logged in, and false if the requesting contact has logged out. A contact can be logged out by directing them to the URL
+https://www.yourdomain.com/_hcms/mem/logout
+.
+Use of this variable will disable page caching.
+request_contact.list_memberships
+String
+This variable returns a dict of ids that represents the lists of which the contact is a member.
+Use of this variable will disable page caching.
+content.language
+Dict
+This variable returns a dict of information about the language settings of a page.
+{{ content.language.languageTag }}
+returns the language identifier of a page (i.e. "en" or "es").
+{{ content.language.textDirection.value }}
+returns the text direction of the language of the page (i.e. "rtl" or "ltr").
+HTTP request variables
+The following variables print information about the HTTP page request.
+Variable
+Type
+Description
+request.cookies
+Dict
+A dictionary of cookie names mapped to cookie values.
+Use of this variable will disable page caching.
+request.domain
+String
+The domain used to access this page
+request.full_url
+String
+The URL used to access this page.
+request.path
+String
+The path component of the URL
+request.path_and_query
+String
+The path and query component of the URL
+request.query
+String
+The query string component of the URL. request.query_dict automatically splits the query strings into key value pairs, and is recommended over the raw query for most use-cases.
+request.query_dict
+Dict
+The query string converted into a name->value dictionary.
+request.referrer
+String
+The HTTP referrer, the url of the page that linked to the current page.
+Use of this variable will disable page caching.
+request.remote_ip
+String
+The IP address of the visitor.
+Use of this variable will disable page caching.
+request.scheme
+String
+The protocol of the request (either http or https)
+request.search_engine
+String
+The search engine used to find this page, if applicable. Ex: google, aol, live, yahoo, images.google, etc
+request.search_keyword
+String
+The keyword phrase used to find this page, if applicable
+request.headers
+String
+A dictionary of available request headers.
+Usage of this variable will disable page caching in order to interpret individualized headers for each request. May hurt page performance.
+Blog variables
+The following variables are available for blog templates. Some variables are only available for post listings, while others may only be available for blog posts.
+Variable
+Type
+Description
+blog_author
+String
+This variable contains blog author information for blog author listing pages. It can be used to create conditional logic to >
+render markup for blog author listings
+. It also contains the following properties:
+blog_author.avatar
+blog_author.bio
+blog_author.display_name
+blog_author.email
+blog_author.facebook
+blog_author.google_plus
+blog_author.has_social_profiles
+blog_author.linkedin
+blog_author.twitter
+blog_author.website
+content.blog_post_author
+String
+This variable contains individual blog post author information for a given post. It contains the following properties:
+content.blog_post_author.avatar
+content.blog_post_author.bio
+content.blog_post_author.display_name
+content.blog_post_author.email
+content.blog_post_author.facebook
+content.blog_post_author.google_plus
+content.blog_post_author.has_social_profiles
+content.blog_post_author.linkedin
+content.blog_post_author.slug
+content.blog_post_author.twitter
+content.blog_post_author.website
+blog
+String
+An alias for group.
+content.comment_count
+Integer
+The number of comments for the current blog post.
+content.comment_list
+String
+A list of the comments for the current blog post.
+current_page_num
+Integer
+The integer index of the current page of blog posts in the view.
+content.featured_image
+String
+The source URL of the featured image, selected when the blog was published.
+content.featured_image_alt_text
+String
+The alt text of the featured image.
+last_page_num
+Integer
+The integer index of the last page of blog posts in the view.
+next_page_num
+Integer
+The integer index of the next page of blog posts in the view.
+content.next_post_featured_image
+String
+The URL of the featured image of the next blog post, if one exists.
+content.next_post_featured_image_alt_text
+String
+Alt text for the next post's featured image if alt text exists.
+content.next_post_name
+String
+The name of the next blog post, if one exists.
+content.next_post_slug
+String
+The URL slug of the next blog post, if one exists.
+content.post_body
+String
+The body of the blog post.
+content.post_list_content
+String
+The body blog post content, modified for the listing page. The final output is affected by summary settings in
+Settings > Website > Blog
+. If featured images are enabled in settings, this variable will remove any images above the read more separator automatically.
+content.post_list_summary_featured_image
+String
+The featured image of post summaries to be used in listing templates. This variable is affected by the settings in
+Settings > Website > Blog
+.
+content.post_summary
+String
+The blog post summary. This content is determined by the read more separator in the blog editor.
+content.previous_post_featured_image
+String
+The URL of the featured image of the previous blog post, if one exists.
+content.previous_post_featured_image_alt_text
+String
+Alt text for the previous post's featured image if alt text exists.
+content.previous_post_name
+String
+The name of the previous blog post, if one exists.
+content.previous_post_slug
+String
+The URL slug of the previous blog post, if one exists.
+content.publish_date_localized
+String
+A string representing the date/time when the blog post was published, formatted according to the blog's language and date formatting settings.
+simple_list_page
+Boolean
+A boolean to indicate whether the requested page is the 'all posts' page containing links to all blog posts.
+content.topic_list
+Dict
+Can be used to render markup for a topic listing by looping through it.
+{% for topic in content.topic_list %}
+The items within contain the properties:
+name
+and
+slug
+.
+contents
+String
+Contents is a sequence of your blog posts that are iterated through using a for loop, available on
+blog listing pages (is_listing_view)
+.
+contents.total_count
+Integer
+Total number of posts in a listing (regular, topics, authors, etc.).
+contents.total_page_count
+Integer
+Total number of pages of posts based on your number of posts per page.
+contents_topics
+String
+Get a list of all blog topics in the contents sequence of posts.
+group
+Dict
+The dictionary containing variables that pertain to an entire blog.
+group.absolute_url
+String
+The base URL of a blog.
+group.allow_comments
+Boolean
+Evaluates to True, if comments are allowed.
+group.description
+String
+The meta description of the blog from
+Settings > Website > Blog
+. Used for the meta description on certain listing pages.
+group.header
+String
+The header of the blog.
+group.html_title
+String
+The title of this blog as it should appear in the
+<title>
+tag.
+group.id
+String
+The unique ID of a blog. This ID can be found in the URL of the Blog Dashboard for a particular blog.
+group.language
+Dict
+A dictionary containing information about a blog's language.
+{{ group.language.languageTag }}
+can be used in conditionals to render different content on the different language variations of a multi-language blog.
+group.public_title
+String
+The title of this blog as it should appear at the top of rendered pages.
+group.show_summary_in_listing
+Boolean
+A boolean from
+Settings > Website > Blog
+to indicate whether to show summaries in post listings.
+group.slug
+String
+The path to this blog.
+group.use_featured_image_in_summary
+Boolean
+A boolean from
+Settings > Website > Blog
+to indicate whether featured images are shown in post summaries.
+archive_list_page
+Boolean
+Returns true if page is a blog archive page. Ex:
+https://www.example.com/blog/archive/2020/02
+would return
+true
+.
+CRM object dynamic pages
+The following variables are used to
+build dynamic pages with CRM objects
+. These variables are only available for CRM object dynamic pages.
+Variable
+Type
+Description
+dynamic_page_crm_object
+Dict
+The CRM object of the dynamic page that matches with the page request path. If the request is to the listing page, this value will be
+null
+.
+dynamic_page_crm_object_type_fqn
+String
+The fully qualified name (FQN) of the crm object. The FQN is an assigned unique ID for the object, including portal ID and object name.The fqn can be used in the
+crm_objects
+function.
+HubDB variables
+The following variables are used to build dynamic pages with
+HubDB
+. These variables are only available for
+HubDB dynamic pages
+.
+Variable
+Type
+Description
+dynamic_page_hubdb_table_id
+Long
+The ID of the table selected in the 'Advanced Settings` tab of the page editor.
+dynamic_page_hubdb_row
+Dict
+The HubDB row of the dynamic page that matches with the page request path. If the request is to the listing page, this value will be
+null
+.
+row.hs_id
+Long
+The internal ID of a HubDB row.
+row.hs_name
+String
+The name of the HubDB row.
+row.hs_path
+String
+The path of the HubDB row. Used to resolve a request to one row in the table specified by
+dynamic_page_hubdb_table_id
+.
+row.hs_child_table_id
+Long
+The child table ID of the HubDB row. Can be used to build nested templates.
+row.hs_parent_row
+Dict
+The parent row of the HubDB row. Can only be used when using child tables for nested templates.
+dynamic_page_route_level
+Integer
+Current depth of a page in a multi-level dynamic template. The value starts at
+0
+and increments with each additional table layer.
+Menu node variables
+The following variables are available to use on the object returned by the
+HubL menu function
+.
+Variable
+Type
+Description
+node.label
+String
+The menu label of the page.
+node.url
+String
+URL of the page.
+node.pageId
+Number
+ID of the page if within HubSpot.
+node.contentGroupId
+Number
+Blog ID of the page if it is a HubSpot blog post.
+node.parentNode
+Object
+The parent node of the current node. The parent node will have the current node in its
+children
+property.
+node.children
+List
+The list of child nodes for the current node.
+node.activeBranch
+Boolean
+True if the node is in the top-level branch that the current page is in.
+node.activeNode
+Boolean
+True if the node is the current page.
+node.level
+Number
+The number of levels deep the current node is from the top-level nodes.
+node.pageTitle
+String
+Name of the content page if within HubSpot.
+node.slug
+String
+Path slug of the page.
+node.linkTarget
+String
+Link target of the page.
+In-app editor and preview variables
+You can use the following variables to check if the content is being rendered in the content editor or previewer. For example, you may want to use these to prevent running code in the editor while still running the code on live pages.
+Copy code snippet
+{% if is_in_page_editor %}
+Display something different within the page editor.
+{% endif %}
+xxxxxxxxxx
+3
+1
+{%
+if
+is_in_page_editor
+%}
+2
+Display something different within the page editor.
+3
+{%
+endif
+%}
+Variable
+Type
+Description
+is_in_hs_app
+String
+Returns
+true
+if content is being rendered within the HubSpot app.
+is_in_editor
+String
+Returns
+true
+if content is being rendered within any content editor.
+is_in_global_content_editor
+String
+Returns
+true
+if content is being rendered within the global content editor.
+is_in_theme_editor
+Number
+Returns
+true
+if content is being rendered within the theme editor.
+is_in_page_editor
+String
+Returns
+true
+if content is being rendered within the page editor.
+is_in_blog_post_editor
+String
+Returns
+true
+if content is being rendered within the blog post editor.
+is_in_email_editor
+String
+Returns
+true
+if content is being rendered within the email editor.
+is_in_previewer
+Number
+Returns
+true
+if content is being rendered within any preview context.
+is_in_theme_previewer
+Object
+Returns
+true
+if content is being rendered within the theme previewer.
+is_in_template_previewer
+String
+Returns
+true
+if content is being rendered within the template previewer.
+is_in_page_previewer
+String
+Returns
+true
+if content is being rendered within the page previewer.
+is_in_blog_post_previewer
+String
+Returns
+true
+if content is being rendered within the blog post previewer.
+is_in_email_previewer
+String
+Returns
+true
+if content is being rendered within the email previewer.
+is_in_module_previewer
+String
+Returns
+true
+if content is being rendered within the module previewer.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Reference
+Overview
+Modules
+HubL (templating language)
+Overview
+Operators and expression tests
+Filters
+Functions
+Loops
+Tags
+Variables
+Variables and macros syntax
+Quote template variables
+Beta
+If statements
+Deprecated
+Forms
+Fields
+Serverless functions

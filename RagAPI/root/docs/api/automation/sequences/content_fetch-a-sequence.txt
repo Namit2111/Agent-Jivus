@@ -1,0 +1,995 @@
+Automation API | Sequences API (BETA) | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Fetch a sequence
+List sequences
+Enroll a contact in a sequence
+View a contact's sequence enrollment status
+API Guides
+Automation
+Automation API | Sequences API (BETA)
+Sequences API (BETA)
+Sequences endpoint reference
+To send a series of targeted, timed email templates to nurture contacts over time, you can
+create a sequence
+. You can use the sequences tool to automatically create tasks to remind you to follow up with your contacts.
+With the sequences API, you can:
+Get a list of sequences
+Get a specific sequence
+Enroll a contact in a sequence
+View a contact’s enrollment status
+This could be useful if you have an app that maintains a list of contacts and you want to enroll them in a HubSpot sequence. With the sequences API, from your app, you could:
+Get a list of sequences
+Enroll a contact in a sequence
+Review the enrollment status
+The sections below provide a walkthrough of how to use the v4 endpoints. For a full reference of the available endpoints and their required fields, click the
+Endpoints
+tab at the top of this article.
+Please note
+: This API is currently in beta and is subject to change based on testing and feedback. By using these endpoints you agree to adhere to HubSpot's
+Developer Terms
+&
+Developer Beta Terms
+. You also acknowledge and understand the risk associated with testing an unstable API.
+Fetch a sequence
+To get details about a specific sequence in your account, make a
+GET
+request to
+/automation/v4/sequences/{sequenceId}?userId={userId}
+, where the sequenceId is the ID of an existing sequence in your account.
+For example, to get details about a sequence that ID is
+123456789
+and your
+user ID
+is
+2222222
+, make a
+GET
+request to
+/automation/v4/sequences/123456789?userId=2222222
+. Use the ID of the specific sequence as the sequenceId in the request URL and use your userId as a query parameter.
+The response for fetching a sequence would resemble the following:
+Copy code snippet
+// Example response for GET request to https://api.hubapi.com/automation/v4/sequences/{sequenceId}?userId={userId}
+{
+"id": "123456789",
+"name": "Melinda's simple call sequence",
+"createdAt": "2024-06-26T18:37:01.146Z",
+"updatedAt": "2024-06-26T18:37:01.146Z",
+"userId": "8698664",
+"steps": [
+{
+"id": "198771535",
+"stepOrder": 0,
+"delayMillis": 0,
+"actionType": "TASK",
+"createdAt": "2024-06-26T18:37:01.146Z",
+"updatedAt": "2024-06-26T18:37:01.146Z",
+"taskPattern": {
+"id": "23594004",
+"taskType": "CALL",
+"taskPriority": "LOW",
+"subject": "Call contact to follow up",
+"createdAt": "2024-06-26T18:37:01.146Z",
+"updatedAt": "2024-06-26T18:37:01.146Z"
+}
+},
+{
+"id": "198771536",
+"stepOrder": 1,
+"delayMillis": 86400000,
+"actionType": "TASK",
+"createdAt": "2024-06-26T18:37:01.146Z",
+"updatedAt": "2024-06-26T18:37:01.146Z",
+"taskPattern": {
+"id": "23594005",
+"taskType": "EMAIL",
+"taskPriority": "LOW",
+"subject": "Send follow-up email",
+"notes": "<p>Send an email to thank them for their time and follow up. Use one of our templates based on the call outcome.</p>",
+"createdAt": "2024-06-26T18:37:01.146Z",
+"updatedAt": "2024-06-26T18:37:01.146Z"
+}
+},
+{
+"id": "198771537",
+"stepOrder": 2,
+"delayMillis": 0,
+"actionType": "FINISH_ENROLLMENT",
+"createdAt": "2024-06-26T18:37:01.146Z",
+"updatedAt": "2024-06-26T18:37:01.146Z"
+}
+],
+"settings": {
+"id": "18167737",
+"eligibleFollowUpDays": "BUSINESS_DAYS",
+"sellingStrategy": "LEAD_BASED",
+"sendWindowStartMinute": 480,
+"sendWindowEndMinute": 1080,
+"taskReminderMinute": 480,
+"individualTaskRemindersEnabled": false,
+"createdAt": "2024-06-26T18:37:01.146Z",
+"updatedAt": "2024-06-26T18:37:01.146Z"
+},
+"dependencies": [
+{
+"id": "15241774",
+"createdAt": "2024-06-26T18:37:01.146Z",
+"updatedAt": "2024-06-26T18:37:01.146Z",
+"dependencyType": "TASK_COMPLETION",
+"requiredBySequenceStepId": "198771536",
+"reliesOnSequenceStepId": "198771535",
+"requiredByStepOrder": 1,
+"reliesOnStepOrder": 0
+},
+{
+"id": "15241775",
+"createdAt": "2024-06-26T18:37:01.146Z",
+"updatedAt": "2024-06-26T18:37:01.146Z",
+"dependencyType": "TASK_COMPLETION",
+"requiredBySequenceStepId": "198771537",
+"reliesOnSequenceStepId": "198771536",
+"requiredByStepOrder": 2,
+"reliesOnStepOrder": 1
+}
+]
+}
+1
+// Example response for GET request to https://api.hubapi.com/automation/v4/sequences/{sequenceId}?userId={userId}
+2
+{
+3
+"id"
+:
+"123456789"
+,
+4
+"name"
+:
+"Melinda's simple call sequence"
+,
+5
+"createdAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+6
+"updatedAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+7
+"userId"
+:
+"8698664"
+,
+8
+"steps"
+: [
+9
+{
+10
+"id"
+:
+"198771535"
+,
+11
+"stepOrder"
+:
+0
+,
+12
+"delayMillis"
+:
+0
+,
+13
+"actionType"
+:
+"TASK"
+,
+14
+"createdAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+15
+"updatedAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+16
+"taskPattern"
+: {
+17
+"id"
+:
+"23594004"
+,
+18
+"taskType"
+:
+"CALL"
+,
+19
+"taskPriority"
+:
+"LOW"
+,
+20
+"subject"
+:
+"Call contact to follow up"
+,
+21
+"createdAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+22
+"updatedAt"
+:
+"2024-06-26T18:37:01.146Z"
+23
+}
+24
+},
+25
+{
+26
+"id"
+:
+"198771536"
+,
+27
+"stepOrder"
+:
+1
+,
+28
+"delayMillis"
+:
+86400000
+,
+29
+"actionType"
+:
+"TASK"
+,
+30
+"createdAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+31
+"updatedAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+32
+"taskPattern"
+: {
+33
+"id"
+:
+"23594005"
+,
+34
+"taskType"
+:
+"EMAIL"
+,
+35
+"taskPriority"
+:
+"LOW"
+,
+36
+"subject"
+:
+"Send follow-up email"
+,
+37
+"notes"
+:
+"<p>Send an email to thank them for their time and follow up. Use one of our templates based on the call outcome.</p>"
+,
+38
+"createdAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+39
+"updatedAt"
+:
+"2024-06-26T18:37:01.146Z"
+40
+}
+41
+},
+42
+{
+43
+"id"
+:
+"198771537"
+,
+44
+"stepOrder"
+:
+2
+,
+45
+"delayMillis"
+:
+0
+,
+46
+"actionType"
+:
+"FINISH_ENROLLMENT"
+,
+47
+"createdAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+48
+"updatedAt"
+:
+"2024-06-26T18:37:01.146Z"
+49
+}
+50
+],
+51
+"settings"
+: {
+52
+"id"
+:
+"18167737"
+,
+53
+"eligibleFollowUpDays"
+:
+"BUSINESS_DAYS"
+,
+54
+"sellingStrategy"
+:
+"LEAD_BASED"
+,
+55
+"sendWindowStartMinute"
+:
+480
+,
+56
+"sendWindowEndMinute"
+:
+1080
+,
+57
+"taskReminderMinute"
+:
+480
+,
+58
+"individualTaskRemindersEnabled"
+:
+false
+,
+59
+"createdAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+60
+"updatedAt"
+:
+"2024-06-26T18:37:01.146Z"
+61
+},
+62
+"dependencies"
+: [
+63
+{
+64
+"id"
+:
+"15241774"
+,
+65
+"createdAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+66
+"updatedAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+67
+"dependencyType"
+:
+"TASK_COMPLETION"
+,
+68
+"requiredBySequenceStepId"
+:
+"198771536"
+,
+69
+"reliesOnSequenceStepId"
+:
+"198771535"
+,
+70
+"requiredByStepOrder"
+:
+1
+,
+71
+"reliesOnStepOrder"
+:
+0
+72
+},
+73
+{
+74
+"id"
+:
+"15241775"
+,
+75
+"createdAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+76
+"updatedAt"
+:
+"2024-06-26T18:37:01.146Z"
+,
+77
+"dependencyType"
+:
+"TASK_COMPLETION"
+,
+78
+"requiredBySequenceStepId"
+:
+"198771537"
+,
+79
+"reliesOnSequenceStepId"
+:
+"198771536"
+,
+80
+"requiredByStepOrder"
+:
+2
+,
+81
+"reliesOnStepOrder"
+:
+1
+82
+}
+83
+]
+84
+}
+The details of each response field are outlined in the table below:
+Field
+Type
+Description
+id
+String
+The sequence ID.
+name
+String
+The name of the sequence.
+steps
+Array
+The list of steps in your sequence. Each step is an object that includes details like the type, priority, and creation details.
+List sequences
+To get details about a specific sequence in your account, make a
+GET
+request to
+/automation/v4/sequences/?limit=#&userId={userId}
+. Use the amount of sequences you want returned as the limit in the request URL and use your
+userID
+as a query parameter.
+For example, to get a list of four sequences and your user ID is
+2222222
+, make a
+GET
+request to
+/automation/v4/sequences?limit=4&userId=2222222
+.
+The response for fetching a list of sequences would resemble the following:
+Copy code snippet
+//Example response for GET request to https://api.hubapi.com/automation/v4/sequences?limit=4&userId={userId}
+{
+"total": 7,
+"results": [
+{
+"id": "88180366",
+"name": "Melinda's call sequence",
+"createdAt": "2023-07-20T15:40:04.364Z",
+"updatedAt": "2023-07-20T15:40:04.364Z",
+"userId": "2222222"
+},
+{
+"id": "76853632",
+"name": "Melinda's Follow-up Sequence",
+"createdAt": "2023-01-26T15:38:05.812Z",
+"updatedAt": "2023-01-27T16:06:12.562Z",
+"userId": "2222222"
+},
+{
+"id": "76897322",
+"name": "Melinda's Marketing Pro Demo Sequence",
+"createdAt": "2023-01-27T16:42:29.487Z",
+"updatedAt": "2023-05-03T14:40:42.507Z",
+"userId": "2222222"
+},
+{
+"id": "76849666",
+"folderId": "67555200",
+"name": "Melinda's Sales Sequence",
+"createdAt": "2023-01-26T15:26:56.574Z",
+"updatedAt": "2023-05-26T17:16:57.866Z",
+"userId": "2222222"
+}
+],
+"paging": {
+"next": {
+"after": "NA%3D%3D",
+"link": "https://api.hubspot.com/automation/v4/sequences/?limit=4&userId=8698664&portalId=6331522&hs_static_app=api-goggles&hs_static_app_version=1.7830&after=NA%3D%3D"
+}
+}
+}
+xxxxxxxxxx
+41
+1
+//Example response for GET request to https://api.hubapi.com/automation/v4/sequences?limit=4&userId={userId}
+2
+{
+3
+"total"
+:
+7
+,
+4
+"results"
+: [
+5
+{
+6
+"id"
+:
+"88180366"
+,
+7
+"name"
+:
+"Melinda's call sequence"
+,
+8
+"createdAt"
+:
+"2023-07-20T15:40:04.364Z"
+,
+9
+"updatedAt"
+:
+"2023-07-20T15:40:04.364Z"
+,
+10
+"userId"
+:
+"2222222"
+11
+},
+12
+{
+13
+"id"
+:
+"76853632"
+,
+14
+"name"
+:
+"Melinda's Follow-up Sequence"
+,
+15
+"createdAt"
+:
+"2023-01-26T15:38:05.812Z"
+,
+16
+"updatedAt"
+:
+"2023-01-27T16:06:12.562Z"
+,
+17
+"userId"
+:
+"2222222"
+18
+},
+19
+{
+20
+"id"
+:
+"76897322"
+,
+21
+"name"
+:
+"Melinda's Marketing Pro Demo Sequence"
+,
+22
+"createdAt"
+:
+"2023-01-27T16:42:29.487Z"
+,
+23
+"updatedAt"
+:
+"2023-05-03T14:40:42.507Z"
+,
+24
+"userId"
+:
+"2222222"
+25
+},
+26
+{
+27
+"id"
+:
+"76849666"
+,
+28
+"folderId"
+:
+"67555200"
+,
+29
+"name"
+:
+"Melinda's Sales Sequence"
+,
+30
+"createdAt"
+:
+"2023-01-26T15:26:56.574Z"
+,
+31
+"updatedAt"
+:
+"2023-05-26T17:16:57.866Z"
+,
+32
+"userId"
+:
+"2222222"
+33
+}
+34
+],
+35
+"paging"
+: {
+36
+"next"
+: {
+37
+"after"
+:
+"NA%3D%3D"
+,
+38
+"link"
+:
+"https://api.hubspot.com/automation/v4/sequences/?limit=4&userId=8698664&portalId=6331522&hs_static_app=api-goggles&hs_static_app_version=1.7830&after=NA%3D%3D"
+39
+}
+40
+}
+41
+}
+The details of each response field are outlined in the table below:
+Field
+Type
+Description
+total
+String
+The number of sequences in your account.
+id
+String
+The sequence ID.
+name
+String
+The name of the sequence.
+createdAt
+String
+The time the sequence was created in UTC format.
+updatedAt
+String
+The time the sequence was last updated in UTC format.
+userID
+String
+The userID of the user who created the sequence.
+Enroll a contact in a sequence
+To enroll a contact in a sequence, make a
+POST
+request to
+/automation/v4/sequences/enrollments/
+. Use your
+user ID
+as the query parameter. Specify the sequenceId, contactId, and senderEmail in the body. The senderEmail must be an email address that's
+connected
+to your HubSpot account.
+For example, to enroll a contact whose ID is
+33333
+in sequence that’s ID is
+44444444
+, you’d make a
+POST
+request to
+/automation/v4/sequences/enrollments
+.
+The body would resemble the following:
+Copy code snippet
+// Example of request body for POST request
+{
+"sequenceId": "33333",
+"contactId": "44444444",
+"senderEmail": "menelson@hubspot.com"
+}
+xxxxxxxxxx
+6
+1
+// Example of request body for POST request
+2
+{
+3
+"sequenceId"
+:
+"33333"
+,
+4
+"contactId"
+:
+"44444444"
+,
+5
+"senderEmail"
+:
+"menelson@hubspot.com"
+6
+}
+The response for enrolling a contact in a sequence would resemble the following:
+Copy code snippet
+// Example response for POST request to https://api.hubapi.com//automation/v4/sequences/enrollments/
+{
+"id": "2435404604",
+"toEmail": "RachelGreen.com",
+"enrolledAt": "2024-06-27T20:11:02.824Z",
+"updatedAt": "2024-06-27T20:11:02.824Z"
+}
+xxxxxxxxxx
+7
+1
+// Example response for POST request to https://api.hubapi.com//automation/v4/sequences/enrollments/
+2
+{
+3
+"id"
+:
+"2435404604"
+,
+4
+"toEmail"
+:
+"RachelGreen.com"
+,
+5
+"enrolledAt"
+:
+"2024-06-27T20:11:02.824Z"
+,
+6
+"updatedAt"
+:
+"2024-06-27T20:11:02.824Z"
+7
+}
+The details of each response field are outlined in the table below:
+Field
+Type
+Description
+id
+String
+The ID for the enrollment object.
+toEmail
+String
+The email of the contact
+enrolledAt
+String
+The time the contact was enrolled in the sequence in UTC format.
+updatedAt
+String
+The last time the enrollment was updated (paused, unpaused, etc.)
+View a contact's sequence enrollment status
+A contact's enrollment status will indicate if the contact is enrolled in any sequences at the time of the request. To get a contact's enrollment status, make a
+GET
+request to /
+automation/v4/sequences/enrollments/contact/{contactId}
+.
+For example, to view the enrollment status of a contact whose contact ID is
+33333
+, make a
+GET
+request to
+/automation/v4/sequences/enrollments/contact/33333
+. Use the contact ID as the query parameter.
+The response for viewing a contact's sequence enrollment status would resemble the following:
+Copy code snippet
+// Example response for GET request to https://api.hubapi.com/automation/v4/enrollments/contact/{contactId}
+{
+"id": "2435404604",
+"toEmail": "RachelGreen@gmail.com",
+"enrolledAt": "2024-06-27T20:11:02.824Z",
+"updatedAt": "2024-06-27T20:11:02.824Z",
+"sequenceId": "76853632",
+"sequenceName": "Melinda's Sales Hub Sequence"
+"enrolledBy": "8698664",
+"enrolledByEmail": "menelson@hubspot.com"
+}
+xxxxxxxxxx
+11
+1
+// Example response for GET request to https://api.hubapi.com/automation/v4/enrollments/contact/{contactId}
+2
+{
+3
+"id"
+:
+"2435404604"
+,
+4
+"toEmail"
+:
+"RachelGreen@gmail.com"
+,
+5
+"enrolledAt"
+:
+"2024-06-27T20:11:02.824Z"
+,
+6
+"updatedAt"
+:
+"2024-06-27T20:11:02.824Z"
+,
+7
+"sequenceId"
+:
+"76853632"
+,
+8
+"sequenceName"
+:
+"Melinda's Sales Hub Sequence"
+9
+"enrolledBy"
+:
+"8698664"
+,
+10
+"enrolledByEmail"
+:
+"menelson@hubspot.com"
+11
+}
+The details of each response field are outlined in the table below:
+Field
+Type
+Description
+id
+String
+The ID for the enrollment object.
+toEmail
+String
+The email of the contact
+enrolledAt
+String
+The time the contact was enrolled in the sequence in UTC format.
+updatedAt
+String
+The last time the enrollment was updated (paused, unpaused, etc.)
+sequenceID
+String
+The ID of the sequence the contact is enrolled in.
+sequenceName
+String
+The title of the sequence the contact is enrolled in.
+enrolledBy
+String
+The userId of the user who enrolled the contact in the sequence.
+enrolledByEmail
+String
+The email of the user who enrolled the contact in the sequence or the email address that email messages are sent from.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+Create & manage workflows
+Custom workflow actions
+Sequences
+Beta
+Workflows v4
+Beta
+CMS
+Conversations
+Library
+CRM
+Marketing
+Settings
+Legal

@@ -1,0 +1,453 @@
+Quote template variables | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Template_data object
+Quote variables
+Associated objects
+Custom Objects
+Related Resources
+CMS Reference
+HubL (templating language)
+Quote template variables
+Quote template variables
+Custom quote templates can access quote data and some associated objects directly from the templates. The data available depends on data you have in your CRM, as well as data added to the quote itself.
+While developing a quote template, you can use HubSpot-provided mock data to populate the template, which may help for previewing the template. In the
+@hubspot
+folder, navigate to the
+cms-quotes-theme
+folder. Within the
+templates
+folder, view the
+basic.html
+,
+modern.html
+, or
+original.html
+templates. These templates contain the following code block at the top:
+Copy code snippet
+{% from "../imports/mock_data.html" import SAMPLE_TEMPLATE_DATA as mock_data %}
+{% from "../imports/module_defaults.html" import MODULE_DEFAULTS as module_defaults %}
+{% set QUOTE = template_data.quote || mock_data.quote %}
+{% set CURRENCY = QUOTE.hs_currency || "USD" %}
+{% set LOCALE = QUOTE.hs_locale || "en-US" %}
+{% set ASSOCIATED_OBJECTS = QUOTE.associated_objects %}
+{% set LINE_ITEMS = ASSOCIATED_OBJECTS.line_items %}
+{% set ADDITIONAL_FEES = ASSOCIATED_OBJECTS.additional_fees %}
+{% set TOTALS = ASSOCIATED_OBJECTS.totals || ASSOCIATED_OBJECTS.totals %}
+{% set QUOTE_TOTAL = TOTALS.total %}
+{% set SUB_TOTALS = TOTALS.subtotals %}
+{% set DEAL = ASSOCIATED_OBJECTS.deal %}
+1
+{%
+from
+"../imports/mock_data.html"
+import
+SAMPLE_TEMPLATE_DATA
+as
+mock_data
+%}
+2
+{%
+from
+"../imports/module_defaults.html"
+import
+MODULE_DEFAULTS
+as
+module_defaults
+%}
+3
+{%
+set
+QUOTE
+=
+template_data.quote
+||
+mock_data.quote
+%}
+4
+{%
+set
+CURRENCY
+=
+QUOTE.hs_currency
+||
+"USD"
+%}
+5
+{%
+set
+LOCALE
+=
+QUOTE.hs_locale
+||
+"en-US"
+%}
+6
+{%
+set
+ASSOCIATED_OBJECTS
+=
+QUOTE.associated_objects
+%}
+7
+{%
+set
+LINE_ITEMS
+=
+ASSOCIATED_OBJECTS.line_items
+%}
+8
+{%
+set
+ADDITIONAL_FEES
+=
+ASSOCIATED_OBJECTS.additional_fees
+%}
+9
+{%
+set
+TOTALS
+=
+ASSOCIATED_OBJECTS.totals
+||
+ASSOCIATED_OBJECTS.totals
+%}
+10
+{%
+set
+QUOTE_TOTAL
+=
+TOTALS.total
+%}
+11
+{%
+set
+SUB_TOTALS
+=
+TOTALS.subtotals
+%}
+12
+{%
+set
+DEAL
+=
+ASSOCIATED_OBJECTS.deal
+%}
+The mock data is first imported from the
+mock_data.html
+file, then is set to the
+QUOTE
+variable to use the data found in
+template_data
+if available. The
+QUOTE
+variable is also used to populate the other variables in this list, such as
+ASSOCIATED_OBJECTS
+, to make accessing that data less verbose. However, you can structure your data differently, depending on your preferences.
+In the above code, you'll notice that
+template_data
+is also used to set the main
+QUOTE
+variable.
+template_data
+is an object containing all of the actual data for the quote and deal in the page. If that object is not found in the template, HubSpot loads the data from
+mock_data.html
+instead.
+Template_data object
+The vast majority of the data can be directly accessed through the
+template_data
+object. You can use
+{{ template_data|pprint }}
+in your template to see the full object provided.
+Variable
+Type
+Description
+template_data
+dict
+A dict containing the quote, quote.associated_objects, and totals dicts.
+Quote variables
+The information specific to this individual quote.
+Variable
+Type
+Description
+template_data.quote
+dict
+Dict containing all of the data for the quote itself.
+template_data.quote.associated_objects.deal.hs_object_id
+Integer
+Deal Id
+template_data.quote.hubspot_owner_id
+Integer
+Deal owner id
+template_data.quote.hs_all_owner_ids
+integer or array of integers
+Deal owner ids
+template_data.quote.hs_created_by_user_id
+Integer
+User that created the quote.
+template_data.quote.hs_lastmodifieddate
+datetime
+Date the quote was last modified. In epoch format.
+template_data.quote.hubspot_owner_assigneddate
+datetime
+Date the quote was assigned an owner. In epoch format.
+template_data.quote.hs_createdate
+datetime
+Date and time the quote was created. In epoch format.
+template_data.quote.hs_expiration_date
+datetime
+Date quote expires. In epoch format.
+template_data.quote.hs_title
+String
+Quote Title
+template_data.quote.hs_template_type
+String
+"CUSTOMIZABLE_QUOTE_TEMPLATE"
+template_data.quote.hs_slug
+String
+URL slug for quote web page.
+template_data.quote.hs_proposal_template_path
+String
+Developer file system path to template. (includes file extension)
+template_data.quote.hs_quote_amount
+String
+Amount of money
+template_data.quote.hs_currency
+String
+Currency the quote amount is in in 3 character ISO 4217 currency code."USD"
+template_data.quote.hs_language
+String
+Language code"en"
+template_data.quote.hs_locale
+String
+Locale code"en-us"
+template_data.quote.hs_terms
+String
+Terms text provided by quote creator
+template_data.quote.hs_sender_firstname
+String
+First name of the person sending the quote.
+template_data.quote.hs_sender_company_name
+String
+Company name of the person sending the quote
+template_data.quote.hs_sender_company_image_url
+String
+Company logo for the person sending the quote.
+template_data.quote.hs_status
+String
+Status of the quote."APPROVAL_NOT_NEEDED"
+template_data.quote.hs_primary_color
+string/hex color code
+"#425b76"
+template_data.quote.hs_quote_number
+String
+Unique quote id number.
+template_data.quote.hs_payment_enabled
+boolean
+Use to test if payment fields need to be shown.
+template_data.quote.hs_esign_enabled
+boolean
+Use to test if esignature fields need to be shown.
+Can't find a variable you're looking for?
+There are more variables you can access within
+template_data
+. Use
+|pprint
+to view them. Additionally some variables in quote associations may only be available based on the quote/deal.
+We will be iterating on this documentation to showcase and explain more of the data you have access to. Aside from pretty printing, you can view the mock data file within the cms-quote-theme, to see what is available and the structure it comes in.
+Associated objects
+In a quote template, you can access data from a quote's associated records, such as deals or companies, by using
+associated_objects
+.
+For example, you can add the logo from the quote recipient's associated company record to a quote by using the following code:
+Copy code snippet
+{% set company_avatar_url = template_data.quote.associated_objects.company.hs_avatar_filemanager_key %}
+{% if company_avatar_url %}
+<img src="{{ template_data.quote.associated_objects.company.hs_avatar_filemanager_key }}" width="400" alt="{{ template_data.quote.associated_objects.company.name }}">
+{% else %}
+<!-- company does not have an assigned image-->
+{% endif %}
+xxxxxxxxxx
+6
+1
+{%
+set
+company_avatar_url
+=
+template_data.quote.associated_objects.company.hs_avatar_filemanager_key
+%}
+2
+{%
+if
+company_avatar_url
+%}
+3
+<
+img
+src
+=
+"
+{{
+template_data.quote.associated_objects.company.hs_avatar_filemanager_key
+}}
+"
+width
+=
+"400"
+alt
+=
+"
+{{
+template_data.quote.associated_objects.company.name
+}}
+"
+>
+4
+{%
+else
+%}
+5
+<!-- company does not have an assigned image-->
+6
+{%
+endif
+%}
+Please note:
+only manually set logos will appear. Automatically detected logos will not appear to prevent unintentional logos from appearing on the quote template.
+The above code first sets a variable that searches for the quote's associated company's logo. Then, using an
+if
+statement, the template displays that logo, if available. If no logo has been manually set for the company, no logo is displayed.
+Custom Objects
+Custom object data can be displayed or used within a quote in a couple different ways. Because each custom object's structure may vary, you'll need to get specific properties based on how you've structured your custom object.
+The quote
+template_data
+by default has custom associated objects in it. For example, custom objects associated with deals are included.
+To access them, you can use the following code:
+Copy code snippet
+{% set quote_associated_custom_objects = template_data.quote.associated_objects.deal.associated_objects.custom_objects %}
+{{ quote_associated_custom_objects|pprint }}
+{# |pprint is useful for understanding the structure of the data, you can leave it off when outputting values for display. #}
+​
+x
+1
+{%
+set
+quote_associated_custom_objects
+=
+template_data.quote.associated_objects.deal.associated_objects.custom_objects
+%}
+2
+​
+3
+{{
+quote_associated_custom_objects
+|
+pprint
+}}
+4
+{#
+|pprint is useful for understanding the structure of the data, you can leave it off when outputting values for display.
+#}
+Please note:
+because custom objects are unique to each account, the mock data doesn't include an example custom object. This means that in the template preview in the design manager you may see an error or the custom object data simply won't display. You'll instead need to preview the template with your real CRM data, which you can do by creating a quote from the template.
+You can then access each custom object type by appending its custom object type ID formatted with underscores. For example:
+template_data.quote.associated_objects.deal.associated_objects.custom_objects._2_2193031
+You can also look up a custom object by using the
+crm_associations()
+function and
+crm_objects()
+functions.
+For example, if you wanted to look up a custom object associated with a deal, you could pass in data from
+template_data
+:
+Copy code snippet
+{% set quote_associated_object = crm_associations(template_data.quote.associated_objects.deal.hs_object_id, "USER_DEFINED", 152) %}
+{# 152 is an example of an association type id, you would need to use the appropriate id for your use-case. #}
+{{ quote_associated_object }}
+xxxxxxxxxx
+3
+1
+{%
+set
+quote_associated_object
+=
+crm_associations(template_data.quote.associated_objects.deal.hs_object_id,
+"USER_DEFINED"
+,
+152
+)
+%}
+2
+{#
+152 is an example of an association type id, you would need to use the appropriate id for your use-case.
+#}
+3
+{{
+quote_associated_object
+}}
+Related Resources
+Custom quote templates
+Getting started with the CMS quotes theme
+Create and use custom quote templates (from the sales, sales ops/manager perspective)
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Reference
+Overview
+Modules
+HubL (templating language)
+Overview
+Operators and expression tests
+Filters
+Functions
+Loops
+Tags
+Variables
+Variables and macros syntax
+Quote template variables
+Beta
+If statements
+Deprecated
+Forms
+Fields
+Serverless functions

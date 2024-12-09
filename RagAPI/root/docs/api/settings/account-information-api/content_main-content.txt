@@ -1,0 +1,92 @@
+Account Information API | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Check daily API usage and limits for a private app
+Get account details for a HubSpot account
+API Guides
+Settings
+Account Information API
+Account information
+Account information endpoint reference
+The following endpoints provide information about a given HubSpot account, including the account settings, and the daily API usage and limits.
+Check daily API usage and limits for a private app
+Use this endpoint to see how many API calls a private app has made for the current day, and the API usage limits for that account. The current day is measured from midnight to midnight based on the connected account's time zone settings. Read more about HubSpot's
+API usage guidelines
+and the API
+request limits
+for each HubSpot subscription type.
+Get account details for a HubSpot account
+Use this endpoint to find the following information for a given HubSpot account:
+The account's
+portal ID
+(also called the Hub ID).
+The
+time zone set
+in the account.
+The
+company currency and additional currencies
+added to the account.
+The
+data hosting location
+for the account.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Marketing
+Settings
+Account activity
+Account information
+Business units
+Currencies
+New
+Users
+Legal

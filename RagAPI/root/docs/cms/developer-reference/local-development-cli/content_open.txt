@@ -1,0 +1,1615 @@
+HubSpot CLI commands | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Show all commands
+Install the CLI
+Install to just the current directory
+Update the CLI
+Authentication
+init
+Authenticate an account
+List authenticated accounts
+Set default account
+Remove an account
+Remove invalid accounts
+Interacting with the developer file system
+List files
+Fetch files
+Upload files
+Set a watch for automatic upload
+Move files
+Create new files
+Remove files
+Ignore files
+Locally preview theme
+HubDB Commands
+Create HubDB table
+Fetch HubDB Table
+Clear rows in a HubDB table
+Delete HubDB table
+Serverless function commands
+Create a function
+List functions
+Get logs
+Add a secret
+Update a secret
+Remove a secret
+List secrets
+Open browser shortcuts
+open
+Command completion
+Evaluate themes and templates for SEO and accessibility
+Generate theme field selectors for in-app highlighting
+Modes
+Environment variables
+Marketplace asset validation
+Validate theme
+Validate module
+CMS Development
+Tools
+HubSpot CLI commands
+HubSpot CLI commands
+The HubSpot
+CLI
+connects your local development tools to HubSpot, allowing you to develop on the HubSpot CMS with version control, your favorite text editor, and various web development technologies.
+If you're new to developing on HubSpot, check out our quick start guide where you'll walk through installing the CLI all the way to publishing a live page.
+Quick start to CMS Hub development
+Watch
+Fork
+Star
+View on GitHub
+Use this guide as a reference for the available commands and file formatting options for HubSpot's local development tooling. For a walkthrough of how to use these tools, see the
+getting started with local development tutorial
+.
+If you prefer, you can use
+Yarn
+by running commands with the
+yarn
+prefix.
+Show all commands
+Shows all commands and their definitions. To learn more about a specific command, add
+--help
+to the end of the command.
+Copy code snippet
+hs help
+hs help
+Install the CLI
+You can install HubSpot local development tools either globally (recommended) or locally. To install the HubSpot tools globally, in your command line run the command below. To install locally, omit
+-g
+from the command.
+Copy code snippet
+npm install -g @hubspot/cli
+xxxxxxxxxx
+npm
+install
+-g
+@hubspot/cli
+Install to just the current directory
+To install the tools only in your current directory instead, run the command below. You do not need to install locally if you already have the CLI installed globally.
+Copy code snippet
+npm install @hubspot/cli
+xxxxxxxxxx
+npm
+install @hubspot/cli
+Getting an EACCES error when installing?
+See
+NPM Resolving EACCESS permissions errors when installing packages globally
+.
+Update the CLI
+The CLI is updated regularly. To upgrade to the latest version of the local tools, run:
+Copy code snippet
+npm install -g @hubspot/cli@latest
+xxxxxxxxxx
+npm
+install
+-g
+@hubspot/cli@latest
+The CLI changed from
+@hubspot/cms-cli
+to
+@hubspot/cli
+. If you are still using the old cms-cli you will need to uninstall it prior to installing the new version.
+To see which version you're on, run
+hs --version
+If your version number is less than 3.0.0, you're on the old version.
+To uninstall the old version run
+npm uninstall -g @hubspot/cms-cli
+Authentication
+The following commands enable you to authenticate HubSpot accounts with the CLI so that you can interact with the account. If you haven't yet authenticated an account with the CLI, you'll first run
+hs init
+to create a
+hubspot.config.yml
+file, which will contain the authentication details for any connected HubSpot accounts. The rest of the commands will update that file.
+Learn more in the
+Getting started with local development guide
+.
+init
+Creates your
+hubspot.config.yml
+file in the current directory and sets up authentication for an account. If you're adding authentication for a new account to an existing config file, run the
+auth
+command. When prompted for a name to use for the account, the name can't contain spaces.
+Copy code snippet
+hs init
+xxxxxxxxxx
+hs init
+Authenticate an account
+Generate authentication for a HubSpot account using a
+personal access key
+. You can
+generate your access key here
+. If you already have a
+hubspot.config.yml
+file you can use this command to add credentials for additional accounts. For example you might
+use your sandbox account as a development environment.
+When prompted for a name to use for the account, the name can't contain spaces.
+Copy code snippet
+hs auth
+xxxxxxxxxx
+hs auth
+List authenticated accounts
+Lists the name, ID, and auth type for the each account in your config file. If you're not seeing the accounts you expect, you may need to run the
+auth
+command to add accounts to your config file.
+Copy code snippet
+hs accounts list
+xxxxxxxxxx
+hs accounts list
+Set default account
+Set the default account in your config file.
+Copy code snippet
+hs accounts use accountNameOrID
+xxxxxxxxxx
+hs accounts use accountNameOrID
+Parameter
+Description
+accountNameOrID
+Identify the new default account by its name (as set in the config file) or ID.
+Remove an account
+Removes an account from your config file.
+Copy code snippet
+hs accounts remove accountNameOrID
+xxxxxxxxxx
+hs accounts remove accountNameOrID
+Parameter
+Description
+accountNameOrID
+Identify the account to remove by its name (as set in the config file) or ID.
+Remove invalid accounts
+Removes any deactivated HubSpot accounts from your config file.
+Copy code snippet
+hs accounts clean
+xxxxxxxxxx
+hs accounts clean
+Interacting with the developer file system
+Using the CLI, you can interact with the
+developer file system
+, which is the file system in the
+Design Manager
+. These commands enable you to create new assets locally, such as modules and themes, upload them to the account, list files in the HubSpot account, or download existing files to your local environment.
+List files
+List files stored in the developer file system by path or from the root. Works similar to using standard
+ls
+to view your current directory on your computer.
+Copy code snippet
+hs ls [path]
+hs list [path]
+xxxxxxxxxx
+2
+1
+hs
+ls
+[path]
+2
+hs list [path]
+Argument
+Description
+dest
+Optional
+Path to the remote developer file system directory you would like to list files for. If omitted, defaults to the account root.
+Fetch files
+Fetch a file, or directory and its child folders and files, by path. Copies the files from your HubSpot account into your local environment.
+By default, fetching will not overwrite existing local files. To overwrite local files, include the
+--overwrite
+flag.
+Copy code snippet
+hs fetch --account=<name> <src> [dest]
+hs filemanager fetch --account=<name> <src> [dest]
+xxxxxxxxxx
+2
+1
+hs fetch
+--account
+=
+<name> <src> [dest]
+2
+hs filemanager fetch
+--account
+=
+<name> <src> [dest]
+Argument
+Description
+src
+Required
+Path in HubSpot Design Tools
+dest
+Optional
+Path to the local directory you would like the files to be placed, relative to your current working directory. If omitted, this argument will default to your current working directory.
+Options
+Description
+--account
+Specify an
+accountId
+or name to fetch fromSupports an alias of
+--portal
+for backward compatibility with older versions of the CLI.
+--overwrite
+Overwrite existing files with fetched files.
+--mode
+Specify if fetching a draft or published version of a file from HubSpot.
+Click here
+for more info
+Upload files
+Upload a new local asset to your HubSpot account. Changes uploaded through this command will be live immediately.
+Copy code snippet
+hs upload --account=<name> <src> <dest>
+hs filemanager upload --account=<name> <src> <dest>
+xxxxxxxxxx
+2
+1
+hs upload
+--account
+=
+<name> <src> <dest>
+2
+hs filemanager upload
+--account
+=
+<name> <src> <dest>
+Argument
+Description
+src
+Required
+Path to the local file, relative to your current working directory.
+dest
+Required
+Path in HubSpot Design Tools, can be a net new path.
+Options
+Description
+--account
+Specify a
+accountId
+or name to fetch from.Supports an alias of
+--portal
+for backward compatibility with older versions of the CLI.
+--mode
+Specify if uploaded files are published in HubSpot.
+See "modes"
+for more info.
+--clean
+An optional flag that will delete the destination directory and its contents before uploading.
+Subcommands
+Description
+filemanager
+Uploads the specified src directory to the
+File Manager
+, rather than to the
+developer file system
+in the Design Manager.
+Note
+: Uploaded files will be set to
+public
+, making them viewable by anyone with the URL. See our
+help documentation
+for more details on file visibility settings.
+Set a watch for automatic upload
+Watch your local directory and automatically upload changes to your HubSpot account on save. Any changes made when saving will be live immediately.
+Keep the following in mind when using
+watch
+:
+Deleting watched files locally will not automatically delete them from HubSpot. To delete files, use
+--remove
+.
+Renaming a folder locally will upload a new folder to HubSpot with the new name. The existing folder in HubSpot will not be deleted automatically. To delete the folder, use
+--remove
+.
+Copy code snippet
+hs watch --account=<name> <src> <dest>
+xxxxxxxxxx
+hs watch
+--account
+=
+<name> <src> <dest>
+Argument
+Description
+src
+Required
+Path to the local directory your files are in, relative to your current working directory
+dest
+Required
+Path in HubSpot Design Tools, can be a net new path.
+Options
+Description
+--account
+Specify a
+accountId
+or name to fetch fromSupports an alias of
+--portal
+for backward compatibility with older versions of the CLI.
+--mode
+Specify if uploaded files are published or saved as drafts in HubSpot.
+Learn more about using modes
+.
+--initial-upload
+Causes an initial upload to occur before file saves have occured. Supports an alias of
+-i
+--remove
+Will cause watch to delete files in your HubSpot account that are not found locally.
+--notify=
+log to specified file when a watch task is triggered and after workers have gone idle.
+Move files
+Moves files within the
+developer file system
+from one directory to another. Does not affect files stored locally.
+Copy code snippet
+hs mv --account=<name> <src> <dest>
+xxxxxxxxxx
+hs
+mv
+--account
+=
+<name> <src> <dest>
+Argument
+Description
+src
+Required
+Path to the remote developer file system directory your files are in.
+dest
+Required
+Path to move assets to within the developer file system.
+Options
+Description
+--account
+Specify a
+accountId
+or name to move files within.Supports an alias of
+--portal
+for backward compatibility with older versions of the CLI.
+Create new files
+Creates the folder/file structure of a new asset.
+Copy code snippet
+hs create <type> <name> [dest]
+xxxxxxxxxx
+hs create <type> <name> [dest]
+Argument
+Description
+type
+Required
+Type of asset. Supported types include:
+module
+template
+website-theme
+function
+webpack-serverless
+react-app
+vue-app
+name
+Required
+The name of the new asset
+dest
+Optional
+The destination folder for the new asset, relative to your current working directory. If omitted, this will default to your current working directory.
+Remove files
+Deletes files, or folders and their files, from your HubSpot account. This does
+not
+delete the files and folders stored locally. This command has an alias of
+rm
+.
+Copy code snippet
+hs remove --account=<name> <path>
+xxxxxxxxxx
+hs remove
+--account
+=
+<name> <path>
+Argument
+Description
+path
+Required
+Path in HubSpot Design Tools
+Options
+Description
+--account
+Specify a
+accountId
+or name to remove a file from.Supports an alias of
+--portal
+for backward compatibility with older versions of the CLI.
+Ignore files
+You can include a
+.hsignore
+file to specify files that should not be tracked when using the CLI. This file functions similar to how
+.gitignore
+files work. Files matching the patterns specified in the
+.hsignore
+file will not be uploaded to HubSpot when using the
+upload
+or
+watch
+commands.
+By default there are some rules HubSpot automatically enforces. There is no way to override these defaults.
+The following are always ignored:
+hubspot.config.yml
+/
+hubspot.config.yaml
+node_modules
+- dependencies
+.*
+- hidden files/folders
+*.log
+- NPM error log
+*.swp
+- Swap file for Vim state
+Icon\\r
+- Mac OS custom Finder icon
+__MACOSX
+- Mac resource fork
+~
+Linux Backup file
+Thumbs.db
+- Windows image file cache
+ehthumbs.db
+- Windows folder config file
+Desktop.ini
+- Windows custom folder attribute information
+@eaDir
+- Windows Synology diskstation "hidden" folder where the server stores thumbnails.
+Copy code snippet
+# ignore all files within a specific directory
+/ignore/ignored
+# ignore a specific file
+/ignore/ignore.md
+# ignore all .txt files
+*.txt
+# ignore all log files - useful if you commonly output serverless function logs as files.
+*.log
+xxxxxxxxxx
+8
+1
+# ignore all files within a specific directory
+2
+/ignore/ignored
+3
+# ignore a specific file
+4
+/ignore/ignore.md
+5
+# ignore all .txt files
+6
+*.txt
+7
+# ignore all log files - useful if you commonly output serverless function logs as files.
+8
+*.log
+Locally preview theme
+When developing a theme, you can run
+hs theme preview
+in the theme's root directory to render a live preview of your changes without uploading files to the account. The preview will run on a local proxy server at
+https://hslocal.net:3000/
+.
+Once run, this command will run a watch process so that any saved changes are rendered in the preview.
+Please note:
+to allow the local server to run on https, HubSpot must generate a self-signed SSL certificate and register it with your operating system. This will require entering your sudo password.
+Copy code snippet
+hs theme preview <src> <dest>
+xxxxxxxxxx
+hs theme preview <src> <dest>
+Argument
+Description
+src
+Required
+Path to the local file, relative to your current working directory. This command should be run in the theme's root directory..
+dest
+Required
+The path for the preview. This can be any value, and is only used internally and for display purposes on the preview page.
+The main page at
+https://hslocal.net:3000/
+will display a list of your theme's templates and modules, all of which can be individually previewed by clicking the provided links. You'll also see a list of the account's connected domains, which you can use to preview content on specific domains. The domain will be prepended to the
+hslocal.net
+domain.
+HubDB Commands
+The HubDB commands are currently in Developer Preview. They are available to use now but understand they are subject to change. Developer previews are subject to our
+developer beta terms
+.
+Use these commands to create, delete, fetch, and clear all rows of a HubDB table. The HubSpot account must have access to HubDB to use these commands.
+Create HubDB table
+Create a new HubDB table in the HubSpot account.
+Copy code snippet
+hs hubdb create <src>
+xxxxxxxxxx
+hs hubdb create <src>
+Argument
+Description
+src
+Required
+The local
+JSON file
+to use to generate the HubDB table.
+Options
+Description
+--account
+Specify a
+accountId
+or name to create HubDB in.Supports an alias of
+--portal
+for backward compatibility with older versions of the CLI.
+Fetch HubDB Table
+Download a HubDB table's data to your computer.
+Copy code snippet
+hs hubdb fetch <tableId> <dest>
+xxxxxxxxxx
+hs hubdb fetch <tableId> <dest>
+Argument
+Description
+tableId
+Required
+HubDB table id found in the HubDB dashboard.
+dest
+The local path destination to store the
+hubdb.json
+file.
+When you fetch a HubDB the data is stored as
+tablename.hubdb.json
+. When you create a new table you must specify a source JSON file. Below is an example of a table in JSON format.
+Copy code snippet
+// store_locations.hubdb.json
+{
+"name": "store_locations",
+"useForPages": true,
+"label": "Store locations",
+"allowChildTables": false,
+"allowPublicApiAccess": true,
+"dynamicMetaTags": { "DESCRIPTION": 3, "FEATURED_IMAGE_URL": 7 },
+"enableChildTablePages": false,
+"columns": [
+{ "name": "name", "label": "Name", "type": "TEXT" },
+{
+"name": "physical_location",
+"label": "Physical Location",
+"type": "LOCATION"
+},
+{ "name": "street_address", "label": "Street address", "type": "TEXT" },
+{ "name": "city", "label": "City", "type": "TEXT" },
+{
+"name": "state",
+"label": "State",
+"options": [
+{ "id": 1, "name": "Wisconsin", "type": "option", "order": null },
+{ "id": 2, "name": "Minnesota", "type": "option", "order": null },
+{ "id": 3, "name": "Maine", "type": "option", "order": null },
+{ "id": 4, "name": "New York", "type": "option", "order": null },
+{ "id": 5, "name": "Massachusetts ", "type": "option", "order": null },
+{ "id": 6, "name": "Mississippi", "type": "option", "order": null },
+{ "id": 7, "name": "Arkansas", "type": "option", "order": null },
+{ "id": 8, "name": "Texas", "type": "option", "order": null },
+{ "id": 9, "name": "Florida", "type": "option", "order": null },
+{ "id": 10, "name": "South Dakota", "type": "option", "order": null },
+{ "id": 11, "name": "North Dakota", "type": "option", "order": null },
+{ "id": 12, "name": "n/a", "type": "option", "order": null }
+],
+"type": "SELECT",
+"optionCount": 12
+},
+{ "name": "phone_number", "label": "Phone Number", "type": "TEXT" },
+{ "name": "photo", "label": "Store Photo", "type": "IMAGE" }
+],
+"rows": [
+{
+"path": "super_store",
+"name": "Super Store",
+"isSoftEditable": false,
+"values": {
+"name": "Super Store",
+"physical_location": {
+"lat": 43.01667,
+"long": -88.00608,
+"type": "location"
+},
+"street_address": "1400 75th Greenfield Ave",
+"city": "West Allis",
+"state": { "id": 1, "name": "Wisconsin", "type": "option", "order": 0 },
+"phone_number": "(123) 456-7890"
+}
+},
+{
+"path": "store_123",
+"name": "Store #123",
+"isSoftEditable": false,
+"values": {
+"name": "Store #123",
+"physical_location": {
+"lat": 32.094803,
+"long": -166.85889,
+"type": "location"
+},
+"street_address": "Pacific Ocean",
+"city": "at sea",
+"state": { "id": 12, "name": "n/a", "type": "option", "order": 11 },
+"phone_number": "(123) 456-7891"
+}
+}
+]
+}
+xxxxxxxxxx
+78
+1
+// store_locations.hubdb.json
+2
+{
+3
+"name"
+:
+"store_locations"
+,
+4
+"useForPages"
+:
+true
+,
+5
+"label"
+:
+"Store locations"
+,
+6
+"allowChildTables"
+:
+false
+,
+7
+"allowPublicApiAccess"
+:
+true
+,
+8
+"dynamicMetaTags"
+: {
+"DESCRIPTION"
+:
+3
+,
+"FEATURED_IMAGE_URL"
+:
+7
+},
+9
+"enableChildTablePages"
+:
+false
+,
+10
+"columns"
+: [
+11
+{
+"name"
+:
+"name"
+,
+"label"
+:
+"Name"
+,
+"type"
+:
+"TEXT"
+},
+12
+{
+13
+"name"
+:
+"physical_location"
+,
+14
+"label"
+:
+"Physical Location"
+,
+15
+"type"
+:
+"LOCATION"
+16
+},
+17
+{
+"name"
+:
+"street_address"
+,
+"label"
+:
+"Street address"
+,
+"type"
+:
+"TEXT"
+},
+18
+{
+"name"
+:
+"city"
+,
+"label"
+:
+"City"
+,
+"type"
+:
+"TEXT"
+},
+19
+{
+20
+"name"
+:
+"state"
+,
+21
+"label"
+:
+"State"
+,
+22
+"options"
+: [
+23
+{
+"id"
+:
+1
+,
+"name"
+:
+"Wisconsin"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+null
+},
+24
+{
+"id"
+:
+2
+,
+"name"
+:
+"Minnesota"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+null
+},
+25
+{
+"id"
+:
+3
+,
+"name"
+:
+"Maine"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+null
+},
+26
+{
+"id"
+:
+4
+,
+"name"
+:
+"New York"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+null
+},
+27
+{
+"id"
+:
+5
+,
+"name"
+:
+"Massachusetts "
+,
+"type"
+:
+"option"
+,
+"order"
+:
+null
+},
+28
+{
+"id"
+:
+6
+,
+"name"
+:
+"Mississippi"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+null
+},
+29
+{
+"id"
+:
+7
+,
+"name"
+:
+"Arkansas"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+null
+},
+30
+{
+"id"
+:
+8
+,
+"name"
+:
+"Texas"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+null
+},
+31
+{
+"id"
+:
+9
+,
+"name"
+:
+"Florida"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+null
+},
+32
+{
+"id"
+:
+10
+,
+"name"
+:
+"South Dakota"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+null
+},
+33
+{
+"id"
+:
+11
+,
+"name"
+:
+"North Dakota"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+null
+},
+34
+{
+"id"
+:
+12
+,
+"name"
+:
+"n/a"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+null
+}
+35
+],
+36
+"type"
+:
+"SELECT"
+,
+37
+"optionCount"
+:
+12
+38
+},
+39
+{
+"name"
+:
+"phone_number"
+,
+"label"
+:
+"Phone Number"
+,
+"type"
+:
+"TEXT"
+},
+40
+{
+"name"
+:
+"photo"
+,
+"label"
+:
+"Store Photo"
+,
+"type"
+:
+"IMAGE"
+}
+41
+],
+42
+"rows"
+: [
+43
+{
+44
+"path"
+:
+"super_store"
+,
+45
+"name"
+:
+"Super Store"
+,
+46
+"isSoftEditable"
+:
+false
+,
+47
+"values"
+: {
+48
+"name"
+:
+"Super Store"
+,
+49
+"physical_location"
+: {
+50
+"lat"
+:
+43.01667
+,
+51
+"long"
+:
+-
+88.00608
+,
+52
+"type"
+:
+"location"
+53
+},
+54
+"street_address"
+:
+"1400 75th Greenfield Ave"
+,
+55
+"city"
+:
+"West Allis"
+,
+56
+"state"
+: {
+"id"
+:
+1
+,
+"name"
+:
+"Wisconsin"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+0
+},
+57
+"phone_number"
+:
+"(123) 456-7890"
+58
+}
+59
+},
+60
+{
+61
+"path"
+:
+"store_123"
+,
+62
+"name"
+:
+"Store #123"
+,
+63
+"isSoftEditable"
+:
+false
+,
+64
+"values"
+: {
+65
+"name"
+:
+"Store #123"
+,
+66
+"physical_location"
+: {
+67
+"lat"
+:
+32.094803
+,
+68
+"long"
+:
+-
+166.85889
+,
+69
+"type"
+:
+"location"
+70
+},
+71
+"street_address"
+:
+"Pacific Ocean"
+,
+72
+"city"
+:
+"at sea"
+,
+73
+"state"
+: {
+"id"
+:
+12
+,
+"name"
+:
+"n/a"
+,
+"type"
+:
+"option"
+,
+"order"
+:
+11
+},
+74
+"phone_number"
+:
+"(123) 456-7891"
+75
+}
+76
+}
+77
+]
+78
+}
+Clear rows in a HubDB table
+Clear all of the rows in a HubDB table.
+Copy code snippet
+hs hubdb clear <tableId>
+xxxxxxxxxx
+hs hubdb
+clear
+<tableId>
+Argument
+Description
+tableId
+Required
+HubDB table id found in the HubDB dashboard.
+Options
+Description
+--account
+Specify a
+accountId
+or name to clear HubDB rows from.Supports an alias of
+--portal
+for backward compatibility with older versions of the CLI.
+Delete HubDB table
+Deletes the specified HubDB table from the account.
+Copy code snippet
+hs hubdb delete <tableId>
+xxxxxxxxxx
+hs hubdb delete <tableId>
+Argument
+Description
+tableId
+Required
+HubDB table id found in the HubDB dashboard.
+Options
+Description
+--account
+Specify a
+accountId
+or name to delete HubDB from.Supports an alias of
+--portal
+for backward compatibility with older versions of the CLI.
+Serverless function commands
+Use these commands to create and debug
+serverless functions
+(
+CMS Hub
+Enterprise
+only).
+Create a function
+Creates a serverless function using the
+create
+command. Running this command will guide you through the steps of creating the function, such as naming its parent and function file and defining its methods and endpoint path.
+Copy code snippet
+hs create function
+xxxxxxxxxx
+hs create
+function
+List functions
+Prints a list of all of the account's deployed functions, their endpoints, methods, the names of the secrets they use and last updated date.
+Copy code snippet
+hs functions ls --account=<name>
+hs functions list --account=<name>
+xxxxxxxxxx
+2
+1
+hs functions
+ls
+--account
+=
+<name>
+2
+hs functions list
+--account
+=
+<name>
+Argument
+Description
+--account
+The HubSpot account nickname from your hubspot.config. This parameter is required if you do not have a
+defaultAccount
+in your
+hubspot.config
+.Supports an alias of
+--portal
+for backward compatibility with older versions of the CLI.
+--json
+Output JSON into the command line with data on all of the functions. The JSON data includes, portal id, function id, route, raw asset path, method, secrets, created and last modified dates.
+Get logs
+Prints a log from your serverless function. Displays any
+console.logs
+contained within your function after execution. Logs also include execution time. Logs are retained for 90 days.
+Copy code snippet
+hs logs <endpoint-name> --account=<name> --follow
+xxxxxxxxxx
+hs logs <endpoint-name>
+--account
+=
+<name>
+--follow
+Argument
+Description
+endpoint-name
+Required
+The endpoint name as defined in your serverless.json file (not the path to the function file).
+--file
+Output the logs to function.log
+--follow
+Tail the logs to get a live update as you are executing your serverless functions.
+--latest
+Output only the most recent log
+--account
+The HubSpot account nickname from your hubspot.config. This parameter is required if you do not have a
+defaultPortal
+in your hubspot.config.Supports an alias of
+--portal
+for backward compatibility with older versions of the CLI.
+--compact
+hides log output/info. Returns success/error and execution time.
+--limit=
+limit the amount of logs displayed in output
+If you receive this error:
+A server error occurred: WARNING: The logs for this function have exceeded the 4KB limit
+, your log is too large. This can be caused by trying to console log a very large object, or by a lot of separate console logs. To resolve this, reduce how much you're trying to log, hit your endpoint, then run the command again.
+Add a secret
+Add a
+secret
+to your account which can be used within serverless functions. After running the command you will be prompted to enter the secret's value.
+To expose the secret to your function, update your
+serverless.json
+file with the secret's name, either to the specific endpoints you want to use it in or globally to make it available to all.
+Copy code snippet
+hs secrets add <secret-name>
+xxxxxxxxxx
+hs secrets add <secret-name>
+Argument
+Description
+secret-name
+Required
+Name of secret.
+secret-value
+Required
+The secret's value (auth detail, or otherwise).
+Update a secret
+Update the value of a
+secret
+in your account which can be used within serverless functions. You will then be prompted to enter the secret's value.
+Please note:
+due to caching, it can take about one minute to see updated secret values. If you've just updated a secret but are still seeing the old value, check again after about a minute.
+Copy code snippet
+hs secrets update <secret-name>
+xxxxxxxxxx
+hs secrets update <secret-name>
+Argument
+Description
+secret-name
+Required
+The name of the secret, which you'll later use to reference the secret. This can be any unique value, though it's recommended to keep it simple for ease of use.
+Remove a secret
+Remove a
+secret
+from your account, making it no longer usable within serverless functions. After running this command, edit your
+serverless.json
+file to remove the secret's name.
+Copy code snippet
+hs secrets delete <secret-name>
+xxxxxxxxxx
+hs secrets delete <secret-name>
+Argument
+Description
+secret-name
+Required
+Name of secret you want to remove.
+List secrets
+List
+secrets
+within your account to know what you have stored already using the add secrets command.
+Copy code snippet
+hs secrets list
+xxxxxxxxxx
+hs secrets list
+Open browser shortcuts
+There are so many parts of the HubSpot app that developers need to access frequently. To make it easier to get to these tools you can open them directly from the command line. Your
+defaultAccount
+or
+--account
+argument will be used to open the associated tool for that account.
+open
+Copy code snippet
+hs open <shortcut-name or alias>
+xxxxxxxxxx
+hs open <shortcut-name or alias>
+Argument
+Description
+shortcut
+Required
+Provide the full shortcut name or alias of the short cut you wish to open in your browser.
+Copy code snippet
+hs open --list
+xxxxxxxxxx
+hs open
+--list
+Argument
+Description
+--list
+Required
+Lists all of the shortcuts, their aliases and destinations.
+Command completion
+If you use the CLI frequently, it can be useful to be-able-to tab to auto-complete commands.
+Copy code snippet
+hs completion >> ~/.bashrc
+xxxxxxxxxx
+hs completion >> ~/.bashrc
+For Mac OS X
+Copy code snippet
+hs completion >> ~/.bash_profile
+xxxxxxxxxx
+hs completion >> ~/.bash_profile
+Evaluate themes and templates for SEO and accessibility
+Uses
+Google's Lighthouse tools
+to score the quality of your themes and templates for their adherence to the following categories:
+Accessibility
+Web best practices
+Performance
+PWA
+SEO
+The following types of templates are scored:
+landing pages
+website pages
+Blog posts
+Blog listing page
+If any templates fail to generate a score because of Lighthouse errors, a list of these templates will be provided.
+Copy code snippet
+hs cms lighthouse-score --theme=path
+xxxxxxxxxx
+hs cms lighthouse-score
+--theme
+=
+path
+Parameter
+Description
+--theme-path
+Required
+Path to a theme in the Design Manager.
+--verbose
+When this parameter is excluded, the returned score is an average of all the theme's templates (default).
+When this parameter is included, the individual template scores are shown. You'll also receive
+Lighthouse report
+links for each template.
+--target
+This can either be desktop or mobile to see respective scores. By default, the target is desktop.
+Generate theme field selectors for in-app highlighting
+When creating a theme, use the following command to generate an
+editor-preview.json
+file which maps CSS selectors to theme fields. This enables content creators to see which theme elements will be impacted by updates to a field's styling options.
+After running the command, you'll need to review and refine the
+editor-preview.json
+file to ensure that fields and selectors are mapped properly. While this command will make a rudimentary guess as to which fields affect which selectors, you'll need to make corrections based on how your theme is built. For example, this command cannot detect when modules are overriding styling or when you're using macros. Learn more about
+theme editor field highlighting
+.
+Copy code snippet
+hs theme generate-selectors <theme-directory-path>
+xxxxxxxxxx
+hs theme generate-selectors <theme-directory-path>
+Modes
+The
+\--mode
+option allows you to determine if local changes are published when uploaded to HubSpot. This option can be used in each command or set as a default in your
+hubspot.config.yml
+file.
+The two options for
+\--mode
+are
+\--mode=draft
+and
+\--mode=publish.
+The following is the order of precedence for setting
+\--mode
+:
+Using
+\--mode
+in a command will override all other settings.
+Setting a
+defaultMode
+for each account in your
+hubspot.config.yml file
+, removes the need to use
+\--mode
+in each command. It will override the top-level setting.
+Setting a
+defaultMode
+at the top-level in your
+hubspot.config.yml file
+, sets a default
+\--mode
+for all accounts. It will override the default behavior.
+The default behavior for
+\--mode
+is
+publish
+Environment variables
+The HubSpot CLI supports the use of environment variables, this can be especially useful when creating automations like a GitHub Action.
+Run any command using the
+--use-env
+flag to use the environment variables instead of the
+hubspot.config.yml
+.
+Copy code snippet
+hs upload example-project example-project-remote --use-env
+xxxxxxxxxx
+hs upload example-project example-project-remote
+--use-env
+Name
+Description
+HUBSPOT_PORTAL_ID
+Required
+The HubSpot account ID.
+HUBSPOT_PERSONAL_ACCESS_KEY
+Recommended
+The
+personal access key
+of a user on the HubSpot account. All updates made will be associated to this user.
+HUBSPOT_CLIENT_ID
+The OAuth client ID.
+HUBSPOT_CLIENT_SECRET
+The OAuth secret.
+Please note:
+as of November 30, 2022, HubSpot API Keys are no longer supported. Continued use of HubSpot API Keys is a security risk to your account and data. During this deprecation phase, HubSpot may deactivate your key at any time.
+You should instead authenticate using a private app access token or OAuth. Learn more about
+this change
+and how to
+migrate an API key integration
+to use a private app instead.
+Marketplace asset validation
+The CLI provides a suite of automated tests you can perform on your assets to get them in-line with the marketplace requirements prior to submitting. Passing all automated tests does not mean you will for sure pass the review process, further review is conducted to ensure quality beyond what can be easily automated.
+Validate theme
+The theme validation command allows you to quickly run automated tests on your theme to identify problems that need to be fixed prior to submission to the asset marketplace. These will be returned in your CLI as a list of [error] and [success] messages separated into groups that represent types of assets within a theme.
+Before you can validate a theme, you'll first need to upload it to your account with
+hs upload
+. Then, run the following command to validate the uploaded theme.
+Copy code snippet
+hs theme marketplace-validate <src>
+xxxxxxxxxx
+hs theme marketplace-validate <src>
+Argument
+Description
+src
+Required
+Root relative path to the theme folder in the design manager.
+Validate module
+Similar to validating a theme, this command allows you to quickly run automated tests on a module to identify problems that need to be fixed prior to submission to the asset marketplace.
+Before you can validate a module, you'll first need to upload it to your account with
+hs upload
+. Then, run the following command to validate the uploaded module.
+Copy code snippet
+hs module marketplace-validate <src>
+xxxxxxxxxx
+hs module marketplace-validate <src>
+Argument
+Description
+src
+Required
+Root relative path to the module folder in the design manager.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Design manager
+HubSpot CLI commands
+Personal access key
+Quickstart
+Setup
+Storage
+Content and structure
+Debugging
+Improve older sites
+Marketplace

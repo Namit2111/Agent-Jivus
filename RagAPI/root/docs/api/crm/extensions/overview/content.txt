@@ -1,0 +1,109 @@
+Extensions overview | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Extension support in apps
+Apps
+Extensions
+Extensions overview
+Extensions overview
+Using extensions, you can customize the functionality of the HubSpot CRM. HubSpot offers a variety of extensions, such as creating custom events for CRM record timelines or enabling custom calling options with the calling SDK. You can also create UI extensions if you’re enrolled in the CRM development tools beta, which enables you to create custom cards with a wide variety of customizable components.
+Below is a list of the extensions that HubSpot currently offers:
+Calling extensions SDK
+:
+enable users to
+make calls
+using custom calling options.
+Custom timeline events
+:
+create custom events that display information from other systems on CRM record timelines.
+Classic CRM cards
+:
+create cards to pull external data into CRM records. These types of cards are separate from UI extensions, and don't offer as much customization options.
+UI extensions (BETA)
+:
+customize CRM record pages with custom cards that can send and receive HubSpot and external data using a wide variety of customizable components.
+Video conference extension
+:
+integrate video conferencing into the meetings tool.
+Extensions are powered by apps, which means you’ll first need to create a
+public app
+or a
+private app in projects (BETA)
+before you can add an extension to an account.
+Extension support in apps
+Because private apps and public apps support different extensions, you’ll first need to decide what type of app to create. Review the table below to understand which extensions are supported by which app types.
+Learn more about the differences between these types of apps in the
+building apps overview
+.
+App type
+Supported extensions
+Private app
+UI extensions
+are supported in
+private apps created with projects (BETA)
+.
+Public app
+Calling SDK
+Classic CRM cards
+Timeline events
+Video conference extension
+UI extensions
+are supported in
+public apps created with projects (BETA)
+.
+Classic CRM cards are different from the app cards you can create as
+UI extensions with projects (BETA)
+. UI extensions offer more advanced functionality and customizable components.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+Apps
+Overview
+Authentication
+Private apps
+Public apps
+Extensions
+Overview
+Calling extensions
+API usage
+Marketplace

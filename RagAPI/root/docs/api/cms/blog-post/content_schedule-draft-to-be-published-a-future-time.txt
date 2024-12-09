@@ -1,0 +1,447 @@
+CMS API | Blog Posts | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Changes in V3
+Limits
+Search blog posts
+Filtering
+Sorting and paginating
+Create blog posts
+Edit and publish blog posts
+Edit a draft
+Publish draft blog post
+Publish changes to live blog post
+Schedule draft to be published a future time
+Reset draft
+Multi-language management
+Create a new language variant
+Attach a blog post to an existing multi-language group
+Detach a blog post from a multi-language group
+API Guides
+CMS
+Blogs
+CMS API | Blog Posts
+Blog Posts
+Blog posts endpoint reference
+You can use the blog post API to publish and manage blog posts. Learn more about how to create and maintain your blog on the
+HubSpot Knowledge Base.
+Changes in V3
+The following properties are deprecated and will not be included in the response of any of the V3 endpoints:
+campaign_name
+is_draft
+keywords
+The
+topicIds
+property has been renamed to
+tagIds
+.
+Limits
+The blog post API endpoints are subject to the limits defined in
+HubSpot's API usage guidelines
+. Any limits specific to a certain endpoint will be listed with the associated endpoint in the
+Endpoints
+tab above.
+Search blog posts
+When you make a
+GET
+request to
+/cms/v3/blogs/posts
+, you can filter and sort the posts returned in the response using the operators and properties below. You can also use the standard filters using the
+createdAt
+and
+updatedAt
+dates.
+Filtering
+Provide any filters as query parameters in your request, by adding the
+property name
+, followed by two underscore characters, then include the associated
+operator
+as a suffix. For example, you can filter the results to only include blog posts where the
+name
+property contains the word
+marketing
+using the parameter:
+&name__contains=marketing
+.
+You can include any number of filters as query parameters in the request URL. All specified filters will be applied to narrow down results.
+The available filter types are listed below:
+Filter
+Operator
+Equals
+eq (or none)
+Not equal
+ne
+Contains
+contains
+Less than
+lt
+Less than or equal
+lte
+Greater than
+gt
+Greater than or equal
+gte
+Null
+is_null
+Not null
+not_null
+Like
+like
+Not like
+not_like
+Contains (case insensitive)
+icontains
+Starts with
+startswith
+In
+in
+The table below lists the properties that can be filtered on, along with their supported filter types.
+Property
+Supported filters
+id
+Equal
+,
+In
+slug
+Equal
+,
+In
+,
+Not in
+,
+Contains (case insensitive)
+campaign
+Equal
+,
+In
+state
+Equal
+,
+Not equal
+,
+In
+,
+Not in
+,
+Contains
+publishDate
+Equal
+,
+Greater than
+,
+Greater than or equal
+,
+Less than
+,
+Less than or equal
+createdAt
+Equal
+,
+Greater than
+,
+Greater than or equal
+,
+Less than
+,
+Less than or equal
+updatedAt
+Equal
+,
+Greater than
+,
+Greater than or equal
+,
+Less than
+,
+Less than or equal
+name
+Equal
+,
+In
+,
+Contains (case insensitive)
+archivedAt
+Equal
+,
+Greater than
+,
+Greater than or equal
+,
+Less than
+,
+Less than or equal
+createdById
+Equal
+updatedById
+Equal
+blogAuthorId
+Equal
+,
+In
+translatedFromId
+Null
+,
+Not null
+contentGroupId
+Equal
+,
+In
+tagId
+Equal
+,
+In
+The table below lists the query parameters you can use to filter by publish state.
+Publish State
+Query parameters
+Draft
+state=DRAFT
+Scheduled
+state=SCHEDULED
+Published
+state=PUBLISHED
+Please note:
+the
+currentState
+field on the blog post object is a generated field which also reflects the blog's publish state, but you cannot use it as a property to filter against in your requests.
+To filter blog posts based on a multi-language group, you can include one of the query parameters in the table below. For example, to get blog posts associated with a German variation of your blog, you'd include
+contentGroupId__eq={germanBlogId}
+as a query parameter.
+Description
+Query parameters
+Primary blog post in a multi-language group
+translatedFromId__is_null
+Variation blog post in a multi-language group
+translatedFromId__not_null
+Blog post with specific language
+contentGroupId__eq
+Sorting and paginating
+You can provide sorting and pagination options as query parameters. Specify the
+property name
+as the value to the sort query parameter to return the blog posts in the natural order of that property. You can reverse the sorting order by including a dash character before the property name (e.g.,
+sort=-createdAt
+).
+By combining query parameters for filtering, sorting, and paging, you can retrieve blog posts that match more advanced search criteria. For example, the request below fetches blog posts that don't have a language assigned, ordered by the most recently updated. Including the
+limit
+and
+offset
+parameters below returns the second page of results.
+Copy code snippet
+curl
+https://api.hubapi.com/cms/v3/blogs/posts?sort=-updatedAt&&language__not_null&limit=10&offset=10 \
+--request POST \
+--header "Content-Type: application/json"
+1
+curl
+2
+https://api.hubapi.com/cms/v3/blogs/posts
+?sort
+=
+-updatedAt
+&&language__not_null
+&limit
+=
+10
+&offset
+=
+10
+\
+3
+--request
+POST \
+4
+--header
+"Content-Type: application/json"
+Create blog posts
+You can create a blog post by making a
+POST
+request to the
+/cms/v3/blogs/posts
+endpoint, and including a JSON payload that represents the blog post model. The
+name
+and
+contentGroupId
+fields are required when creating a blog post. To set the URL of a blog post, you must provide the
+slug
+field in your request. The
+url
+field is auto-generated by HubSpot and cannot be updated. Review the required parameters and the structure of the blog post model in the
+Endpoints
+tab at the top of this article.
+Learn more about
+creating blog posts in the HubSpot content editor
+.
+Edit and publish blog posts
+Blog posts in HubSpot have both draft and live versions. The draft version can be updated without affecting the live blog post content. Drafts can be reviewed and published by a user in your HubSpot account. You can also schedule your post to be published at a future time via the
+/schedule
+endpoint. Draft changes can also be discarded using the
+/reset
+endpoint, which allows a user in your account to revert back to the current live version of the blog post without disruption.
+Edit a draft
+You can update the draft version of a blog post by making a
+PATCH
+request to the
+/cms/v3/blogs/posts/{objectId}
+endpoint and providing the associated ID of the post as the
+objectId
+. You must include a JSON payload that represents the blog post model.
+You can modify the
+widgets
+,
+widgetContainers
+, and
+layoutSections
+properties of the blog post model. Each property stores module data for the post.
+widgets:
+contains data from the blog post's template.
+widgetContainers:
+contains data from the module's flex columns.
+layoutSections:
+contains data from the module's drag and drop areas.
+Properties you provide in the payload of your request will override existing draft properties without any complex merging logic. As a result, if you're updating any nested properties within the three properties listed above, you should provide the full definition of the object. Partial updates are
+not
+supported.
+Please note:
+editing your blog post drafts directly in your HubSpot account is the simplest way to modify content managed by the HubSpot CMS. While you can use the edit endpoint described above, it's not recommended over using the editor.
+Publish draft blog post
+You can publish an unpublished blog post by making a
+PATCH
+request to the
+api.hubspot.com/cms/v3/blogs/posts/{objectId}
+endpoint and supplying the
+objectID
+of the blog post. In your request, include a JSON payload that sets the
+state
+to
+Published
+.
+Publish changes to live blog post
+You can push live unpublished changes to a published blog post by making a
+POST
+request to the
+/cms/v3/blogs/posts/{objectId}/draft/push-live
+endpoint and supplying the
+objectID
+of the blog post. This endpoint does not require a payload and will only update an already published blog post, not publish a drafted blog post.
+Schedule draft to be published a future time
+You can schedule the draft version of your blog post to be published later by making a
+POST
+request to the
+/cms/v3/blogs/posts/schedule
+endpoint. In your request, include a JSON payload that contains the
+id
+of the target blog post and a
+publishDate
+.
+Reset draft
+You can reset the draft version of a blog post back to its current live version by making a
+POST
+request to the
+/cms/v3/blogs/posts/{objectId}/draft/reset
+endpoint, and supplying the
+objectId
+of the associated post you want to reset. This endpoint does not require you to supply a payload.
+Review the required parameters and available endpoints for editing and publishing a blog post in the
+Endpoints
+tab at the top of this article.
+Multi-language management
+To help you maintain blog posts across multiple languages, HubSpot's CMS allows you to group together language variants of the same content. You can learn more about working with multi-language blog posts in
+this Knowledge Base article
+.
+Create a new language variant
+You can create a new language variant for an existing blog post by making a
+POST
+request to the
+/multi-language/create-language-variant
+endpoint. The endpoint accepts a JSON payload containing the
+id
+of the blog post to clone and the
+language
+identifier of the new variant.
+Attach a blog post to an existing multi-language group
+You can add a blog post to an existing multi-language group by making a
+POST
+request to the
+/multi-language/attach-to-lang-group
+endpoint. The endpoint accepts a JSON payload containing the
+id
+of the target blog post, the
+language
+identifier of the blog post being added, and the
+primaryId
+of the blog post designated as the primary blog post in the target multi-language group.
+Detach a blog post from a multi-language group
+To detach a blog post from a multi-language group, make a
+POST
+request to the
+/multi-language/detach-from-lang-group
+endpoint. The endpoint accepts a JSON payload containing the
+id
+of the target blog post.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Blogs
+Blog authors
+Blog posts
+Blog tags
+Content audit
+Domains
+HubDB
+Media bridge
+Pages
+Performance
+Site search
+Source code
+URL redirects
+Conversations
+Library
+CRM
+Marketing
+Settings
+Legal

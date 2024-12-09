@@ -1,0 +1,142 @@
+CRM API | HubSpot CRM Embed | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Supported HubSpot views and tools
+Linking to a specific view in your HubSpot account
+Linking to a specific view in your HubSpot account
+API Guides
+CRM
+CRM API | HubSpot CRM Embed
+HubSpot CRM Embed
+The HubSpot CRM Embed feature allows you to display interactive HubSpot interfaces inside your app. You can directly embed views from specific tools from your account, including the object timeline, along with tabs with the record's enrollment history and management for a workflow, property management, and a view to schedule and manage meetings.
+Please note:
+this functionality is distinct from the
+content embed
+feature and and the
+content timeline embed
+.
+Supported HubSpot views and tools
+The following tools are available to embed within your app:
+Object timeline:
+review activities related to an object record, including any upcoming meetings or tasks, along with a fully interactive sidebar. You can apply activity filters and access association cards within the embedded view (e.g., related contacts, companies, deals, etc.).
+Workflows tab:
+track workflow enrollment history, enroll records into workflows, or search workflows by name.
+Sequences tab:
+if you're embedding the view for a contact, you can manage sequences, enroll contacts, or track progress through a sequence.
+Properties tab:
+search for and filter properties, view property history, and hide blank fields you're not actively using.
+Meetings tab:
+schedule meetings, or manage and review details of upcoming meetings.
+Company & Deal Functionality:
+if you're embedding a view for a company or deal, you can review the
+Target Accounts
+tab for metrics such as emails and meetings, along with other aggregate metrics.
+Linking to a specific view in your HubSpot account
+To link to a specific view in your HubSpot account, you'll need to customize an embed URL based on the associated record and tool you want to appear:
+Each URL will have the following structure:
+https://app.hubspot.com/embed/{hubId}/{objectType}/{recordId}/{view}
+hubId:
+the Hub ID of the HubSpot account.
+objectType:
+the object type you want to link to (e.g., a contact, company, deal, etc.).
+recordId:
+the instance of the object you want to link to.
+view:
+the specific tool or view you want to link to. The available view types you can specify here include timeline, workflows, sequences,
+For example, to embed a view for the contact timeline when the contact has an ID of 251, and the Hub ID was 12345, the resulting embed URL would be:
+https://app.hubspot.com/embed/12345/0-1/251/timeline
+A user will need to be logged into their HubSpot account to view the embedded view. If a user isn't authenticated, they'll be prompted to log in to their account.
+You can follow the steps in the section below to use the embed sandbox to explore and test how different views from your account would appear in an embedded window.
+Linking to a specific view in your HubSpot account
+HubSpot provides an embed sandbox environment you can use to find specific records in your account and preview how they would appear in an embedded window.
+Navigate to the
+embed sandbox environment
+for your account. If you're prompted with an account selection page, select the specific HubSpot account with the data you want to embed in your app.
+Click the
+Object Type ID
+dropdown menu to select an object type, then click the
+Object ID
+dropdown menu and select a specific instance of that object.
+In the embedded preview, you can interactive with the object timeline, or click the tabs at the top to use other tools in the context of that record.
+You can click
+Copy
+to copy the associated
+Embed URL
+to the clipboard, where you can then embed it within your app. You'll need to append the
+view
+to the
+Embed URL
+to ensure that URL loads correctly (e.g., to link directly to the sequences associated with a specific contact, the resulting URL would be:
+https://app.hubspot.com/embed/12345/0-1/251/sequences
+).
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

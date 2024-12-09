@@ -1,0 +1,401 @@
+Create & manage workflows - v4 | HubSpot API
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Introduction
+Use cases for this API
+Flows
+Fetch all details for a single flow.
+GET
+Fetch the list of all flows in a portal.
+GET
+Create a new flow
+POST
+Delete a single flow.
+DEL
+API Endpoints
+Automation
+Create & manage workflows
+Create & manage workflows
+API Version: v4
+Flows
+Fetch all details for a single flow.
+get
+/automation/v4/flows/{flowId}
+Copy full URL
+Requirements
+Standard scope(s)
+automation
+Granular scope(s)
+None
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url https://api.hubapi.com/automation/v4/flows/flowId \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+https://api.hubapi.com/automation/v4/flows/flowId \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Fetch the list of all flows in a portal.
+get
+/automation/v4/flows
+Copy full URL
+This allows paging through all flows visible for a portal.
+Requirements
+Standard scope(s)
+automation
+Granular scope(s)
+None
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/automation/v4/flows?limit=100' \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/automation/v4/flows?limit=100'
+\
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Create a new flow
+post
+/automation/v4/flows
+Copy full URL
+Requirements
+Standard scope(s)
+automation
+Granular scope(s)
+None
+Limits
+Exempt from the
+per-ten-second API call limit
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request POST \
+--url https://api.hubapi.com/automation/v4/flows \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '{
+"type": "CONTACT_FLOW",
+"objectTypeId": "string",
+"canEnrollFromSalesforce": true,
+"isEnabled": true,
+"flowType": "WORKFLOW",
+"name": "string",
+"description": "string",
+"uuid": "string",
+"startActionId": "string",
+"enrollmentCriteria": {
+"listFilterBranch": {
+"filterBranchType": "OR",
+"filterBranchOperator": "string"
+},
+"unEnrollObjectsNotMeetingCriteria": false,
+"shouldReEnroll": false,
+"type": "\"LIST_BASED\""
+},
+"enrollmentSchedule": {
+"type": "DAILY",
+"timeOfDay": {
+"hour": 0,
+"minute": 0
+}
+},
+"timeWindows": [
+{
+"startTime": {
+"hour": 0,
+"minute": 0
+},
+"endTime": {
+"hour": 0,
+"minute": 0
+},
+"day": "MONDAY"
+}
+],
+"blockedDates": [
+{
+"month": "JANUARY",
+"year": 0,
+"dayOfMonth": 0
+}
+],
+"customProperties": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"goalFilterBranch": {
+"filterBranchType": "OR",
+"filterBranchOperator": "string"
+},
+"eventAnchor": {
+"type": "CONTACT_PROPERTY_ANCHOR",
+"contactProperty": "example_date_property"
+},
+"unEnrollmentSetting": {
+"flowIds": [
+"string"
+],
+"type": "ALL"
+}
+}'
+xxxxxxxxxx
+70
+1
+curl
+--request
+POST \
+2
+--url
+https://api.hubapi.com/automation/v4/flows \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'{
+6
+"type": "CONTACT_FLOW",
+7
+"objectTypeId": "string",
+8
+"canEnrollFromSalesforce": true,
+9
+"isEnabled": true,
+10
+"flowType": "WORKFLOW",
+11
+"name": "string",
+12
+"description": "string",
+13
+"uuid": "string",
+14
+"startActionId": "string",
+15
+"enrollmentCriteria": {
+16
+"listFilterBranch": {
+17
+"filterBranchType": "OR",
+18
+"filterBranchOperator": "string"
+19
+},
+20
+"unEnrollObjectsNotMeetingCriteria": false,
+21
+"shouldReEnroll": false,
+22
+"type": "\"LIST_BASED\""
+23
+},
+24
+"enrollmentSchedule": {
+25
+"type": "DAILY",
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 201
+Loading
+Delete a single flow.
+delete
+/automation/v4/flows/{flowId}
+Copy full URL
+This will fully delete a flow. The flow cannot be restored via the API. If you need to restore an accidentally deleted flow, you will need to contact support.
+Requirements
+Standard scope(s)
+automation
+Granular scope(s)
+None
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request DELETE \
+--url https://api.hubapi.com/automation/v4/flows/0 \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+DELETE \
+2
+--url
+https://api.hubapi.com/automation/v4/flows/0 \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 204
+No content
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Endpoints
+Get set up
+Analytics and events
+App management
+Automation
+Create & manage workflows
+Custom workflow actions
+Custom code actions
+Sequences
+Beta
+CMS
+Conversations
+CRM
+Library
+Marketing
+Settings
+Other resources
+Legal
+Deprecated

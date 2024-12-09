@@ -1,0 +1,396 @@
+Update email templates to use email-specific default modules | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Updating to the new modules
+Updating the module by path
+Updating the module by ID
+New default email modules
+Email blog post filter
+Email blog post listing
+Email call-to-action
+Email header
+Email linked image
+Email logo
+Email one line of text
+Email section header
+Email social sharing
+CMS Development
+Content and structure
+Templates
+Update email templates to use email-specific default modules
+Update email templates to use default email modules
+When building email templates, HubSpot provides a set of
+default email modules
+to get you started. These modules are similar to
+default web modules
+, but are split up to enable HubSpot to release updates to these modules for better email client support, while also releasing updates to the web versions of the modules separately. Existing email templates using the web modules will still function, but you'll need to update your email templates to use these new modules for forwards compatibility and to avoid errors in the design manager and CLI.
+The following are the new email-specific modules that should replace existing usage of the web default modules:
+email_cta
+(replaces
+cta
+)
+email_header
+(replaces
+header
+)
+email_linked_image
+(replaces
+linked_image
+)
+email_logo
+(replaces
+logo
+)
+email_post_filter
+(replaces
+post_filter
+)
+email_post_listing
+(replaces
+post_listing
+)
+email_section_header
+(replaces
+section_header
+)
+email_social_sharing
+(replaces
+social_sharing
+)
+email_text
+(replaces
+text
+)
+Below, read more about the new email modules and how to update your email templates to use them.
+Updating to the new modules
+To update an email template to use the new default email modules, you'll need to update either the module path or ID. All email module paths are prepended by
+email_
+, and all email modules have been assigned a new ID. You can r
+eview the section below
+for a full list of new module paths and IDs.
+Below is an example of updating an email template to use the new email logo module, either by referencing its new path or ID.
+Updating the module by path
+Original
+Copy code snippet
+{% module "logo_with_path" path="@hubspot/logo" %}
+{%
+module
+"logo_with_path"
+path
+=
+"@hubspot/logo"
+%}
+Updated
+Copy code snippet
+{% module "logo_with_path" path="@hubspot/email_logo" %}
+xxxxxxxxxx
+{%
+module
+"logo_with_path"
+path
+=
+"@hubspot/email_logo"
+%}
+Updating the module by ID
+Original
+Copy code snippet
+{% module "logo_with_id" module_id="1155232" label="Logo" %}
+xxxxxxxxxx
+{%
+module
+"logo_with_id"
+module_id
+=
+"1155232"
+label
+=
+"Logo"
+%}
+Updated
+Copy code snippet
+{% module "logo_with_id" module_id="122980089981" label="Logo" %}
+xxxxxxxxxx
+{%
+module
+"logo_with_id"
+module_id
+=
+"122980089981"
+label
+=
+"Logo"
+%}
+New default email modules
+The following modules have been added for email templates. When reference these modules in your email templates, you can use either the module path or ID.
+Email blog post filter
+Email blog post listing
+Email call-to-action
+Email header
+Email linked image
+Email logo
+Email one line of text
+Email section header
+Email social sharing
+Email blog post filter
+Copy code snippet
+{% module "email_post_filter" path="@hubspot/email_post_filter" %}
+xxxxxxxxxx
+{%
+module
+"email_post_filter"
+path
+=
+"@hubspot/email_post_filter"
+%}
+Path
+ID
+Old:
+@hubspot/post_filter
+New:
+@hubspot/email_post_filter
+Old:
+1366743
+New:
+122980089983
+Email blog post listing
+Copy code snippet
+{% module "email_post_listing" path="@hubspot/email_post_listing" %}
+xxxxxxxxxx
+{%
+module
+"email_post_listing"
+path
+=
+"@hubspot/email_post_listing"
+%}
+Path
+ID
+Old:
+@hubspot/post_listing
+New:
+@hubspot/email_post_listing
+Old:
+1367088
+New:
+122980089986
+Email call-to-action
+Copy code snippet
+{% module "email_cta" path="@hubspot/email_cta" %}
+xxxxxxxxxx
+{%
+module
+"email_cta"
+path
+=
+"@hubspot/email_cta"
+%}
+Path
+ID
+Old:
+@hubspot/cta
+New:
+@hubspot/email_cta
+Old:
+1790629
+New:
+122980089970
+Email header
+Copy code snippet
+{% module "email_header" path="@hubspot/email_header" %}
+xxxxxxxxxx
+{%
+module
+"email_header"
+path
+=
+"@hubspot/email_header"
+%}
+Path
+ID
+Old:
+@hubspot/header
+New:
+@hubspot/email_header
+Old:
+1155826
+New:
+122980089978
+Email linked image
+Copy code snippet
+{% module "email_linked_image" path="@hubspot/email_linked_image" %}
+xxxxxxxxxx
+{%
+module
+"email_linked_image"
+path
+=
+"@hubspot/email_linked_image"
+%}
+Path
+ID
+Old:
+@hubspot/linked_image
+New:
+@hubspot/email_linked_image
+Old:
+1155231
+New:
+122960526478
+Email logo
+Copy code snippet
+{% module "email_logo" path="@hubspot/email_logo" %}
+xxxxxxxxxx
+{%
+module
+"email_logo"
+path
+=
+"@hubspot/email_logo"
+%}
+Path
+ID
+Old:
+@hubspot/logo
+New:
+@hubspot/email_logo
+Old:
+1155232
+New:
+122980089981
+Email one line of text
+Copy code snippet
+{% module "email_text" path="@hubspot/email_text" %}
+xxxxxxxxxx
+{%
+module
+"email_text"
+path
+=
+"@hubspot/email_text"
+%}
+Path
+ID
+Old:
+@hubspot/text
+New:
+@hubspot/email_text
+Old:
+1843376
+New:
+122980089988
+Email section header
+Copy code snippet
+{% module "email_section_header" path="@hubspot/email_section_header" %}
+xxxxxxxxxx
+{%
+module
+"email_section_header"
+path
+=
+"@hubspot/email_section_header"
+%}
+Path
+ID
+Old:
+@hubspot/section_header
+New:
+@hubspot/email_section_header
+Old:
+1155240
+New:
+122980089987
+Email social sharing
+Copy code snippet
+{% module "email_social_sharing" path="@hubspot/email_social_sharing" %}
+xxxxxxxxxx
+{%
+module
+"email_social_sharing"
+path
+=
+"@hubspot/email_social_sharing"
+%}
+Path
+ID
+Old:
+@hubspot/social_sharing
+New:
+@hubspot/email_social_sharing
+Old:
+1155241
+New:
+122980537516
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Templates
+Overview
+Default email modules
+Template types
+Drag and drop
+Modules
+Fields
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

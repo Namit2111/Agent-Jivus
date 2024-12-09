@@ -1,0 +1,417 @@
+CMS API | File Manager | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Upload a file
+Check a file's upload status
+View a file's details
+Delete a file
+Create a folder
+Changes in v3
+API Guides
+Library
+CMS API | File Manager
+File Manager
+Files endpoint reference
+Use HubSpot’s files tool to manage and store files in HubSpot. Files hosted in HubSpot can be uploaded and used in both HubSpot and external content. They can also be attached to records using the
+engagements API
+.
+If your company is building its website using HubSpot's CMS, you can use the files API to upload and store assets in HubSpot. These files can then be served and shared through the HubSpot CMS.
+You can access the files tool from
+within HubSpot
+or via the files API. Below, learn about the files API and how to upload and delete files. For a full list of files API endpoints, click the
+Endpoints
+tab above.
+Upload a file
+Files can be uploaded using a multipart/form-data
+POST
+request to
+files/v3/files
+with the following fields. While a specific folder ID is not required at upload, it's recommend to upload files into a folder and not the root directory. Folder requirements at upload are subject to change in the future.
+Field
+Description
+file
+The file to upload (required).
+options
+A JSON object that controls the file's privacy and indexability, and contains two fields:
+access
+, which is required, and
+ttl
+, which specifies a time period after which the file will be automatically deleted.If you're using the
+ttl
+field:
+The minimum period that must be set is 1 day.
+The maximum period that can be set is 1 year.
+After the set period, the file will be permanently deleted. After deletion, the file cannot be recovered or restored.
+folderId
+The ID of the folder that the file will be uploaded to. Either this field
+or
+folderPath
+must be provided in your request (but
+not
+both).
+folderPath
+The path of the folder that the file will be uploaded to. Either this field
+or
+folderId
+must be provided in your request (but
+not
+both).
+fileName
+The name of the file. If no name is specified, a name will be generated from the file's content.
+charsetHunch
+Character set encoding for the uploaded file. If not provided, it will be derived from the file.
+As an example, if you wanted to upload a file with the following criteria to your HubSpot account:
+File name:
+cat.png
+Destination folder in the HubSpot file manager:
+/library/cat_archive
+File accessibility in HubSpot:
+privately accessible
+The following headers and request body would need to be part of your request:
+Copy code snippet
+curl --request POST \
+--url 'https://api.hubapi.com/files/v3/files?=' \
+--header 'Authorization: Bearer pat-na1-00000000-0000-0000-0000-000000000000' \
+--header 'Content-type: multipart/form-data' \
+--form file=@/Users/person/Downloads/cat.png \
+--form 'options={"access": "PRIVATE"}' \
+--form folderPath=/library/cat_archive
+1
+curl
+--request
+POST \
+2
+--url
+'https://api.hubapi.com/files/v3/files?='
+\
+3
+--header
+'Authorization: Bearer pat-na1-00000000-0000-0000-0000-000000000000'
+\
+4
+--header
+'Content-type: multipart/form-data'
+\
+5
+--form
+file
+=
+@/Users/person/Downloads/cat.png \
+6
+--form
+'options={"access": "PRIVATE"}'
+\
+7
+--form
+folderPath
+=
+/library/cat_archive
+The resulting response will include the
+id
+and
+parentFolderId
+of the uploaded file, which you can use to retrieve the file via a GET request.
+Copy code snippet
+// 201 Response from successful file upload
+{
+"id": "122692044085",
+"createdAt": "2023-06-28T17:56:45.393Z",
+"updatedAt": "2023-06-28T17:56:45.393Z",
+"archived": false,
+"parentFolderId": "122692510820",
+"name": "cat",
+"path": "/library/cat_archive/cat.png",
+"size": 24574,
+"height": 219,
+"width": 225,
+"encoding": "png",
+"type": "IMG",
+"extension": "png",
+"defaultHostingUrl": "https://12345.fs1.hubspotusercontent-na1.net/hubfs/12345/library/cat_archive/cat.png",
+"url": "https://12345.fs1.hubspotusercontent-na1.net/hubfs/12345/library/cat_archive/cat.png",
+"isUsableInContent": true,
+"access": "PRIVATE"
+}
+xxxxxxxxxx
+20
+1
+// 201 Response from successful file upload
+2
+{
+3
+"id"
+:
+"122692044085"
+,
+4
+"createdAt"
+:
+"2023-06-28T17:56:45.393Z"
+,
+5
+"updatedAt"
+:
+"2023-06-28T17:56:45.393Z"
+,
+6
+"archived"
+:
+false
+,
+7
+"parentFolderId"
+:
+"122692510820"
+,
+8
+"name"
+:
+"cat"
+,
+9
+"path"
+:
+"/library/cat_archive/cat.png"
+,
+10
+"size"
+:
+24574
+,
+11
+"height"
+:
+219
+,
+12
+"width"
+:
+225
+,
+13
+"encoding"
+:
+"png"
+,
+14
+"type"
+:
+"IMG"
+,
+15
+"extension"
+:
+"png"
+,
+16
+"defaultHostingUrl"
+:
+"https://12345.fs1.hubspotusercontent-na1.net/hubfs/12345/library/cat_archive/cat.png"
+,
+17
+"url"
+:
+"https://12345.fs1.hubspotusercontent-na1.net/hubfs/12345/library/cat_archive/cat.png"
+,
+18
+"isUsableInContent"
+:
+true
+,
+19
+"access"
+:
+"PRIVATE"
+20
+}
+Check a file's upload status
+If you're importing a file from a URL to your file manager using a
+POST
+request to
+files/v3/files/import-from-url/async
+, you can review the upload status of the file.
+To do so, use a
+GET
+request to
+files/v3/files/import-from-url/async/tasks/{taskId}/status
+.
+After making this request, you will receive one of the following replies:
+PENDING
+: the file is in the queue to be uploaded. The import process has not yet started.
+PROCESSING
+: the file is in the process of being uploaded.
+CANCELED
+: the upload has been canceled and the file will not be uploaded. To import the file to your HubSpot account, you will need to upload the file again.
+COMPLETE
+: the file has been uploaded to the files tool successfully. The uploaded file will appear in your files tool.
+View a file's details
+To review the details of a file that's been uploaded to the files tool, make a
+GET
+request to
+files/v3/files/{fileId}
+. This will return the file with details such as name, height and width, encoding, the URL, and more.
+For example, to retrieve the details of a file:
+If a file is set to private, the returned URL will result in a 404 error. To get a viewable URL of the file, you can make a
+GET
+request to
+/files/v3/files/{fileId}/signed-url
+. When making this request, you can include
+property
+parameters to return specific properties such as height and width.
+Delete a file
+To delete a file, make a
+DELETE
+request to
+files/v3/files/{fileId}
+. This will mark the file as deleted and make the content of the file inaccessible.
+To permanently delete a file, make a
+DELETE
+request to
+files/v3/files/{fileId}/gdpr-delete
+. This will permanently delete the file’s content and metadata within 7 days.
+If a file is not GDPR deleted, its contents will remain on HubSpot's servers in a private state where no one can access it. To ensure file contents are fully deleted, use the GDPR delete functionality.
+Create a folder
+To create a folder, make a
+POST
+request to
+files/v3/folders
+. When making the request, you can include the below fields.
+Field
+Required
+Description
+name
+Yes
+Name of the folder you want to create.
+parentFolderId
+No
+To create the folder within an existing folder, include this field with the existing folder's ID.
+parentFolderId
+and
+parentFolderPath
+cannot be set at the same time.
+parentFolderPath
+No
+To create the folder within an existing folder, include this field with the existing folder's path.
+parentFolderId
+and
+parentFolderPath
+cannot be set at the same time.
+Copy code snippet
+//Example request body of POST request to /files/v3/folders
+{
+"name": "myNewFolder",
+"parentFolderId": 12345
+}
+xxxxxxxxxx
+5
+1
+//Example request body of POST request to /files/v3/folders
+2
+{
+3
+"name"
+:
+"myNewFolder"
+,
+4
+"parentFolderId"
+:
+12345
+5
+}
+Changes in v3
+If you’ve been using the previous version of this API, v3 has the following changes:
+All files uploaded through the API will be visible in the files dashboard and the files picker. Hidden files cannot be created. However, private files and non-indexable files can still be created.
+Listing files will not return hidden or deleted files. However, a much broader range of filters can be applied. Hidden files can still be fetched by ID, but require a new scope:
+files_ui_hidden.read.
+Multiple files cannot be uploaded with a single request.
+Folder update actions like moving and renaming are now asynchronous. Each request will return a token that can be used to check the status of the folder edit.
+Endpoints that create or replace files require you to provide access levels for the files. These access levels are:
+PUBLIC_INDEXABLE
+:
+file is publicly accessible by anyone who has the URL. Search engines can index the file.
+PUBLIC_NOT_INDEXABLE
+:
+file is publicly accessible by anyone who has the URL. The X-Robots-Tag: noindex header will be sent whenever the file is retrieved, instructing search engines not to index the file.
+PRIVATE
+:
+file is not publicly accessible. Requires a signed URL to display content. Search engines cannot index the file.
+Endpoints that create files allow for a level of duplicate detections as part of the file’s upload options.
+ENTIRE_PORTAL
+:
+search for a duplicate file in the account.
+EXACT_FOLDER
+:
+search for a duplicate file in the provided folder.
+NONE
+:
+do not run any duplicate validation.
+REJECT
+:
+reject the upload if a duplicate is found.
+RETURN_EXISTING
+:
+if a duplicate file is found, do not upload a new file and return the found duplicate instead.
+Duplicate detection works on a
+duplicateValidationScope
+, which affects how we search for a duplicate.
+This also requires a
+duplicateValidationStrategy
+, which dictates what happens if a duplicate is found.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+Files
+Meetings
+CRM
+Marketing
+Settings
+Legal

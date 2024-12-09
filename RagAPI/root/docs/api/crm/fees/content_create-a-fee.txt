@@ -1,0 +1,144 @@
+CRM API | Fees | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create a fee
+API Guides
+CRM
+Commerce
+CRM API | Fees
+Fees
+Fees endpoint reference
+When you're
+creating a quote in HubSpot
+, you can create and associate a fee as part of the pricing details of the quote.
+Create a fee
+Fees are used in conjunction with
+discounts
+and
+taxes
+when determining the pricing details for a quote. Any discounts you associate with your quote will be applied first, followed by associated fees, and then any associated taxes will apply.
+To create a percentage fee:
+Copy code snippet
+// POST request to https://api.hubspi.com/crm/v3/objects/fee
+{
+"properties": {
+"hs_label": "A percentage-based fee of 10%",
+"hs_type": "PERCENT",
+"hs_value": "10"
+}
+}
+1
+// POST request to https://api.hubspi.com/crm/v3/objects/fee
+2
+{
+3
+"properties"
+: {
+4
+"hs_label"
+:
+"A percentage-based fee of 10%"
+,
+5
+"hs_type"
+:
+"PERCENT"
+,
+6
+"hs_value"
+:
+"10"
+7
+}
+8
+}
+After you create a fee, you can use its ID to
+associate it with a quote
+. To retrieve a list of fees you've created, you can make a
+GET
+request to
+/crm/v3/objects/fee
+.
+To view all available endpoints and their required fields, click the
+Endpoints
+tab at the top of this article.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Carts
+Discounts
+Fees
+Invoices
+Orders
+Quotes
+Taxes
+Payments
+Subscriptions
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

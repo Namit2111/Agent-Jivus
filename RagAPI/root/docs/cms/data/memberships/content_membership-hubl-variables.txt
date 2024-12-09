@@ -1,0 +1,903 @@
+Memberships | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Membership user flow
+Membership HubL variables
+CRM object HubL functions
+Private blog posts with self-registration
+Customization with HubL
+Customization with JavaScript
+Register, login, and log out
+Membership templates
+Membership audit logging
+SSO for Memberships
+Social logins
+Membership related articles and resources
+CMS Development
+Content and structure
+Memberships
+Memberships
+Memberships
+Supported products
+Requires one of the following products or higher.
+Content Hub
+-
+Professional
+Memberships is a feature that makes it possible to require visitors to have an account in order to access content. The account system leverages the HubSpot CRM and CRM Lists together with the ability for a visitor to create a password for their account. Marketers can easily
+create pages on their sites that only contacts on specific lists in the CRM can access
+. You can additionally restrict access to
+knowledge base articles
+and
+blogs
+using memberships.
+Membership user flow
+When contacts are granted access to content, which can occur when they join lists or though manual assignment, they are sent an email to register for your website, where they set a password to access content they have permission to access.
+Imagine a gym, which wishes to allow visitors to register for classes and view the classes they have registered for. When a visitor registers for a class, the form submission creates a contact in the HubSpot CRM and that contact is added to a list based on the form submission, which is used to grant access to a "My Events" page.
+The visitor receives a membership registration email that allows them to create a password for their membership account.
+Now, when the visitors log in to their account, the user can log in to the private "My Events" page using the email and password they set. Because the visitor is logged in, the developer who created the private content can render data about the logged in contact using data from the CRM.
+Membership HubL variables
+For some businesses, it may make sense to show different content based on if a user is signed in or not. There are HubL variables which developers can use to check to see if a contact is currently logged in on a website.
+The HubL variable
+request_contact.is_logged_in
+indicates if the current visitor is signed in to the website through memberships. It can be used within an
+if
+statement to conditionally render certain content, allowing you to individually cater your visitor's experience.
+Copy code snippet
+{% if request_contact.is_logged_in %}
+You're signed in!
+{% else %}
+<a href="/_hcms/mem/login">Log In</a>
+{% endif %}
+1
+{%
+if
+request_contact.is_logged_in
+%}
+2
+You're signed in!
+3
+{%
+else
+%}
+4
+<
+a
+href
+=
+"/_hcms/mem/login"
+>
+Log In
+</
+a
+>
+5
+{%
+endif
+%}
+If you want to display different content on the same page based on list membership, you can check the signed-in contacts list memberships using
+request_contact.list_memberships
+HubL variable, which returns a dict of list IDs the logged in contact is a member of.
+To personalize content without using memberships, you can use the
+contact variable
+if a visitor has submitted a form on your website.
+CRM object HubL functions
+In addition to general content displayed conditionally on a page, it’s possible to pull information about objects within your HubSpot account such as contacts, companies, deals, and products using the functions:
+CRM Associations
+CRM Object
+CRM Objects
+For security purposes, only product and marketing event objects can be retrieved on a publicly accessible page; to pull information about other object types, a page must be behind membership.
+Copy code snippet
+{% if request_contact.is_logged_in %}
+{% set membership_contact = crm_object('contact', request.contact.contact_vid, 'firstname,lastname') %}
+Welcome back, {{ membership_contact.firstname }} {{ membership_contact.lastname }}
+{% else %}
+<a href="/_hcms/mem/login">Log In</a>
+{% endif %}
+xxxxxxxxxx
+6
+1
+{%
+if
+request_contact.is_logged_in
+%}
+2
+{%
+set
+membership_contact
+=
+crm_object(
+'contact'
+, request.contact.contact_vid,
+'firstname,lastname'
+)
+%}
+3
+Welcome back,
+{{
+membership_contact.firstname
+}}
+{{
+membership_contact.lastname
+}}
+4
+{%
+else
+%}
+5
+<
+a
+href
+=
+"/_hcms/mem/login"
+>
+Log In
+</
+a
+>
+6
+{%
+endif
+%}
+Private blog posts with self-registration
+When you
+enable self-registration for private blog content
+, you can limit access to specific blog posts so that visitors must register to view them. On the blog listing page, posts enabled for self-registration will display with a lock icon when using the default blog listing module.
+In the blog post, the content above the Read More separator will display, then prompt the user to log in to keep reading. Visitors can then sign up to read the rest of the blog post.
+Customization with HubL
+If you're using HubSpot's default blog listing module, the lock icon styling is handled for you. However, if you want to build your own solution with HubL, you can use the
+flag_content_for_access_check
+function to check whether or not a blog post is visible to the currently logged in visitor. If the user is not currently logged in, the function will check whether the blog post is private.
+When called, the function is replaced with the following attribute, which shows whether the visitor has access to the content:
+hs-member-content-access=<true/false>
+When
+true
+, the content is private and cannot be viewed by a viewer who is not logged in.
+For example, you could update your blog listing template with the following. Note that the
+lock-icon
+class can be any value, as long as you use the same value in your CSS to style the locked post indicator.
+Copy code snippet
+{% for content in contents %}
+<article {{ flag_content_for_access_check(content.id) }}>
+<div class="image-container">...</div>
+<div class="content-container">
+<h3>Lorem Heading<img class="lock-icon" src="path/to/lock-icon.png"/></h3>
+...
+</div>
+</article>
+{% endfor %}
+xxxxxxxxxx
+9
+1
+{%
+for
+content
+in
+contents
+%}
+2
+<
+article
+{{
+flag_content_for_access_check(content.id)
+}}
+>
+3
+<
+div
+class
+=
+"image-container"
+>
+...
+</
+div
+>
+4
+<
+div
+class
+=
+"content-container"
+>
+5
+<
+h3
+>
+Lorem Heading
+<
+img
+class
+=
+"lock-icon"
+src
+=
+"path/to/lock-icon.png"
+/></
+h3
+>
+6
+...
+7
+</
+div
+>
+8
+</
+article
+>
+9
+{%
+endfor
+%}
+This would result in the following HTML output after the script runs to and finds that a blog post is private:
+Copy code snippet
+<!-- HTML output after script runs -->
+<article hs-member-content-access="true">
+<div class="image-container">...</div>
+<div class="content-container">
+<h3>Lorem Heading<img class="lock-icon" src="path/to/lock-icon.png" /></h3>
+...
+</div>
+</article>
+xxxxxxxxxx
+8
+1
+<!-- HTML output after script runs -->
+2
+<
+article
+hs-member-content-access
+=
+"true"
+>
+3
+<
+div
+class
+=
+"image-container"
+>
+...
+</
+div
+>
+4
+<
+div
+class
+=
+"content-container"
+>
+5
+<
+h3
+>
+Lorem Heading
+<
+img
+class
+=
+"lock-icon"
+src
+=
+"path/to/lock-icon.png"
+/></
+h3
+>
+6
+...
+7
+</
+div
+>
+8
+</
+article
+>
+You could then handle the locked/unlocked styling through CSS using the
+hs-member-content-access
+attribute. Note that the
+lock-icon
+class is just an example; you can use any value, as long as it matches the HTML class shown in the first code example above.
+Copy code snippet
+article[hs-member-content-access] .lock-icon {
+display: none;
+}
+article[hs-member-content-access='true'] .lock-icon {
+display: inline-block;
+}
+​
+x
+1
+article
+[
+hs-member-content-access
+]
+.lock-icon
+{
+2
+display
+:
+none
+;
+3
+}
+4
+​
+5
+article
+[
+hs-member-content-access
+=
+'true'
+]
+.lock-icon
+{
+6
+display
+:
+inline-block
+;
+7
+}
+Customization with JavaScript
+Behind the scenes, the
+flag_content_for_access_check()
+function is calling an API to check whether the current visitor has access to the content based on the visitor cookies that are passed along with the request. If you'd like to create your own JavaScript solution, you can call this API directly.
+To check whether or not a post is locked to the current visitor, you can make a
+POST
+request to
+https://your-domain.com/_hcms/content-access/get-gated-content-ids-for-member
+. The request body should include an object with a
+contentIds
+array containing the IDs of the blog posts that you want to check member access for.
+For example, if you wanted to check whether blog posts with the IDs of
+10
+,
+11
+, and
+12
+are locked to the visitor, your request body would be:
+Copy code snippet
+// Example request body
+{
+"contentIds": [10, 11, 12]
+}
+xxxxxxxxxx
+4
+1
+// Example request body
+2
+{
+3
+"contentIds"
+: [
+10
+,
+11
+,
+12
+]
+4
+}
+The response will contain the IDs of the blog posts that are locked to the user that is currently viewing the page:
+Copy code snippet
+// Example response
+{
+"gatedContentIds": [10]
+}
+xxxxxxxxxx
+4
+1
+// Example response
+2
+{
+3
+"gatedContentIds"
+: [
+10
+]
+4
+}
+See below for a full example of a custom JavaScript implementation.
+Copy code snippet
+// Custom JS example
+const hsFlaggedContentIds = <Array of content ID's> // an array of target id's to test against
+const gatedAttributeName = 'hs-member-content-access';
+const customEventName = "hsAccessCheckFinished"
+async function getGatedContentIds(idsToCheck) {
+const options = {
+method: 'POST',
+body: JSON.stringify({ contentIds: idsToCheck }),
+headers: {
+'Content-Type': 'application/json',
+},
+};
+const fetchGatedIds = await fetch(
+'/_hcms/content-access/get-gated-content-ids-for-member',
+options
+);
+const response = await fetchGatedIds.json();
+return response['gatedContentIds'];
+}
+function setGatedElementAttribute(element, gatedContentIds) {
+const contentId = parseInt(element.getAttribute(gatedAttributeName));
+if (contentId && gatedContentIds.includes(contentId)) {
+// content is gated
+element.setAttribute(gatedAttributeName, true);
+} else {
+// content is not gated
+element.setAttribute(gatedAttributeName, false);
+}
+return element
+}
+getGatedContentIds(hsFlaggedContentIds).then((gatedContentIds) => {
+const flaggedElementsToCheckIfGated = document.querySelectorAll(
+'[' + gatedAttributeName + ']'
+);
+// split the original array into 2 arrays and wrap in an object
+// that will be passed into the custom event. Event handlers will have
+// access to both gated and ungated arrays.
+return [...flaggedElementsToCheckIfGated].reduce((acc, item) => {
+let processedElement = setGatedElementAttribute(item, gatedContentIds);
+if (processedElement.getAttribute(gatedAttributeName) === "true" ) {
+acc.gatedContentElements.push(item);
+} else {
+acc.ungatedContentElements.push(item);
+}
+return acc
+}, { gatedContentElements: [], ungatedContentElements: [] });
+}).then(processedGatedElements => {
+document.dispatchEvent(
+new CustomEvent( customEventName, {
+detail: { gatedContentElements: processedGatedElements }
+})
+);
+}).catch(err => {
+console.error(err)
+});
+xxxxxxxxxx
+64
+1
+// Custom JS example
+2
+const
+hsFlaggedContentIds
+=
+<
+Array
+of
+content
+ID
+'s> // an array of target id'
+s
+to
+test
+against
+3
+const
+gatedAttributeName
+=
+'hs-member-content-access'
+;
+4
+const
+customEventName
+=
+"hsAccessCheckFinished"
+5
+​
+6
+async
+function
+getGatedContentIds
+(
+idsToCheck
+) {
+7
+const
+options
+=
+{
+8
+method
+:
+'POST'
+,
+9
+body
+:
+JSON
+.
+stringify
+({
+contentIds
+:
+idsToCheck
+}),
+10
+headers
+: {
+11
+'Content-Type'
+:
+'application/json'
+,
+12
+},
+13
+};
+14
+const
+fetchGatedIds
+=
+await
+fetch
+(
+15
+'/_hcms/content-access/get-gated-content-ids-for-member'
+,
+16
+options
+17
+);
+18
+const
+response
+=
+await
+fetchGatedIds
+.
+json
+();
+19
+​
+20
+return
+response
+[
+'gatedContentIds'
+];
+21
+}
+22
+​
+23
+function
+setGatedElementAttribute
+(
+element
+,
+gatedContentIds
+) {
+24
+const
+contentId
+=
+parseInt
+(
+element
+.
+getAttribute
+(
+gatedAttributeName
+));
+25
+​
+26
+if
+(
+contentId
+&&
+gatedContentIds
+.
+includes
+(
+contentId
+)) {
+27
+// content is gated
+28
+element
+.
+setAttribute
+(
+gatedAttributeName
+,
+true
+);
+29
+}
+else
+{
+30
+// content is not gated
+31
+element
+.
+setAttribute
+(
+gatedAttributeName
+,
+false
+);
+32
+}
+33
+return
+element
+34
+}
+35
+​
+36
+getGatedContentIds
+(
+hsFlaggedContentIds
+).
+then
+((
+gatedContentIds
+)
+=>
+{
+37
+const
+flaggedElementsToCheckIfGated
+=
+document
+.
+querySelectorAll
+(
+38
+'['
++
+gatedAttributeName
++
+']'
+39
+);
+40
+​
+41
+// split the original array into 2 arrays and wrap in an object
+42
+// that will be passed into the custom event. Event handlers will have
+43
+// access to both gated and ungated arrays.
+44
+return
+[
+...
+flaggedElementsToCheckIfGated
+].
+reduce
+((
+acc
+,
+item
+)
+=>
+{
+45
+let
+processedElement
+=
+setGatedElementAttribute
+(
+item
+,
+gatedContentIds
+);
+46
+​
+47
+if
+(
+processedElement
+.
+getAttribute
+(
+gatedAttributeName
+)
+===
+"true"
+) {
+48
+acc
+.
+gatedContentElements
+.
+push
+(
+item
+);
+49
+}
+else
+{
+50
+acc
+.
+ungatedContentElements
+.
+push
+(
+item
+);
+51
+}
+52
+​
+53
+return
+acc
+54
+}, {
+gatedContentElements
+: [],
+ungatedContentElements
+: [] });
+55
+​
+56
+}).
+then
+(
+processedGatedElements
+=>
+{
+57
+document
+.
+dispatchEvent
+(
+58
+new
+CustomEvent
+(
+customEventName
+, {
+59
+detail
+: {
+gatedContentElements
+:
+processedGatedElements
+}
+60
+})
+61
+);
+62
+}).
+catch
+(
+err
+=>
+{
+63
+console
+.
+error
+(
+err
+)
+64
+});
+Register, login, and log out
+When a contact is granted access to any content on your website through memberships, they will receive an email to register for your website where they can set a password to access content they have permission to view. In the event you need to resend a contact a link to register, you can
+resend their registration email
+.
+The URL paths for user sign-in/out are consistent for all HubSpot CMS sites with the membership functionality.
+<your domain>/_hcms/mem/login
+<your domain>/_hcms/mem/logout
+When a visitor logs in to their website, a cookie is sent to their browser, allowing them to browse through your website and access pages they have access to through memberships without having to log in again. If a visitor logs out, or has never logged in to your website in their browser, they will be prompted to log in before being able to view the content.
+Membership templates
+Sites with memberships have a few special pages that are needed to facilitate the memberships functionality. These are dictated by special system templates. These system templates are editable, allowing you to control the look and feel of the various membership steps. To set which templates you are using, go to
+Settings >
+Private Content
+and choose the
+"Templates" tab
+. To create a template to set in these settings, go to
+Marketing > Files and Templates > Design Tools
+, then in the top left click
+File > New File > HTML & HUBL
+and select the appropriate Template Type from the dropdown.
+For a comprehensive list of the membership templates, refer to the
+membership section of the templates documentation
+.
+Only
+HTML + HubL templates
+can be membership templates.
+Membership audit logging
+In
+Settings > Private Content
+, you can view an audit log of what visitors have been interacting with content behind memberships. This allows you to see which visitors are viewing private content.
+SSO for Memberships
+You can also manage all of your businesses access permission and authentication needs in a single system with
+Single Sign-on (SSO) for Memberships.
+Social logins
+You can provide users in your list a way to sign in using Google or Facebook instead of entering their email address and password. The social login provider sends the email address associated with the logged in social account. That email address is then used to validate if that contact is in a contact list with access to the content. This feature does not require you to have configured SSO settings.
+You need to have a page set to "Private registration required" with a contact list. Additionally your login template needs to have the
+membership_social_logins
+module.
+Add social login to your membership pages
+Membership related articles and resources
+HubSpot Essentials for Developers: Getting Started with Memberships
+Creating menus that adapt to whether the user is logged in or not
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Templates
+Modules
+Fields
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Overview
+Google Sign-In for Memberships
+Social login for membership pages
+Microsoft Sign-In for Memberships
+SSO for memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

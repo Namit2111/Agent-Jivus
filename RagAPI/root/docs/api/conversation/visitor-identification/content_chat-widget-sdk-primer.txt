@@ -1,0 +1,467 @@
+Visitor Identification | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Example integration flow
+Verify the integration
+Chat widget SDK primer
+SDK reference
+API Guides
+Conversations
+Visitor Identification
+Visitor identification
+Visitor identification endpoint reference
+Supported products
+Requires one of the following products or higher.
+Marketing Hub
+-
+Professional
+Sales Hub
+-
+Professional
+Content Hub
+-
+Professional
+Service Hub
+-
+Professional
+Use the Visitor Identification API to identify visitors to your site that were authenticated using your own external authentication system.
+An identification token returned from this API can be used to pass information about your already-authenticated visitor to the chat widget, so that it treats the visitor as a known contact. Agents in the inbox can then have confidence about who they are talking to, and visitors can access previous thread history across devices. For example:
+Please note:
+The Visitor Identification API is for telling HubSpot who the visitor is. You should not rely on this to authenticate users in your platform.
+Access to the Visitor Identification API requires a
+Professional
+or
+Enterprise
+level subscription. If the account does not have a qualifying subscription, you will receive a
+403
+error response from the API.
+Example integration flow
+In order to integrate with this feature, you must have an existing web application with an authentication system.
+Before getting started, make sure you have a
+private app
+set up and the account that you are trying to integrate has a qualifying
+Professional
+or
+Enterprise
+subscription.
+Here’s an example of a possible integration flow:
+Once your customer is logged in and verified in your system, take the following steps to identify them within live chat:
+1.
+On your front end, set loadImmediately to false on the hsConversationsSettings object on the window. If you do not do this, the chat widget may load before the identification information is passed through. See the
+Chat Widget SDK primer below
+for more information.
+Set the
+hsConversationsSettings
+properties outside the
+isConversationsAPIReady
+function.
+In addition, the
+hsConversationsSettings
+needs to be set prior to the call, otherwise you may experience a race condition that interferes with widget load.
+Copy code snippet
+window.hsConversationsSettings = {
+loadImmediately: false,
+};
+1
+window
+.
+hsConversationsSettings
+=
+{
+2
+loadImmediately
+:
+false
+,
+3
+};
+2.
+Generate a token from the Visitor Identification API by passing in the email address of your authenticated visitor. This should be done on the back end of your web application. See the
+Endpoints
+tab for an example request.
+Copy code snippet
+curl --request POST \
+--url 'https://api.hubspot.com/conversations/v3/visitor-identification/tokens/create \
+--data '{
+"email": "gob@bluth.com",
+"firstName": "Gob",
+"lastName": "Bluth"
+}'
+xxxxxxxxxx
+7
+1
+curl
+--request
+POST \
+2
+--url
+'https://api.hubspot.com/conversations/v3/visitor-identification/tokens/create \
+3
+--data '
+{
+4
+"email"
+:
+"gob@bluth.com"
+,
+5
+"firstName"
+:
+"Gob"
+,
+6
+"lastName"
+:
+"Bluth"
+7
+}
+'
+The provided first and last name will be set on the contact record in HubSpot after the chat begins if:
+it's a new contact created by the Visitor Identification API.
+it's an existing contact where the name is not already known.
+This can be useful when personalizing messages to identified visitors when your external system already has name information, but it does not yet exist in HubSpot. These are optional parameters and not required.
+3.
+Using the token Step 2, set the following properties on the
+hsConversationsSettings
+object on the window.
+Copy code snippet
+window.hsConversationsSettings = {
+identificationEmail: 'visitor-email@example.com',
+identificationToken: '<TOKEN FROM STEP 1>',
+};
+xxxxxxxxxx
+4
+1
+window
+.
+hsConversationsSettings
+=
+{
+2
+identificationEmail
+:
+'visitor-email@example.com'
+,
+3
+identificationToken
+:
+'<TOKEN FROM STEP 1>'
+,
+4
+};
+4.
+Load the widget.
+Copy code snippet
+window.HubSpotConversations.widget.load();
+xxxxxxxxxx
+window
+.
+HubSpotConversations
+.
+widget
+.
+load
+();
+The token and email must be set on the
+hsConversationsSettings
+object on the window every time the page loads for an authenticated visitor. This context will not be carried across page loads automatically if these parameters are no longer set. Tokens are temporary and will expire after 12 hours. Tokens can be cached to avoid re-fetching the token on every page load, as long as they are refreshed at least every 12 hours.
+Verify the integration
+Once you've completed your integration of the Visitor Identification feature, you can verify that it’s working as expected. This can be done in a couple ways, depending on your implementation, so you may need to tailor the examples below to your specific requirements.
+If you've added the chat widget to one or more public pages as well as behind an authentication system:
+Navigate to a page where the chat widget should not be identifying visitors and start a conversation.
+In HubSpot, open the inbox and verify that the chat that just came in belongs to an
+Unknown Visitor
+. If this is not the case, try following these steps in a private browsing window:
+Navigate to a page where the chat widget should be identifying visitors via the Visitor Identification API and start a conversation.
+In HubSpot, open the inbox and verify that the chat is correctly attributed to the contact that you’re logged in as. You should see a badge next to the contact’s name, indicating that this contact was successfully identified through this API.
+If you've only added the chat widget to pages behind an authentication system, and you have access to multiple test user accounts:
+Log in to HubSpot as the first test user, then navigate to a page where the chat widget loads, and start a conversation.
+Log out of HubSpot, then log back in as the second test user. Navigate to a page where the chat widget loads, and start a conversation.
+In HubSpot, open the inbox and verify that the chats that came in were from the first and second test accounts, respectively, and that you see the badge next to the contact names for both records.
+Please note:
+for visitors identified with this API, HubSpot will not drop the
+messagesUtk
+cookie. HubSpot will also skip any email capture questions since email address is already known. Because the
+messagesUtk
+cookie and email capture do not apply to these chats, the associated settings in the chatflow will not show for visitors identified through the Visitor Identification API.
+Chat widget SDK primer
+The API is housed in the
+window.HubSpotConversations
+object. All available methods can be accessed via this object. The HubSpot script loader on your page will create this object for you, but it may not be available immediately. To defer accessing the API until it's initialized, you may use the
+window.hsConversationsOnReady
+helper. For example:
+Copy code snippet
+<script type="text/javascript">
+function onConversationsAPIReady() {
+console.log(`HubSpot Conversations API: ${window.HubSpotConversations}`);
+}
+/*
+configure window.hsConversationsSettings if needed.
+*/
+window.hsConversationsSettings = {};
+/*
+If external API methods are already available, use them.
+*/
+if (window.HubSpotConversations) {
+onConversationsAPIReady();
+} else {
+/*
+Otherwise, callbacks can be added to the hsConversationsOnReady on the window object.
+These callbacks will be called once the external API has been initialized.
+*/
+window.hsConversationsOnReady = [onConversationsAPIReady];
+}
+</script>
+xxxxxxxxxx
+21
+1
+<
+script
+type
+=
+"text/javascript"
+>
+2
+function
+onConversationsAPIReady
+() {
+3
+console
+.
+log
+(
+`HubSpot Conversations API: ${
+window
+.
+HubSpotConversations
+}`
+);
+4
+}
+5
+/*
+6
+configure window.hsConversationsSettings if needed.
+7
+*/
+8
+window
+.
+hsConversationsSettings
+=
+{};
+9
+/*
+10
+If external API methods are already available, use them.
+11
+*/
+12
+if
+(
+window
+.
+HubSpotConversations
+) {
+13
+onConversationsAPIReady
+();
+14
+}
+else
+{
+15
+/*
+16
+Otherwise, callbacks can be added to the hsConversationsOnReady on the window object.
+17
+These callbacks will be called once the external API has been initialized.
+18
+*/
+19
+window
+.
+hsConversationsOnReady
+=
+[
+onConversationsAPIReady
+];
+20
+}
+21
+</
+script
+>
+SDK reference
+window.hsConversationsOnReady
+array
+This is an optional field you can define on the window object that enables you to specify code to be executed as soon as the widget becomes available. Once the API has been initialized, it will check for the existence of this array and execute its functions in series.
+Copy code snippet
+if (window.HubSpotConversations) {
+console.log('The api is ready already');
+} else {
+window.hsConversationsOnReady = [
+() => {
+console.log('Now the api is ready');
+},
+];
+}
+xxxxxxxxxx
+9
+1
+if
+(
+window
+.
+HubSpotConversations
+) {
+2
+console
+.
+log
+(
+'The api is ready already'
+);
+3
+}
+else
+{
+4
+window
+.
+hsConversationsOnReady
+=
+[
+5
+()
+=>
+{
+6
+console
+.
+log
+(
+'Now the api is ready'
+);
+7
+},
+8
+];
+9
+}
+hsConversationsSettings
+object
+This object enables you to provide some configuration options to the widget before it initializes. In order to use the Visitor Identification feature, you must set the following fields:
+Parameter
+Type
+Description
+Default
+loadImmediately
+boolean
+Whether the widget should implicitly load or wait until the
+widget.load
+method is called
+true
+identificationToken
+string
+Used to integrate with the Visitor Identification API. This is the token provided by the token generation endpoint on the Visitor Identification API that is used as proof that this visitor has been identified.
+""
+identificationEmail
+string
+The email address of the visitor that you’ve identified as loading the widget.
+""
+Copy code snippet
+window.hsConversationsSettings = {
+loadImmediately: false,
+identificationEmail: 'visitor-email@example.com',
+identificationToken: '<TOKEN FROM STEP 1>',
+};
+xxxxxxxxxx
+5
+1
+window
+.
+hsConversationsSettings
+=
+{
+2
+loadImmediately
+:
+false
+,
+3
+identificationEmail
+:
+'visitor-email@example.com'
+,
+4
+identificationToken
+:
+'<TOKEN FROM STEP 1>'
+,
+5
+};
+Learn more about the
+conversations SDK
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Create custom channels
+Beta
+Inbox & messages
+Mobile chat SDK
+Visitor identification
+Working with chatbots
+Library
+CRM
+Marketing
+Settings
+Legal

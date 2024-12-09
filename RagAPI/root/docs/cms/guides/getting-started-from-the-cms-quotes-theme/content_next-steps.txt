@@ -1,0 +1,286 @@
+Getting started from the CMS quotes theme | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Prerequisites
+1. Fetching the theme to your local directory
+2. Upload and watch changes
+3. Open a template preview
+4. Make a change locally
+5. Change the template label
+6. Customize the quote template in HubSpot
+7. Create a quote using your new template
+Next steps
+Related Resources
+CMS Development
+Content and structure
+Themes
+Getting started from the CMS quotes theme
+Getting started from the CMS quotes theme
+With a CMS quotes theme, you can create a custom quote theme for sales reps to use during the buying process. This guide will walk you through cloning the default CMS quotes theme locally using the CLI, uploading the clone to your account, then making adjustments as needed. You'll then create a quote using the template to view your work.
+Prerequisites
+You should feel confident writing HTML and CSS.
+You should have the latest version of the
+HubSpot CLI installed and configured for your portal
+.
+Please note:
+while this tutorial uses the HubSpot CLI, you can do all of this in HubSpot using the design manager if preferred. To complete this process in HubSpot, you'll just need to clone the
+cms-quotes-theme
+in the
+@hubspot
+folder instead of running the
+fetch
+command. shown in step 1.
+1. Fetching the theme to your local directory
+Open your terminal, navigate to the directory you want to download the files to. This will be your main working directory for the remainder of this tutorial.
+To download the default quotes theme, run the following in your terminal:
+Copy code snippet
+hs fetch @hubspot/cms-quotes-theme "my-quotes-theme"
+hs fetch @hubspot/cms-quotes-theme
+"my-quotes-theme"
+You should now see a folder named
+my-quotes-theme
+in your local file system. This folder contains all of the assets needed for the quote theme, including mock data and module defaults within the
+imports
+folder.
+2. Upload and watch changes
+With the folder downloaded, upload it to HubSpot. While you can use the
+hs upload
+command to perform a single upload, you can instead use the
+watch
+command to trigger automatic uploads on each file save:
+Copy code snippet
+hs watch "my-quotes-theme" "my-quotes-theme" --initial-upload
+xxxxxxxxxx
+hs watch
+"my-quotes-theme"
+"my-quotes-theme"
+--initial-upload
+After upload, you can now view the
+my-quotes-theme
+folder in the
+design manager
+. To open the design manager from the terminal, open a new terminal tab or window and run the
+hs open dm
+command.
+A new terminal tab or window is needed because you cannot run commands while the
+hs watch
+process is running. You can also press
+q
+to end the watch, run another command, then rerun
+hs watch
+.
+3. Open a template preview
+To preview the quote template:
+In the design manager, navigate to
+my-quotes-theme > templates > bold.html.
+In the top right of the code editor, click
+Preview
+, then select
+Live preview with display options
+.
+With the template preview open, you'll then make a change locally, which will be automatically uploaded on save due to
+hs watch
+running.
+4. Make a change locally
+In your local code editor, open
+my-quotes-theme > css > bold.css.
+Add the code below to
+bold.css
+, then save your changes:
+Copy code snippet
+.line-items__table tbody tr:nth-child(odd) {
+background-color: #d6d6d6;
+}
+xxxxxxxxxx
+3
+1
+.line-items__table
+tbody
+tr
+:
+nth-child
+(
+odd
+) {
+2
+background-color
+:
+#d6d6d6
+;
+3
+}
+Refresh the template preview in your browser to view your CSS changes. You should now see that every odd row in the table body has a gray background.
+As you build your custom quote theme, you can repeat this workflow to quickly confirm the changes that you're making locally.
+Please note:
+because of the complexity of the signature system, signatures will not display in previews.
+5. Change the template label
+As you prepare a custom quotes theme for real life use, you should be mindful of the template label so that sales reps can easily find it among HubSpot's default quote options.
+To change a quote template's label:
+In your code editor, open
+my-quotes-theme > templates > bold.html
+.
+At the top of the file, view the template annotation:
+Copy code snippet
+<!--
+templateType: quote
+isAvailableForNewContent: true
+label: Bold
+-->
+xxxxxxxxxx
+5
+1
+<!--
+2
+templateType: quote
+3
+isAvailableForNewContent: true
+4
+label: Bold
+5
+-->
+Update the
+label
+parameter from
+Bold
+to a name of your choosing, such as
+My custom quote template
+.
+Save the file to upload it to HubSpot.
+6. Customize the quote template in HubSpot
+Before a sales rep can use your quote template, it must be customized in HubSpot. This would typically be done by a sales manager so that they can
+create ready-made quotes for their sales team
+. However, in this tutorial, you'll walk through this process yourself so that you can understand what the content creation experience is like.
+To customize the quote template and make it available for sales reps:
+In your HubSpot account, click the settings
+settings icon
+in the main navigation bar.
+In the left sidebar menu, navigate to
+Objects > Quotes
+.
+Click the
+Quote templates
+tab.
+In the upper right, click
+Customize quote template.
+Hover over your new
+template
+, then select
+Choose
+.
+Using the left panel, you can edit the modules included in the template. For example, you can click a
+module
+to edit its properties or toggle visibility.
+In the upper right, click
+Save
+when you're done making changes.
+7. Create a quote using your new template
+With your changes saved, you can now create a quote with the template, simulating the sales rep experience.
+In your HubSpot account, navigate to
+Sales > Quotes
+.
+In the upper right, click
+Create quote
+. You'll then be redirected to a quote creation wizard.
+On the first screen, click the
+Associate with a deal
+dropdown menu, then either select an existing deal or select
+Create a new deal
+if you want to use a test deal instead.
+In the bottom right, click
+Next
+.
+On the next screen, click the
+Quote
+dropdown menu, then select your custom quote template.
+Proceed through the rest of the quote wizard to create your quote.
+After publishing the quote, a dialog box will appear with a link to view the quote. Click
+Copy
+to copy the URL, then paste it into your browser to view the completed quote.
+Next steps
+With your quote template created, uploaded, and customized, you should now have a better understanding of the quote template editing process and the content creator experience.
+As you create quote templates to fit your business needs, you may want to try adding your own custom modules to the quote along with HubSpot's default modules.
+Please note:
+it's recommended to
+not
+edit the JavaScript of the payment, signature, and download modules, as this could lead to breaking the modules. If broken, the end-user might not be able to sign it, download it, or even make a payment.
+Related Resources
+Custom quote templates
+Custom quote variable reference
+Create and use custom quote templates (from the sales, sales ops/manager perspective)
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Overview
+Getting started
+CMS boilerplate
+Child themes
+Default themes
+Quotes themes
+Responsive breakpoints
+Templates
+Modules
+Fields
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

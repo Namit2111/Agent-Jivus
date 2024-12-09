@@ -1,0 +1,94 @@
+Marketing API | Forms  | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API Guides
+Marketing
+Marketing API | Forms
+Forms
+Forms endpoint reference
+Use a HubSpot form to collect lead information about your visitors and contacts. You can use the endpoints outlined here to set up new forms or get details of forms you've previously created. If you're looking to send form submission data, you can use the
+Submit data to a form endpoint
+instead.
+The form's type indicates its purpose and is set to
+hubspot
+by default. You can use the following values for your
+formType
+:
+hubspot
+: these forms offer a variety of field types and styling options and can be used embedded in either HubSpot pages or external pages. These forms can be created and edited using the endpoints described here. You can also create these forms within your HubSpot account, learn more about
+creating HubSpot forms
+.
+captured
+: these forms correspond to HTML forms in external websites. If the non-HubSpot forms tool is enabled and there are submissions to the form on
+a tracked page
+, the form is automatically created in HubSpot. Learn more about
+using non-HubSpot forms
+.
+flow
+: these are pop-up forms that can be used in either HubSpot pages or external pages. Learn more about
+HubSpot's pop-up forms tool
+.
+blog_comment
+: these forms are automatically created for HubSpot blog pages to collect comments on blog posts. Learn more about how to further
+set up and moderate blog comments
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Marketing
+Campaigns
+Emails
+Forms
+Marketing events
+Subscriptions preferences
+Subscriptions
+Settings
+Legal

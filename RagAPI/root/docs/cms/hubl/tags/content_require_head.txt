@@ -1,0 +1,4040 @@
+HubL standard tags | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Blog comments
+Blog content
+Blog post filter
+Blog post Listing
+Blog related posts
+Examples
+Blog social sharing
+Blog subscription
+Boolean
+Choice
+Color
+CTA
+Custom HTML
+Custom modules
+Editor placeholders
+Flexible column
+Form
+Footer
+Gallery
+Header
+Icon
+Image
+Image src
+Language switcher
+Linked image
+Logo
+Menu
+Require_css
+Require_head
+Require_js
+Rich text
+RSS listing
+Section header
+Simple menu
+Social sharing
+Spacer
+System page tags
+Email backup unsubscribe
+Email subscriptions
+Email subscriptions confirmation
+Membership login
+Membership registration
+Password reset request
+Password reset
+Password prompt
+Text
+Textarea
+Video Player
+CMS Reference
+HubL (templating language)
+Tags
+HubL standard tags
+HubL standard tags
+This page is a comprehensive reference guide of the syntax and the available parameters for all standard HubL tags, including
+tags for system pages
+, such as the email subscription page. Each tag below contains a sample of the basic syntax, as well as an example with parameters and code output.
+If you're building drag and drop areas, learn more about
+drag and drop area tags
+. If you maintain an older website, you may also want to check out the
+list of deprecated HubL tags
+.
+Most of the tags in this page have
+default module equivalents.
+Modules can be used within
+dnd_areas
+and
+flexible columns
+, making them more powerful and user friendly than the tags you see here.
+Blog comments
+A blog comments tag renders the comments embed code on a blog template. This Javascript embed code loads the comments form and comments, based upon your configuration in your
+website settings
+.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+Blog Comment Form module:
+{% blog_comments "blog_comments" overrideable=False, label="Blog Comments" %}
+Blog Comment Count module:
+{% blog_comments "blog_comments" %}
+Blog Comment listing for specific blog:
+{% blog_comments "default_blog_comments" select_blog="359485112" %}
+​
+x
+1
+Blog Comment Form module:
+2
+{%
+blog_comments
+"blog_comments"
+overrideable
+=
+False, label
+=
+"Blog Comments"
+%}
+3
+​
+4
+Blog Comment Count module:
+5
+{%
+blog_comments
+"blog_comments"
+%}
+6
+​
+7
+Blog Comment listing for specific blog:
+8
+{%
+blog_comments
+"default_blog_comments"
+select_blog
+=
+"359485112"
+%}
+Parameter
+Type
+Description
+Default
+limit
+Number
+Sets maximum number of comments.
+5000
+select_blog
+"default" or blog ID
+Specifies which blog is connected to the comments embed. This parameter accepts arguments of either
+"default"
+or a blog ID (available in the URL of the Blog dashboard). If want to use your default blog, this parameter is unnecessary.
+default
+skip_css
+Boolean
+Setting this option to True will stop the blog comments CSS from loading.
+false
+message
+String
+The message to display when there are no comments. By default, appears as empty (no text displayed).
+""
+Blog content
+While
+drag and drop layouts
+include a blog content module, these modules are not created with a single tag. They instead use conditional logic to define how a blog post and a blog listing should render.
+You can learn more about coding blog templates here.
+Blog post filter
+Creates a linked listing of posts by topic, posts by month, or posts by author.
+Please note:
+this module can only be used in blog post templates.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% post_filter "post_filter" %}
+{% post_filter "posts_by_topic"
+select_blog="default",
+expand_link_text="see all",
+overrideable=False,
+list_title="Posts by Topic",
+max_links=5,
+filter_type="topic",
+label="Posts by Topic"
+%}
+xxxxxxxxxx
+10
+1
+{%
+post_filter
+"post_filter"
+%}
+2
+{%
+post_filter
+"posts_by_topic"
+3
+select_blog
+=
+"default"
+,
+4
+expand_link_text
+=
+"see all"
+,
+5
+overrideable
+=
+False,
+6
+list_title
+=
+"Posts by Topic"
+,
+7
+max_links
+=
+5
+,
+8
+filter_type
+=
+"topic"
+,
+9
+label
+=
+"Posts by Topic"
+10
+%}
+Parameter
+Type
+Description
+Default
+select_blog
+"default" or blog ID
+Selects the HubSpot blog to use. This parameter uses either an blog ID or "default" value.
+"default"
+expand_link_text
+String
+Text link to display if more posts than max_links number available. Exclude parameter to omit link.
+"see all"
+list_title
+String
+List title to display.
+""
+list_tag
+String
+Sets the tag used for the list. Value should generally be
+"ul"
+or
+"ol"
+.
+"ul"
+title_tag
+String
+Sets the tag used for the list title.
+"h3"
+max_links
+Number
+Maximum number of filter values to display. Excude parameter to show all.
+5
+filter_type
+Enumeration
+Selects the type of filter. Possible values include
+"topic"
+,
+"month"
+, and
+"author"
+.
+"topic"
+Blog post Listing
+Adds a listing of most popular or top posts.
+Please note:
+this tag can only be used in blog post templates. The tag's content is loaded asynchronously on the client-side. As a result, if you want to manipulate the feed after it's loaded, you'll need to define a global JS function to handle that manipulation. Use the function
+hsPostListingComplete(feeds)
+, where
+feeds
+is the jQuery selector on all feeds that have been completed. You will want to directly manipulate the DOM object in that function.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% post_listing "post_listing" %}
+{% post_listing "top_posts" select_blog="default", label="Recent Posts", overrideable=False, list_title="Recent Posts", listing_type="recent", max_links=5 %}
+xxxxxxxxxx
+2
+1
+{%
+post_listing
+"post_listing"
+%}
+2
+{%
+post_listing
+"top_posts"
+select_blog
+=
+"default"
+, label
+=
+"Recent Posts"
+, overrideable
+=
+False, list_title
+=
+"Recent Posts"
+, listing_type
+=
+"recent"
+, max_links
+=
+5
+%}
+Parameter
+Type
+Description
+Default
+select_blog
+"default" or blog ID
+Selects the HubSpot blog to use for the listing. This parameter uses either an blog ID or
+"default"
+value.
+"default"
+list_title
+String
+List title to display.
+""
+list_tag
+String
+Sets the tag used for the list. Value should generally be
+"ul"
+or
+"ol"
+.
+"ul"
+title_tag
+String
+Sets the tag used for the list title.
+"h3"
+listing_type
+String
+List the blog posts by most recent or most popular in a time range. Possible values include recent, popular_all_time, popular_past_year, popular_past_six_months, and popular_past_month.
+"recent"
+max_links
+Number
+Maximum number of blog posts to list.
+5
+include_featured_image
+Boolean
+Display featured image along with post link.
+False
+Blog related posts
+Adds a listing of blog posts based off of a set of parameters shared by posts across blogs. Posts are selected based off of their relevance to the set parameters.
+This tag does not generate a page/post-level editable module, it is entirely configured with HubL.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% related_blog_posts
+limit=2,
+blog_ids="1,2",
+tags="Sales enablement,Marketing",
+blog_authors="John Smith,Frank Smith",
+path_prefixes="/business-blog",
+start_date="2018-04-10",
+end_date="2018-04-10",
+blog_post_override="2783035366"
+%}
+xxxxxxxxxx
+10
+1
+{%
+related_blog_posts
+2
+limit
+=
+2
+,
+3
+blog_ids
+=
+"1,2"
+,
+4
+tags
+=
+"Sales enablement,Marketing"
+,
+5
+blog_authors
+=
+"John Smith,Frank Smith"
+,
+6
+path_prefixes
+=
+"/business-blog"
+,
+7
+start_date
+=
+"2018-04-10"
+,
+8
+end_date
+=
+"2018-04-10"
+,
+9
+blog_post_override
+=
+"2783035366"
+10
+%}
+Parameter
+Type
+Description
+Default
+blog_ids
+Number
+The IDs of the blogs to include posts from. If not specified, it will include posts from the default blog.
+blog_post_ids
+String
+The IDs of the blog posts to use when finding relevant blog posts to list, separated by commas.Use this parameter only when the widget is appearing on pages. When used on blog posts, it will look for relevant posts based on the currently displaying blog post.
+blog_post_override
+String
+The IDs of the blog posts which should always show up in the returned listing, despite all other parameter values and filters (comma separated).
+limit
+Number
+The maximum number of blog posts to list.
+3
+tags
+String
+The blog tags that should be used to determine if a post is relevant (comma separated). Blog posts with the specified tags will rank higher for relevancy.
+tag_boost
+Number
+Increases the weight given to the tags specified in the
+tags
+parameter to generate related posts. Include this parameter to pull in posts more closely related to the currently displaying or specified posts. Accepts positive numbers.
+start_date
+datetime
+Earliest published date.See an
+example below
+.
+end_date
+datetime
+Latest published date.See an
+example below
+.
+blog_authors
+String
+The names of authors to include posts from (comma separated).See an
+example below
+.
+path_prefixes
+String
+URL paths or subdirectories to include posts from (comma separated). If a blog post has a similar prefix in its path, the post’s relevancy is increased, improving its ranking in the listing.
+callback
+String
+The name of a JavaScript function to render returned blog posts. The function is passed an array of blog post objects to format. If neither the
+callback
+nor
+post_formatter
+parameter is specified, the tag will generate HTML in a default format.See an
+example below
+.
+none
+post_formatter
+String
+The name of a custom macro to render returned blog posts. The macro is passed three parameters which are the blogs blog post object to format, the count in the iteration of blog posts, and the total count of blog posts in the results. If not specified or set to
+default
+, the built-in formatter will be used to format each post.
+default
+allow_any_language
+Boolean
+When set to
+false
+, only posts in the same language as the page the tag is used on will appear. When set to
+true
+, the language restriction is ignored and all related posts are pulled in regardless of the page language.
+False
+We strongly recommend using the
+callback
+parameter instead of
+post_formatter
+to improve page loading speed.
+Examples
+The following example generates a listing of posts written by one of the three specified
+blog_authors
+across two different blogs:
+Copy code snippet
+{% related_blog_posts blog_ids="3241539189,3261083894", limit=6, blog_authors="John Smith,Joe Smith,Frank Smith" %}
+xxxxxxxxxx
+{%
+related_blog_posts blog_ids
+=
+"3241539189,3261083894"
+, limit
+=
+6
+, blog_authors
+=
+"John Smith,Joe Smith,Frank Smith"
+%}
+The following example generates a listing of 10 posts related to a specific blog post, with the blog tag "sales enablement," and restricted to a specific publish date time frame. This example specifies the
+blog_post_ids
+parameter, so it would be used on a page:
+Copy code snippet
+{% related_blog_posts blog_post_ids="3267910554", limit=10, tags="sales enablement", start_date="2018-02-05", end_date="2018-06-10" %}
+xxxxxxxxxx
+{%
+related_blog_posts blog_post_ids
+=
+"3267910554"
+, limit
+=
+10
+, tags
+=
+"sales enablement"
+, start_date
+=
+"2018-02-05"
+, end_date
+=
+"2018-06-10"
+%}
+The following example generates a listing of five posts using the
+callback
+parameter to control the HTML output of the post listing:
+Copy code snippet
+{% related_blog_posts limit=5, callback="blog_post_formatter" %}
+<script>
+var blog_post_formatter = function(blogposts) {
+var formatted = "<div>";
+for (var i = 0; i < blogposts.length; i++) {
+var blogpost = blogposts[i];
+formatted += '<div class="related-blog-item">';
+formatted += `<span>Related Post ${i + 1}/${blogposts.length}</span><br>`;
+formatted += `<a class="related-blog-title" href="${blogpost.url}"><span>${blogpost.name}</span></a>`;
+formatted += `<div class="hs-related-blog-byline">by <span class="related-blog-author">${blogpost.blogAuthor.fullName}</span><span class="related-blog-posted-at"> posted on </span><span class="related-blog-date">${new Date(blogpost.publishDate).toLocaleDateString()}</span></div>`;
+formatted += `<p class="related-blog-post-summary">${blogpost.postSummary}<a href="${blogpost.url}">Read more</a></p>`;
+formatted += '<div class="related-blog-tags">';
+if (blogpost.tagList.length > 0) {
+formatted += `Tags: ${blogpost.tagList.map(tag => tag.label).join(", ")}`;
+}
+formatted += '</div>';
+if (blogpost.featuredImage) {
+formatted += `<img src="${blogpost.featuredImage}" alt="${blogpost.featuredImageAltText}">`;
+}
+formatted += '</div>';
+}
+formatted += '</div>';
+return formatted;
+}
+</script>
+xxxxxxxxxx
+28
+1
+{%
+related_blog_posts limit
+=
+5
+, callback
+=
+"blog_post_formatter"
+%}
+2
+​
+3
+<
+script
+>
+4
+var
+blog_post_formatter
+=
+function
+(
+blogposts
+) {
+5
+​
+6
+var
+formatted
+=
+"<div>"
+;
+7
+for
+(
+var
+i
+=
+0
+;
+i
+<
+blogposts
+.
+length
+;
+i
+++
+) {
+8
+var
+blogpost
+=
+blogposts
+[
+i
+];
+9
+formatted
++=
+'<div class="related-blog-item">'
+;
+10
+formatted
++=
+`<span>Related Post ${
+i
++
+1
+}/${
+blogposts
+.
+length
+}</span><br>`
+;
+11
+formatted
++=
+`<a class="related-blog-title" href="${
+blogpost
+.
+url
+}"><span>${
+blogpost
+.
+name
+}</span></a>`
+;
+12
+formatted
++=
+`<div class="hs-related-blog-byline">by <span class="related-blog-author">${
+blogpost
+.
+blogAuthor
+.
+fullName
+}</span><span class="related-blog-posted-at"> posted on </span><span class="related-blog-date">${
+new
+Date
+(
+blogpost
+.
+publishDate
+).
+toLocaleDateString
+()
+}</span></div>`
+;
+13
+formatted
++=
+`<p class="related-blog-post-summary">${
+blogpost
+.
+postSummary
+}<a href="${
+blogpost
+.
+url
+}">Read more</a></p>`
+;
+14
+formatted
++=
+'<div class="related-blog-tags">'
+;
+15
+if
+(
+blogpost
+.
+tagList
+.
+length
+>
+0
+) {
+16
+formatted
++=
+`Tags: ${
+blogpost
+.
+tagList
+.
+map
+(
+tag
+=>
+tag
+.
+label
+).
+join
+(
+", "
+)
+}`
+;
+17
+}
+18
+formatted
++=
+'</div>'
+;
+19
+​
+20
+if
+(
+blogpost
+.
+featuredImage
+) {
+21
+formatted
++=
+`<img src="${
+blogpost
+.
+featuredImage
+}" alt="${
+blogpost
+.
+featuredImageAltText
+}">`
+;
+22
+}
+23
+formatted
++=
+'</div>'
+;
+24
+}
+25
+formatted
++=
+'</div>'
+;
+26
+return
+formatted
+;
+27
+}
+28
+</
+script
+>
+Blog social sharing
+Blog social sharing renders share counters on your blog posts (if enabled in Content Settings).
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% blog_social_sharing "blog_social_sharing" %}
+{% blog_social_sharing "blog_social_sharing" select_blog="359485112" %}
+xxxxxxxxxx
+2
+1
+{%
+blog_social_sharing
+"blog_social_sharing"
+%}
+2
+{%
+blog_social_sharing
+"blog_social_sharing"
+select_blog
+=
+"359485112"
+%}
+Parameter
+Type
+Description
+Default
+select_blog
+"default" or blog ID
+Species which blog is connected to the share counters. This parameter accepts arguments of either
+"default"
+or a blog ID (available in the URL of the Blog dashboard). If you want to use your default blog, this parameter is unnecessary.
+default
+downgrade_shared_url
+Boolean
+Use HTTP in the url sent to the social media networks. Used to preserve counts when upgrading domains to HTTPS only.
+false
+Blog subscription
+A blog subscription tag renders the blog subscriber form for a particular blog. This form is automatically created whenever a blog is created in Content Settings, and there is always one subscription form per blog. Please note that the subscribe form's fields are configured within the Forms editor UI.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% blog_subscribe "blog_subscribe" %}
+{% blog_subscribe "subscribe_designers_blog" select_blog="default", title="Subscribe to the Designers Blog", response_message="Thanks for Subscribing!", label="Blog Email Subscription", overrideable=False %}
+xxxxxxxxxx
+2
+1
+{%
+blog_subscribe
+"blog_subscribe"
+%}
+2
+{%
+blog_subscribe
+"subscribe_designers_blog"
+select_blog
+=
+"default"
+, title
+=
+"Subscribe to the Designers Blog"
+, response_message
+=
+"Thanks for Subscribing!"
+, label
+=
+"Blog Email Subscription"
+, overrideable
+=
+False
+%}
+Parameter
+Type
+Description
+Default
+select_blog
+"default" or blog ID
+Selects which blog subscription form to render. This parameter accepts arguments of either
+"default"
+or a blog ID (available in the URL of the Blog dashboard). If want to use your default blog, this parameter is unnecessary.
+default
+title
+String
+Defines text in an h3 tag title above the subscribe form.
+"Subscribe Here!"
+no_title
+Boolean
+If True, the h3 tag above the title is removed.
+false
+response_message
+String
+Defines the inline thank-you message that is rendered when a user submits a form. Supports HTML.
+"Thanks for Subscribing!"
+edit_form_link
+String
+This parameter generates a link that allows users to click through to the corresponding Form editor screen. This option will only show in the editor UI if the modules has the parameter overrideable=True.For example, to replace HubID and form ID with the information from the URL of your default blog subscriber form:
+edit_form_link=" <ul>\n <li><a href="/forms/HubID/FormID/edit/" target="_blank">Default Blog</a></li> \n</ul> "
+.\n drops the code onto a new line.
+Boolean
+A boolean tag creates a checkbox in the UI that prints "true" or "false." In addition to printing the value, this module is useful for defining conditional template logic, when combined with the parameter
+export_to_template_context
+.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% boolean "boolean" %}
+{% boolean "nav_toggle" label="Hide navigation", value=False, no_wrapper=True %}
+xxxxxxxxxx
+2
+1
+{%
+boolean
+"boolean"
+%}
+2
+{%
+boolean
+"nav_toggle"
+label
+=
+"Hide navigation"
+, value
+=
+False, no_wrapper
+=
+True
+%}
+Parameter
+Type
+Description
+Default
+value
+Boolean
+Determines whether the checkbox is checked or unchecked.
+False
+Choice
+A choice tag creates a dropdown in the content editor UI that prints the value selected by the user. Choice tags are great for giving your users a preset set of options, such as printing the type of page as a page header.
+In addition to printing the choice value, this tag is useful for defining conditional template logic, when combined with the parameter
+export_to_template_context
+.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% choice "choice" %}
+{% choice "type_of_page" label="Choose the type of page", value="About", choices="About, Careers, Contact, Store" %}
+xxxxxxxxxx
+2
+1
+{%
+choice
+"choice"
+%}
+2
+{%
+choice
+"type_of_page"
+label
+=
+"Choose the type of page"
+, value
+=
+"About"
+, choices
+=
+"About, Careers, Contact, Store"
+%}
+Parameter
+Type
+Description
+value
+Boolean
+The default field value for the dropdown
+choices
+Sequence
+A comma-separated list of values, or list of value-label pairs. The syntax for value label pairs is as follows:
+choices="[[\"value1\", \"Label 1\"], [\"value2\", \"Label 2\"]]"
+. The editor will display the label, while it will print the value to the page.
+Color
+The color tag generates a color picker in the page editor UI that prints a HEX color value to a template. Please note that this module can only be used in templates, not CSS files. If using this tag in a
+<style>
+or inline CSS, you will want to use the
+no_wrapper=True
+parameter to remove the wrapper
+<span>
+wrapper.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% color "color" %}
+{% color "my_color_picker" label="Choose a color", color="#000000", no_wrapper=True %}
+xxxxxxxxxx
+2
+1
+{%
+color
+"color"
+%}
+2
+{%
+color
+"my_color_picker"
+label
+=
+"Choose a color"
+, color
+=
+"#000000"
+, no_wrapper
+=
+True
+%}
+Parameter
+Type
+Description
+color
+String
+A default HEX color value for the color picker
+CTA
+A Call to Action or CTA tag allows users to add a HubSpot Call to Action button to a predefined area of a page.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% cta "cta" %}
+{% cta "my_cta" label="Select a CTA", guid="ccd39b7c-ae18-4c4e-98ee-547069bfbc5b", image_src="https://no-cache.hubspot.com/cta/default/53/c7335b66-a0d4-4d19-82eb-75e1626d02d0.png" %}
+xxxxxxxxxx
+2
+1
+{%
+cta
+"cta"
+%}
+2
+{%
+cta
+"my_cta"
+label
+=
+"Select a CTA"
+, guid
+=
+"ccd39b7c-ae18-4c4e-98ee-547069bfbc5b"
+, image_src
+=
+"https://no-cache.hubspot.com/cta/default/53/c7335b66-a0d4-4d19-82eb-75e1626d02d0.png"
+%}
+Parameter
+Type
+Description
+embed_code
+String
+The embed code for the CTA. \n differentiates line breaks.
+full_html
+String
+The embed code for the CTA (Same as embed_code). \n differentiates line breaks.
+image_src
+String
+Image src url that defines the preview image in the content editor.
+image_editor
+String
+Markup for the image editor preview
+guid
+String
+The unique ID number of the CTA. This ID number is available in the URL of the Details screen of a particular CTA. This parameter is used to choose which CTA to display by default.
+image_html
+String
+CTA image HTML without the CTA script.*
+image_email
+String
+Email-friendly version of the CTA code.*
+*While these parameters are included here for the sake of being comprehensive, the code generated by HubSpot to populate them is very specific. If you need a default CTA selected, rather than trying to develop the CTA parameters from scratch, it is recommended that set up the CTA on a template layout, and then
+clone to file
+. You can then copy the HubL CTA module of the CTA with all parameters set correctly for you.
+There is also a
+CTA function
+that generates a CTA from the ID.
+Custom HTML
+A custom HTML module allows users to enter raw HTML into the content editor. If you need to add extensive default HTML to the tag, you may want to use
+block syntax
+.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% raw_html "raw_html" %}
+{% raw_html "my_custom_html_module" label="Enter HTML here" value="<div>My HTML Block</div>" %}
+Block Syntax Example:
+{% widget_block raw_html "my_custom_html_module" overrideable=True, label="My custom HTML module"  %}
+{% widget_attribute "value" %}
+<div>Default HTML block</div>
+{% end_widget_attribute %}
+{% end_widget_block %}
+xxxxxxxxxx
+11
+1
+{%
+raw_html
+"raw_html"
+%}
+2
+{%
+raw_html
+"my_custom_html_module"
+label
+=
+"Enter HTML here"
+value
+=
+"<div>My HTML Block</div>"
+%}
+3
+​
+4
+​
+5
+Block Syntax Example:
+6
+​
+7
+{%
+widget_block raw_html
+"my_custom_html_module"
+overrideable
+=
+True, label
+=
+"My custom HTML module"
+%}
+8
+{%
+widget_attribute
+"value"
+%}
+9
+<
+div
+>
+Default HTML block
+</
+div
+>
+10
+{%
+end_widget_attribute
+%}
+11
+{%
+end_widget_block
+%}
+Parameter
+Type
+Description
+value
+String
+Sets the default content HTML of the module.
+Custom modules
+Custom Modules allow HubSpot designers to create a custom group of editable content objects to be used across templates and pages on HubSpot’s CMS, while still allowing marketers to control the specific content appearing within those modules on a page-by-page basis. You can learn more about
+custom modules and their simplified HubL syntax, here
+.
+Custom modules must be built in the Custom Module editor, but they can be included into coded templates and HubL modules. You will see a 'Usage Snippet' in the right sidebar of the Custom Module editor under 'Template Usage'.
+Custom modules require the ID of the module as a string as well as a path parameter in order to specify which module to load. The usage snippet will also include a label parameter. See the syntax below:
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% module "module_15677217712485" path="/Custom/Test custom module"  %}
+{% module "module_25642219712432" path="/Assets/Custom calendar module" label="Custom calendar module" %}
+xxxxxxxxxx
+2
+1
+{%
+module
+"module_15677217712485"
+path
+=
+"/Custom/Test custom module"
+%}
+2
+{%
+module
+"module_25642219712432"
+path
+=
+"/Assets/Custom calendar module"
+label
+=
+"Custom calendar module"
+%}
+Parameter
+Type
+Description
+module_id
+String
+The id of the module to render.
+path
+String
+The path of the module to render. Include leading slash for absolute path, otherwise path is relative to template. Reference HubSpot default modules with paths corresponding to their HubL tags such as @hubspot/rich_text, @hubspot/linked_image, etc.
+Editor placeholders
+To render placeholder content for a module in the editor, you can either add default content to module fields or use the
+editor_placeholder
+HubL tag. This can be useful when the module doesn't have or need default content, or to streamline module building.
+To add an editor placeholder to a custom module, first add an
+if statement
+to the module's HTML to render the placeholder when there's no content selected in the editor. For example, the following code could be used to add an editor placeholder to a CTA module:
+Copy code snippet
+{% if module.label %}
+{% cta guid="{{ module.guid }}" label="my_cta" %}
+{% elif is_in_editor %}
+{% editor_placeholder %}
+{% endif %}
+xxxxxxxxxx
+5
+1
+{%
+if
+module.label
+%}
+2
+{%
+cta guid
+=
+"{{ module.guid }}"
+label
+=
+"my_cta"
+%}
+3
+{%
+elif
+is_in_editor
+%}
+4
+{%
+editor_placeholder
+%}
+5
+{%
+endif
+%}
+The first
+if
+statement identifies whether the module is present. Then, the
+elif
+statement identifies if the module is being rendered in the context of
+the editor using the
+is_in_editor
+variable. This variable returns
+true
+if
+the content is being rendered in any content editor, but you can be more
+specific with other
+in-app editor and preview
+variables
+.
+Then, define the placeholder content in the module's
+meta.json
+file.
+Copy code snippet
+// Module meta.json
+{
+"global": false,
+"host_template_types": ["PAGE"],
+"module_id": 62170380654,
+"is_available_for_new_content": true,
+"placeholder": {
+"show_module_icon": true,
+"title": "Call to action",
+"description": "Select a CTA"
+}
+}
+xxxxxxxxxx
+12
+1
+// Module meta.json
+2
+{
+3
+"global"
+:
+false
+,
+4
+"host_template_types"
+: [
+"PAGE"
+],
+5
+"module_id"
+:
+62170380654
+,
+6
+"is_available_for_new_content"
+:
+true
+,
+7
+"placeholder"
+: {
+8
+"show_module_icon"
+:
+true
+,
+9
+"title"
+:
+"Call to action"
+,
+10
+"description"
+:
+"Select a CTA"
+11
+}
+12
+}
+Parameter
+Type
+Description
+show_module_icon
+Boolean
+Whether to display the module's icon.
+title
+String
+The title that appears in the placeholder.
+description
+String
+The description that appears in the placeholder.
+Flexible column
+Flexible columns are vertical columns in a template that enable content creators to insert and remove modules to the page using the
+content editor
+. When coding a flexible column with HubL, you can choose to wrap other HubL modules to make them appear in the flexible column by default. The sample code below shows the basic syntax and a sample flexible column with a rich text and form module contained as default content.
+Please note that flexible columns can only be added to page templates, not blog or email templates. Modules cannot contain flexible columns, but they can instead contain
+repeatable fields and groups
+, which provide a similar functionality.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% widget_container "my_flexible_column" label="My flex column"%}
+{% module "rich_text" path="@hubspot/rich_text" %}
+{% module "linked_image" path="@hubspot/linked_image" %}
+{% end_widget_container %}
+xxxxxxxxxx
+4
+1
+{%
+widget_container
+"my_flexible_column"
+label
+=
+"My flex column"
+%}
+2
+{%
+module
+"rich_text"
+path
+=
+"@hubspot/rich_text"
+%}
+3
+{%
+module
+"linked_image"
+path
+=
+"@hubspot/linked_image"
+%}
+4
+{%
+end_widget_container
+%}
+Please note:
+when using this tag, the
+label
+must follow the
+name
+value for the flexible column to function in the content editor. For example, the following syntax is invalid:
+[% widget_container label="My label" "my_flexible_column" %}
+Form
+Allows users to select a HubSpot form to add to their page.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% form "form" %}
+{% form "my_form" form_to_use="08bd9f0d-3be9-41c2-93b6-231a3a71b143", title="Free Trial" %}
+Block Syntax Example:
+{% widget_block form "my_form" form_follow_ups_follow_up_type="", response_redirect_id=306590405, form_to_use="08bd9f0d-3be9-41c2-93b6-231a3a71b143", title="Free Trial", notifications_are_overridden=True, sfdc_campaign="", response_message="Thanks for submitting the form.", response_response_type="redirect", response_redirect_url="", overrideable=True, gotowebinar_webinar_key="", response_redirect_name="Homepage (http://www.hubspot.com/)", label="Form", response={message="Thank you for submitting the form.", redirect_url=""}  %}
+{% widget_attribute "notifications_override_email_addresses" is_json=True %}["noreply@hubspot.com"]{% end_widget_attribute %}
+{% end_widget_block %}
+xxxxxxxxxx
+8
+1
+{%
+form
+"form"
+%}
+2
+{%
+form
+"my_form"
+form_to_use
+=
+"08bd9f0d-3be9-41c2-93b6-231a3a71b143"
+, title
+=
+"Free Trial"
+%}
+3
+​
+4
+​
+5
+Block Syntax Example:
+6
+{%
+widget_block form
+"my_form"
+form_follow_ups_follow_up_type
+=
+""
+, response_redirect_id
+=
+306590405
+, form_to_use
+=
+"08bd9f0d-3be9-41c2-93b6-231a3a71b143"
+, title
+=
+"Free Trial"
+, notifications_are_overridden
+=
+True, sfdc_campaign
+=
+""
+, response_message
+=
+"Thanks for submitting the form."
+, response_response_type
+=
+"redirect"
+, response_redirect_url
+=
+""
+, overrideable
+=
+True, gotowebinar_webinar_key
+=
+""
+, response_redirect_name
+=
+"Homepage (http://www.hubspot.com/)"
+, label
+=
+"Form"
+, response
+=
+{message
+=
+"Thank you for submitting the form."
+, redirect_url
+=
+""
+}
+%}
+7
+{%
+widget_attribute
+"notifications_override_email_addresses"
+is_json
+=
+True
+%}
+["noreply@hubspot.com"]
+{%
+end_widget_attribute
+%}
+8
+{%
+end_widget_block
+%}
+Parameter
+Type
+Description
+Default
+form_key
+String
+Specifies a unique id for the form at the page level.
+form_to_use
+String
+Specifies which form to load by default, based on the Form ID. This ID is available in the form editor URL of a each form.
+title
+String
+Populates an h3 header tag above the form.
+no_title
+Boolean
+If
+True
+, the h3 tag above the title is removed.
+False
+form_follow_ups_follow_up_type
+Enumeration
+Specifies follow up actions such as enrolling a contact into a workflow or sending a simple follow up email. Possible values include:
+no_action
+,
+simple
+, and
+automation
+.
+simple_email_for_live_id
+Number
+Specifies the ID of the simple follow-up email for the live page.
+simple_email_for_buffer_id
+Number
+Specifies the ID of the simple follow-up email for the auto-save version of a page.
+follow_up_type_simple
+Boolean
+If true, enables a simple follow-up email. Alternative to
+form_follow_ups_follow_up_type
+.
+follow_up_type_automation
+Boolean
+If true, enrolls submissions in a workflow. Alternative to
+form_follow_ups_follow_up_type
+.
+simple_email_campaign_id
+Number
+Specifies the ID of the simple follow-up email. Alternative to
+simple_email_for_live_id
+.
+form_follow_ups_workflow_id
+Number
+Specifies the ID of the workflow in which to enroll submissions.
+response_redirect_url
+String
+If redirecting to an external page, this parameter specifies the URL to redirect to.
+response_redirect_id
+Number
+If redirecting to HubSpot hosted page, this parameter specifies the page ID of that page. The page ID is available in the page editor URL of each page.
+response_response_type
+Enumeration
+Determines whether to redirect to another page or to display an inline thank you message on submission. The value of this parameter should either be
+"redirect"
+or
+"inline"
+.
+inline
+response_message
+String
+Sets an inline thank you message. This parameter supports HTML.
+notifications_are_overridden
+Boolean
+If True, the form will send form notifications to specified email addresses selected in the
+notifications_override_email_addresses
+parameter, instead of the form defaults
+False
+notifications_override_guid_buffer
+String
+ID of override settings in auto-save version of page.
+notifications_override_guid
+String
+ID of override settings in live version of page.
+notifications_override_email_addresses
+JSON
+Block syntax supports a JSON list of email recipients that will be notified upon form submission. These email addresses will override the email notification settings set in the form.
+gotowebinar_webinar_key
+String
+Specifies the GoToWebinar webinar to enroll contacts who submit the form into. Only available for portals using the
+GoToWebinar integration
+.
+sfdc_campaign
+String
+Specifies the Salesforce campaign to enroll contacts who submit the form into. This parameter's value should be the SFDC campaign ID and is only available for portals that are
+integrated with Salesforce
+.
+Footer
+Renders copyright information with the year and company name specified in the account's
+marketing email settings
+.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% page_footer "page_footer" %}
+xxxxxxxxxx
+{%
+page_footer
+"page_footer"
+%}
+Gallery
+Generates a HubSpot gallery tag. This gallery tag is based on
+Slick
+. While you can create a gallery module with standard module HubL syntax, If you want to predefine default slides using HubL, you must use block syntax. Both methods are shown below. Gallery images are lazy loaded using JavaScript.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% gallery "crm_gallery" %}
+<-- Block syntax -->
+{% widget_block gallery "Gallery" display_mode="standard" sizing="static", transition="slide", caption_position="below", auto_advance=True, overrideable=True, description_text="", show_pagination=True, label="Gallery", loop_slides=True, num_seconds=5  %}
+{% widget_attribute "slides" is_json=True %}
+[{
+"caption": "CRM Contacts App",
+"show_caption": true,
+"link_url": "http://www.hubspot.com/crm",
+"alt_text": "Screenshot of CRM Contacts",
+"img_src": "http://go.hubspot.com/hubfs/Contacts-View-1.png?t=1430860504240",
+"open_in_new_tab": true
+},
+{
+"caption": "HubSpot CRM Contact Profile",
+"show_caption": true,
+"link_url": "http://www.hubspot.com/",
+"alt_text": "HubSpot CRM Contact Profile",
+"img_src": "http://cdn2.hubspot.net/hubfs/53/Contact-Profile.png?t=1430860504240",
+"open_in_new_tab": true
+}]
+{% end_widget_attribute %}
+{% end_widget_block %}
+xxxxxxxxxx
+23
+1
+{%
+gallery
+"crm_gallery"
+%}
+2
+​
+3
+<
+--
+Block
+syntax
+--
+>
+4
+{%
+widget_block gallery
+"Gallery"
+display_mode
+=
+"standard"
+sizing
+=
+"static"
+, transition
+=
+"slide"
+, caption_position
+=
+"below"
+, auto_advance
+=
+True, overrideable
+=
+True, description_text
+=
+""
+, show_pagination
+=
+True, label
+=
+"Gallery"
+, loop_slides
+=
+True, num_seconds
+=
+5
+%}
+5
+{%
+widget_attribute
+"slides"
+is_json
+=
+True
+%}
+6
+[{
+7
+"caption": "CRM Contacts App",
+8
+"show_caption": true,
+9
+"link_url": "http://www.hubspot.com/crm",
+10
+"alt_text": "Screenshot of CRM Contacts",
+11
+"img_src": "http://go.hubspot.com/hubfs/Contacts-View-1.png?t=1430860504240",
+12
+"open_in_new_tab": true
+13
+},
+14
+{
+15
+"caption": "HubSpot CRM Contact Profile",
+16
+"show_caption": true,
+17
+"link_url": "http://www.hubspot.com/",
+18
+"alt_text": "HubSpot CRM Contact Profile",
+19
+"img_src": "http://cdn2.hubspot.net/hubfs/53/Contact-Profile.png?t=1430860504240",
+20
+"open_in_new_tab": true
+21
+}]
+22
+{%
+end_widget_attribute
+%}
+23
+{%
+end_widget_block
+%}
+Parameter
+Type
+Description
+Default
+slides
+JSON
+A JSON list of the default caption, the link url, the alt text, the image src, and whether to open in a new tab. See block syntax above.
+loop_slides
+Boolean
+When True, continuously loop through slides.
+True
+num_seconds
+Number
+Time in seconds to pause between slides.
+5
+show_pagination
+Boolean
+Provide buttons below slider to navigate among slides.
+True
+sizing
+Enumeration
+Determines whether the slider changes sizes, based on the height of the slides. Possible values include: "static" or "resize".
+"static"
+auto_advance
+Boolean
+Automatically advance slides after the time set in num_seconds.
+False
+transition
+Enumeration
+Sets the type of slide transition. Possible values include: "fade" or "slide".
+"slide"
+caption_position
+Enumeration
+Affects positioning of caption on or below the slide. Possible values include "below" or "superimpose".
+"below"
+display_mode
+Enumeration
+Determines how the image gallery will be displayed. Possible values include: "standard", "lightbox", "thumbnail".
+"standard"
+lightboxRows
+Number
+If "display_mode" is set to "lightbox", this parameter will control the number of rows displayed within the lightbox.
+3
+Header
+Generates a header module that will render text as an h1-h6 tag.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% header "header"  %}
+{% header "my_header" header_tag="h1", overrideable=True, value="A clear and bold header", label="Header" %}
+xxxxxxxxxx
+2
+1
+{%
+header
+"header"
+%}
+2
+{%
+header
+"my_header"
+header_tag
+=
+"h1"
+, overrideable
+=
+True, value
+=
+"A clear and bold header"
+, label
+=
+"Header"
+%}
+Parameter
+Type
+Description
+Default
+header_tag
+String
+Select which heading tag to render. Possible values include: h1, h2, h3, h4, h5, h6.
+h1
+value
+String
+Renders default text within the heading module.
+"A clear bold header"
+Icon
+Adds an icon tag that allows users to select and icon for use. Supported icons sets are FontAwesome
+5.0.10
+,
+5.14.0
+, and
+6.4.2
+.
+This tag cannot be used in modules enabled for email.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% icon
+name="Accessible Icon"
+style="REGULAR"
+unicode="f368"
+icon_set="fontawesome-5.14.0"
+purpose="decorative"
+title="Accessible Icon"
+%}
+xxxxxxxxxx
+8
+1
+{%
+icon
+2
+name
+=
+"Accessible Icon"
+3
+style
+=
+"REGULAR"
+4
+unicode
+=
+"f368"
+5
+icon_set
+=
+"fontawesome-5.14.0"
+6
+purpose
+=
+"decorative"
+7
+title
+=
+"Accessible Icon"
+8
+%}
+Parameter
+Type
+Description
+Default
+name
+String
+Name of the icon.
+style
+String
+Style of the icon. Possible values:
+REGULAR
+or
+SOLID
+REGULAR
+unicode
+String
+The Unicode character representation of the icon.
+icon_set
+String
+The FontAwesome icon set to use. Possible values are:
+fontawesome-5.14.0
+fontawesome-5.0.10
+fontawesome-6.4.2
+purpose
+String
+The purpose of the icon, used for
+accessibility
+. Possible values are
+decorative
+or
+semantic
+. If set to
+decorative
+, an additional attribute of
+aria-hidden="true"
+will be added to the icon.
+decorative
+title
+String
+The title element of the icon's svg, along with a
+labelledby
+attribute that points to the title.
+Image
+Creates a image tag that allows users to select an image from the content editor. If you want the image to be linked to a destination URL, you should use linked_image below.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% image "image" %}
+{% image "executive_image" label="Executive photo", alt="Photo of Brian Halligan", src="//cdn2.hubspot.net/hub/53/file-733888619-jpg/assets/hubspot.com/about/management/brian-home.jpg", width="300" %}
+xxxxxxxxxx
+2
+1
+{%
+image
+"image"
+%}
+2
+{%
+image
+"executive_image"
+label
+=
+"Executive photo"
+, alt
+=
+"Photo of Brian Halligan"
+, src
+=
+"//cdn2.hubspot.net/hub/53/file-733888619-jpg/assets/hubspot.com/about/management/brian-home.jpg"
+, width
+=
+"300"
+%}
+Parameter
+Type
+Description
+Default
+alt
+String
+Sets the default alt text for the image.
+src
+String
+Populates the src attribute of the img tag.
+width
+Number
+Sets the width attribute of the img tag.
+The width of the image
+height
+Number
+Sets a min-height in a style attribute of the img tag
+for email templates only
+.
+The height of the image
+hspace
+Number
+Sets the hspace attribute of the img tag.
+align
+String
+Sets the align attribute of the img tag. Possible values include: left, right, & center.
+style
+String
+Adds inline CSS declarations to the img tag. For example style="border:1px solid blue; margin:10px"
+loading
+String
+Controls img element loading attribute.
+Used for browser based lazy loading.
+Image src
+An image src module creates a image selector in the content editor, but rather than printing a img tag, it renders the URL of the image. This tag is generally used with
+no_wrapper=True
+parameter, so that the image src can be added to inline CSS or other markup. An alternative to using this tag is to use the
+export_to_template_context
+parameter.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% image_src "image_src" %}
+{% image_src "executve_image_src" src="//cdn2.hubspot.net/hub/53/file-733888614-jpg/assets/hubspot.com/about/management/dharmesh-home.jpg", no_wrapper=True %}
+xxxxxxxxxx
+2
+1
+{%
+image_src
+"image_src"
+%}
+2
+{%
+image_src
+"executve_image_src"
+src
+=
+"//cdn2.hubspot.net/hub/53/file-733888614-jpg/assets/hubspot.com/about/management/dharmesh-home.jpg"
+, no_wrapper
+=
+True
+%}
+Parameter
+Type
+Description
+src
+String
+Specifies the default URL image src.
+Language switcher
+Adds a Globe Icon with links to the translated versions of a given CMS page. Learn more about
+multi-language content here
+.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% language_switcher "language_switcher" overrideable=false, display_mode="localized", label="Language Switcher" %}
+xxxxxxxxxx
+{%
+language_switcher
+"language_switcher"
+overrideable
+=
+false
+, display_mode
+=
+"localized"
+, label
+=
+"Language Switcher"
+%}
+Parameter
+Type
+Description
+Default
+display_mode
+Enumeration
+The language of the text in the language switcher. Values are:
+Pagelang
+means the names of languages will display in the language of the page the switcher is on.
+Localized
+means the name of each language will display in that language.
+Hybrid
+is a combination of the two.
+Localized
+Linked image
+Creates a user-selectable image that is wrapped in a link. This tag has all of the parameters of an image module with two additional parameters that specify the link destination URL and whether the link opens in a new window.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% linked_image "linked_image" %}
+{% linked_image "executive_image"
+label="Executive photo",
+link="https://twitter.com/bhalligan", \
+open_in_new_tab=True,
+alt="Photo of Brian Halligan",
+src="//cdn2.hubspot.net/hub/53/file-733888619-jpg/assets/hubspot.com/about/management/brian-home.jpg", width="300"
+%}
+xxxxxxxxxx
+8
+1
+{%
+linked_image
+"linked_image"
+%}
+2
+{%
+linked_image
+"executive_image"
+3
+label
+=
+"Executive photo"
+,
+4
+link
+=
+"https://twitter.com/bhalligan"
+, \
+5
+open_in_new_tab
+=
+True,
+6
+alt
+=
+"Photo of Brian Halligan"
+,
+7
+src
+=
+"//cdn2.hubspot.net/hub/53/file-733888619-jpg/assets/hubspot.com/about/management/brian-home.jpg"
+, width
+=
+"300"
+8
+%}
+Parameter
+Type
+Description
+Default
+alt
+String
+Sets the default alt text for the image.
+src
+String
+Populates the src attribute of the img tag.
+width
+Number
+Sets the width attribute of the img tag.
+The width of the image
+height
+Number
+Sets a min-height in a style attribute of the img tag for
+email templates only.
+The height of the image
+hspace
+Number
+Sets the hspace attribute of the img tag.
+align
+String
+Sets the align attribute of the img tag. Possible values include: left, right, & center.
+style
+String
+Adds inline CSS declarations to the img tag. For example style="border:1px solid blue; margin:10px"
+open_in_new_tab
+Boolean
+Selects whether or not to open the destination URL in another tab.
+False
+link
+String
+Sets the destination URL of the link that wraps the img tag.
+target
+String
+Sets the target attribute of the link tag.
+loading
+String
+Controls img element loading attribute.
+Used for browser based lazy loading.
+Logo
+A logo tag renders your company's logo from the account's
+brand kit settings
+.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% logo "logo" %}
+{% logo "my_logo" width="200" %}
+xxxxxxxxxx
+2
+1
+{%
+logo
+"logo"
+%}
+2
+{%
+logo
+"my_logo"
+width
+=
+"200"
+%}
+Parameter
+Type
+Description
+Default
+alt
+String
+Sets the default alt text for the image.
+Value in brand kit settings
+src
+String
+Populates the src attribute of the img tag.
+Value in brand kit settings
+link
+String
+Sets the destination URL of the link that wraps the img tag.
+width
+Number
+Sets the width attribute of the img tag.
+The width of the image
+height
+Number
+Sets a min-height in a style attribute of the img tag for
+email templates only.
+The height of the image
+hspace
+Number
+Sets the hspace attribute of the
+img
+tag.
+align
+String
+Sets the align attribute of the
+img
+tag. Possible values include:
+left
+,
+right
+, and
+center
+.
+style
+String
+Adds inline CSS declarations to the img tag. For example:
+style="border:1px solid blue; margin:10px"
+suppress_company_name
+Boolean
+Hides company name if an image logo isn't set.
+False
+use_account_default
+Boolean
+Set to
+true
+to use the company name from the account's default settings.
+False
+open_in_new_tab
+Boolean
+Selects whether or not to open the destination URL in another tab.
+False
+override_inherited_src
+Boolean
+When set to
+true
+, use src from logo widget rather than src inherited from settings or template.
+True
+heading_level
+String
+When using non-linked text-based logos, this wraps the text-based logo in one of the following available options as an HTML tag:
+h1
+,
+h2
+,
+h3
+,
+h4
+.
+h1
+loading
+String
+Controls img element loading attribute for
+browser based lazy loading.
+Menu
+Generates an advanced menu based on a menu tree in
+Content Settings > Advanced Menus.
+See
+menus and navigation
+for more information on using menus in
+templates
+and
+modules
+. If
+id
+is set to
+null
+the menu tag will render the default menu for the HubSpot account.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% menu "menu" %}
+{% menu "my_menu"
+id=456,
+site_map_name="Default",
+overrideable=False,
+root_type="site_root",
+flyouts="true",
+max_levels="2",
+flow="horizontal",
+label="Advanced Menu"
+%}
+xxxxxxxxxx
+11
+1
+{%
+menu
+"menu"
+%}
+2
+{%
+menu
+"my_menu"
+3
+id
+=
+456
+,
+4
+site_map_name
+=
+"Default"
+,
+5
+overrideable
+=
+False,
+6
+root_type
+=
+"site_root"
+,
+7
+flyouts
+=
+"true"
+,
+8
+max_levels
+=
+"2"
+,
+9
+flow
+=
+"horizontal"
+,
+10
+label
+=
+"Advanced Menu"
+11
+%}
+Parameter
+Type
+Description
+Default
+id
+Number
+ID of Menu Tree from Advanced Menus in Content Settings.
+site_map_name
+String
+Name of Menu Tree from Advanced Menus in Content Settings.
+"default"
+root_type
+Enumeration
+Specifies the type of advanced menus. Options include: "site_root", "top_parent", "parent", "page_name", "page_id", and "breadcrumb". These values correspond to static, dynamic by section, dynamic by page, and breadcrumb.
+"site_root"
+flyouts
+String
+When true, a class is added to the menu tree that can be styled to allow child menu items will appear when you hover over the parent. When false, child menu items will always appear.
+"true"
+max_levels
+Number
+Determines how many levels of nested menus render in the markup. This parameter dictates number of menu tree children that can be expanded in the menu.
+2
+flow
+Enumeration
+Sets orientation of menu items. This adds classes to menu tree, so that they can be styled accordingly. Possible values include "horizontal", "vertical" or "vertical_flyouts". Horizontal menus display items side-by-side, and vertical menus are top-to-bottom.
+"horizontal"
+root_key
+String
+Used to find the menu root. When root_type is set to page_id or page_name, this param should be the page ID or the label of the page, respectively.
+"horizontal"
+label
+String
+Some rich content to describe this entity
+False
+label
+String
+Some rich content to describe this entity
+False
+Require_css
+A HubL tag that enqueues a style element to be rendered in the
+<head>
+.
+This tag is similar to the
+require_css function
+, except that this tag inserts styling inline rather than from a stylesheet. This tag also does not deduplicate against other instances of the CSS on the same page. If you're building a module and want to insert a stylesheet, but you might use that module multiple times on a single page, you may want to use the
+require_css
+function instead.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{{ standard_header_includes }}
+<!-- more html -->
+{% require_css %}
+<style>
+body {
+color: red;
+}
+</style>
+{% end_require_css %}
+{{ standard_footer_includes }}
+xxxxxxxxxx
+12
+1
+{{
+standard_header_includes
+}}
+2
+<!-- more html -->
+3
+​
+4
+{%
+require_css
+%}
+5
+<
+style
+>
+6
+body
+{
+7
+color
+:
+red
+;
+8
+}
+9
+</
+style
+>
+10
+{%
+end_require_css
+%}
+11
+​
+12
+{{
+standard_footer_includes
+}}
+Require_head
+A HubL tag that enqueues anything placed inside of it into the
+standard_header_includes
+which is in the template's
+<head>
+. For most Javascript and CSS see
+require_js
+and
+require_css
+. Some use-cases for
+require_head
+include supplying meta tags, and special link tags (like prefetch and preconnect) from modules.
+Copy code snippet
+{% require_head %}
+<meta name="third-party-app-verification-id" content="123456">
+<link rel="prefetch" href="http://example.com/large-script.js">
+<!-- these are purely examples, you could add anything that requires being in the head. require_css and require_js should be used instead of this when embedding a style tag or script tag.-->
+{% end_require_head %}
+xxxxxxxxxx
+5
+1
+{%
+require_head
+%}
+2
+<
+meta
+name
+=
+"third-party-app-verification-id"
+content
+=
+"123456"
+>
+3
+<
+link
+rel
+=
+"prefetch"
+href
+=
+"http://example.com/large-script.js"
+>
+4
+<!-- these are purely examples, you could add anything that requires being in the head. require_css and require_js should be used instead of this when embedding a style tag or script tag.-->
+5
+{%
+end_require_head
+%}
+Require_js
+A HubL tag that enqueues a script element to be rendered. To enqueue a script to render in the
+<head />
+from a different file via a
+<script />
+element (as opposed to inline as shown here), use the HubL function
+require_js(absolute_url)
+instead.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{{ standard_header_includes }}
+<!-- more html -->
+{% require_js position="footer" %}
+<script>
+console.log("The CMS is awesome!");
+</script>
+{% end_require_js %}
+{{ standard_footer_includes }}
+xxxxxxxxxx
+10
+1
+{{
+standard_header_includes
+}}
+2
+<!-- more html -->
+3
+​
+4
+{%
+require_js position
+=
+"footer"
+%}
+5
+<
+script
+>
+6
+console
+.
+log
+(
+"The CMS is awesome!"
+);
+7
+</
+script
+>
+8
+{%
+end_require_js
+%}
+9
+​
+10
+{{
+standard_footer_includes
+}}
+Parameter
+Type
+Description
+Default
+position
+String
+Set the position where the inline script will be rendered. Options include:
+"head"
+and
+"footer"
+.
+"footer"
+Rich text
+Creates a WYSIWYG content editor.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% rich_text "rich_text" %}
+{% rich_text "left_column" label="Enter HTML here" html="<div>My rich text default content</div>" %}
+Block Syntax Example:
+{% widget_block rich_text "right_column" overrideable=True, label="Right Column"  %}
+{% widget_attribute "html" %}
+<h2>Something Powerful</h2>
+<h3>Tell The Reader More</h3>
+<p>The headline and subheader tells us what you're offering, and the form header closes the deal. Over here you can explain why your offer is so great it's worth filling out a form for.</p>
+<p>Remember:</p>
+<ul>
+<li>Bullets are great</li>
+<li>For spelling out <a href="#">benefits</a> and</li>
+<li>Turning visitors into leads.</li>
+</ul>
+{% end_widget_attribute %}
+{% end_widget_block %}
+xxxxxxxxxx
+20
+1
+{%
+rich_text
+"rich_text"
+%}
+2
+{%
+rich_text
+"left_column"
+label
+=
+"Enter HTML here"
+html
+=
+"<div>My rich text default content</div>"
+%}
+3
+​
+4
+​
+5
+Block Syntax Example:
+6
+​
+7
+​
+8
+{%
+widget_block rich_text
+"right_column"
+overrideable
+=
+True, label
+=
+"Right Column"
+%}
+9
+{%
+widget_attribute
+"html"
+%}
+10
+<
+h2
+>
+Something Powerful
+</
+h2
+>
+11
+<
+h3
+>
+Tell The Reader More
+</
+h3
+>
+12
+<
+p
+>
+The headline and subheader tells us what you're offering, and the form header closes the deal. Over here you can explain why your offer is so great it's worth filling out a form for.
+</
+p
+>
+13
+<
+p
+>
+Remember:
+</
+p
+>
+14
+<
+ul
+>
+15
+<
+li
+>
+Bullets are great
+</
+li
+>
+16
+<
+li
+>
+For spelling out
+<
+a
+href
+=
+"#"
+>
+benefits
+</
+a
+>
+and
+</
+li
+>
+17
+<
+li
+>
+Turning visitors into leads.
+</
+li
+>
+18
+</
+ul
+>
+19
+{%
+end_widget_attribute
+%}
+20
+{%
+end_widget_block
+%}
+Parameter
+Type
+Description
+Default
+html
+String
+Default rich text content for module.
+<h2>Something Powerful</h2>  <h3>Tell The Reader More</h3>  <p>The headline and subheader tells us what you're offering, and the form header closes the deal. Over here you can explain why your offer is so great it's worth filling out a form for.</p>  <p>Remember:</p>  <ul><li>Bullets are great</li><li>For spelling out [benefits](#) and</li><li>Turning visitors into leads.</li></ul>
+RSS listing
+Loads a list of content from an internal or external RSS feed.
+Please note:
+this module loads asynchronously on the client-side. As a result, if you want to manipulate the feed after it's loaded, you'll need to define a global JS function to handle that manipulation. Use the function
+hsRssFeedComplete(feeds)
+, where
+feeds
+is the jQuery selector on all feeds that have been completed. You can directly manipulate the DOM object in that function.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% rss_listing "rss_listing" %}
+{% rss_listing "my_rss_listing" rss_url="", publish_date_text="posted at", feed_source={rss_url="", is_external=False, content_group_id="30808594297"}, click_through_text="Read more", show_date=True, include_featured_image=True, overrideable=False, publish_date_format="short", show_detail=True, show_author=True, number_of_items="3", is_external=False, title="", content_group_id="24732847", label="RSS Listing", limit_to_chars="200", attribution_text="by" %}
+xxxxxxxxxx
+2
+1
+{%
+rss_listing
+"rss_listing"
+%}
+2
+{%
+rss_listing
+"my_rss_listing"
+rss_url
+=
+""
+, publish_date_text
+=
+"posted at"
+, feed_source
+=
+{rss_url
+=
+""
+, is_external
+=
+False, content_group_id
+=
+"30808594297"
+}, click_through_text
+=
+"Read more"
+, show_date
+=
+True, include_featured_image
+=
+True, overrideable
+=
+False, publish_date_format
+=
+"short"
+, show_detail
+=
+True, show_author
+=
+True, number_of_items
+=
+"3"
+, is_external
+=
+False, title
+=
+""
+, content_group_id
+=
+"24732847"
+, label
+=
+"RSS Listing"
+, limit_to_chars
+=
+"200"
+, attribution_text
+=
+"by"
+%}
+Parameter
+Type
+Description
+Default
+show_title
+Boolean
+Shows or hides RSS feed title.
+True
+show_date
+Boolean
+Displays post date.
+True
+show_author
+Boolean
+Displays author name.
+True
+show_detail
+Boolean
+Display post summary up to number of characters set by
+limit_to_chars
+parameter.
+True
+title
+String
+Populates a heading above the RSS feed listing.
+limit_to_chars
+Number
+Maximum number of characters to display in summary.
+200
+publish_date_format
+String
+Format for the publish date. Possible values include
+"short"
+,
+"medium"
+and
+"long"
+. Also accepts custom formats including
+"MMMM d, yyyy 'at' h:mm a"
+.
+"short"
+attribution_text
+String
+The text which attributes an author to a post.
+"by"
+click_through_text
+String
+The text which will be displayed for the click through link at the end of a post summary.
+"Read more"
+publish_date_text
+String
+The text which indicates when a post was published.
+"posted at"
+include_featured_image
+Boolean
+Displays featured image with post link for HubSpot generated RSS feeds.
+False
+item_title_tag
+String
+Specifies HTML tag of each post title.
+span
+is_external
+Boolean
+RSS feed is from an external blog.
+False
+number_of_items
+Number
+Maximum number of posts to display.
+5
+publish_date_language
+String
+Specifies the language of the publish date.
+en_US
+rss_url
+String
+The URL where the RSS feed is located.
+content_group_id
+String
+ID for blog when feed source is internal blog.
+select_blog
+String
+Can be used to select an internal HubSpot blog feed.
+default
+feed_source
+String
+Set source for RSS feed. When internal, general format is
+{rss_url="", is_external=False, content_group_id="2502431580"}
+. When external, general format is
+{rss_url="http://blog.hubspot.com/marketing/rss.xml", is_external=True}
+.
+tag_id
+Number
+ID for tag when feed source is internal blog.
+Section header
+Generates an html heading and
+<p>
+subheader.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% section_header "section_header" %}
+{% section_header "my_section_header" subheader="A more subdued subheader", header="A clear and bold header", label="Section Header"  %}
+xxxxxxxxxx
+2
+1
+{%
+section_header
+"section_header"
+%}
+2
+{%
+section_header
+"my_section_header"
+subheader
+=
+"A more subdued subheader"
+, header
+=
+"A clear and bold header"
+, label
+=
+"Section Header"
+%}
+Parameter
+Type
+Description
+Default
+header
+String
+Text to display in header.
+"A clear and bold header"
+subheader
+String
+Text to display in subheader.
+"A more subdued subheader"
+heading_level
+String
+The semantic HTML heading level. h1 to h6 are supported.
+"h1"
+Simple menu
+Simple menus allow you to create basic
+navigation menus
+that can be modified at the page level. Unlike regular menu modules, simple menus are not managed from the Navigation screen in Website Settings, but rather from the template and page editors. You can use
+block syntax
+to set up a default menu tree.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% simple_menu "simple_menu" %}
+{% simple_menu "my_simple_menu" orientation="horizontal", label="Simple Menu" %}
+Block Syntax Example:
+{% widget_block simple_menu "block_simple_menu" overrideable=True, orientation="horizontal", label="Simple Menu"  %}
+{% widget_attribute "menu_tree" is_json=True %}[{"contentType": null, "subCategory": null, "pageLinkName": null, "pageLinkId": null, "isPublished": false, "categoryId": null, "linkParams": null, "linkLabel": "Home", "linkTarget": null, "linkUrl": "http://www.hubspot.com", "children": [], "isDeleted": false}, {"contentType": null, "subCategory": null, "pageLinkName": null, "pageLinkId": null, "isPublished": false, "categoryId": null, "linkParams": null, "linkLabel": "About", "linkTarget": null, "linkUrl": "http://www.hubspot.com/internet-marketing-company", "children": [{"contentType": null, "subCategory": null, "pageLinkName": null, "linkUrl": "http://www.hubspot.com/company/management", "isPublished": false, "children": [], "linkParams": null, "linkLabel": "Our Team", "linkTarget": null, "pageLinkId": null, "categoryId": null, "isDeleted": false}], "isDeleted": false}, {"contentType": null, "subCategory": null, "pageLinkName": null, "pageLinkId": null, "isPublished": false, "categoryId": null, "linkParams": null, "linkLabel": "Pricing", "linkTarget": null, "linkUrl": "http://www.hubspot.com/pricing", "children": [], "isDeleted": false}]{% end_widget_attribute %}
+{% end_widget_block %}
+xxxxxxxxxx
+10
+1
+{%
+simple_menu
+"simple_menu"
+%}
+2
+{%
+simple_menu
+"my_simple_menu"
+orientation
+=
+"horizontal"
+, label
+=
+"Simple Menu"
+%}
+3
+​
+4
+​
+5
+Block Syntax Example:
+6
+​
+7
+​
+8
+{%
+widget_block simple_menu
+"block_simple_menu"
+overrideable
+=
+True, orientation
+=
+"horizontal"
+, label
+=
+"Simple Menu"
+%}
+9
+{%
+widget_attribute
+"menu_tree"
+is_json
+=
+True
+%}
+[{"contentType": null, "subCategory": null, "pageLinkName": null, "pageLinkId": null, "isPublished": false, "categoryId": null, "linkParams": null, "linkLabel": "Home", "linkTarget": null, "linkUrl": "http://www.hubspot.com", "children": [], "isDeleted": false}, {"contentType": null, "subCategory": null, "pageLinkName": null, "pageLinkId": null, "isPublished": false, "categoryId": null, "linkParams": null, "linkLabel": "About", "linkTarget": null, "linkUrl": "http://www.hubspot.com/internet-marketing-company", "children": [{"contentType": null, "subCategory": null, "pageLinkName": null, "linkUrl": "http://www.hubspot.com/company/management", "isPublished": false, "children": [], "linkParams": null, "linkLabel": "Our Team", "linkTarget": null, "pageLinkId": null, "categoryId": null, "isDeleted": false}], "isDeleted": false}, {"contentType": null, "subCategory": null, "pageLinkName": null, "pageLinkId": null, "isPublished": false, "categoryId": null, "linkParams": null, "linkLabel": "Pricing", "linkTarget": null, "linkUrl": "http://www.hubspot.com/pricing", "children": [], "isDeleted": false}]
+{%
+end_widget_attribute
+%}
+10
+{%
+end_widget_block
+%}
+Parameter
+Type
+Description
+Default
+orientation
+Enumeration
+Defines classes of menu markup to allow to style the orientation of menu items on the page. Possible values include
+"horizontal"
+and
+"vertical"
+.
+"horizontal"
+menu_tree
+JSON
+Menu structure including page link names and target URLs.
+[]
+Social sharing
+Social sharing tags generate social media icons that can be used to share a particular page. This module can be used with
+block syntax
+to customize the icon images and more.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% social_sharing "social_sharing" %}
+{% social_sharing "my_social_sharing" use_page_url=True %}
+Block Syntax Example:
+{% widget_block social_sharing "my_social_sharing" label="Social Sharing", use_page_url=True, overrideable=True  %}
+{% widget_attribute "pinterest" is_json=True %}{"custom_link_format": "", "pinterest_media": "http://cdn1.hubspot.com/hub/158015/305390_10100548508246879_837195_59275782_6882128_n.jpg", "enabled": true, "network": "pinterest", "img_src": "https://static.hubspot.com/final/img/common/icons/social/pinterest-24x24.png"}{% end_widget_attribute %}
+{% widget_attribute "twitter" is_json=True %}{"custom_link_format": "", "enabled": true, "network": "twitter", "img_src": "https://static.hubspot.com/final/img/common/icons/social/twitter-24x24.png"}{% end_widget_attribute %}
+{% widget_attribute "linkedin" is_json=True %}{"custom_link_format": "", "enabled": true, "network": "linkedin", "img_src": "https://static.hubspot.com/final/img/common/icons/social/linkedin-24x24.png"}{% end_widget_attribute %}
+{% widget_attribute "facebook" is_json=True %}{"custom_link_format": "", "enabled": true, "network": "facebook", "img_src": "https://static.hubspot.com/final/img/common/icons/social/facebook-24x24.png"}{% end_widget_attribute %}
+{% widget_attribute "email" is_json=True %}{"custom_link_format": "", "enabled": true, "network": "email", "img_src": "https://static.hubspot.com/final/img/common/icons/social/email-24x24.png"}{% end_widget_attribute %}
+{% end_widget_block %}
+xxxxxxxxxx
+13
+1
+{%
+social_sharing
+"social_sharing"
+%}
+2
+{%
+social_sharing
+"my_social_sharing"
+use_page_url
+=
+True
+%}
+3
+​
+4
+Block Syntax Example:
+5
+​
+6
+​
+7
+{%
+widget_block social_sharing
+"my_social_sharing"
+label
+=
+"Social Sharing"
+, use_page_url
+=
+True, overrideable
+=
+True
+%}
+8
+{%
+widget_attribute
+"pinterest"
+is_json
+=
+True
+%}
+{"custom_link_format": "", "pinterest_media": "http://cdn1.hubspot.com/hub/158015/305390_10100548508246879_837195_59275782_6882128_n.jpg", "enabled": true, "network": "pinterest", "img_src": "https://static.hubspot.com/final/img/common/icons/social/pinterest-24x24.png"}
+{%
+end_widget_attribute
+%}
+9
+{%
+widget_attribute
+"twitter"
+is_json
+=
+True
+%}
+{"custom_link_format": "", "enabled": true, "network": "twitter", "img_src": "https://static.hubspot.com/final/img/common/icons/social/twitter-24x24.png"}
+{%
+end_widget_attribute
+%}
+10
+{%
+widget_attribute
+"linkedin"
+is_json
+=
+True
+%}
+{"custom_link_format": "", "enabled": true, "network": "linkedin", "img_src": "https://static.hubspot.com/final/img/common/icons/social/linkedin-24x24.png"}
+{%
+end_widget_attribute
+%}
+11
+{%
+widget_attribute
+"facebook"
+is_json
+=
+True
+%}
+{"custom_link_format": "", "enabled": true, "network": "facebook", "img_src": "https://static.hubspot.com/final/img/common/icons/social/facebook-24x24.png"}
+{%
+end_widget_attribute
+%}
+12
+{%
+widget_attribute
+"email"
+is_json
+=
+True
+%}
+{"custom_link_format": "", "enabled": true, "network": "email", "img_src": "https://static.hubspot.com/final/img/common/icons/social/email-24x24.png"}
+{%
+end_widget_attribute
+%}
+13
+{%
+end_widget_block
+%}
+Parameter
+Type
+Description
+Default
+use_page_url
+Boolean
+If true, the module shares the URL of the page by default.
+True
+link
+String
+Specifies a different URL to share, if
+use_page_url
+is false.
+pinterest
+JSON
+Parameters for Pinterest link format and icon image source.
+See block syntax example, above
+twitter
+JSON
+Parameters for Twitter link format and icon image source.
+See block syntax example, above
+linked_in
+JSON
+Parameters for LinkedIn link format and icon image source.
+See block syntax example, above
+facebook
+JSON
+Parameters for Facebook link format and icon image source.
+See block syntax example, above
+email
+JSON
+Parameters for email sharing link format and icon image source.
+See block syntax example, above
+Spacer
+A spacer tag generates an empty span tag. This tag can be styled to act as a spacer. In drag and drop layouts, the spacer module is wrapped in a container with a class of span1-span12 to determine how much space the module should take up in the twelve column responsive grid.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% space "space" %}
+{% space "spacer" label="Horizontal Spacer" %}
+xxxxxxxxxx
+2
+1
+{%
+space
+"space"
+%}
+2
+{%
+space
+"spacer"
+label
+=
+"Horizontal Spacer"
+%}
+System page tags
+The following tags can be used on
+system pages
+, such as the password reset or email subscription pages.
+Email backup unsubscribe
+The backup unsubscribe tag renders for email recipients, if HubSpot is unable to determine their email address, when that recipient tries to unsubscribe. This tag renders a form for the contact to enter his or her email address to unsubscribe from email communications. It should be used on an
+Unsubscribe Backup system template.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% email_simple_subscription "email_simple_subscription" %}
+{% email_simple_subscription "email_simple_subscription"
+header="Email Unsubscribe",
+input_help_text="Your email address:",
+input_placeholder="email@example.com",
+button_text="Unsubscribe",
+label="Backup Unsubscribe"
+%}
+xxxxxxxxxx
+8
+1
+{%
+email_simple_subscription
+"email_simple_subscription"
+%}
+2
+{%
+email_simple_subscription
+"email_simple_subscription"
+3
+header
+=
+"Email Unsubscribe"
+,
+4
+input_help_text
+=
+"Your email address:"
+,
+5
+input_placeholder
+=
+"email@example.com"
+,
+6
+button_text
+=
+"Unsubscribe"
+,
+7
+label
+=
+"Backup Unsubscribe"
+8
+%}
+Parameter
+Type
+Description
+Default
+header
+String
+Renders text in an h1 tag above the unsubscribe form.
+"Email Unsubscribe"
+input_help_text
+String
+Renders help text in an h3 tag above your email unsubscribe form field.
+"Your email address:"
+input_placeholder
+String
+Adds placeholder text within the email address form field.
+"email@example.com"
+button_text
+String
+Changes the text of the unsubscribe form submit button.
+"Unsubscribe"
+Email subscriptions
+This module renders when an email recipient goes to edit his or her subscription preferences. It should be used on a
+Subscription Preference system template.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% email_subscriptions "email_subscriptions" %}
+{% email_subscriptions "email_subscriptions"
+resubscribe_button_text="Yes, resubscribe me!",
+unsubscribe_single_text="Uncheck the types of emails you do not want to receive:",
+subheader_text="\n    If this is not your email address, please ignore this page since the email associated with this page was most likely forwarded to you.\n",
+unsubscribe_all_unsubbed_text="You are presently unsubscribed from all of our emails. Would you like to receive our emails again?",
+button_text="Update email preferences", label="Subscription Preferences", header="Communication Preferences",
+unsubscribe_all_option="Unsubscribe me from all mailing lists.",
+unsubscribe_all_text="Or check here to never receive any emails:"
+%}
+xxxxxxxxxx
+10
+1
+{%
+email_subscriptions
+"email_subscriptions"
+%}
+2
+{%
+email_subscriptions
+"email_subscriptions"
+3
+resubscribe_button_text
+=
+"Yes, resubscribe me!"
+,
+4
+unsubscribe_single_text
+=
+"Uncheck the types of emails you do not want to receive:"
+,
+5
+subheader_text
+=
+"\n    If this is not your email address, please ignore this page since the email associated with this page was most likely forwarded to you.\n"
+,
+6
+unsubscribe_all_unsubbed_text
+=
+"You are presently unsubscribed from all of our emails. Would you like to receive our emails again?"
+,
+7
+button_text
+=
+"Update email preferences"
+, label
+=
+"Subscription Preferences"
+, header
+=
+"Communication Preferences"
+,
+8
+unsubscribe_all_option
+=
+"Unsubscribe me from all mailing lists."
+,
+9
+unsubscribe_all_text
+=
+"Or check here to never receive any emails:"
+10
+%}
+Parameter
+Type
+Description
+Default
+header
+String
+Renders text in an h1 tag above the subscription preferences form.
+"Communication Preferences"
+subheader_text
+String
+Populates text below the heading above the unsubscribe preferences.
+"<p>If this is not your email address, please ignore this page since the email associated with this page was most likely forwarded to you.</p>"
+unsubscribe_single_text
+String
+Renders text in a
+<p class="header">
+above the subscription options.
+"Uncheck the types of emails you do not want to receive:"
+unsubscribe_all_text
+String
+Renders text in a
+<p class="header">
+above the unsubscribe from all emails checkbox input.
+"Or check here to never receive any emails:"
+unsubscribe_all_unsubbed_text
+String
+Populates text within a
+<p>
+that renders, if a contact is currently unsubscribed from all emails.
+"You are presently unsubscribed from all of our emails. Would you like to receive our emails again?"
+unsubscribe_all_option
+String
+Sets the text next to the unsubscribe from all emails checkbox input.
+"Unsubscribe me from all mailing lists."
+button_text
+String
+Sets the text of the submit button that updates subscription preferences.
+"Update email preferences"
+resubscribe_button_text
+String
+Sets the text of the submit button for when contacts are resubscribing.
+"Yes, resubscribe me!"
+Email subscriptions confirmation
+The email subscriptions update confirmation is a module that can be added to the thank you template for when a recipient updates his or her subscription preferences or unsubscribes. It should be used on a
+Subscription Preference system template.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% email_subscriptions_confirmation "email_subscriptions_confirmation" %}
+{% email_subscriptions_confirmation "email_subscriptions_confirmation"
+label="Subscriptions Update Confirmation",
+unsubscribe_all_success="You have successfully unsubscribed from all email communications.",
+subscription_update_success="You have successfully updated your email preferences.",
+subheader_text="\n    If this is not your email address, please ignore this page since the email associated with this page was most likely forwarded to you.\n"
+%}
+xxxxxxxxxx
+7
+1
+{%
+email_subscriptions_confirmation
+"email_subscriptions_confirmation"
+%}
+2
+{%
+email_subscriptions_confirmation
+"email_subscriptions_confirmation"
+3
+label
+=
+"Subscriptions Update Confirmation"
+,
+4
+unsubscribe_all_success
+=
+"You have successfully unsubscribed from all email communications."
+,
+5
+subscription_update_success
+=
+"You have successfully updated your email preferences."
+,
+6
+subheader_text
+=
+"\n    If this is not your email address, please ignore this page since the email associated with this page was most likely forwarded to you.\n"
+7
+%}
+Parameter
+Type
+Description
+Default
+header
+String
+Renders text in an h1 tag above the unsubscribe form.
+"Communication Preferences"
+subheader_text
+String
+Populates text above the confirmation message.
+"<p>If this is not your email address, please ignore this page since the email associated with this page was most likely forwarded to you.</p>"
+unsubscribe_all_success
+String
+Sets the text that will display when someone unsubscribes from all email communications.
+"You have successfully unsubscribed from all email communications."
+subscription_update_success
+String
+Sets the text when a recipient updates his or her subscription preferences.
+"You have successfully updated your email preferences."
+Membership login
+Creates a login form to provide access to
+private content
+.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% member_login "my_login" %}
+{% member_login "my_login"
+email_label="Email",
+password_label="Password",
+remember_me_label="Remember Me",
+reset_password_text="Forgot your password?",
+submit_button_text="Login",
+show_password="Show password"
+%}
+xxxxxxxxxx
+9
+1
+{%
+member_login
+"my_login"
+%}
+2
+{%
+member_login
+"my_login"
+3
+email_label
+=
+"Email"
+,
+4
+password_label
+=
+"Password"
+,
+5
+remember_me_label
+=
+"Remember Me"
+,
+6
+reset_password_text
+=
+"Forgot your password?"
+,
+7
+submit_button_text
+=
+"Login"
+,
+8
+show_password
+=
+"Show password"
+9
+%}
+Parameter
+Type
+Description
+Default
+email_label
+String
+The label for the email entry field.
+"Email"
+password_label
+String
+The label for the password entry field.
+"Password"
+remember_me_label
+String
+The label for the "Remember Me" checkbox.
+"Remember Me"
+reset_password_text
+String
+The text for the password reset hyperlink.
+"Forgot your password?"
+submit_button_text
+String
+The text for the submit button.
+"Login"
+show_password
+String
+The text for the password reveal link.
+"Show password"
+Membership registration
+Creates a form to register for access to
+private content
+.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% member_register "my_register" %}
+{% member_register "my_register"
+email_label="Email",
+password_label="Password",
+password_confirm_label="Confirm Password",
+submit_button_text="Save Password",
+show_password="Show password"
+%}
+xxxxxxxxxx
+8
+1
+{%
+member_register
+"my_register"
+%}
+2
+{%
+member_register
+"my_register"
+3
+email_label
+=
+"Email"
+,
+4
+password_label
+=
+"Password"
+,
+5
+password_confirm_label
+=
+"Confirm Password"
+,
+6
+submit_button_text
+=
+"Save Password"
+,
+7
+show_password
+=
+"Show password"
+8
+%}
+Parameter
+Type
+Description
+Default
+email_label
+String
+The label for the email entry field.
+"Email"
+password_label
+String
+The label for the password entry field.
+"Password"
+password_confirm_label
+String
+The label for the password confirmation field.
+"Confirm Password"
+submit_button_text
+String
+The text for the submit button.
+"Save Password"
+show_password
+String
+The text for the password reveal link.
+"Show password"
+Password reset request
+Creates a form to send a password reset email for accessing password-protected pages.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% password_reset_request "my_password_reset_request" %}
+{% password_reset_request "my_password_reset_request"
+email_label="Email",
+submit_button_text="Send Reset Email"
+%}
+xxxxxxxxxx
+5
+1
+{%
+password_reset_request
+"my_password_reset_request"
+%}
+2
+{%
+password_reset_request
+"my_password_reset_request"
+3
+email_label
+=
+"Email"
+,
+4
+submit_button_text
+=
+"Send Reset Email"
+5
+%}
+Parameter
+Type
+Description
+Default
+email_label
+String
+The label for the email entry field.
+"Email"
+submit_button_text
+String
+The text for the submit button.
+"Send Reset Email"
+password_reset_message
+String
+The message that displays after requesting the password reset email.
+False
+Password reset
+Renders a password reset form for accessing password-protected pages.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% password_reset "my_password_reset" password_label="Password", password_confirm_label="Confirm Password", submit_button_text="Save password", show_password="Show password" %}
+xxxxxxxxxx
+{%
+password_reset
+"my_password_reset"
+password_label
+=
+"Password"
+, password_confirm_label
+=
+"Confirm Password"
+, submit_button_text
+=
+"Save password"
+, show_password
+=
+"Show password"
+%}
+Parameter
+Type
+Description
+Default
+password_label
+String
+The text label for the password input field.
+"Email"
+password_confirm_label
+String
+The text label for the password confirmation input field.
+"Send Reset Email"
+submit_button_text
+String
+The text label for the form submit button.
+False
+show_password
+String
+The text label for the button to unhide the entered password value.
+False
+password_requirements
+String
+The text label that describes password requirements.
+False
+Password prompt
+Adds a password prompt to password-protected pages.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% password_prompt "password_prompt" %}
+{% password_prompt "my_password_prompt"
+submit_button_text="Submit",
+bad_password_message="Sorry, please try again.\n",
+label="Password Prompt"
+%}
+xxxxxxxxxx
+6
+1
+{%
+password_prompt
+"password_prompt"
+%}
+2
+{%
+password_prompt
+"my_password_prompt"
+3
+submit_button_text
+=
+"Submit"
+,
+4
+bad_password_message
+=
+"Sorry, please try again.\n"
+,
+5
+label
+=
+"Password Prompt"
+6
+%}
+Parameter
+Type
+Description
+Default
+submit_button_text
+String
+Label for button below password entry field.
+"Submit"
+bad_password_message
+String
+Message displayed if incorrect password entered.
+"<p>Sorry, please try again.</p>"
+password_placeholder
+String
+Defines placeholder text within the password field.
+"Password"
+Text
+Creates a single line of text. This tag can be useful to be mixed into your markup, when used in conjunction with the
+no_wrapper=True
+parameter. For example, if you wanted your end users to be able to define a destination of a predefined anchor, you could populate the
+href
+with a text module with
+no_wrapper=True
+.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% text "text" %}
+{% text "simple_text_field" label="Enter text here", value="This is the default value for this text field" %}
+xxxxxxxxxx
+2
+1
+{%
+text
+"text"
+%}
+2
+{%
+text
+"simple_text_field"
+label
+=
+"Enter text here"
+, value
+=
+"This is the default value for this text field"
+%}
+Parameter
+Type
+Description
+value
+String
+Sets the default text of the single line text field.
+Textarea
+A textarea is similar to a text module in that it allows users to enter plain text, but it gives them a larger area to work in the content editor. This module does not support HTML. If you want to use directly within a predefined wrapping tag, add the
+no_wrapper=true
+parameter.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% textarea "my_textarea" %}
+{% textarea "my_textarea" label="Enter plain text block", value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a urna quis lacus vehicula rutrum.", no_wrapper=True %}
+xxxxxxxxxx
+2
+1
+{%
+textarea
+"my_textarea"
+%}
+2
+{%
+textarea
+"my_textarea"
+label
+=
+"Enter plain text block"
+, value
+=
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a urna quis lacus vehicula rutrum."
+, no_wrapper
+=
+True
+%}
+Parameter
+Type
+Description
+value
+String
+Sets the default text of the textarea.
+Video Player
+Render a video player for a video file from the file manager that has the
+Allow embedding, sharing, and tracking
+setting turned on.
+Input
+Input
+More
+Copy code snippet
+{% video_player "embed_player" %}
+{% video_player "embed_player" overrideable=False, type="scriptV4", hide_playlist=True, viral_sharing=False, embed_button=False, width="600", height="375", player_id="6178121750", style="", conversion_asset="{"type":"FORM","id":"9a77c63f-bee6-4ff8-9202-b0af020ea4b2","position":"POST"}" %}
+xxxxxxxxxx
+2
+1
+{%
+video_player
+"embed_player"
+%}
+2
+{%
+video_player
+"embed_player"
+overrideable
+=
+False, type
+=
+"scriptV4"
+, hide_playlist
+=
+True, viral_sharing
+=
+False, embed_button
+=
+False, width
+=
+"600"
+, height
+=
+"375"
+, player_id
+=
+"6178121750"
+, style
+=
+""
+, conversion_asset
+=
+"{"
+type
+":"
+FORM
+","
+id
+":"
+9a77c63f-bee6-4ff8-9202-b0af020ea4b2
+","
+position
+":"
+POST
+"}"
+%}
+Parameter
+Type
+Description
+Default
+hide_playlist
+Boolean
+Hide the video playlist.
+True
+playlist_color
+String
+A HEX color value for the playlist.
+play_button_color
+String
+A HEX color value for the play and pause buttons.
+#2A2A2A
+embed_button
+Boolean
+Display embed button on the player
+False
+viral_sharing
+Boolean
+Display the social networks sharing button on the player.
+False
+width
+Number
+Width of the embedded video player.
+Auto
+height
+Number
+Height of the embedded video player.
+Auto
+player_id
+Number
+The
+player_id
+of the video to embed.
+style
+String
+Additional style for player.
+conversion_asset
+JSON
+Event setting for player. Can render CTA or Form before or after video plays. This parameter takes a JSON object with three parameters: type (FORM or CTA), id (The guid of the type object), position (POST or PRE).
+See above example
+placeholder_alt_text
+String
+The video's alt text.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Reference
+Overview
+Modules
+HubL (templating language)
+Overview
+Operators and expression tests
+Filters
+Functions
+Loops
+Tags
+Standard tags
+Drag and drop areas
+Deprecated
+Related blog posts
+Variables
+Variables and macros syntax
+Quote template variables
+Beta
+If statements
+Deprecated
+Forms
+Fields
+Serverless functions

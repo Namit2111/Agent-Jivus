@@ -1,0 +1,438 @@
+Exports | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Start an export
+Export a view
+Export a list
+Retrieve exports
+Limits
+API Guides
+CRM
+Exports
+Exports
+Export CRM data endpoint reference
+Use the exports API to export records and property data from your HubSpot account, retrieve a URL to download an export file, or see the status of an export. Within HubSpot, you can also
+export records
+or
+view a log of past exports in your account.
+Start an export
+To start an export, make a
+POST
+request to
+/crm/v3/exports/export/async
+. Your request body should specify information such as the file format, the object and properties you want to export, and the type of export you're completing (e.g., exporting an object view or a list). You can also filter the property data to be exported based on specific operators.
+For both view and list exports, you can include the following fields in your request:
+Parameter
+Description
+exportType
+The type of export, either
+VIEW
+(exports a view from an object index page) or
+LIST
+(exports a list).
+format
+The file format. Options include
+XLSX
+,
+CSV
+, or
+XLS
+.
+exportName
+The name of the export.
+language
+The language of the export file. Options include
+DE
+,
+EN
+,
+ES
+,
+FI
+,
+FR
+,
+IT
+,
+JA
+,
+NL
+,
+PL
+,
+PT
+, or
+SV
+. Learn more about
+supported languages.
+objectType
+The name or ID of the object you're exporting. For standard objects, you can use the object's name (e.g.,
+CONTACT
+), but for custom objects, you must use the
+objectTypeId
+value. You can retrieve this value by making a
+GET
+request to
+/crm/v3/schemas
+.
+associatedObjectType
+The name or ID of an associated object to include in the export. If you include an associated object, the export will contain the associated record IDs of that object and the records' primary display property value (e.g., name). You can export only one associated object per request.
+objectProperties
+A list of the properties you want included in your export. By default, property names and values are shown as the human-readable labels, but you can request internal names and values using the
+exportInternalValuesOptions
+parameter.
+exportInternalValuesOptions
+Include this array to export the internal values for property names and/or property values. In the array, include
+NAMES
+to export internal names of properties (shown as column headers) and/or
+VALUES
+to export internal property values (e.g., numerical values for custom pipeline stages or timestamps instead of human-readable dates).
+Export a view
+If you're exporting an
+index page view
+, your
+exportType
+value should be
+VIEW
+, and you can include the following field to filter and sort the records you're exporting:
+Parameter
+Description
+publicCrmSearchRequest
+Indicates which data should be exported based on certain property values and search queries. You can include the following within the object:
+filters
+: the properties and property values to filter records by.
+sorts
+: the sort order of a property's values, either ascending,
+ASC
+, or descending,
+DES
+.
+query
+: a string to search the records' values for.
+For example, to export a view of contacts and associated company records, filtered by the
+email
+property and with the internal values of property names and values, your request would look like the following:
+JSON
+JSON
+More
+Copy code snippet
+///Example request body
+{
+"exportType": "VIEW",
+"exportName": "All contacts",
+"format": "xlsx",
+"language": "DE",
+"objectType": "CONTACT",
+"exportInternalValuesOptions": ["NAMES", "VALUES"],
+"objectProperties": ["email", "firstname", "lastname"],
+"associatedObjectType": "COMPANY",
+"publicCrmSearchRequest": {
+"filters": [
+{
+"value": "hello@test.com",
+"propertyName": "email",
+"operator": "EQ"
+}
+],
+"query": "hello",
+"sorts": [
+{
+"propertyName": "email",
+"order": "ASC"
+}
+]
+}
+}
+1
+///Example request body
+2
+{
+3
+"exportType"
+:
+"VIEW"
+,
+4
+"exportName"
+:
+"All contacts"
+,
+5
+"format"
+:
+"xlsx"
+,
+6
+"language"
+:
+"DE"
+,
+7
+"objectType"
+:
+"CONTACT"
+,
+8
+"exportInternalValuesOptions"
+: [
+"NAMES"
+,
+"VALUES"
+],
+9
+"objectProperties"
+: [
+"email"
+,
+"firstname"
+,
+"lastname"
+],
+10
+"associatedObjectType"
+:
+"COMPANY"
+,
+11
+"publicCrmSearchRequest"
+: {
+12
+"filters"
+: [
+13
+{
+14
+"value"
+:
+"hello@test.com"
+,
+15
+"propertyName"
+:
+"email"
+,
+16
+"operator"
+:
+"EQ"
+17
+}
+18
+],
+19
+"query"
+:
+"hello"
+,
+20
+"sorts"
+: [
+21
+{
+22
+"propertyName"
+:
+"email"
+,
+23
+"order"
+:
+"ASC"
+24
+}
+25
+]
+26
+}
+27
+}
+Export a list
+If you're exporting a
+list
+, your
+exportType
+value should be
+LIST
+, but you also need to specify the list you're exporting with the following field:
+Parameter
+Description
+listId
+The
+ILS List ID
+of the list to export. You can find the ILS List ID value via the list details in HubSpot. Navigate to
+Contacts
+>
+Lists
+, hover over the
+list
+in the table, then click
+Details
+. In the right panel, click
+Copy
+List ID
+next to the ILS List ID value. Contact lists have two different ID values, but you
+must
+use the ILS List ID value in your request.
+For example, to export a list with the contacts' emails, your request may look like the following:
+JSON
+JSON
+More
+Copy code snippet
+///Example request body
+{
+"exportType": "LIST",
+"listId": 1234567,
+"exportName": "Marketing email contacts",
+"format": "xlsx",
+"language": "EN",
+"objectType": "CONTACT",
+"objectProperties": ["email"]
+}
+xxxxxxxxxx
+10
+1
+///Example request body
+2
+{
+3
+"exportType"
+:
+"LIST"
+,
+4
+"listId"
+:
+1234567
+,
+5
+"exportName"
+:
+"Marketing email contacts"
+,
+6
+"format"
+:
+"xlsx"
+,
+7
+"language"
+:
+"EN"
+,
+8
+"objectType"
+:
+"CONTACT"
+,
+9
+"objectProperties"
+: [
+"email"
+]
+10
+}
+Retrieve exports
+When you successfully complete an export, the export's
+id
+will be returned in the response. To retrieve an export from your HubSpot account, make a
+GET
+request to
+/crm/v3/exports/export/async/tasks/{exportId}/status
+.
+When retrieving exports, the
+status
+of the export will also be returned. Possible statuses include
+COMPLETE
+,
+PENDING
+,
+PROCESSING
+, or
+CANCELED
+. For exports with a
+COMPLETE
+status, a URL is returned that you can use to download the exported file. The download URL will expire five minutes after the completed request. Once expired, you can perform another
+GET
+request to generate a new unique URL.
+Please note
+: prior to expiration, an export's download URL can be accessed without any additional authorization. To protect your data, proceed with caution when sharing a URL or integrating with HubSpot via this API.
+Limits
+The following limits apply:
+When setting filters for your export, you can include a maximum of three
+filterGroups
+with up to three
+filters
+in each group.
+You can complete up to thirty exports within a rolling 24 hour window, and one export at a time. Additional exports will be queued until the previous export is completed.
+An exported CSV file will be automatically zipped if the resulting file is greater than 2MB.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

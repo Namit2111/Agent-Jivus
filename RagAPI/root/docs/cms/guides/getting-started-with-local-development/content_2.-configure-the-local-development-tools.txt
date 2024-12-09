@@ -1,0 +1,420 @@
+Getting started with local development | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Install dependencies
+1. Create a working directory
+2. Configure the local development tools
+3. Create an asset to fetch in HubSpot
+4. Fetch the module to your local environment
+5. Make changes and upload
+6. Run a watch to automatically upload changes
+Next steps
+CMS Development
+Setup
+Getting started with local development
+Getting started with local development
+The
+HubSpot CLI
+(Command Line Interface) connects your local environment to HubSpot, meaning you'll have local copies of your HubSpot web assets. This allows you to use version control, your favorite text editor and various web development technologies when developing on the HubSpot CMS.
+This guide is best for those who are already familiar with the CMS but want to learn about working with the CLI. If you are completely new to HubSpot CMS Hub development, we encourage you to follow the quickstart guide.
+Quick start to CMS Hub development
+In this tutorial, you'll learn:
+How to install the CLI and connect it to your HubSpot account.
+How to fetch a module from your HubSpot account.
+How to update the module locally, then upload your changes.
+How to use the
+watch
+command to continue uploading saved changes.
+For more commands and local file formats, see the
+Local Development Tooling Reference
+.
+Install dependencies
+To develop on HubSpot locally, you'll need to:
+Install
+Node.js
+, which enables HubSpot's local development tools. Versions 18 or higher are supported. It's recommended to use a package manager like
+Homebrew
+or
+nvm
+to install Node.
+Run
+npm install -g @hubspot/cli
+in your command line to install the HubSpot CLI globally. To install the tools in only your current directory instead, run
+npm install @hubspot/cli
+.
+If you prefer, you can also use
+Yarn
+. If you are using Yarn, commands are run with the
+yarn
+prefix.
+Getting an EACCES error when installing?
+See
+NPM Resolving EACCESS permissions errors when installing packages globally
+.
+1. Create a working directory
+Create a folder for the work you'll be doing below. For the purposes of this tutorial, name the folder
+local-dev-tutorial
+.
+You can do this locally by running
+mkdir local-dev-tutorial
+in the command line, which will create the directory. Then, run
+cd local-dev-tutorial
+to navigate to that directory.
+2. Configure the local development tools
+Next, run
+hs init
+to connect the tools to your HubSpot account. This command will walk you through the steps below.
+To connect the CLI to a HubSpot account, you'll need to copy the account's personal access key. When prompted, press
+Enter
+to open hubspot.com to the
+personal access key page of the account
+. If you have multiple accounts, you'll be prompted in the browser to select an account first.
+On the personal access key page, you can generate a new personal access key or copy the existing key value if one already exists.
+If you're creating a key for the first time, select which scopes the key has access to. You'll need to select at least the
+Design Manager
+permission to interact with the account's design tools.
+After selecting the key's permissions, click
+Generate personal access key
+.
+Once a key has been generated, copy its value by first clicking
+Show
+under the key, then clicking
+Copy
+.
+Paste the key into the command line, then press
+Enter
+.
+Next, enter a name for the account. This name is only seen and used by you when running commands. For example, you might use "sandbox" if you're using a developer sandbox or "company.com" if you’re using a standard account. This name can't contain spaces.
+Press
+Enter
+.
+With the
+init
+flow complete, you'll see a success message confirming that a configuration file,
+hubspot.config.yml
+, has been created in your current directory.
+Your
+hubspot.config.yml
+will look something like this:
+Copy code snippet
+defaultPortal: mainProd
+portals:
+- name: mainProd
+portalId: 123456
+defaultMode: publish
+authType: personalaccesskey
+auth:
+tokenInfo:
+accessToken: >-
+{accessTokenValue}
+expiresAt: '2023-06-27T19:45:58.557Z'
+personalAccessKey: >-
+{personalAccessKeyValue}
+sandboxAccountType: null
+parentAccountId: null
+​
+x
+1
+defaultPortal
+:
+mainProd
+2
+portals
+:
+3
+-
+name
+:
+mainProd
+4
+portalId
+:
+123456
+5
+defaultMode
+:
+publish
+6
+authType
+:
+personalaccesskey
+7
+auth
+:
+8
+tokenInfo
+:
+9
+accessToken
+: >
+-
+10
+{
+accessTokenValue
+}
+11
+​
+12
+​
+13
+expiresAt
+:
+'2023-06-27T19:45:58.557Z'
+14
+personalAccessKey
+: >
+-
+15
+{
+personalAccessKeyValue
+}
+16
+​
+17
+​
+18
+sandboxAccountType
+:
+null
+19
+parentAccountId
+:
+null
+Name
+Description
+defaultPortal
+Optional
+The account that is interacted with by default when running CLI commands.To interact with an authenticated account that is not set as the default, you can add a
+--account=
+flag to the command, followed by the account name or ID. For example,
+--account=12345
+or
+--account=mainProd
+.
+name
+Optional
+Under
+portals
+you'll find an entry for each connected account.
+name
+specifies the given name for the account. You can use this name when
+setting a new default account
+or specifying an account with the
+--account
+flag.
+portalId
+Required
+The account ID.
+defaultMode
+Optional
+When uploading to the account, sets the default state to upload content as. Can be either
+draft
+or
+publish
+.
+authType
+Required
+The form of authentication used to auth the account.
+sandboxAccountType
+Optional
+If the account is a sandbox account, indicates the ID of the parent production account.
+parentAccountId
+Optional
+parentAccountId
+The
+hubspot.config.yml
+file supports multiple accounts. To authenticate more accounts, run
+hs auth
+and follow the prompts.
+3. Create an asset to fetch in HubSpot
+For the purpose of this tutorial, you'll first create a new asset in HubSpot so that you can fetch it to your local environment using the CLI.
+In your HubSpot account, navigate to
+Marketing
+>
+Files and Templates
+>
+Design tools
+. This will open the design manager, which is where you can access the files you upload using the CLI. This tree of files and folders is also referred to as the
+developer file system
+.
+In the left sidebar of the design manager, select the
+@hubspot
+folder to view HubSpot's default assets, such as themes and modules.
+In the left sidebar, scroll down to and right-click the
+icon
+module, then select
+Clone module
+. The module will be cloned to the root of the developer file system, and your new module copy will be opened on the right.
+At the top of the left sidebar, click
+Actions
+, then select
+Copy path
+. This will copy the relative path to the module in the developer file system, which you'll use in the next step to fetch the module locally.
+4. Fetch the module to your local environment
+With the module cloned, you'll now use the
+fetch
+command to bring it into your local environment.
+In the terminal, run
+hs fetch '/icon copy.module'
+.
+Copy code snippet
+hs fetch '/icon copy.module'
+xxxxxxxxxx
+hs fetch
+'/icon copy.module'
+The module will be downloaded as a directory containing five files:
+fields.json
+: contains the code for the module's various fields. In this case, this includes the icon field, two accessibility option fields, and a set of style fields. You can see these fields in the right sidebar of the module editor in HubSpot.
+meta.json
+: contains the module's basic information, such as its label, ID, and the types of templates it can be used in. This information will be displayed in the right sidebar of the module editor.
+module.css
+: contains the module's CSS, which you can also see in the CSS pane of the module editor in HubSpot.
+module.html
+: contains the module's HTML, which you can also see in the HubL + HTML pane of the module editor in HubSpot.
+module.js
+: contains the module's JavaScript, which you can also see in the JS pane of the module editor in HubSpot.
+Next, you'll make an update to the module's
+meta.json
+file, then upload it to your account and view the change in HubSpot.
+5. Make changes and upload
+First, make a change to the module:
+In your preferred code editor, open the module's
+meta.json
+file.
+Update the
+label
+field from
+"Icon"
+to
+"CMS tutorial module"
+. Then, save the file.
+Before running the next command,
+hs upload
+, let's break down the command and the arguments it takes. This command takes two arguments:
+hs upload <src> <dest>
+src
+: the relative path of the source folder that you're uploading from your local environment.
+dest
+: the path of the destination directory in HubSpot, local to the root of the developer file system. You can create a new directory in the account by specifying the directory name, such as
+hs upload <src> /new-directory
+.
+With that in mind, because you're uploading to the root of the developer file system, run the following command:
+Copy code snippet
+hs upload 'icon copy.module' 'icon copy.module'
+xxxxxxxxxx
+hs upload 'icon copy.module' 'icon copy.module'
+After the CLI confirms that the module has been successfully uploaded, refresh the design manager to view your change in HubSpot. You should now see that the
+Label
+field shows your new value.
+6. Run a watch to automatically upload changes
+Now that you've used the
+upload
+command to run a one-time upload of your local files, you'll now use the
+watch
+command to continuously upload saved changes. This command takes the same arguments as
+upload
+, so you can specify the same
+<src>
+and
+<dest>
+as above.
+Run
+hs watch 'icon copy.module' 'icon copy.module'
+Copy code snippet
+hs watch 'icon copy.module' 'icon copy.module'
+xxxxxxxxxx
+hs watch 'icon copy.module' 'icon copy.module'
+With the watch now running, saved changes will automatically upload to the HubSpot account. As a demonstration, make the following local change to the module:
+In the
+meta.json
+file, update the
+host_template_types
+field to remove
+"BLOG_LISTING"
+and
+"BLOG_POST"
+so that the module is only available for pages:
+"host_template_types"``:["PAGE"]
+Ten, save the file. This should prompt the CLI to automatically upload the file to HubSpot.
+With the file uploaded, refresh the design manager in HubSpot to view your change. The
+Template types
+section of the right sidebar should now only include
+Page
+.
+To end the watch, press
+Control + C
+. It's important to note that you won't be able to run other commands in the same terminal window that the watch command is running in. To run other commands while running a watch, you should instead open another terminal window and execute your commands there.
+Next steps
+Now that you've walked through how to use the
+fetch
+,
+upload
+, and
+watch
+commands, you may want to check out the full
+CLI command reference guide
+to learn what else you can do with the CLI.
+It's also recommended to check out the following tutorials:
+Creating an efficient development workflow
+How to set up continuous integration with GitHub
+Getting started with custom modules
+Getting started with themes
+Getting started with drag and drop areas
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Local development with HubSpot CLI
+Use JavaScript frameworks with HubSpot
+VS Code extension
+Optimize your workflow
+GitHub integration
+Storage
+Content and structure
+Debugging
+Improve older sites
+Marketplace

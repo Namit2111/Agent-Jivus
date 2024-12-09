@@ -1,0 +1,502 @@
+How to build multilevel dynamic pages with HubDB | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+1. Enable child tables in your table's settings.
+2. Select child tables for each row
+3. Create the multilevel template
+4. Populate the top-level template
+5. Populate the dynamic-level templates
+6. Link parent table to page
+CMS Development
+Content and structure
+Data-driven content
+Dynamic pages
+How to build multilevel dynamic pages with HubDB
+How to build multilevel dynamic pages with HubDB
+Supported products
+Requires one of the following products or higher.
+Content Hub
+-
+Professional
+A
+dynamic website page
+is a CMS page whose content changes based on the path of the URL requested by an end user.
+HubDB
+already allows you to store, filter, and display data in your HubSpot website pages. Multilevel dynamic pages take this concept further, allowing you to create up to five levels of pages within one dynamic template.
+Each dynamic page includes its own unique, SEO-friendly URL, and offers page-specific analytics.
+Please note:
+that this tutorial assumes you already have multiple HubDB tables created. Please see the
+HubDB documentation
+if you are unfamiliar with HubDB or want to create your first HubDB tables.
+1. Enable child tables in your table's settings.
+In your HubSpot account, navigate to
+Marketing
+>
+Files and Templates
+>
+HubDB
+.
+Click the
+name
+the table that will act as the parent for any other tables that will be used for your nested child tables.
+In the top right, click the
+Actions
+dropdown menu, then select
+Manage settings
+.
+If you haven't yet enabled the table for dynamic pages, click to toggle the
+Enable creation of dynamic pages using row data
+switch on, then select the columns to populate the page data.
+Click to select the
+Allow child tables
+and
+Automatically create listing pages for child tables
+checkboxes.
+Click
+Save
+.
+With your changes saved, you'll then see a
+Child table
+column added to the table. In this column, use the
+dropdown menu
+to select another HubDB table to pull data from.
+To streamline this process, keep the child table columns and their internal names the same. If they are not the same, you'll need to use conditional logic later to render unique content for a given table.
+2. Select child tables for each row
+In the parent table, use the
+Child table
+column dropdown menus to select
+tables
+to pull data from.
+You can only select tables that are enabled for dynamic page content creation. If you've enabled a table for dynamic page creation but aren't seeing it in the
+Child table
+dropdown menu, ensure that you've clicked
+Publish
+in the child table.
+Please note:
+a parent table cannot reference a child table which also references the parent table. This will create a loop that results in an error when trying to select the child table within the parent table.
+In the above example, the first row will be pulling its food data from the
+Foods
+child table, which contains data about available foods, as shown below.
+When setting multilevel dynamic pages, the page paths for each row in the child table will be
+parent_path/child_path
+. For example, the page path for the
+banana
+row will be
+page_path/foods/banana
+.
+By turning on the
+Automatically create listing pages for child tables
+setting, HubSpot will also automatically create intermediate listing pages for the child table rows (
+page_path/foods
+and
+page_path/beverages
+).
+If you would rather have those intermediate routes not resolve and return a 404 page, deselect the
+Automatically create listing pages child child tables
+checkbox in the table's settings.
+3. Create the multilevel template
+Through child tables, you can create up to five levels of pages with one dynamic template. You can configure each level by using the
+dynamic_page_route_level
+HubL variable. The top-level template starts at a value of
+0
+and increments for each table layer.
+Copy code snippet
+{% if dynamic_page_route_level == 0 %}
+Top Level Template
+{% elif dynamic_page_route_level == 1 %}
+Parent table template (/food /beverage)
+{% elif dynamic_page_route_level == 2 %}
+Child table template (/food/banana etc., /beverage/soda etc.)
+{% endif %}
+1
+{%
+if
+dynamic_page_route_level
+==
+0
+%}
+2
+Top Level Template
+3
+{%
+elif
+dynamic_page_route_level
+==
+1
+%}
+4
+Parent table template (/food /beverage)
+5
+{%
+elif
+dynamic_page_route_level
+==
+2
+%}
+6
+Child table template (/food/banana etc., /beverage/soda etc.)
+7
+{%
+endif
+%}
+4. Populate the top-level template
+For this tutorial, the goal is to list the child rows and group them by parent category. The example code below does the following:
+First, it retrieves the category rows using
+dynamic_page_hubdb_table_id
+.
+Then, the
+hs_child_table_id
+property of each category row retrieves the table IDs of the child tables.
+Last, it uses those table IDs to list the child rows under each parent category.
+Copy code snippet
+{% if dynamic_page_route_level == 0 %}
+<h1>Categories</h1>
+{% set rows = hubdb_table_rows(dynamic_page_hubdb_table_id) %}
+{% for row in rows %}
+<h2><a href="{{ request.path }}/{{ row.hs_path }}">{{ row.hs_name }}</a></h2>
+{% set childRows = hubdb_table_rows(row.hs_child_table_id) %}
+{% for childRow in childRows %}
+<li><a href="{{ request.path }}/{{ row.hs_path }}/{{childRow.hs_path}}">{{ childRow.hs_name }}</a></li>
+{% endfor %}
+{% endfor %}
+{% endif %}
+xxxxxxxxxx
+11
+1
+{%
+if
+dynamic_page_route_level
+==
+0
+%}
+2
+<
+h1
+>
+Categories
+</
+h1
+>
+3
+{%
+set
+rows
+=
+hubdb_table_rows(dynamic_page_hubdb_table_id)
+%}
+4
+{%
+for
+row
+in
+rows
+%}
+5
+<
+h2
+><
+a
+href
+=
+"
+{{
+request.path
+}}
+/
+{{
+row.hs_path
+}}
+"
+>
+{{
+row.hs_name
+}}
+</
+a
+></
+h2
+>
+6
+{%
+set
+childRows
+=
+hubdb_table_rows(row.hs_child_table_id)
+%}
+7
+{%
+for
+childRow
+in
+childRows
+%}
+8
+<
+li
+><
+a
+href
+=
+"
+{{
+request.path
+}}
+/
+{{
+row.hs_path
+}}
+/
+{{
+childRow.hs_path
+}}
+"
+>
+{{
+childRow.hs_name
+}}
+</
+a
+></
+li
+>
+9
+{%
+endfor
+%}
+10
+{%
+endfor
+%}
+11
+{%
+endif
+%}
+5. Populate the dynamic-level templates
+After populating the top-level template, you'll then need to define templates for the subsequent levels in a similar fashion.
+While building out your templates, it can be useful to access parent table data within child templates. For example, when our example page resolves to
+foods/banana
+, the
+dynamic_page_hubdb_row
+variable will be set to the
+banana
+row. However, you may want to access data from the
+food
+row. You can use
+hs_parent_row
+value on the
+dynamic_page_hubdb_row
+to retrieve the parent row:
+Copy code snippet
+{% if dynamic_page_route_level == 1 %}
+<h1>Categories</h1>
+<h2>{{dynamic_page_hubdb_row.hs_name}}</h2>
+{% set rows = hubdb_table_rows(dynamic_page_hubdb_row.hs_child_table_id) %}
+{% for row in rows %}
+<li><a href="{{ request.path }}/{{ row.hs_path }}">{{ row.hs_name }}</a></li>
+{% endfor %}
+{% elif dynamic_page_route_level == 2 %}
+<h1>Categories</h1>
+<h2>{{dynamic_page_hubdb_row.hs_parent_row.hs_name}}</h2>
+<h3>{{dynamic_page_hubdb_row.hs_name}}</h3>
+{% endif %}
+xxxxxxxxxx
+12
+1
+{%
+if
+dynamic_page_route_level
+==
+1
+%}
+2
+<
+h1
+>
+Categories
+</
+h1
+>
+3
+<
+h2
+>
+{{
+dynamic_page_hubdb_row.hs_name
+}}
+</
+h2
+>
+4
+{%
+set
+rows
+=
+hubdb_table_rows(dynamic_page_hubdb_row.hs_child_table_id)
+%}
+5
+{%
+for
+row
+in
+rows
+%}
+6
+<
+li
+><
+a
+href
+=
+"
+{{
+request.path
+}}
+/
+{{
+row.hs_path
+}}
+"
+>
+{{
+row.hs_name
+}}
+</
+a
+></
+li
+>
+7
+{%
+endfor
+%}
+8
+{%
+elif
+dynamic_page_route_level
+==
+2
+%}
+9
+<
+h1
+>
+Categories
+</
+h1
+>
+10
+<
+h2
+>
+{{
+dynamic_page_hubdb_row.hs_parent_row.hs_name
+}}
+</
+h2
+>
+11
+<
+h3
+>
+{{
+dynamic_page_hubdb_row.hs_name
+}}
+</
+h3
+>
+12
+{%
+endif
+%}
+Continue building out templates for each needed level. Then, you'll need to l ink the parent table to a page.
+6. Link parent table to page
+The final step is to create a page from the multilevel template and link the top-level parent table to the page. To do so, you'll
+create a page
+, then access its settings. In the
+Advanced Options
+settings of the page editor, click the
+Data source
+dropdown menu and select the
+Parent table
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Templates
+Modules
+Fields
+Data-driven content
+CRM objects
+Dynamic pages
+Overview
+CRM objects
+HubDB
+How to add videos to dynamic pages in HubDB
+How to build a dynamic team member page with HubDB
+Build multi-level dynamic pages with HubDB
+GraphQL
+Serverless functions
+Emails with programmable content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

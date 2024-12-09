@@ -1,0 +1,417 @@
+OAuth | Managing tokens | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Initiating OAuth access
+Generate initial access and refresh tokens
+Refresh an access token
+Retrieve access token metadata
+Delete a refresh token
+API Guides
+App management
+OAuth | Managing tokens
+Manage OAuth tokens
+Use the OAuth tokens API to generate and manage tokens needed for authorizing your
+public app
+and the requests it makes. For example, you'll need to use this API to fetch the initial access and refresh tokens during the app installation process. You'll then use it to continue generating new tokens when the old ones expire. Learn more about
+working with OAuth
+.
+Before you can use these endpoints, you'll have to
+create a public app
+. A user will then need to install it into their account to
+initiate OAuth access
+.
+Initiating OAuth access
+After creating your app, a user can install it into their HubSpot account using they'll use the install URL located in the app's settings, which will include the
+client_id
+,
+redirect_uri
+, and
+scopes
+as query parameters. You may also include
+optional_scopes
+and
+state
+, if needed. Learn more about
+initiating OAuth for your app
+.
+After a user authorizes your app and installs it into their account, the redirect URL will be appended with a
+code
+value, which you can use to
+generate an access token and a refresh token
+. The access token will be used to authenticate requests that your app makes, while the refresh token will be used to get a new access token when the current one expires.
+Generate initial access and refresh tokens
+To get OAuth access and refresh tokens, make a URL-form encoded
+POST
+request to
+/oauth/v1/token
+. In the request body, you'll specify various auth parameters, such as
+client_id
+and
+client_secret
+, along with the
+code
+passed back through the redirect URL.
+After a user authorizes your app, the redirect URL will be appended with a
+code
+value. Using this code, you'll generate the initial access token and refresh token. Access tokens are short-lived, and you can check the
+expires_in
+parameter when generating an access token to determine its lifetime (in seconds).
+For example, your request may look similar to the following:
+Copy code snippet
+curl --request POST \
+--url https://api.hubapi.com/oauth/v1/token \
+--header 'content-type: application/x-www-form-urlencoded' \
+--data 'grant_type=authorization_code&code=bcf33c57-dd7a-c7eb-4179-9241-e01bd&redirect_uri=https://www.domain.com/redirect&client_id=7933b042-0952-4e7d-a327dab-3dc&client_secret=7a572d8a-69bf-44c6-9a34-416aad3ad5'
+1
+curl
+--request
+POST \
+2
+--url
+https://api.hubapi.com/oauth/v1/token \
+3
+--header
+'content-type: application/x-www-form-urlencoded'
+\
+4
+--data
+'grant_type=authorization_code&code=bcf33c57-dd7a-c7eb-4179-9241-e01bd&redirect_uri=https://www.domain.com/redirect&client_id=7933b042-0952-4e7d-a327dab-3dc&client_secret=7a572d8a-69bf-44c6-9a34-416aad3ad5'
+Parameter
+Type
+Description
+grant_type
+String
+Must be
+authorization_code
+for the request to generate initial access and refresh tokens.
+code
+String
+The
+code
+returned in the redirect URL after the user installs the app.
+redirect_uri
+String
+The app's set redirect URL.
+client_id
+String
+The app's client ID.
+client_secret
+String
+The app's client secret.
+In the response, you'll receive the access token along with the refresh token, which you can use to refresh the access token. The
+expires_in
+field specifies how long the access token will last (in seconds).
+Copy code snippet
+// Example response
+{
+"token_type": "bearer",
+"refresh_token": "1e8fbfb1-8e96-4826-8b8d-c8af73715",
+"access_token": "CIrToaiiMhIHAAEAQAAAARiO1ooBIOP0sgEokuLtAEaOaTFnToZ3VjUbtl46MAAAAEAAAAAgAAAAAAAAAAAACAAAAAAAOABAAAAAAAAAAAAAAAQAkIUVrptEzQ4hQHP89Eoahkq-p7dVIAWgBgAA",
+"expires_in": 1800
+}
+xxxxxxxxxx
+7
+1
+// Example response
+2
+{
+3
+"token_type"
+:
+"bearer"
+,
+4
+"refresh_token"
+:
+"1e8fbfb1-8e96-4826-8b8d-c8af73715"
+,
+5
+"access_token"
+:
+"CIrToaiiMhIHAAEAQAAAARiO1ooBIOP0sgEokuLtAEaOaTFnToZ3VjUbtl46MAAAAEAAAAAgAAAAAAAAAAAACAAAAAAAOABAAAAAAAAAAAAAAAQAkIUVrptEzQ4hQHP89Eoahkq-p7dVIAWgBgAA"
+,
+6
+"expires_in"
+:
+1800
+7
+}
+Refresh an access token
+Using a refresh token, you can generate a new access token by making a URL-form encoded
+POST
+request to
+/oauth/v1/token
+. In the request body, you'll specify the
+grant_type
+,
+client_id
+,
+client_secret
+, and
+refresh_token
+.
+Copy code snippet
+curl --request POST \
+--url https://api.hubapi.com/oauth/v1/token \
+--header 'content-type: application/x-www-form-urlencoded' \
+--data 'grant_type=refresh_token&refresh_token=1e8fbfb1-8e96-4826-8b8d-c8af73715&client_id=7933b042-0952-4e7d-a327dab-3dc&client_secret=7a572d8a-69bf-44c6-9a34-416aad3ad5'
+xxxxxxxxxx
+4
+1
+curl
+--request
+POST \
+2
+--url
+https://api.hubapi.com/oauth/v1/token \
+3
+--header
+'content-type: application/x-www-form-urlencoded'
+\
+4
+--data
+'grant_type=refresh_token&refresh_token=1e8fbfb1-8e96-4826-8b8d-c8af73715&client_id=7933b042-0952-4e7d-a327dab-3dc&client_secret=7a572d8a-69bf-44c6-9a34-416aad3ad5'
+Parameter
+Type
+Description
+grant_type
+String
+Must be
+refresh_token
+for the request to generate new access tokens from the refresh token.
+refresh_token
+String
+The refresh token value.
+client_id
+String
+The app's client ID.
+client_secret
+String
+The app's client secret.
+Retrieve access token metadata
+To get information about an OAuth access token, including the user that the token was created for and their corresponding Hub ID, make a
+GET
+request to
+/oauth/v1/access-tokens/{token}
+.
+You'll receive a response containing information about the user their HubSpot account.
+Copy code snippet
+// Example response
+{
+"token": "CNaKSIHAAEAQAAAARiO1ooBIOP0sgEokuLtATIU5m7Kzmjj0ihJJuKFq1TcIiHCqwE6MAAAAEEAAAAAAAAAAgAIUfmerBenQwc07ZHXy6atYNNW8XCVKA25hMVIAWgBgAA",
+"user": "user@domain.com",
+"hub_domain": "meowmix.com",
+"scopes": [
+"oauth",
+"crm.objects.contacts.read",
+"crm.objects.contacts.write"
+],
+"signed_access_token": {
+"expiresAt": 1727190403926,
+"scopes": "AAEAAAAQ==",
+"hubId": 1234567,
+"userId": 293199,
+"appId": 111111,
+"signature": "5m7ihJJuKFq1TcIiHCqwE=",
+"scopeToScopeGroupPks": "AAAAQAAAAAAAAAACAAAAAAAAAAAAAIAAAAAAA4AEAAAAAAAAAAAAAABAC",
+"newSignature": "fme07ZHXy6atYNNW8XCU=",
+"hublet": "na1",
+"trialScopes": "",
+"trialScopeToScopeGroupPks": "",
+"isUserLevel": false
+},
+"hub_id": 1234567,
+"app_id": 111111,
+"expires_in": 1754,
+"user_id": 293199,
+"token_type": "access"
+}
+xxxxxxxxxx
+30
+1
+// Example response
+2
+{
+3
+"token"
+:
+"CNaKSIHAAEAQAAAARiO1ooBIOP0sgEokuLtATIU5m7Kzmjj0ihJJuKFq1TcIiHCqwE6MAAAAEEAAAAAAAAAAgAIUfmerBenQwc07ZHXy6atYNNW8XCVKA25hMVIAWgBgAA"
+,
+4
+"user"
+:
+"user@domain.com"
+,
+5
+"hub_domain"
+:
+"meowmix.com"
+,
+6
+"scopes"
+: [
+7
+"oauth"
+,
+8
+"crm.objects.contacts.read"
+,
+9
+"crm.objects.contacts.write"
+10
+],
+11
+"signed_access_token"
+: {
+12
+"expiresAt"
+:
+1727190403926
+,
+13
+"scopes"
+:
+"AAEAAAAQ=="
+,
+14
+"hubId"
+:
+1234567
+,
+15
+"userId"
+:
+293199
+,
+16
+"appId"
+:
+111111
+,
+17
+"signature"
+:
+"5m7ihJJuKFq1TcIiHCqwE="
+,
+18
+"scopeToScopeGroupPks"
+:
+"AAAAQAAAAAAAAAACAAAAAAAAAAAAAIAAAAAAA4AEAAAAAAAAAAAAAABAC"
+,
+19
+"newSignature"
+:
+"fme07ZHXy6atYNNW8XCU="
+,
+20
+"hublet"
+:
+"na1"
+,
+21
+"trialScopes"
+:
+""
+,
+22
+"trialScopeToScopeGroupPks"
+:
+""
+,
+23
+"isUserLevel"
+:
+false
+24
+},
+25
+"hub_id"
+:
+1234567
+,
+26
+"app_id"
+:
+111111
+,
+27
+"expires_in"
+:
+1754
+,
+28
+"user_id"
+:
+293199
+,
+29
+"token_type"
+:
+"access"
+30
+}
+Please note
+: HubSpot access tokens are expected to fluctuate in size over time, as updates will be made to the information that is encoded in them. It's recommended to allow for tokens to be up to 512 characters to account for any changes.
+Delete a refresh token
+If a user uninstalls your app, you can delete the refresh token by making a
+DELETE
+request to
+/oauth/v1/refresh-tokens/{token}
+. This will only delete the refresh token. Access tokens generated with the refresh token will not be deleted. Additionally, this will not uninstall the application from HubSpot accounts or inhibit data syncing between the app and account.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+OAuth tokens
+Webhooks
+Automation
+CMS
+Conversations
+Library
+CRM
+Marketing
+Settings
+Legal

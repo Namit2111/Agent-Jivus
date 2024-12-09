@@ -1,0 +1,262 @@
+Migrate an existing ecommerce bridge API integration | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Migrating contact, product, deal & line items sync
+Migrating the external object id
+Migrating ecommerce properties
+Migrating import API
+Migrating ecommerce pipeline
+Migrating VAST email templates
+New customer email template
+Re-engaging email template
+Abandon cart email template
+Migrating the ecommerce dashboard
+Migrating embedded workflows
+Ecommerce settings page in app
+API Endpoints
+Migrate an existing ecommerce bridge API integration
+Migrate an existing Ecommerce Bridge API integration
+API keys will be sunsetted
+on November 30th, 2022. If your Ecommerce Bridge integration uses API keys, you will need to update it to a
+private app
+, then implement the following API changes below.
+Migrating contact, product, deal & line items sync
+Learn about the different APIs you can use for the contact, product, deal and line items sync. The respective API documentation includes details on relevant scope requirements.
+For contact sync, you can instead use the
+Contacts API
+. Specifically, you can make
+GET
+,
+POST
+,
+PATCH
+,
+DELETE
+requests to
+/crm/v3/objects/contacts
+.
+For product sync, you can instead use the
+Products API
+. Specifically, you can make
+GET
+,
+POST
+,
+PATCH
+,
+DELETE
+requests to
+/crm/v3/objects/products
+.
+For deal sync, you can instead use the
+Deals API
+. Specifically, you can use make
+GET
+,
+POST
+,
+PATCH
+,
+DELETE
+requests to
+/crm/v3/objects/deals
+.
+For line item sync you can instead use the
+Line Items API
+. Specifically, you can make
+GET
+,
+POST
+,
+PATCH
+,
+DELETE
+requests to
+/crm/v3/objects/line_items
+.
+In addition to creating and maintaining these objects, you will also need to establish the relationships between them using the
+Associations API
+. You can create associations by making a
+PUT
+request to
+/crm/v3/objects/associations
+. For example, you associate contacts to deals, or line items to deals and products.
+The above APIs do not automatically retry if they return errors. If your integration experiences errors interacting with the above APIs your system will need to retry API calls.
+Please note:
+when using the products, deals, and line items API, deduplication will not happen automatically. When you create an object using one of these APIs, you should record the ID so you know when to update existing products, deals, or line items instead of creating new ones.
+Migrating the external object id
+The Ecommerce Bridge API used the
+externalObjectId
+field to sync objects. Moving forward, you should maintain the HubSpot record IDs for each record in your internal system.
+For product, deals, and line items, you can also
+create a unique identifier
+for your records and use this identifier when creating and updating records. When creating this unique identifier, make sure to set the
+hasUniqueValue
+field to
+true
+so that any records created in the future will not have the same value. Learn more about
+creating unique identifiers
+.
+Migrating ecommerce properties
+Any properties prefixed with _ip__ecomm_bridge___ will remain in existing users' HubSpot accounts, but for net new integrations, developers will need to use the
+Properties API
+to define their own properties.
+The following properties were created automatically in your account when using the Ecommerce Bridge API:
+Contact
+Ecommerce contact
+Source store
+Deal
+Abandoned cart URL
+Discount savings
+Ecommerce deal
+Order number
+Shipment IDs
+Source store
+Tax price
+Product
+Ecommerce product
+Image URL
+Source store
+Migrating import API
+For import, you can instead use the
+Import API
+. Specifically, you can make a
+POST
+request to
+/crm/v3/imports/
+.
+Migrating ecommerce pipeline
+Pipelines are a
+paid feature
+. With this sunset, there will no longer be an option to create a
+free
+ecommerce pipeline in every account. Moving forward, ecommerce pipelines can only be created in accounts that have not reached its pipeline limit. If the ecommerce pipeline has already been created in a user's account, when the API is sunsetted that pipeline will
+not be removed
+. Developers should use the
+Pipeline API
+to find all existing pipelines and continue to sync deals in that existing pipeline. Specifically, you can make a
+GET
+request to
+/crm/v3/pipelines/deal
+.
+Or, you can store the ecommerce tag or pipeline name in a property on the deal record.
+Please note:
+if you attempt to create a pipeline in a free account, you will receive the following error:
+context:{maximum pipelines:["1" ]},category:"API_LIMIT"}.
+Migrating VAST email templates
+HubSpot sunsetted VAST email templates in 2021. As a result, these templates will also be sunsetted for the Ecommerce Bridge API.
+New customer email template
+If you're a
+Marketing Hub
+Professional
+or
+Enterprise
+user, you can add the
+product module in-app
+to marketing emails. Or you can create a coded file with the email template type using the
+Template overview documentation
+. Make sure to publish the email template so it is available to use when creating emails.
+Re-engaging email template
+You can create a coded file with the email template type using this
+Template overview documentation
+.
+Abandon cart email template
+The
+Abandoned cart
+module
+only works when using the
+Shopify integration
+, and is
+not
+currently supported when building a custom integration.
+Migrating the ecommerce dashboard
+The ecommerce dashboard and template will be sunsetted for
+net new users
+. Accounts that already have a ecommerce dashboard or the ecommerce dashboard template can still use it, but can no longer create an ecommerce template via open APIs.
+Moving forward, learn how to build
+reports
+and
+dashboards
+in HubSpot.
+Migrating embedded workflows
+The
+Customer welcome
+,
+Abandon cart
+, and
+Re-engaging customer
+embedded workflow, will also be sunsetted.
+To create workflows, you can instead use the
+Create & Manage Workflows API
+. Specifically, you can make a POST request to
+/automation/v3/workflows
+.
+Please note:
+you cannot recreate the abandon cart workflow using the workflows API because it does not support deal-based workflows.
+Ecommerce settings page in app
+The
+Ecommerce
+navigation item in the side menu and the ecommerce settings page will be sunsetted.
+As partners move their integrations to public apps, their apps will then be listed on the
+Connected Apps
+page.
+If developers would like to have a settings page for their integration they can build one using the
+Settings App API
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Endpoints
+Get set up
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+CRM
+Library
+Marketing
+Settings
+Other resources
+Legal
+Deprecated

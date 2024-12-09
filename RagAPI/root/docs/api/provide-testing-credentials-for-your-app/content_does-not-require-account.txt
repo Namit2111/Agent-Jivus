@@ -1,0 +1,147 @@
+App Marketplace | Provide testing credentials for your app | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Before you begin
+Provide your testing credentials
+Frequently Asked Questions
+Apps
+Marketplace
+App Marketplace | Provide testing credentials for your app
+Provide testing credentials for your app
+Valid testing credentials must be provided to
+list
+or
+certify
+your app on the HubSpot App Marketplace. This is necessary for the HubSpot Product team to verify listing and certification requirements, and also recommend areas for improvement.
+Before you begin
+Review the following questions to find the appropriate instructions for providing testing credentials to the HubSpot Product team:
+Does your app with HubSpot require an account for a platform/application/service other than HubSpot?
+If
+yes
+, (i.e. at least one other account is required), proceed to question 2.
+If
+no
+, follow the steps listed
+here
+.
+Are you able to give HubSpot Product team members access to
+all
+platforms/applications/services required to use your app?
+If
+yes
+, (i.e. you are able to give HubSpot Product team members access to needed platforms/applications/services), follow the steps listed
+here
+.
+If
+no
+, (i.e. you are
+not able
+to give HubSpot Product team members access to at least one platform/application/service), follow the steps listed
+here
+.
+Provide your testing credentials
+If your app
+does not
+require a separate platform/application/service account:
+In the first line, enter “No testing credentials are required to test this app.”
+Describe the steps to install the app, configure app settings, and perform common actions with the app. If these instructions are publicly documented, you may hyperlink to the relevant documentation.
+If your app requires a separate platform/application/service account and you
+are able
+to provide the HubSpot Product team with access:
+In the first line, list all platforms/applications/services required to fully use your app/integration.
+For each required platform/application/service that you are able to give access to:
+Invite
+marketplace-tester@hubspot.com
+to all new or existing accounts. Ensure that these accounts have all features and permissions required to fully use your app with HubSpot.
+Include “Invite sent to
+marketplace-tester@hubspot.com
+” next to the platform you’ve added that user to.
+Do not
+ask the HubSpot Product team to create new accounts or sign up for free trials.
+Describe the steps to install the app, configure app settings, and perform common actions with the app. If these instructions are publicly documented, you may hyperlink to the relevant documentation.
+If your app requires a separate platform/application/service account and you are
+not able
+to provide the HubSpot Product team with access:
+In the first line, list all platforms/applications/services required to fully use your app/integration.
+For each required platform/application/service that you are able to give access to:
+Invite
+marketplace-tester@hubspot.com
+to all new or existing accounts. Ensure that these accounts have all features and permissions required to fully use your app with HubSpot.
+Include “Invite sent to
+marketplace-tester@hubspot.com
+” next to the platform you’ve added that user to.
+Do not
+ask the HubSpot Product team to create new accounts or sign up for free trials.
+For each platform/application/service that you are
+not
+able to give access to:
+Include an explanation on why you're unable to give the HubSpot Product team access.
+Describe the steps to install the app, configure app settings, and perform common actions with the app. If these instructions are publicly documented, you may hyperlink to the relevant documentation.
+Record a demo video that shows the app/integration performing actions with all required platforms, applications, or services. The demo video
+must
+meet the requirements listed
+here
+(even if you are not applying for app certification).
+Frequently Asked Questions
+Should I connect my app to an existing HubSpot account?
+Where will these testing credentials be stored?
+Should I deactivate these testing credentials after my app has been listed or certified?
+If I provide testing credentials for a listing review and apply for certification in the future, must I provide credentials again?
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+Apps
+Overview
+Authentication
+Private apps
+Public apps
+Extensions
+API usage
+Marketplace
+App certification requirements
+App listing requirements
+Listing your app
+Provide testing credentials for your app
+Understand app categories
+App for app certification
+Measuring app performance

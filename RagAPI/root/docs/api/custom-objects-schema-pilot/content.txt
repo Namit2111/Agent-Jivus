@@ -1,0 +1,198 @@
+Custom Objects OAuth Access
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to content
+Log in
+Create a developer account
+HOME
+Menu
+Documentation
+Resources
+Resources
+Developer References
+Tools Overview
+Changelog
+Certifications
+APIs by Product Tier
+Developer Community
+Forum
+Slack
+Blog
+Newsletter
+Events
+Marketplace
+Marketplace
+App Ecosystem
+New
+Template Marketplace
+App Partner Program
+Log in
+Create a developer account
+Custom Objects OAuth Access
+Ready to build? Request access to define Custom Objects via your public OAuth App
+Developers
+Custom objects schema pilot program
+Who should request access?
+If you are building an app that could benefit by creating custom objects in multiple accounts, please submit a request. You will need access if you intend to
+list your public app
+in the
+HubSpot App Marketplace
+.
+*Custom objects can only be defined via your public OAuth app for customers with at least one of the Enterprise subscription plans.
+Who should
+not
+request access?
+Users who are building an app for use on a single HubSpot account and customers with Super Admin privileges in an Enterprise account who do not wish to develop an app. Not sure and want to learn more about available solutions?
+Learn more
+about building an app for use on a single HubSpot account through private apps.
+Learn more
+about defining a custom object in the UI without code.
+Why do I need to request access to create custom objects using OAuth for my public app?
+Custom objects can have a big impact on customer accounts and their data. At this time, an account with at least one Enterprise subscription plan can have a maximum of 10 custom objects defined. With this in mind, HubSpot is closely monitoring the implementation of new multi-account objects.
+*Custom Object limit increases available for purchase to define more objects and store more records across all of your custom objects in HubSpot in the
+HubSpot's Products and Services Catalog.
+How do I submit my application?
+Fill out the form below. HubSpot's Product team will review your submission and contact you with the next steps. The timeline for this process will depend on request volume.
+Note that acceptance to gain access is subject to approval by HubSpot and is not guaranteed. HubSpot reserves the right to accept or reject any applications based solely on our own criteria and judgment. Use of the Custom Objects API is subject to HubSpot's
+Developer Terms
+and
+Acceptable Use Policy.
+First name
+*
+Last name
+*
+Email
+*
+Company name
+Tell us about your app
+Where do you plan to use custom objects?
+*
+In a single account with an Enterprise subscription plan
+Across multiple accounts
+Hub ID
+*
+Your HubSpot developer account ID
+App ID
+*
+Please ensure you have
+created an app
+for our team to reference.
+Secondary App ID
+App used for testing and development
+Tell us about your use case
+Customer problem
+*
+Describe why you are interested in defining custom object(s) with your public app and describe the customer need your custom object(s) will address or solve.
+Target launch date
+*
+Target date for custom objects to be launched in your production app.
+How many objects are you requesting to build?
+*
+Recommended to limit 1-3 custom objects per app. Enterprise subscription plans have up to 10 object definitions available per account.
+What is the preferred customer access for your custom object(s)?
+*
+Read-only (i.e. uneditable).
+Customers expected to modify object schema.
+Custom object(s) description
+*
+Please provide the custom object name, description, properties/data, and how it will be associated with other objects and used in other HubSpot tools.
+Subject
+HubSpot is committed to protecting and respecting your privacy, and we’ll only use your personal information to administer your account and to provide the products and services you requested from us. From time to time, we would like to contact you about our products and services, as well as other content that may be of interest to you. If you consent to us contacting you for this purpose, please select the checkbox below:
+Acknowledgement emails to partner inquiries
+One to one email to follow up on requests
+*
+You may unsubscribe from these communications at any time. For more information, check out our
+Privacy Policy.
+By clicking "Submit," you consent to allow HubSpot to store and process the personal information submitted above to provide you the products and services requested.
+Frequently Asked Questions
+What are some examples of custom objects?
+We see value in creating custom objects for solutions HubSpot has not solved with standard objects. Cars, documents, registrations, applications, and unique product types are just a few examples.
+Here is a
+guided example
+of defining a car object for a car dealership called CarSpot. Try it yourself!
+What are the benefits of defining custom objects?
+There is a finite set of HubSpot standard objects; you have the tools and vision to expand this list for customers. Custom objects allow customers to unlock the tremendous power of the HubSpot platform for their teams by storing other types of data in HubSpot, much like we store information about contacts, companies, deals, and tickets.
+As a developer, you can build custom objects that more closely align with customer needs, potentially unlock a new market, or integrate platforms with more parity using a public app.
+What should I keep in mind when building custom objects?
+Custom objects are only available to customers with at least one of the Enterprise subscription plans.
+An account with at least one Enterprise subscription plan can have a maximum of 10 custom objects defined.
+You may define up to 10 properties that can uniquely identify a record. HubSpot will enforce the uniqueness of records by the properties you define on your behalf. We usually recommend including at least one such property.
+Some functionality of our client libraries may not be compatible with the features of this beta or pilot program. For more information on HubSpot’s client libraries please
+click here
+.
+Custom objects do not support the following, including but not limited to:
+Timeline API
+does not support custom objects.
+Webhooks API
+cannot be used with custom objects.
+Custom objects do not have support in personalization tokens at this time.
+You can only associate your custom object with standard HubSpot objects (e.g.
+contact
+,
+company
+,
+deal
+, or
+ticket
+) or other custom objects.
+Do you have helpful resources to guide me?
+Getting started with custom objects:
+Introducing Custom Objects for HubSpot
+Use custom objects
+6 Custom Object Solutions
+Podcast
+Data in HubSpot: Custom Objects and Other Tools
+HubSpot Academy course
+HubSpot
+Custom Objects API
+reference
+Building custom objects using an app integration:
+What's Best for my HubSpot Integration? Choosing Private vs. Public HubSpot Apps
+Developer blog and workshop:
+Essentials for Getting Started with Custom Objects
+How to Build a Custom Object Using Private Apps
+Building A Custom Object Schema
+using private app authentication and Postman. As part of a Developer Bytes series on YouTube.
+Additional Resources:
+Working with OAuth
+Developer test accounts and how to create one
+Create a custom object
+directly in your HubSpot account
+HubSpot Community
+Our Products
+HubSpot Free CRM
+HubSpot Marketing Hub
+HubSpot Sales Hub
+HubSpot Service Hub
+HubSpot for WordPress
+Resources & Tools
+API Documentation
+CMS Documentation
+Changelog
+App Marketplace
+CMS Asset Marketplace
+Learn
+CMS Blog
+CMS Open Source Project
+CMS Code Gallery
+Free Courses & Certifications
+Community
+Development Jobs
+Developer Forum
+HubSpot.com
+Github
+Slack
+Twitter
+Github
+Slack
+Twitter
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies

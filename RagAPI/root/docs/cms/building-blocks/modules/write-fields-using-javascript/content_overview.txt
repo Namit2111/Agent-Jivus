@@ -1,0 +1,848 @@
+Write module and theme fields using JavaScript | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Overview
+Requirements
+CLI commands
+Check JavaScript file locally
+Upload to HubSpot
+Examples
+Regular object
+Common fields
+Change fields based on passed options
+Add JSON from other files
+Make async calls
+Use external field object libraries
+CMS Development
+Content and structure
+Fields
+Write module and theme fields using JavaScript
+Write module and theme fields using JavaScript
+Typically, module and theme fields are configured in a
+fields.json
+file. However, if you prefer to not use JSON, you can configure your fields with a JavaScript file instead. Writing fields with JavaScript enables you to abstract fields that you use often, dynamically generate new fields, and more easily update existing fields.
+For example, when building a set of modules, you can abstract your module fields into partials which are then pulled into individual modules. By building modules that pull from one source of truth, you’ll no longer need to update those common fields in each module individually.
+Below, learn how to write fields using JavaScript, including the necessary CLI commands, along with some examples to get you started.
+Overview
+At a high level, to write fields using JavaScript:
+In the module folder or project root, include a JavaScript fields file instead of the
+fields.json
+file. You can use any of the following extensions:
+fields.js
+fields.cjs
+fields.mjs
+(requires Node 13.2.0+ to be installed).
+Optionally, check your JavaScript before uploading to HubSpot by running
+hs cms convert-fields
+, which will save the output of the fields file locally as
+fields.output.json
+.
+Upload the asset to HubSpot through the CLI by running
+hs upload
+or
+hs watch
+with a
+--convertFields
+flag. On upload, HubSpot will convert the JavaScript file to a
+fields.json
+file.
+Please note:
+when HubSpot converts the JavaScript file into the
+fields.json
+file, it does
+not
+store the original JavaScript file. To maintain a source of truth, it's recommended to use a version control system like Git.
+Requirements
+To use a JavaScript field file to generate fields:
+The JavaScript fields file must be contained in a module folder or at the project root to be treated as the global
+fields.json
+file.
+The module or theme must not also include a
+fields.json
+file. Including both will prompt you to select one or the other at upload.
+The JavaScript fields file must export a function as its default export. The exported function can accept an array of strings called
+fieldOptions
+, and must return an array of objects. Each entry in the returned array must be one of the following:
+A JavaScript object with
+valid field key-value pairs
+.
+A JavaScript object with a
+.toJSON()
+method. When run, this method must return a value that meets criterion 1.
+A
+Promise
+that resolves to a JavaScript object that meets criterion 1.
+CLI commands
+Use the following CLI commands when writing module fields with JavaScript.
+Check JavaScript file locally
+Check your work locally by running
+hs cms convert-fields
+, which saves the output of your JavaScript fields file as
+fields.output.json
+in the same directory as the JavaScript fields file.
+hs cms convert-fields
+accepts the following flags:
+Flag
+Description
+--src
+The location of the JavaScript fields file, or a directory.
+--fieldOptions=[options]
+Accepts a space-separated list that will then be passed to every exported JavaScript fields function as an array before compile-time.For example, you can configure fields to have different labels depending on whether a
+--fieldOptions=qa
+flag is set.
+View an example of this below
+.
+Upload to HubSpot
+Upload to HubSpot to begin the process of converting the JavaScript file to a
+fields.json
+file by running either
+hs upload
+or
+hs watch
+.
+hs upload
+and
+hs watch
+accept the following flags:
+Flag
+Description
+--convertFields
+Enables JavaScript fields functionality.
+--saveOutput
+Saves the JavaScript fields file output as
+fields.output.json
+in the same directory as the JavaScript fields file. If not included, HubSpot will save the output of the JavaScript fields file to a temporary directory then delete it after upload.
+--fieldOptions=[options]
+Accepts a space-separated list that will then be passed to every exported JavaScript fields function as an array before compile-time.For example, you can configure fields to have different labels depending on whether a
+--fieldOptions=qa
+flag is set.
+View an example of this below
+.
+Examples
+Below, review examples of using JavaScript to write fields files.
+Regular object
+The following
+fields.js
+file writes a regular object:
+Copy code snippet
+module.exports = (fieldOptions) => {
+return [
+{
+required: true,
+locked: false,
+help_text: '',
+inline_help_text: '',
+name: 'button_text',
+label: 'Button text',
+type: 'text',
+default: 'Add a button link here',
+},
+];
+};
+1
+module
+.
+exports
+=
+(
+fieldOptions
+)
+=>
+{
+2
+return
+[
+3
+{
+4
+required
+:
+true
+,
+5
+locked
+:
+false
+,
+6
+help_text
+:
+''
+,
+7
+inline_help_text
+:
+''
+,
+8
+name
+:
+'button_text'
+,
+9
+label
+:
+'Button text'
+,
+10
+type
+:
+'text'
+,
+11
+default
+:
+'Add a button link here'
+,
+12
+},
+13
+];
+14
+};
+Common fields
+The following
+fields.js
+file creates a set of common fields to be used across multiple modules:
+Copy code snippet
+const setFieldParams = (field, params) => {
+return { ...field, ...params };
+};
+const defaultRichTextField = {
+type: 'richtext',
+enabled_features: [
+'font_size',
+'standard_emphasis',
+'block',
+'font_family',
+'alignment',
+],
+display_width: null,
+required: false,
+locked: false,
+};
+module.exports = (fieldOptions) => {
+let fields = [
+setFieldParams(defaultRichTextField, {
+name: 'tier',
+label: 'Product tier',
+default: '<h2>Free</h2>',
+}),
+setFieldParams(defaultRichTextField, {
+name: 'description',
+label: 'Product description',
+default:
+'<p>For teams that need additional security, control, and support.</p>',
+}),
+];
+return fields;
+};
+​
+x
+1
+const
+setFieldParams
+=
+(
+field
+,
+params
+)
+=>
+{
+2
+return
+{
+...
+field
+,
+...
+params
+};
+3
+};
+4
+​
+5
+const
+defaultRichTextField
+=
+{
+6
+type
+:
+'richtext'
+,
+7
+enabled_features
+: [
+8
+'font_size'
+,
+9
+'standard_emphasis'
+,
+10
+'block'
+,
+11
+'font_family'
+,
+12
+'alignment'
+,
+13
+],
+14
+display_width
+:
+null
+,
+15
+required
+:
+false
+,
+16
+locked
+:
+false
+,
+17
+};
+18
+​
+19
+module
+.
+exports
+=
+(
+fieldOptions
+)
+=>
+{
+20
+let
+fields
+=
+[
+21
+setFieldParams
+(
+defaultRichTextField
+, {
+22
+name
+:
+'tier'
+,
+23
+label
+:
+'Product tier'
+,
+24
+default
+:
+'<h2>Free</h2>'
+,
+25
+}),
+26
+​
+27
+setFieldParams
+(
+defaultRichTextField
+, {
+28
+name
+:
+'description'
+,
+29
+label
+:
+'Product description'
+,
+30
+default
+:
+31
+'<p>For teams that need additional security, control, and support.</p>'
+,
+32
+}),
+33
+];
+34
+​
+35
+return
+fields
+;
+36
+};
+Change fields based on passed options
+The following
+fields.js
+file changes the module's fields based on whether the
+--fieldOptions=[qa]
+flag was included when running
+hs cms convert-fields
+,
+hs upload
+, or
+hs watch
+:
+Copy code snippet
+module.exports = (fieldOptions) => {
+let fields = [...]
+if(fieldOptions.includes('qa')) {
+fields = fields.map((field) => {
+field["name"] += "_qa";
+return field;
+})
+}
+}
+return fields
+}
+xxxxxxxxxx
+13
+1
+module
+.
+exports
+=
+(
+fieldOptions
+)
+=>
+{
+2
+let
+fields
+=
+[
+...
+]
+3
+​
+4
+if
+(
+fieldOptions
+.
+includes
+(
+'qa'
+)) {
+5
+fields
+=
+fields
+.
+map
+((
+field
+)
+=>
+{
+6
+field
+[
+"name"
+]
++=
+"_qa"
+;
+7
+return
+field
+;
+8
+})
+9
+}
+10
+}
+11
+​
+12
+return
+fields
+13
+}
+Add JSON from other files
+The following
+fields.js
+file includes styles from a
+styles.json
+file:
+Copy code snippet
+const fs = require('fs')
+module.exports = (fieldOptions) => {
+const fields = [...]
+const styles = JSON.parse(fs.readFileSync('../../json/styles.json'))
+return [fields, styles]
+}
+xxxxxxxxxx
+9
+1
+const
+fs
+=
+require
+(
+'fs'
+)
+2
+​
+3
+module
+.
+exports
+=
+(
+fieldOptions
+)
+=>
+{
+4
+const
+fields
+=
+[
+...
+]
+5
+​
+6
+const
+styles
+=
+JSON
+.
+parse
+(
+fs
+.
+readFileSync
+(
+'../../json/styles.json'
+))
+7
+​
+8
+return
+[
+fields
+,
+styles
+]
+9
+}
+Make async calls
+The following
+fields.js
+file includes an asynchronous call by setting the exported function as
+async
+. If you return a Promise, the CLI will wait for the Promise to resolve before writing the
+fields.json
+file.
+Copy code snippet
+module.exports = async (fieldOptions) => {
+const httpField = fetch('https://example.org/example.json').then((resp) =>
+resp.json()
+);
+return [httpField];
+};
+xxxxxxxxxx
+7
+1
+module
+.
+exports
+=
+async
+(
+fieldOptions
+)
+=>
+{
+2
+const
+httpField
+=
+fetch
+(
+'https://example.org/example.json'
+).
+then
+((
+resp
+)
+=>
+3
+resp
+.
+json
+()
+4
+);
+5
+​
+6
+return
+[
+httpField
+];
+7
+};
+Use external field object libraries
+The following
+fields.js
+file includes an external library. Libraries such as
+@iGoMoon/hubspot-fields-js
+are supported, as their fields objects expose a
+.toJSON()
+function.
+Copy code snippet
+const { Field, Group } = require('@iGoMoon/hubspot-fields-js');
+module.exports = (fieldOptions) => {
+return [
+Field.text()
+.name('button_text', 'Button text')
+.required(true)
+.default('Add a button link here'),
+new Group().children([
+Field.boolean()
+.id('1')
+.name('enable', 'Enable Field')
+.set('display', 'toggle')
+.default(true),
+Field.number().name('number', 'Number Fields'),
+Field.text()
+.name('css_class_name', 'CSS Class')
+.set('validation_regex', '-?[a-zA-Z]+[a-zA-Z0-9- ]+')
+.inlineHelpText('Enter a CSS class for additional styling'),
+]),
+];
+};
+xxxxxxxxxx
+23
+1
+const
+{
+Field
+,
+Group
+}
+=
+require
+(
+'@iGoMoon/hubspot-fields-js'
+);
+2
+​
+3
+module
+.
+exports
+=
+(
+fieldOptions
+)
+=>
+{
+4
+return
+[
+5
+Field
+.
+text
+()
+6
+.
+name
+(
+'button_text'
+,
+'Button text'
+)
+7
+.
+required
+(
+true
+)
+8
+.
+default
+(
+'Add a button link here'
+),
+9
+​
+10
+new
+Group
+().
+children
+([
+11
+Field
+.
+boolean
+()
+12
+.
+id
+(
+'1'
+)
+13
+.
+name
+(
+'enable'
+,
+'Enable Field'
+)
+14
+.
+set
+(
+'display'
+,
+'toggle'
+)
+15
+.
+default
+(
+true
+),
+16
+Field
+.
+number
+().
+name
+(
+'number'
+,
+'Number Fields'
+),
+17
+Field
+.
+text
+()
+18
+.
+name
+(
+'css_class_name'
+,
+'CSS Class'
+)
+19
+.
+set
+(
+'validation_regex'
+,
+'-?[a-zA-Z]+[a-zA-Z0-9- ]+'
+)
+20
+.
+inlineHelpText
+(
+'Enter a CSS class for additional styling'
+),
+21
+]),
+22
+];
+23
+};
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Templates
+Modules
+Fields
+Overview
+Module and theme fields best practices
+Custom fonts
+Alias mapping
+Brand and settings inheritance
+oEmbed
+Write fields using JavaScript
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

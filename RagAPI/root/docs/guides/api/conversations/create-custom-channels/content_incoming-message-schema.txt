@@ -1,0 +1,840 @@
+Custom channels (BETA) | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create a public app
+Register your custom channel in HubSpot
+Channel schema
+Channel capabilities
+Delivery identifiers
+Connect channel accounts to HubSpot
+Channel account connection for specific accounts
+Creating a connection setup flow for your custom channel
+Publish received messages to HubSpot
+Incoming message schema
+Supported message attachment types
+File attachments
+Quick reply attachments
+Unsupported content attachments
+Handling outgoing messages sent from HubSpot
+Handling updates to channel accounts
+Channel account updated events
+Channel account purged events
+Archive a custom channel
+API Guides
+Conversations
+Custom channels (BETA)
+Custom channels (BETA)
+Create custom channels endpoint reference
+If you have a
+Sales Hub
+Enterprise
+or
+Service Hub
+Enterprise
+account, you can create custom channels to build a bridge between an external message service and HubSpot's
+inbox
+or
+help desk
+features. You can then publish your custom channel app in the HubSpot App Marketplace for other HubSpot admins to install and use in their own accounts.
+Create a public app
+To get started, you'll need to create a public app that you'll use to register your custom channel with HubSpot, then handle incoming and outgoing messages to an inbox.
+You can follow the instructions in
+this article
+to create your public app. When configuring the scopes for your app on the
+Auth
+tab, ensure that your app requests the following scopes:
+conversations.custom_channels.read
+: this scope allows you to access to read messages and threads that your custom channel has already published to HubSpot.
+conversations.custom_channels.write
+: this scope allows you to publish messages to HubSpot.
+conversations.read
+: this scope allows you to retrieve a list of conversation inboxes in an account using the
+Conversations BETA API
+, so that you can connect channel accounts to specific inboxes.
+Once you've created your app, take note of the following app details that you'll use to identify your app when making requests to the Custom Channels API endpoints.
+App ID
+Client ID
+Client secret
+Register your custom channel in HubSpot
+After creating your app, you can create your custom channel in HubSpot, using your HubSpot Developer API Key, and your App ID of the app you just created.
+To register your channel, make a
+POST
+request to
+https://api.hubapi.com/conversations/v3/custom-channels?hapikey={YOUR_DEVELOPER_API_KEY}&appId={appId}
+.
+In the body of your request, provide a channel schema that includes an object that details the channel capabilities.
+For example, the following request body provides an example channel schema with a set of basic channel capabilities:
+Copy code snippet
+// Example request body for registering a custom channel
+{
+"name": "My new custom channel",
+"webhookUrl": "https://example.com/handle-new-outgoing-message-notification",
+"capabilities": {
+"deliveryIdentifierTypes": [],
+"richText": ["HYPERLINK", "TEXT_ALIGNMENT", "BLOCKQUOTE"],
+"allowConversationStart": false,
+"allowMultipleRecipients": false,
+"allowInlineImages": false,
+"allowOutgoingMessages": false,
+"outgoingAttachmentTypes": ["FILE"]
+"allowedFileAttachmentMimeTypes": ["image/png"],
+"maxFileAttachmentCount": 1,
+"maxFileAttachmentSizeBytes": 1500000,
+"maxTotalFileAttachmentSizeBytes": 1500000
+}
+}
+1
+// Example request body for registering a custom channel
+2
+{
+3
+"name"
+:
+"My new custom channel"
+,
+4
+"webhookUrl"
+:
+"https://example.com/handle-new-outgoing-message-notification"
+,
+5
+"capabilities"
+: {
+6
+"deliveryIdentifierTypes"
+: [],
+7
+"richText"
+: [
+"HYPERLINK"
+,
+"TEXT_ALIGNMENT"
+,
+"BLOCKQUOTE"
+],
+8
+"allowConversationStart"
+:
+false
+,
+9
+"allowMultipleRecipients"
+:
+false
+,
+10
+"allowInlineImages"
+:
+false
+,
+11
+"allowOutgoingMessages"
+:
+false
+,
+12
+"outgoingAttachmentTypes"
+: [
+"FILE"
+]
+13
+"allowedFileAttachmentMimeTypes"
+: [
+"image/png"
+],
+14
+"maxFileAttachmentCount"
+:
+1
+,
+15
+"maxFileAttachmentSizeBytes"
+:
+1500000
+,
+16
+"maxTotalFileAttachmentSizeBytes"
+:
+1500000
+17
+}
+18
+}
+Channel schema
+The table below outlines each of the parameters required for the channel schema in the request body.
+Parameter
+Type
+Description
+name
+String
+The name of your channel, which will appear to users who install your app.
+webhookUrl
+String
+A valid URL where HubSpot will send webhook notifications of outgoing messages that should be sent using your channel.
+capabilities
+Object
+An object that specifies that the messaging content and recipient capabilities of your channel. Consult the table below for all supported fields for this object.
+channelAccountConnectionRedirectUrl
+String
+If you're [creating a connection setup flow for your custom channel](#creating-a-connection-setup flow-for-your-custom-channel), this is the URL that HubSpot will point to when users click the option to install your app in the inbox or help desk connection setup in HubSpot.
+Channel capabilities
+The table below outlines all available fields you can specify for the
+capabilities
+field of your channel.
+Parameter
+Type
+Description
+Default
+deliveryIdentifierTypes
+Array
+An optional array that specifies the identifier types your channel supports for its senders and recipients. Consult the delivery identifier types table below for more info.
+[]
+richText
+Array
+An optional array of supported rich text elements presented as options in HubSpot's message composer. Available values are
+"BLOCKQUOTE"
+,
+"BOLD"
+,
+"FONT_SIZE"
+,
+"FONT_STYLE"
+,
+"HYPERLINK"
+,
+"ITALIC"
+,
+"LISTS"
+,
+"TEXT_ALIGNMENT"
+,
+"TEXT_HIGHLIGHT_COLOR"
+,
+"TEXT_COLOR"
+, and/or
+"UNDERLINE"
+. If left unspecified, no rich text elements will be supported.
+[]
+allowConversationStart
+Boolean
+Whether your channel allows HubSpot users to initiate conversations with outgoing messages.
+false
+allowMultipleRecipients
+Boolean
+Whether your channel allows messages to be sent with multiple recipients.
+false
+allowInlineImages
+Boolean
+Whether your channel allows inline images to be included in the message body. If set to
+true
+, HubSpot's message composer will present an
+Insert image
+option.
+False
+allowOutgoingMessages
+String
+Whether your channel allows outgoing messages. You can set this field to true if you want your channel to be an "intake-only" message source.
+False
+outgoingAttachmentTypes
+Array
+The types of attachments your channel supports (valid values are
+"FILE"
+and
+"QUICK_REPLIES"
+).
+[]
+allowedFileAttachmentMimeTypes
+Array
+The file MIME types that your channel supports for file attachments, if any. This defaults to a fairly permissive list of common text, image, audio, video, and archive files.
+["image/png", "text/plain", ...]
+maxFileAttachmentCount
+Integer
+The maximum number of file attachments permitted for a single message.
+0
+maxFileAttachmentSizeBytes
+Integer
+The maximum individual file size permitted for a single attachment on a message, in bytes.
+0
+maxTotalFileAttachmentSizeBytes
+Integer
+The maximum cumulative file size permitted for all attachments combined for a single message, in bytes.
+0
+Delivery identifiers
+The
+deliveryIdentifierTypes
+field specified within the
+channelCapabilities
+of your channel specifies an array of delivery identifiers.
+A delivery identifier is an object that includes a
+type
+and
+value
+, that describes sender or recipient delivery details:
+Parameter
+Type
+Description
+type
+String
+The format for an identifier of the sender or recipient. Much like a postal mail address, this identifier provides a well-defined format for sending or receiving messages to/from the individual contact. The following types are available:
+HS_EMAIL_ADDRESS
+: identifier value must have a valid email address.
+HS_PHONE_NUMBER
+: identifier value must be a valid phone number, based on the logic in libphonenumber.
+CHANNEL_SPECIFIC_OPAQUE_ID
+: identifier value does not require any format validation to be performed, except to check it isn't blank. This option is intended for use in channels with their own concept of "addresses" (e.g., usernames, UUIDs, or chat handles).
+value
+String
+The actual value of the delivery identifier (e.g., "
+support@example.com
+" for an
+HS_EMAIL_ADDRESS
+).
+If you need to review or update your channel's configuration, you can send a
+GET
+or
+PATCH
+request to the same endpoint above using the same channel schema.
+PATCH
+requests also accept partial-update requests.
+Connect channel accounts to HubSpot
+After you've created your custom channel, the next step is to allow specific channel accounts to be connected to a user's HubSpot account, so that messages can be sent and received.
+Channel account connection for specific accounts
+If you're developing a custom channel for your own business, or building a specific integration on behalf of a client, you can connect channel accounts directly to a HubSpot account. You'll need to have direct administrative access to the account or have an app installed in an account that's authorized the
+conversations.read
+scope.
+When a HubSpot user installs your custom channel app in their account, a request will be sent to your custom channel's
+Redirect URL
+, which contains an authorization code that can be used to request an OAuth token for accessing that user's HubSpot account and its associated data. For more information on how OAuth works, check out
+this article
+.
+Once you've obtained an OAuth access token using the authorization code, you can use this OAuth access token to send requests to HubSpot to connect specific channel accounts.
+To connect a specific channel account, make a
+POST
+request to
+/conversations/v3/custom-channels/{channelId}/channel-accounts
+, where the
+channelId
+is the channel ID that you've registered.
+The request body below provides an example channel account schema for an inbox ID of
+123
+:
+Copy code snippet
+// Example request body to connect a specific channel account
+{
+"inboxId": "123",
+"name": "My connected inbox",
+"deliveryIdentifier": "jdoe@example.com",
+"authorized": true
+}
+xxxxxxxxxx
+7
+1
+// Example request body to connect a specific channel account
+2
+{
+3
+"inboxId"
+:
+"123"
+,
+4
+"name"
+:
+"My connected inbox"
+,
+5
+"deliveryIdentifier"
+:
+"jdoe@example.com"
+,
+6
+"authorized"
+:
+true
+7
+}
+The table below provides details for each of the possible fields of a channel account:
+Parameter
+Type
+Description
+inboxId
+String
+The ID of the
+conversations inbox
+that you've connected your channel account to. You can retrieve a list of conversation inboxes with their associated IDs by using the
+conversations beta API
+.
+name
+String
+The friendly name that will appear to HubSpot users in their account.
+deliveryIdentifier
+String
+An optional delivery identifier that should be associated with this channel account (e.g., a username or email address that uniquely identifies this channel account within your integrated messaging service).
+authorized
+Boolean
+By default this field is set to
+true
+, but if the account is no longer usable or accessible, you can update this to
+false
+to disable this channel account for your custom channel.
+Creating a connection setup flow for your custom channel
+If you're developing a custom channel integration that you want to distribute to multiple customers via the HubSpot marketplace, you can register an account connection flow that will appear within the in-app HubSpot inbox or help desk connection flow.
+The screenshot below showcases how an example custom channel called
+HuddleHub
+would appear in the help desk connection flow in HubSpot. Your app's name, description, and logo from your public app settings will appear as part of the custom channel option that users can click to connect.
+Any account that installs your app can click the associated option to authorize their credentials with any third-party service you're integrating with (if applicable), then proceed to connect that account to HubSpot. When users click the associated option in HubSpot, a pop-up window will open and load a webpage that allows them to provide their credentials. You'll need to host this webpage and any associated backend services yourself.
+The screenshot below provides a minimal example of what this dialog box looks like and includes some debugging information based on the query parameters that HubSpot includes in the URL. When designing your own page, you should optimize it for a 600px by 600px window, and provide a user-friendly method (e.g., a form) to provide any account details and
+delivery identifier information
+you'll need to connect their account.
+To register the behavior of your custom channel account connection with a HubSpot account that's installed your app, you'll make a
+PATCH
+request to
+/conversations/v3/custom-channels/{channelId}
+. In the body of your request, set the
+channelAccountConnectionRedirectUrl
+property to the URL that you want HubSpot to navigate to when users click your custom channel in the connection flow.
+Once clicked, HubSpot will open a new window with the URL you specified, and append the following query parameters that you can use to authenticate with a third-party service, or for any other custom behavior you might need to wire up based on the user's HubSpot account, inbox, channel, or user information:
+Parameter
+Type
+Description
+accountToken
+String
+A shared object created in HubSpot's database that you'll use as an interim session token while the end user goes through the setup flow.
+Once they've provided all the parameters you'll need to connect their account, you'll use this token to make a
+PATCH
+request to
+/conversations/v3/custom-channels/{channelId}/channel-account-staging-tokens/{accountToken}
+, detailed in the section below this table.
+channelId
+Number
+The ID of your custom channel.
+inboxId
+Number
+The ID of the help desk or inbox that the HubSpot admin wants to connect your channel to.
+portalId
+Number
+The ID of the HubSpot account attempting to connect their account to your custom channel.
+redirectUrl
+String
+The HubSpot URL that you should send the user to when your flow and/or form submission is complete.
+Once you've collected the user's information in your page (e.g., using a form to collect each of the required parameters) and the user confirms their input by clicking a submission button, you can make a
+PATCH
+request to
+/conversations/v3/custom-channels/{channelId}/channel-account-staging-tokens/{accountToken}
+and provide the following parameters in your request:
+Parameter
+Type
+Description
+accountToken
+String
+As detailed above, this is the same
+accountToken
+provided as a query parameter in the URL of your webpage when the user initiated the connection in their HubSpot account. This should be provided as a path parameter in the URL of your request.
+channelId
+Number
+The ID of your custom channel, provided as a path parameter in the URL of your request.
+accountName
+String
+This is a request body parameter that will aact as a friendly name for the channel account that will appear in the inbox or help desk settings in the user's HubSpot account.
+deliveryIdentifier
+DeliveryIdentifier
+Provided as a request body parameter, the
+deliveryIdentifier
+that describes the address of the connected account. See the
+Delivery Identifiers section above
+for more details on how a
+deliveryIdentifier
+is structured.
+Once you've made the
+PATCH
+request and gotten a successful response, you can redirect the user back to the
+redirectUrl
+detailed above and close the pop-up window.
+The user will then see a success screen in their HubSpot account:
+Publish received messages to HubSpot
+When a channel account that uses your custom channel receives a message in the external message service (e.g., a user gets a new direct message in their social account's inbox), you'll want to ensure that the message gets published to HubSpot, which will log it into the HubSpot CRM and the associated conversations inbox.
+To publish a received message to HubSpot, make a
+POST
+request to
+/conversations/v3/custom-channels/{channelId}/messages
+, where the
+channelId
+should be the channel ID that you previously registered.
+Incoming message schema
+The body of your request can include the following fields:
+Field
+Type
+Description
+text
+String
+The plaintext content of your message.
+richText
+String
+An optional string that represents the HTML markup for the formatted text content of the message.
+channelAccountId
+String
+The ID of the channel account receiving the message.
+integrationThreadId
+String
+An optional string for the unique integration thread ID to be used in threading messages together.
+integrationIdempotencyId
+String
+An optional string you can use as a unique-per-message idempotency ID, to ensure that multiple requests to publish this message don't result in duplicate copies of it being published.
+The idempotency ID is only unique in the context of a channel account: the same channel account cannot have two messages with the same idempotency ID. However, two different channel accounts can have messages that have the same idempotency ID.
+inReplyToId
+String
+An optional string you can use to reference the message ID of an existing message that this message is a direct reply to.
+messageDirection
+String
+A required string that should be set to
+"INCOMING"
+.
+senders
+Array
+A list of messages senders. Each sender should be provided as an object with two fields: a
+deliverIdentifier
+, detailed
+above
+, and a
+name
+, which is an optional string that serves as a friendly name for the sender.
+recipients
+Array
+A list of intended recipients. Each recipient should be provided as an object with two fields: a
+deliveryIdentifier
+, detailed
+above
+, and a
+name
+, which is an optional string that serves as a friendly name for the recipient.
+timestamp
+String
+An optional timestamp, in ISO8601 format, that specifies when the message was received. If omitted, this value will default to the time you publish the message to HubSpot.
+attachments
+Array
+An optional list of message attachments.
+Supported message attachment types
+Several message attachment types are currently available: files, quick replies, as well as a catch-all type for unsupported file attachments.
+File attachments
+File attachments can be uploaded using HubSpot's files API, and the resulting file ID can be used to reference the file contents when publishing incoming messages to HubSpot.
+Consult the table below for details on how to structure a message attachment referencing an uploaded file:
+Parameter
+Type
+Description
+type
+String
+A required string that must be set to
+"FILE"
+.
+fileId
+String
+The HubSpot file ID for the uploaded file that the attachment will reference.
+fileUsageType
+String
+An enumeration used to render an appropriate preview of the file attachment. Available values are
+"STICKER"
+,
+"VOICE_RECORDING"
+,
+"IMAGE"
+,
+"AUDIO"
+, or
+"OTHER"
+.
+Quick reply attachments
+Some chat services, such as Facebook Messenger, present suggested options as "quick replies" to users, allowing them to select from a predefined list of response messages. HubSpot supports this functionality by providing the ability to include quick replies as an attachment to your message.
+Consult the table below on how to structure a message attachment that includes a list of quick replies:
+Parameter
+Type
+Description
+type
+String
+A required string that must be set to
+"QUICK_REPLIES"
+.
+quickReplies
+Array
+A list of one or more predefined responses. Each quick reply is an object that should include the following fields:
+value
+: a string that provides the text content of the reply, or the URL to visit when the option is clicked.
+label
+: an optional string that will appear instead of the raw
+value
+when presenting the option to the user.
+valueType
+: whether to treat the option as a hyperlink (with the value as the URL and the label as text) or as plaintext (in which case the
+label
+is used as the option text).
+Unsupported content attachments
+These attachments are used to represent attachment types included in the original message that HubSpot cannot recognize.
+For example, if a channel account on the messaging platform you're connecting to HubSpot via your channel receives a message that includes an attachment not listed in this article, and you want users viewing the message in their HubSpot account to know there was an attachment they might want to view directly on the messaging platform, you could use this attachment type when publishing the message to HubSpot.
+To specify an unsupported content attachment, the attachment should be specified as follows:
+Copy code snippet
+// Example attachment schema for unsupported content
+{
+"type": "UNSUPPORTED_CONTENT"
+}
+xxxxxxxxxx
+4
+1
+// Example attachment schema for unsupported content
+2
+{
+3
+"type"
+:
+"UNSUPPORTED_CONTENT"
+4
+}
+Handling outgoing messages sent from HubSpot
+To handle outgoing messages sent from HubSpot using your custom channel, HubSpot will send a payload as a
+POST
+request to the
+webhookUrl
+that you specified when you first registered your custom channel.
+The payload of the request that HubSpot sends will include a type of
+OUTGOING_CHANNEL_MESSAGE_CREATED
+. The table below provides a full reference on all fields included in the body of the webhook event:
+Parameter
+Type
+Description
+type
+String
+A string that specifies the webhook event type, which will be
+"OUTGOING_CHANNEL_MESSAGE_CREATED"
+.
+portalId
+String
+The HubSpot portal ID for the account from which the message was sent.
+channelId
+String
+The channel ID of your custom channel.
+eventTimestamp
+String
+When the event occurred, represented as an ISO8601 timestamp.
+message
+String
+An object that provides details about the outgoing message. Each of the fields of this message are detailed in the message table below.
+eventId
+String
+Unique reference to a specific message over a given channel used for debugging.
+channelIntegrationThreadIds
+Array
+This array includes an
+integrationThreadId
+that was sent if you had an opaque delivery identifier. If you use delivery identifier based threading, HubSpot will generate an
+integrationThreadId
+on your behalf. You can supply this value when
+publishing a message to HubSpot
+to ensure the message is added to an existing thread, or it will create a new thread if the
+integrationThreadId
+does not yet exist.
+The
+message
+object in the webhook payload contains the following fields:
+Field
+Type
+Description
+id
+String
+A unique message ID
+type
+String
+A string that's hard-coded to
+"MESSAGE"
+.
+channelId
+String
+The ID of your custom channel.
+channelAccountId
+String
+The ID of the channel account receiving the message.
+conversationsThreadId
+String
+The ID of the thread in the conversations inbox that includes this message.
+createdAt
+String
+An ISO8601 timestamp representing the time when the user hit
+Send
+from within the HubSpot message composer.
+createdBy
+String
+A string representing the
+actorId
+of the HubSpot user who sent the message.
+senders
+Array
+A list of messages senders. Each sender is provided as an object with three fields: an
+actorId
+string, a
+deliverIdentifier
+, detailed
+above
+, and a
+name
+, which is a string that serves as a friendly name for the sender.
+recipients
+Array
+A list of intended recipients. Each recipient is provided as an object with three fields: an
+actorId
+string, a
+deliveryIdentifier
+, detailed
+above
+, and a
+name
+, which is an optional string that serves as a friendly name for the recipient.
+text
+String
+The plaintext content of your message.
+richText
+String
+An optional string that represents the HTML markup for the formatted text content of the message.
+direction
+channelAccountId
+"OUTGOING"
+inReplyToId
+String
+An optional string you can use to reference the message ID of an existing message that this message is a direct reply to.
+truncationStatus
+String
+"NOT_TRUNCATED"
+status
+String
+"SENT"
+attachments
+Array
+An optional list of message attachments.
+Handling updates to channel accounts
+Whenever a channel account is updated or deleted, HubSpot will send a payload as a
+POST
+request to the
+webhookUrl
+that you specified when you first registered your custom channel. This can be useful for cases where you want to take an action such as notifying your users that their connection to HubSpot has been modified or deleted.
+Channel account updated events
+The payload of the request that HubSpot sends will include a type of
+CHANNEL_ACCOUNT_UPDATED
+. The table below provides a full reference on all fields included in the body of the webhook event:
+Parameter
+Type
+Description
+type
+String
+A string that specifies the webhook event type, which will be
+"CHANNEL_ACCOUNT_UPDATED"
+.
+portalId
+String
+The HubSpot portal ID for the account from which the message was sent.
+channelId
+String
+The channel ID of your custom channel.
+eventTimestamp
+String
+When the event occurred, represented as an ISO8601 timestamp.
+channelAccountId
+String
+The ID of the custom channel account.
+channelAccountDeliveryIdentifier
+String
+The delivery account identifier that's associated with the channel account.
+Channel account purged events
+The payload of the request that HubSpot sends will include a type of
+CHANNEL_ACCOUNT_PURGED
+. The table below provides a full reference on all fields included in the body of the webhook event:
+Parameter
+Type
+Description
+type
+String
+A string that specifies the webhook event type, which will be
+"CHANNEL_ACCOUNT_PURGED"
+.
+portalId
+String
+The HubSpot portal ID for the account from which the message was sent.
+channelId
+String
+The channel ID of your custom channel.
+eventTimestamp
+String
+When the event occurred, represented as an ISO8601 timestamp.
+channelAccountId
+String
+The ID of the custom channel account.
+channelAccountDeliveryIdentifier
+String
+The delivery account identifier that was associated with the channel account.
+Archive a custom channel
+To archive a custom channel, make a
+DELETE
+call to
+/conversations/v3/custom-channels/{channelId}
+using the ID of the channel you want to archive as the
+channelId
+.
+If successfully archived, you'll receive a response of
+204 No content
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Create custom channels
+Beta
+Inbox & messages
+Mobile chat SDK
+Visitor identification
+Working with chatbots
+Library
+CRM
+Marketing
+Settings
+Legal

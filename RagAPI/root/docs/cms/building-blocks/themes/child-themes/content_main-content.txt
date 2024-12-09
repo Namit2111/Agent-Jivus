@@ -1,0 +1,260 @@
+Child Themes | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create a child theme in the Design Manager
+Create a child theme with the CLI
+Limitations
+FAQs
+CMS Development
+Content and structure
+Themes
+Child Themes
+Child Themes
+Supported products
+Requires one of the following products or higher.
+Marketing Hub
+-
+Professional
+Content Hub
+-
+Starter
+A
+child theme
+is a copy of an original
+parent theme
+. You can edit the child theme without altering the parent theme. You can create child themes from default HubSpot themes, Asset Marketplace themes, and custom themes.
+Please note:
+creating a child theme lets you customize its theme settings without impacting the parent theme settings. However, creating a child theme will not create clones of each of the theme's templates, modules, or files such as stylesheets and JavaScript. You'll need to manually clone these assets to create copies for the child theme.
+Create a child theme in the Design Manager
+You can create a child theme in the Design Manager. You will be able to edit the child theme even if the original theme is not editable. The following files will be added to your child theme:
+theme.json
+- this will include an extends statement for linking to the parent theme.
+child.css
+and
+child.js
+- these are empty CSS and JS files. Code added to these files will only affect the child theme.
+Any files that contain the
+standard_header_includes
+HubL variable
+. This usually includes a "base" or "main" template file. You can
+view an example of this on our boilerplate
+.
+Learn how to create a child theme from an Asset Marketplace or default HubSpot theme in the
+Knowledge Base
+.
+To create a child theme from a custom theme:
+In your HubSpot account, navigate to
+Marketing > Files and Templates > Design Tools.
+In the finder, click the
+File
+dropdown menu and select
+New theme.
+Click the
+Theme Starting Point
+dropdown menu and select
+Blank Theme
+.
+Enter a
+name
+in the
+Theme Label
+field.
+To change where the child theme will be saved, click
+Change
+in the
+File location
+section. Click a
+folder
+, then click
+Select
+.
+In the
+theme.json
+file, enter a
+comma
+at the end of line 5, then add a new line below line 5.
+On line 6, add an
+extends
+statement, using a value of the path of the parent theme.
+Copy code snippet
+"extends": "path/to/theme"
+"extends"
+:
+"path/to/theme"
+By default, the child theme will inherit
+fields.json
+from the parent theme, so you do not need to create a separate
+fields.json
+for the child theme if you don't plan on updating it.
+Create a child theme with the CLI
+You can create a child theme with the CLI. You must complete
+the setup process for the CLI
+before creating a child theme. Your child theme will inherit the templates and files from the parent theme. You will be able to edit the new theme within the CLI and in the Design Manager.
+Create a new directory for your theme.
+Copy code snippet
+mkdir cms-project
+xxxxxxxxxx
+mkdir
+cms-project
+In the new directory, create a copy of the
+theme.json
+file of the parent theme.
+Copy code snippet
+cd cms-project
+cp ~/src/cms-sprout-theme/src/theme.json
+xxxxxxxxxx
+2
+1
+cd
+cms-project
+2
+cp
+~/src/cms-sprout-theme/src/theme.json
+In the copied
+theme.json
+file, add a comma to the end of line 5 and a new line below line 5 (or below the final line of the
+responsive_breakpoints
+, if they are present).
+Add an
+extends
+statement to line 6 (or 14, or the appropriate line for your theme), using a value of the path of the parent theme.
+Copy code snippet
+"extends": "@hubspot/barricade"
+xxxxxxxxxx
+"extends"
+:
+"@hubspot/barricade"
+By default, the child theme will inherit
+fields.json
+from the parent theme. Consequently, you don't need to create a separate
+fields.json
+for the child theme if you don't plan on updating it.
+Upload your new theme and files to your HubSpot account.
+Copy code snippet
+hs upload cms-project cms-project
+xxxxxxxxxx
+hs upload cms-project cms-project
+Limitations
+The total number of child themes you can have is based on your subscription:
+Marketing Hub
+Professional
+or
+CMS Hub
+Professional
+: five child themes
+Marketing Hub
+Enterprise
+or
+CMS Hub
+Enterprise:
+10 child themes
+HubSpot's free tools and
+CMS Hub
+Starter
+: one child theme
+FAQs
+Can I copy a child theme to another HubSpot account if the parent theme is from the Asset Marketplace?
+Yes, as long as the “extends” path is the same in the other HubSpot account.
+What assets are inherited from the parent theme?
+All files are inherited from the parent theme unless they are overwritten in the child theme.
+How can I override a particular asset from the parent theme?
+A file in the same relative path of a child theme will overwrite the equivalent file from the parent theme. So, for instance, to overwrite
+@marketplace/parent/theme/templates/about.html
+you can create
+/child/theme/templates/about.html
+and make your edits to the new file. The new file will take effect instead of the inherited file. This applies to your
+fields.json
+file as well as other files in the theme.
+How can I create new pages using the child theme?
+When you create a new page, your child theme will appear as an option under
+Your Themes
+on the theme selection screen. Learn more about creating pages using themes in the
+Knowledge Base.
+How can I edit an existing page to use a child theme instead of the parent theme?
+You can replace your page template with the equivalent template from the new theme. For instance,
+replace the template
+landing-page.html
+(in the parent theme) with the template
+landing-page.html
+(in the new theme).
+How can I edit a template’s label on the page creation screen?
+You can change the label of your template by editing the HTML file. The label is located in a comment at the top of your theme file.
+Can I create a child theme from a child theme?
+Currently you cannot create a child theme from a child theme.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Overview
+Getting started
+CMS boilerplate
+Child themes
+Default themes
+Quotes themes
+Responsive breakpoints
+Templates
+Modules
+Fields
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

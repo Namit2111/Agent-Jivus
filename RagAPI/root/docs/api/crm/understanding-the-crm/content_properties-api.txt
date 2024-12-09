@@ -1,0 +1,321 @@
+Understanding the CRM APIs | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Object APIs
+Object type IDs
+Unique identifiers and record IDs
+Associations API
+Properties API
+Search API
+Pipelines API
+API Guides
+CRM
+Understanding the CRM APIs
+Understanding the CRM APIs
+The foundation of your HubSpot account is a database of your business relationships and processes, called the CRM (Customer Relationship Management). To manage this data, HubSpot accounts include objects, which represent types of relationships or processes. Individual instances of objects, called records, represent the individual entities under each object type (e.g., John Smith is a contact). To store data in each record, you'll use properties (e.g., the email property) and to represent the relationships between individual entities, you can associate records with one another (e.g., associate John Smith with a company Smith & Co.) Further, CRM records can also store information about interactions through associated engagements/activities, such as emails, calls, and meetings.Below, learn about CRM objects, records, properties, associations, pipelines, and searching the CRM. To learn more about managing your CRM database from within HubSpot, check out
+HubSpot's Knowledge Base
+.
+Object APIs
+The object APIs provide access to records and activities. For supported objects, you can use object endpoints and replace the
+{objectTypeId}
+in the request URL with the desired object. For example, to create contacts, you'd make a
+POST
+request to
+crm/v3/objects/0-1
+and to create courses, the request would be to
+crm/v3/objects/0-410
+.Refer to
+this article
+for more information about using the object endpoints for various objects.
+Please note
+: some objects have limited API functionality. For more details, click the link to an object's endpoints reference documentation in the table below. If an object listed doesn't have its own doc, you can refer to the
+objects API
+doc and substitute the
+{objectTypeId}
+in each endpoint to your desired object.
+Object type IDs
+When using CRM and other APIs, you'll need to use the
+objectTypeId
+field, which is a unique numerical value assigned to each object. For example, to retrieve records, you'd make a
+GET
+request to
+/crm/v3/objects/{objectTypeId}
+, or when creating a property for an object, you'd make a
+POST
+request to
+/crm/v3/properties/{objectTypeId}
+.The object type ID values are listed in the table below:
+Type ID
+Object
+Description
+0-2
+Companies
+Stores information about a business or organization. View the
+companies API
+0-1
+Contacts
+Stores information about an individual person. View the
+contacts API
+0-3
+Deals
+Represent sales opportunities and transactions, tracked through pipeline stages. View the
+deals API
+0-5
+Tickets
+Represent customer requests for help or support, tracked through pipeline statuses. View the
+tickets API
+0-421
+Appointments
+Represent encounters or services scheduled for an individual. View the
+objects API
+0-48
+Calls
+A type of activity that represents phone call interactions associated with your records. View the
+calls API
+0-18
+Communications
+A type of activity that represents SMS, LinkedIn, and WhatsApp message interactions associated with your records. View the
+communications API
+0-410
+Courses
+Represent structured programs or series of lessons, trainings, or educational modules. View the
+objects API
+2-XXX
+Custom objects
+Stores data that doesn't fit in with existing objects. To find the
+objectTypeId
+for a custom object, make a
+GET
+request to
+/crm/v3/schemas
+. View the
+custom objects API
+0-49
+Emails
+A type of activity that represents one-to-one email interactions associated with your records. View the
+email API
+0-19
+Feedback submissions
+Stores information submitted to a feedback survey. Feedback submissions are associated with contact records. View the
+feedback submissions API
+0-52
+Invoices
+Represent the invoices sent for sales transactions. Invoices can be associated with contacts, companies, deals, line items, discounts, fees, and taxes. View the
+invoices API
+0-136
+Leads
+Represent potential customers who have shown interest in your products or services. View the
+leads API
+0-8
+Line items
+Represent individual products and services sold in a deal. Line items can be created from existing products in your product library, or can be created standalone. View the
+line items API
+0-420
+Listings
+Represent properties or units to be bought, sold, or rented. View the
+objects API
+0-54
+Marketing events
+Represent events related to your marketing efforts, specifically including events from connected integrations. You can specify whether or not a contact attended, registered for, or cancelled attending a marketing event. View the
+marketing events API
+0-47
+Meetings
+A type of activity that represents meeting interactions associated with your records. View the
+meetings API
+0-46
+Notes
+A type of activity that represents notes associated with your records. View the
+notes API
+0-101
+Payments
+The payments made by buyers through invoices, payment links, and quotes. Payments can be associated with contacts, companies, deals, invoices, quotes, line items, subscriptions, discounts, fees, and taxes. View the
+payments API
+0-116
+Postal mail
+A type of activity that represents physical mail interactions associated with your records. View the
+postal mail API
+0-7
+Products
+Represent goods or services for sale. Products can't be associated with other objects, but you can create line items based on products and associate those with deals and quotes. View the
+products API
+0-14
+Quotes
+Represent pricing information shared with potential buyers. Quotes can be associated with contacts, companies, deals, and line items. View the
+quotes API
+0-162
+Services
+Represent intangible offerings provided to customers. Examples include onboarding and consulting, repairs and maintenance, and personal care. View the
+objects API
+0-69
+Subscriptions
+Represent recurring payments scheduled through payment links and quotes. Invoices can be associated with contacts, companies, deals, quotes, line items, payments, discounts, fees, and taxes. View the
+subscriptions API
+0-27
+Tasks
+A type of activity that represents to-dos associated with your records. View the
+tasks API
+0-115
+Users
+Represent the users in your HubSpot account. Users cannot be associated with other objects, but can be retrieved and updated via API. View the
+user details API
+You can always use the numerical type ID value, but in some cases, you can also use the object's name for contacts, companies, deals, tickets, or notes. For example:
+When starting an import with the
+imports API
+, the
+columnObjectTypeId
+specifies which object the data in your file belongs to. To import data for contacts, your value for
+columnObjectTypeId
+could be
+contact
+or
+0-1
+.
+When using the
+associations API
+, the
+fromObjectType
+and
+toObjectType
+values specify the objects and the direction of the association. To view association types for contacts to companies, your
+GET
+request URL could be
+crm/v4/associations/contact/company/labels
+or
+crm/v4/associations/0-1/0-2/labels
+.
+Unique identifiers and record IDs
+A unique identifier is a value that differentiates one record in the CRM from another, even if they have otherwise identical information. For example, a database might have records for two people named John Smith. To avoid accidentally sending money to the wrong John Smith, each record is assigned a number as their
+Record ID
+.When a record is created in HubSpot, its
+Record ID
+(
+hs_object_id
+) is automatically generated and should be treated as a string. Record IDs are unique within an object, so there can be both a contact and company with the same ID. For contacts and companies, there are additional unique identifiers, including a contact's
+email
+and a company's
+domain
+name. For contacts, companies, deals, tickets, appointments, courses, listings, services, and custom objects, you can also
+create custom unique identifier properties
+.In the CRM APIs, you'll use unique identifier values to identify and manage specific records. You can always use a record's
+hs_object_id
+value, but can also use custom unique identifier properties for certain endpoints, specified by the
+idProperty
+parameter. For example, to edit a contact, you could make a
+PATCH
+request to
+/crm/v3/objects/0-1/{contactId}
+or
+/crm/v3/objects/0-1/{contactEmail}?idProperty=email
+.Learn more about how HubSpot handles deduplication in the
+Knowledge Base
+.
+Associations API
+In HubSpot, you can show how objects are related to one another by associating their records. For example, you can associate multiple contacts with a company, and then associate the company and relevant contacts with a deal.When using the
+associations API endpoints
+, you can substitute objects for
+{toObjectTypeId}
+and
+{fromObjectTypeId}
+in the request URLs and request bodies. Before associating records across objects, to understand which objects can be associated to one another, you can
+retrieve association types.
+For example, contacts can be associated with most objects, while quotes can only be associated with contacts, companies, deals, and line items.Depending on your subscription, you can describe the specific relationship types between records using
+association labels
+, and your account may have additional custom objects, which can be associated with the other standard objects. Learn more about object relationships and managing associations using the
+associations endpoints
+.If you have access to a HubSpot account, you can also review your account's unique object relationships by navigating to
+the data model tool.
+Properties API
+Information about records are stored in fields called properties, which are then organized into
+groups
+. HubSpot provides a set of default properties for each object. In addition to each object’s default properties, you can store custom data by
+creating custom properties
+. When using the properties API, you can substitute objects in the endpoints to create and manage an object's properties. For example,
+/crm/v3/properties/0-1
+for contact properties or
+/crm/v3/properties/0-5
+for ticket properties.Learn more about using the properties API in
+this article
+.
+Search API
+To filter and sort records and activities based on their properties and associations, you can use the search API. When using the search endpoints, substitute the
+{objectTypeId}
+value for the object within which you want to search. For example, to search calls, you'd make a POST request to
+/crm/v3/objects/0-48/search
+.Learn more about how to use CRM search API in
+this article
+.
+Pipelines API
+In HubSpot, you can use pipelines to track records through stages in your processes. For example, you can track deals through a sales processes or tickets through support statuses. Using the pipelines API, you can create, retrieve, edit, and delete pipelines and pipeline stages.Learn which objects have pipelines and how to use pipelines API in
+this article
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

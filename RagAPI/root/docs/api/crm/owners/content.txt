@@ -1,0 +1,488 @@
+CRM API | Owners | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Retrieve a list of owners
+Retrieve information about an individual owner
+API Guides
+CRM
+CRM API | Owners
+Owners
+Owners endpoint reference
+HubSpot owners
+assign
+specific users to records, activities, or marketing tasks, and can be used in personalization tokens for your content. Owners are automatically created and updated in HubSpot when new users are added or existing owners are synced from
+Salesforce
+.
+The owners API endpoints are read-only, so you can use them to retrieve an owner's identifying details, including the owner ID. This identifier can then be used to assign ownership to CRM records in HubSpot, via an integration, or via property change API calls.
+Retrieve a list of owners
+To retrieve the current owners in your account, make a
+GET
+request to
+/crm/v3/owners
+. The response will return each user's name, email, ID values, create/update dates, and if applicable, team information. Two ID values are returned, which are used for different purposes:
+id
+: the ID of the owner. This value should be used when retrieving information about a specific owner, and when assigning an owner to a record or activity.
+userId
+: the ID of the user. This value can be used to specify users in the
+settings API
+, but will result in an error if it is used to assign ownership.
+Your response will look similar to the following:
+Copy code snippet
+///Example response GET crm/v3/owners
+{
+"results": [
+{
+"id": "41629779",
+"email": "email@hubspot.com",
+"type": "PERSON",
+"firstName": "HubSpot",
+"lastName": "Test Owner",
+"userId": 9586504,
+"userIdIncludingInactive": 9586504,
+"createdAt": "2019-12-25T13:01:35.228Z",
+"updatedAt": "2023-08-22T13:40:26.790Z",
+"archived": false,
+"teams": [
+{
+"id": "368389",
+"name": "Sales Team",
+"primary": true
+}
+]
+},
+{
+"id": "60158084",
+"email": "email@gmail.com",
+"type": "PERSON",
+"firstName": "Test",
+"lastName": "Email",
+"userId": 9274996,
+"userIdIncludingInactive": 9274996,
+"createdAt": "2021-02-10T17:59:04.891Z",
+"updatedAt": "2023-02-09T17:41:52.767Z",
+"archived": false,
+"teams": [
+{
+"id": "368389",
+"name": "Sales Team",
+"primary": true
+}
+]
+},
+{
+"id": "81538190",
+"email": "salesmanager@hubspot.com",
+"type": "PERSON",
+"firstName": "Sales",
+"lastName": "Manager Example",
+"userId": 3892666,
+"userIdIncludingInactive": 3892666,
+"createdAt": "2021-05-27T16:55:57.242Z",
+"updatedAt": "2022-08-02T18:34:35.039Z",
+"archived": false
+}
+]
+}
+1
+///Example response GET crm/v3/owners
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"id"
+:
+"41629779"
+,
+6
+"email"
+:
+"email@hubspot.com"
+,
+7
+"type"
+:
+"PERSON"
+,
+8
+"firstName"
+:
+"HubSpot"
+,
+9
+"lastName"
+:
+"Test Owner"
+,
+10
+"userId"
+:
+9586504
+,
+11
+"userIdIncludingInactive"
+:
+9586504
+,
+12
+"createdAt"
+:
+"2019-12-25T13:01:35.228Z"
+,
+13
+"updatedAt"
+:
+"2023-08-22T13:40:26.790Z"
+,
+14
+"archived"
+:
+false
+,
+15
+"teams"
+: [
+16
+{
+17
+"id"
+:
+"368389"
+,
+18
+"name"
+:
+"Sales Team"
+,
+19
+"primary"
+:
+true
+20
+}
+21
+]
+22
+},
+23
+{
+24
+"id"
+:
+"60158084"
+,
+25
+"email"
+:
+"email@gmail.com"
+,
+26
+"type"
+:
+"PERSON"
+,
+27
+"firstName"
+:
+"Test"
+,
+28
+"lastName"
+:
+"Email"
+,
+29
+"userId"
+:
+9274996
+,
+30
+"userIdIncludingInactive"
+:
+9274996
+,
+31
+"createdAt"
+:
+"2021-02-10T17:59:04.891Z"
+,
+32
+"updatedAt"
+:
+"2023-02-09T17:41:52.767Z"
+,
+33
+"archived"
+:
+false
+,
+34
+"teams"
+: [
+35
+{
+36
+"id"
+:
+"368389"
+,
+37
+"name"
+:
+"Sales Team"
+,
+38
+"primary"
+:
+true
+39
+}
+40
+]
+41
+},
+42
+{
+43
+"id"
+:
+"81538190"
+,
+44
+"email"
+:
+"salesmanager@hubspot.com"
+,
+45
+"type"
+:
+"PERSON"
+,
+46
+"firstName"
+:
+"Sales"
+,
+47
+"lastName"
+:
+"Manager Example"
+,
+48
+"userId"
+:
+3892666
+,
+49
+"userIdIncludingInactive"
+:
+3892666
+,
+50
+"createdAt"
+:
+"2021-05-27T16:55:57.242Z"
+,
+51
+"updatedAt"
+:
+"2022-08-02T18:34:35.039Z"
+,
+52
+"archived"
+:
+false
+53
+}
+54
+]
+55
+}
+You can also retrieve archived owners to view users that were deactivated. To do so, add the
+archived
+parameter with the value
+true
+. For archived users, there is still an
+id
+value, but the
+userId
+value will be
+null
+. The user ID is instead stored in the
+userIdIncludingInactive
+field.
+For example:
+Copy code snippet
+///Example response GET crm/v3/owners/?archived=true
+{
+"results": [
+{
+"id": "42103462",
+"email": "useremail@hubspot.com",
+"type": "PERSON",
+"firstName": "",
+"lastName": "",
+"userId": null,
+"userIdIncludingInactive": 9685555,
+"createdAt": "2020-01-09T20:28:50.080Z",
+"updatedAt": "2020-01-09T20:28:50.080Z",
+"archived": true
+}
+]
+}
+xxxxxxxxxx
+17
+1
+///Example response GET crm/v3/owners/?archived=true
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"id"
+:
+"42103462"
+,
+6
+"email"
+:
+"useremail@hubspot.com"
+,
+7
+"type"
+:
+"PERSON"
+,
+8
+"firstName"
+:
+""
+,
+9
+"lastName"
+:
+""
+,
+10
+"userId"
+:
+null
+,
+11
+"userIdIncludingInactive"
+:
+9685555
+,
+12
+"createdAt"
+:
+"2020-01-09T20:28:50.080Z"
+,
+13
+"updatedAt"
+:
+"2020-01-09T20:28:50.080Z"
+,
+14
+"archived"
+:
+true
+15
+}
+16
+]
+17
+}
+Retrieve information about an individual owner
+To retrieve a specific owner, make a
+GET
+request to
+/crm/v3/owners/{ownerId}
+. You should use the
+id
+value to specify the owner for which you want more details.
+Please note
+: the
+updatedAt
+value in the response changes based on updates to the Owner object itself. It will not be updated for changes to the User object. For example, changing a user's permissions will
+not
+update the
+updatedAt
+value.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

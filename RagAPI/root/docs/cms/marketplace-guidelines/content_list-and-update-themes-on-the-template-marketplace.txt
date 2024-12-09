@@ -1,0 +1,195 @@
+HubSpot Template Marketplace Guidelines | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Why should I sell templates on the marketplace?
+Overview and requirements
+List and update themes on the Template Marketplace
+Supported payment gateways
+Refund requests
+Manage your transactions
+Removal of template listings
+Frequently Asked Questions
+CMS Development
+Marketplace
+HubSpot Template Marketplace Guidelines
+HubSpot Template Marketplace Guidelines
+The
+HubSpot Template Marketplace
+helps thousands of customers without direct access to a developer grow their online presence. It is powered by developers who create easy to use templates for customers.
+You can sell two types of templates on the HubSpot Template Marketplace:
+themes
+and
+modules
+.
+Why should I sell templates on the marketplace?
+The HubSpot Marketplace has a lot to offer developers or agencies who are looking to create a new revenue stream.
+Non-exclusive:
+You’ve worked hard at creating your templates. You shouldn’t be tied down to only having your template on our marketplace and nowhere else. You’re free to use your templates outside of the marketplace for your own projects as well.
+Build once, sell multiple times:
+Once your template is listed on the marketplace, it becomes a 1:many opportunity. You simply build your template once and it can be resold to multiple customers.
+Grow your business:
+Many of the developers who sell their templates (both free and paid) on our marketplace have seen their businesses grow both from marketplace revenue and from additional services requested by buyers.
+Join a community of creators and showcase your skills:
+Connect with a growing and supportive ecosystem to help shape the future of the HubSpot Template Marketplace while bringing more visibility to your offerings and services.
+Overview and requirements
+To get started selling on the Template Marketplace,
+create a Template Marketplace provider account
+.
+Any template submission must adhere to the compliance, design, and code quality requirements. Each template type also has its own requirements that must be met in order to be listed in the marketplace. You can view these requirements below:
+Please note:
+before you begin creating templates for the marketplace, HubSpot strongly recommends reviewing the
+Building for the HubSpot Template Marketplace
+,
+Branding
+,
+Trademark Usage
+, and
+Content Usage
+guidelines. Templates that violate these guidelines will immediately be removed from the marketplace as described in HubSpot’s additional terms.
+Theme Requirements
+A portable and contained set of templates, modules, global content, and style settings designed to work together to enable a marketer-friendly content editing experience.
+View theme requirements
+Module requirements
+Submitted themes will contain modules, which are reusable components that can be used in templates or added to pages through drag and drop areas and flexible columns. You can also submit standalone modules. These are modules that can be added to any theme in HubSpot's content editor.
+View module requirements
+Listing Page Requirements
+Requirements one must adhere to when submitting templates and their listing pages to the HubSpot Template Marketplace. These standards apply to all templates on the Marketplace.
+View listing page requirements
+Template Marketplace Policies
+Requirements and compliance details for listing templates in the Template Marketplace.
+View Template Marketplace policies
+List and update themes on the Template Marketplace
+Once you've created your template, submit it for approval to be listed on the HubSpot Template Marketplace. Once submitted, templates will undergo a review and approval process by the HubSpot Template Marketplace team.
+Learn how to list and update your templates in the Template Marketplace
+.
+Supported payment gateways
+HubSpot currently offers the ability for marketplace providers to connect the following payment gateways to receive payments:
+PayPal (
+supported countries
+|
+cross border payments
+)
+Stripe (
+supported countries
+|
+cross border payments
+)
+Payments from customers are received through the payment connected in your Marketplace Provider account:
+In your HubSpot account, navigate to
+Marketplace
+>
+Provider Info
+.
+In the
+Payment Method
+section, view or update your payment information.
+HubSpot is not responsible for any payment gateway issues that may occur during the purchase process. HubSpot does not take a cut of any transactions, and all transactions are handled independently of the HubSpot platform. If your payment method stops working for any reason, your assets may be delisted temporarily to avoid a negative customer experience.
+Please note:
+HubSpot has customers worldwide. When setting up your payment gateways, we strongly recommend accepting payments from international currencies (cross border payments).
+HubSpot strongly encourages Template Marketplace Providers to use the Stripe payment gateway if it is available in their country. If Stripe is not
+available in your country
+, then we recommend using the PayPal payment gateway.
+Refund requests
+You may run into the occasional request from a purchaser for a refund. HubSpot recommends clearly stating your refund policy in a listing's description and providing a link to documentation about your refund policy. HubSpot encourages providers to honor valid refund requests. Learn more about general
+guidelines for refund requests
+.
+Manage your transactions
+A deal record is created in your Template Marketplace provider account for every template that a customer downloads. All deals will populate in a deal pipeline called
+Marketplace Transactions
+with the
+Transactions
+deal stage. When a refund is issued for a transaction, the
+Refunded at
+property will be set on the deal record.
+Providers are able to
+customize the deal pipeline and deal stages,
+and
+use the deal properties in workflows
+.
+Removal of template listings
+HubSpot reserves the right to remove Marketplace listings for reasons including, but not limited to:
+Bugs present in the template.
+Third-party templates in the submission break.
+The template is incompatible with
+HubSpot-supported browsers.
+Use of copyrighted material such as images, icons, fonts, audio, and video that are not licensed for distribution.
+Templates that track users without their informed, explicit opt-in consent.
+Templates (including linking to content from the Template Marketplace or from your template demo) that include:
+Promoting or engaging in illegal activities.
+Derogatory, disparaging, and/or malicious content.
+Dishonest or false claims.
+Offensive content about race, religion, age, gender, or sexual orientation.
+Modules will be removed if the module affects other elements on the page/email that it is added to.
+Frequently Asked Questions
+Does the European Union P2B regulation (July 12,2020) apply to the App and Template Marketplaces?
+Is there a specific HubSpot account type I need to submit to the Marketplace?
+Do products published in the Marketplace live in my account or in the HubSpot Marketplace system?
+How do I update my company name?
+Why don't I see all of my products when trying to create a listing?
+What should I use as a preview link?
+Can a single template be used in multiple themes?
+Do I have to resubmit a theme or module if I make changes to it?
+How do I adjust the price of a theme or module?
+How do I receive Marketplace payments?
+Where do I go to get peer-to-peer feedback or connect with other Marketplace providers?
+When a customer requests a refund, do their downloaded files remain in their HubSpot account?
+How can I stay informed on the latest developer requirements and changes?
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Debugging
+Improve older sites
+Marketplace
+Template marketplace guidelines
+General listing requirements
+Template marketplace policies
+Theme requirements
+List and update templates in the HubSpot Template Marketplace
+Module requirements

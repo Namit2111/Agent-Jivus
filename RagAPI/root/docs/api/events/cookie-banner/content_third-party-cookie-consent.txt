@@ -1,0 +1,1616 @@
+Cookie banner | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Remove cookies
+Place do not track cookie
+Get privacy consent status
+Cookies not by category
+​​Enable website visitors to manage their consent
+UI Examples
+Button
+Fixed position button
+Link
+Block third party cookies manually
+General usage
+Example: Google Tag
+Example: HotJar
+Third-party cookie consent
+Disable HubSpot cookie banner
+Set consent state of the HubSpot cookie banner
+Example usage
+Example: Using a third-party cookie banner to control HubSpot cookies
+API Endpoints
+Analytics and events
+Cookie banner
+Cookie banner
+Cookie consent banner API
+Super admins and users with
+permission to edit website settings
+can customize visitor cookie tracking and consent banners to comply with EU cookie laws and the
+General Data Protection Regulation (GDPR)
+.
+A cookie consent banner allows visitors to opt in or opt out of being tracked in your HubSpot account with cookies. This feature works for all HubSpot pages as well as any external pages with your
+HubSpot tracking code
+installed.
+Customize the cookie tracking settings and cookie consent banner.
+In this article, learn how to manage the cookies that are added to a visitor's browser through the cookie consent banner.
+You can also learn how to use a
+third party cookie consent banner
+to distribute consent, disable the consent collection, and manage features within HubSpot.
+Remove cookies
+_hsp.push(['revokeCookieConsent']);
+Remove the cookies created by the HubSpot tracking code that are included in the consent banner under GDPR, include the HubSpot cookies related to tracking the visitor. As a result of the cookies being removed, the visitor would see the
+cookie consent banner
+on their next page load, as they would appear as a new visitor.
+This function
+does not
+remove cookies placed by non-HubSpot banners. You can find the specific list of cookies that will be removed on
+HubSpot's Knowledge Base
+.
+If cookie blocking is turned on, this function will revoke consent so any third-party cookies will not be updated or dropped during future visits to the website.
+Copy code snippet
+/*
+Example code to remove the consent banner cookies
+when a visitor clicks an element with the 'removeCookies' id.
+*/
+var _hsp = (window._hsp = window._hsp || []);
+document.getElementById('removeCookies').onclick = function () {
+_hsp.push(['revokeCookieConsent']);
+};
+​
+x
+1
+/*
+2
+Example code to remove the consent banner cookies
+3
+when a visitor clicks an element with the 'removeCookies' id.
+4
+*/
+5
+​
+6
+var
+_hsp
+=
+(
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[]);
+7
+document
+.
+getElementById
+(
+'removeCookies'
+).
+onclick
+=
+function
+() {
+8
+_hsp
+.
+push
+([
+'revokeCookieConsent'
+]);
+9
+};
+Place do not track cookie
+_hsq.push(['doNotTrack']);
+Places the
+__hs_do_not_track
+cookie in the visitors browser, which will prevent the HubSpot tracking code from sending any information for the visitor.
+You can remove the cookie by calling the function again and including the
+{track: true}
+argument:
+_hsq.push(['doNotTrack', {track: true}]);
+Please note:
+this function prevents all information from being collected by the tracking code, including anonymized traffic and
+custom event
+data.
+Copy code snippet
+/*
+Example code to place the __hs_do_not_track cookie for
+the visitor when they click an element with the 'doNotTrack' id.
+*/
+document.getElementById('doNotTrack').onclick = function () {
+_hsq.push(['doNotTrack']);
+};
+xxxxxxxxxx
+8
+1
+/*
+2
+Example code to place the __hs_do_not_track cookie for
+3
+the visitor when they click an element with the 'doNotTrack' id.
+4
+*/
+5
+​
+6
+document
+.
+getElementById
+(
+'doNotTrack'
+).
+onclick
+=
+function
+() {
+7
+_hsq
+.
+push
+([
+'doNotTrack'
+]);
+8
+};
+Get privacy consent status
+_hsp.push(['addPrivacyConsentListener', callbackFunction]);
+Get the privacy consent status of the current visitor. There are 3 categories of consent that can be used to provide more granular control to the user. These each have their own keys within the
+consent.categories
+object:
+consent.categories.analytics
+consent.categories.advertisement
+consent.categories.functionality
+The
+callbackFunction
+will be called, depending on the state of the page:
+If the banner is
+not
+enabled, or if the visitor has previously seen the banner and clicked accept or decline:
+the
+callbackFunction
+will be called immediately if the banner code is already loaded.
+the
+callbackFunction
+will be called after the tracking code loads if the function is pushed to
+_hsp
+before the tracking code loads.
+If the banner is enabled, the callback function will be called when the visitor clicks on the accept or decline button.
+Copy code snippet
+// Log the analytics category consent status of the current visitor to the console
+var _hsp = (window._hsp = window._hsp || []);
+// analytics
+_hsp.push([
+'addPrivacyConsentListener',
+function (consent) {
+console.log(consent.categories.analytics);
+},
+]);
+// advertisement
+_hsp.push([
+'addPrivacyConsentListener',
+function (consent) {
+console.log(consent.categories.advertisement);
+},
+]);
+// functionality
+_hsp.push([
+'addPrivacyConsentListener',
+function (consent) {
+console.log(consent.categories.functionality);
+},
+]);
+// or it can all be done in one call
+_hsp.push([
+'addPrivacyConsentListener',
+function (consent) {
+console.log(`analytics: ${consent.categories.analytics}`);
+console.log(`advertisement: ${consent.categories.advertisement}`);
+console.log(`functionality: ${consent.categories.functionality}`);
+},
+]);
+xxxxxxxxxx
+37
+1
+// Log the analytics category consent status of the current visitor to the console
+2
+​
+3
+var
+_hsp
+=
+(
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[]);
+4
+​
+5
+// analytics
+6
+_hsp
+.
+push
+([
+7
+'addPrivacyConsentListener'
+,
+8
+function
+(
+consent
+) {
+9
+console
+.
+log
+(
+consent
+.
+categories
+.
+analytics
+);
+10
+},
+11
+]);
+12
+​
+13
+// advertisement
+14
+_hsp
+.
+push
+([
+15
+'addPrivacyConsentListener'
+,
+16
+function
+(
+consent
+) {
+17
+console
+.
+log
+(
+consent
+.
+categories
+.
+advertisement
+);
+18
+},
+19
+]);
+20
+​
+21
+// functionality
+22
+_hsp
+.
+push
+([
+23
+'addPrivacyConsentListener'
+,
+24
+function
+(
+consent
+) {
+25
+console
+.
+log
+(
+consent
+.
+categories
+.
+functionality
+);
+26
+},
+27
+]);
+28
+​
+29
+// or it can all be done in one call
+30
+_hsp
+.
+push
+([
+31
+'addPrivacyConsentListener'
+,
+32
+function
+(
+consent
+) {
+33
+console
+.
+log
+(
+`analytics: ${
+consent
+.
+categories
+.
+analytics
+}`
+);
+34
+console
+.
+log
+(
+`advertisement: ${
+consent
+.
+categories
+.
+advertisement
+}`
+);
+35
+console
+.
+log
+(
+`functionality: ${
+consent
+.
+categories
+.
+functionality
+}`
+);
+36
+},
+37
+]);
+Cookies not by category
+Please note:
+this is provided for backward compatibility with older scripts. For all new websites you should use the cookies by category method, giving more granular control over cookie activation.
+_hsp.push(['addPrivacyConsentListener', callbackFunction]);
+Allows you to get the
+true
+or
+false
+privacy consent status of the current visitor.
+The
+callbackFunction
+will be called, depending on the state of the page:
+If the banner is
+not
+enabled, or if the visitor has previously seen the banner and clicked accept or decline:
+the
+callbackFunction
+will be called immediately if the banner code is already loaded.
+the
+callbackFunction
+will be called after the tracking code loads if the function is pushed to
+_hsp
+before the tracking code loads.
+If the banner is enabled, the callback function will be called when the visitor clicks on the accept or decline button.
+Copy code snippet
+// Log the consent status of the current visitor to the console
+var _hsp = (window._hsp = window._hsp || []);
+_hsp.push([
+'addPrivacyConsentListener',
+function (consent) {
+if (consent.allowed) {
+console.log('something');
+}
+},
+]);
+xxxxxxxxxx
+11
+1
+// Log the consent status of the current visitor to the console
+2
+​
+3
+var
+_hsp
+=
+(
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[]);
+4
+_hsp
+.
+push
+([
+5
+'addPrivacyConsentListener'
+,
+6
+function
+(
+consent
+) {
+7
+if
+(
+consent
+.
+allowed
+) {
+8
+console
+.
+log
+(
+'something'
+);
+9
+}
+10
+},
+11
+]);
+The
+callbackFunction
+accepts a
+consent
+object as its only argument.
+The
+consent
+object has a single
+allowed
+property that will be
+true
+if:
+The
+cookie consent banner
+is not enabled, or is enabled in notify-only mode.
+The visitor clicks accept on the banner when opt-in mode is enabled.
+The visitor has previously clicked accept on the banner when opt-in mode is enabled.
+The property will be false if the consent banner is enabled in opt-in mode and the visitor clicks or has previously clicked the decline button.
+​​Enable website visitors to manage their consent
+Call the
+showBanner
+function to resurface the banner, enabling website visitors to make changes to their consent preferences. For example:
+Copy code snippet
+​​var _hsp = window._hsp = window._hsp || [];
+​​_hsp.push(['showBanner']);
+xxxxxxxxxx
+2
+1
+•
+•
+var
+_hsp
+=
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[];
+2
+•
+•
+_hsp
+.
+push
+([
+'showBanner'
+]);
+The behavior of
+showBanner
+varies by policy and is only available for Opt-In and Cookie-By-Category policies.
+For Opt-In policies, calling
+showBanner
+will cause the banner to reappear, as shown in the video below:
+For Cookies-By-Category policies, calling
+showBanner
+will cause the modal for selecting each category to reappear, as shown in the video below:
+UI Examples
+This functionality can be made available to visitors in the form of buttons/links on your website that they can use to re-open the banner and edit their preferences. The following are examples with code.
+Button
+A button, often placed in the website footer.
+HTML
+CSS
+HTML
+CSS
+More
+Copy code snippet
+<button
+type="button"
+id="hs_show_banner_button"
+onClick="(function(){
+var _hsp = window._hsp = window._hsp || [];
+_hsp.push(['showBanner']);
+})()"
+>
+Cookie Settings
+</button>
+xxxxxxxxxx
+10
+1
+<
+button
+2
+type
+=
+"button"
+3
+id
+=
+"hs_show_banner_button"
+4
+onClick
+=
+"(function(){
+5
+var _hsp = window._hsp = window._hsp || [];
+6
+_hsp.push(['showBanner']);
+7
+})()"
+8
+>
+9
+Cookie Settings
+10
+</
+button
+>
+Fixed position button
+A button with fixed positioning on the bottom of the screen. This kind of button has the advantage of being readily available and easy to find, while being somewhat obtrusive UX.
+HTML
+CSS
+HTML
+CSS
+More
+Copy code snippet
+<button
+id="hs-hud-cookie-settings"
+onClick="(function(){
+var _hsp = window._hsp = window._hsp || [];
+_hsp.push(['showBanner']);
+})()"
+>
+Cookie Settings
+</button>
+xxxxxxxxxx
+9
+1
+<
+button
+2
+id
+=
+"hs-hud-cookie-settings"
+3
+onClick
+=
+"(function(){
+4
+var _hsp = window._hsp = window._hsp || [];
+5
+_hsp.push(['showBanner']);
+6
+})()"
+7
+>
+8
+Cookie Settings
+9
+</
+button
+>
+Link
+A link or highlighted text.
+HTML
+CSS
+HTML
+CSS
+More
+Copy code snippet
+<a
+id="hs-cookie-settings-link"
+onClick="(function(){
+var _hsp = window._hsp = window._hsp || [];
+_hsp.push(['showBanner']);
+})()"
+>
+Cookie Settings
+</a>
+xxxxxxxxxx
+9
+1
+<
+a
+2
+id
+=
+"hs-cookie-settings-link"
+3
+onClick
+=
+"(function(){
+4
+var _hsp = window._hsp = window._hsp || [];
+5
+_hsp.push(['showBanner']);
+6
+})()"
+7
+>
+8
+Cookie Settings
+9
+</
+a
+>
+Block third party cookies manually
+The HubSpot Consent Banner supports manual handling of third party tracking technologies and cookies. It's recommended to use manual handling if you have a complicated website and/or a dedicated web developer. If auto-blocking does not work for your site, manual blocking is also a good option.
+Manual blocking is implemented through the
+Cookie Banner Consent Listener API
+. This API is used to prevent tracking technologies from running until they have consent. To get started, take a look at the examples below.
+General usage
+If you want to install a tracking script onto your website to display targeted ads to visitors. You could use something like the below:
+<script src=”https://my.advertisement.script.com/ads”></script>
+When this script is pasted into the head HTML of a page on a website it would run anytime someone visits that page, regardless of their consent status. Visitors will have cookies placed on their browser without consent.
+To prevent the script from running without consent, you can use the HubSpot Cookie Banner Consent Listener API to install the script when the visitor has consented to its cookies. Consent listeners are functions that run whenever the visitor submits their consent. To use this functionality, a consent listener needs to be created that adds the script to the page if the visitor has consented to advertisement cookies.
+Copy code snippet
+<script>
+var _hsp = window._hsp = window._hsp || [];
+_hsp.push(['addPrivacyConsentListener', (consent) => {
+if (consent.categories.advertisement) {
+const script = document.createElement('script');
+script.src = "https://my.advertisement.script.com/ads";
+document.head.appendChild(script)
+}
+}])
+</script>
+xxxxxxxxxx
+10
+1
+<
+script
+>
+2
+var
+_hsp
+=
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[];
+3
+_hsp
+.
+push
+([
+'addPrivacyConsentListener'
+, (
+consent
+)
+=>
+{
+4
+if
+(
+consent
+.
+categories
+.
+advertisement
+) {
+5
+const
+script
+=
+document
+.
+createElement
+(
+'script'
+);
+6
+script
+.
+src
+=
+"https://my.advertisement.script.com/ads"
+;
+7
+document
+.
+head
+.
+appendChild
+(
+script
+)
+8
+}
+9
+}])
+10
+<
+/script>
+This script will register the consent listener with the cookie banner. When consent to cookies is submitted, the consent listener will run, adding HubSpot's third party ads script to the page.
+Example: Google Tag
+Google Tag or gtag.js
+can be used to add Google Analytics. For example:
+Copy code snippet
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){window.dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'GA_TRACKING_ID');
+</script>
+xxxxxxxxxx
+9
+1
+<!-- Google tag (gtag.js) -->
+2
+<
+script
+async
+src
+=
+"https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"
+><
+/script>
+3
+<
+script
+>
+4
+window
+.
+dataLayer
+=
+window
+.
+dataLayer
+||
+[];
+5
+function
+gtag
+(){
+window
+.
+dataLayer
+.
+push
+(
+arguments
+);}
+6
+gtag
+(
+'js'
+,
+new
+Date
+());
+7
+​
+8
+gtag
+(
+'config'
+,
+'GA_TRACKING_ID'
+);
+9
+<
+/script>
+To load Google Analytics when analytics consent has been given, the gtag script needs to be added when consent is given:
+Copy code snippet
+<!-- Google tag (gtag.js) -->
+<script>
+var _hsp = window._hsp = window._hsp || [];
+_hsp.push(['addPrivacyConsentListener', (consent) => {
+if (consent.categories.analytics) {
+const script = document.createElement('script');
+script.src = "https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID";
+script.async = 'true'
+document.head.appendChild(script)
+}
+}])
+</script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'GA_TRACKING_ID');
+</script>
+xxxxxxxxxx
+18
+1
+<!-- Google tag (gtag.js) -->
+2
+<
+script
+>
+3
+var
+_hsp
+=
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[];
+4
+_hsp
+.
+push
+([
+'addPrivacyConsentListener'
+, (
+consent
+)
+=>
+{
+5
+if
+(
+consent
+.
+categories
+.
+analytics
+) {
+6
+const
+script
+=
+document
+.
+createElement
+(
+'script'
+);
+7
+script
+.
+src
+=
+"https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"
+;
+8
+script
+.
+async
+=
+'true'
+9
+document
+.
+head
+.
+appendChild
+(
+script
+)
+10
+}
+11
+}])
+12
+<
+/script>
+13
+<
+script
+>
+14
+window
+.
+dataLayer
+=
+window
+.
+dataLayer
+||
+[];
+15
+function
+gtag
+(){
+dataLayer
+.
+push
+(
+arguments
+);}
+16
+gtag
+(
+'js'
+,
+new
+Date
+());
+17
+gtag
+(
+'config'
+,
+'GA_TRACKING_ID'
+);
+18
+<
+/script>
+Example: HotJar
+HotJar
+is another example of analytics tracking. For example:
+HotJar
+is another example of analytics tracking. For example:
+Copy code snippet
+<!-- Hotjar Tracking Code -->
+<script>
+(function(h,o,t,j,a,r){
+h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+h._hjSettings={hjid:HOT_JAR_ID,hjsv:6};
+a=o.getElementsByTagName('head')[0];
+r=o.createElement('script');r.async=1;
+r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+a.appendChild(r);
+})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+xxxxxxxxxx
+11
+1
+<!-- Hotjar Tracking Code -->
+2
+<
+script
+>
+3
+(
+function
+(
+h
+,
+o
+,
+t
+,
+j
+,
+a
+,
+r
+){
+4
+h
+.
+hj
+=
+h
+.
+hj
+||
+function
+(){(
+h
+.
+hj
+.
+q
+=
+h
+.
+hj
+.
+q
+||
+[]).
+push
+(
+arguments
+)};
+5
+h
+.
+_hjSettings
+=
+{
+hjid
+:
+HOT_JAR_ID
+,
+hjsv
+:
+6
+};
+6
+a
+=
+o
+.
+getElementsByTagName
+(
+'head'
+)[
+0
+];
+7
+r
+=
+o
+.
+createElement
+(
+'script'
+);
+r
+.
+async
+=
+1
+;
+8
+r
+.
+src
+=
+t
++
+h
+.
+_hjSettings
+.
+hjid
++
+j
++
+h
+.
+_hjSettings
+.
+hjsv
+;
+9
+a
+.
+appendChild
+(
+r
+);
+10
+})(
+window
+,
+document
+,
+'https://static.hotjar.com/c/hotjar-'
+,
+'.js?sv='
+);
+11
+<
+/script>
+To ensure Hotjar runs when analytics consent is given, the consent listener can be added.
+Copy code snippet
+<!-- Hotjar Tracking Code -->
+<script>
+var _hsp = window._hsp = window._hsp || [];
+_hsp.push(['addPrivacyConsentListener', (consent) => {
+if (consent.categories.analytics){
+(function(h,o,t,j,a,r){
+h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+h._hjSettings={hjid:HOT_JAR_ID,hjsv:6};
+a=o.getElementsByTagName('head')[0];
+r=o.createElement('script');r.async=1;
+r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+a.appendChild(r);
+})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+}
+}])
+</script>
+xxxxxxxxxx
+17
+1
+<!-- Hotjar Tracking Code -->
+2
+<
+script
+>
+3
+var
+_hsp
+=
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[];
+4
+_hsp
+.
+push
+([
+'addPrivacyConsentListener'
+, (
+consent
+)
+=>
+{
+5
+if
+(
+consent
+.
+categories
+.
+analytics
+){
+6
+(
+function
+(
+h
+,
+o
+,
+t
+,
+j
+,
+a
+,
+r
+){
+7
+h
+.
+hj
+=
+h
+.
+hj
+||
+function
+(){(
+h
+.
+hj
+.
+q
+=
+h
+.
+hj
+.
+q
+||
+[]).
+push
+(
+arguments
+)};
+8
+h
+.
+_hjSettings
+=
+{
+hjid
+:
+HOT_JAR_ID
+,
+hjsv
+:
+6
+};
+9
+a
+=
+o
+.
+getElementsByTagName
+(
+'head'
+)[
+0
+];
+10
+r
+=
+o
+.
+createElement
+(
+'script'
+);
+r
+.
+async
+=
+1
+;
+11
+r
+.
+src
+=
+t
++
+h
+.
+_hjSettings
+.
+hjid
++
+j
++
+h
+.
+_hjSettings
+.
+hjsv
+;
+12
+a
+.
+appendChild
+(
+r
+);
+13
+})(
+window
+,
+document
+,
+'https://static.hotjar.com/c/hotjar-'
+,
+'.js?sv='
+);
+14
+}
+15
+​
+16
+}])
+17
+<
+/script>
+Third-party cookie consent
+In the section below, learn how to use a third party cookie consent banner to:
+Distribute consent
+Disable the consent collection
+Manage features within HubSpot
+Disable HubSpot cookie banner
+To disable rendering of the HubSpot cookie banner, include the code below in a script near the top of your page’s head html. This will also disable any consent management.
+Please note:
+this flag must be set before the cookie banner is loaded.
+Copy code snippet
+window.disableHubSpotCookieBanner = true;
+xxxxxxxxxx
+window
+.
+disableHubSpotCookieBanner
+=
+true
+;
+Set consent state of the HubSpot cookie banner
+Set the consent value for all HubSpot, third party, or custom products integrated with the HubSpot cookie banner. This function takes an object specifying the consent state of the visitor, saves that value as the current consent state, and distributes that consent to all scripts with attached
+consent listeners
+. This value isn't saved in consent cookies managed by the cookie banner. Preserving consent state across sessions falls to the caller of this function.
+The function accepts a consent object with the following fields:
+Field name
+Type
+Description
+analytics
+Boolean
+Grants consent to use cookies to gather analytics data from the website visitor.
+advertisement
+Boolean
+Grants consent to use cookies to help serve personalized ads to the visitor.
+functionality
+Boolean
+Grants consent to use cookies for required functionality for your website to function (e.g., authentication).
+Example usage
+Copy code snippet
+window._hsp = window._hsp || [];
+window._hsp.push([
+'setHubSpotConsent',
+{
+analytics: true,
+advertisement: true,
+functionality: true,
+},
+]);
+xxxxxxxxxx
+9
+1
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[];
+2
+window
+.
+_hsp
+.
+push
+([
+3
+'setHubSpotConsent'
+,
+4
+{
+5
+analytics
+:
+true
+,
+6
+advertisement
+:
+true
+,
+7
+functionality
+:
+true
+,
+8
+},
+9
+]);
+Example: Using a third-party cookie banner to control HubSpot cookies
+The following code snippet and script provide an example of how to send a custom event whenever consent state changes. Note that the functionality that you want to implement for your specific use case may vary from the example code below. Consult any third-party documentation (e.g., Google’s introduction to user consent management) for more information on how to tailor behavior to your website’s needs.
+Copy code snippet
+CustomEvent('thirdPartyConsentEvent', {
+detail: {
+analytics: true,
+advertisement: true,
+functionality: true,
+},
+});
+xxxxxxxxxx
+7
+1
+CustomEvent
+(
+'thirdPartyConsentEvent'
+, {
+2
+detail
+: {
+3
+analytics
+:
+true
+,
+4
+advertisement
+:
+true
+,
+5
+functionality
+:
+true
+,
+6
+},
+7
+});
+The following script should be placed at the top of the head html of the page.
+Copy code snippet
+<script>
+// disable the hubspot cookie banner window.disableHubSpotCookieBanner = true
+// listen for the third party consent event and send consent to HubSpot
+window._hsp = window._hsp || [];
+document.addEventListener("thirdPartyConsentEvent", (e) =>{' '}
+{window._hsp.push([
+'setHubSpotConsent',
+{
+analytics: e.detail.analytics,
+advertisement: e.detail.advertisement,
+functionality: e.detail.functionality,
+},
+])}
+)
+</script>
+xxxxxxxxxx
+15
+1
+<
+script
+>
+2
+// disable the hubspot cookie banner window.disableHubSpotCookieBanner = true
+3
+// listen for the third party consent event and send consent to HubSpot
+4
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[];
+5
+document
+.
+addEventListener
+(
+"thirdPartyConsentEvent"
+, (
+e
+)
+=>
+{
+' '
+}
+6
+{
+window
+.
+_hsp
+.
+push
+([
+7
+'setHubSpotConsent'
+,
+8
+{
+9
+analytics
+:
+e
+.
+detail
+.
+analytics
+,
+10
+advertisement
+:
+e
+.
+detail
+.
+advertisement
+,
+11
+functionality
+:
+e
+.
+detail
+.
+functionality
+,
+12
+},
+13
+])}
+14
+)
+15
+<
+/script>
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Endpoints
+Get set up
+Analytics and events
+Custom events
+Email analytics
+Event analytics
+Reporting
+Cookie banner
+Cookie banner API
+Google Consent Mode
+Tracking code
+App management
+Automation
+CMS
+Conversations
+CRM
+Library
+Marketing
+Settings
+Other resources
+Legal
+Deprecated

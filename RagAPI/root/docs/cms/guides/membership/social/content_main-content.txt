@@ -1,0 +1,232 @@
+How to add social login for membership pages | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+What you need before you begin
+1. Open your login template
+2. Add the membership social login module
+3. Test the social login
+You're done!
+Related resources
+CMS Development
+Content and structure
+Memberships
+How to add social login for membership pages
+How to add social login for membership pages
+Supported products
+Requires one of the following products or higher.
+Content Hub
+-
+Enterprise
+Remembering your password across the hundreds of sites we interact with day to day can be hard. Especially if you follow best practices and have separate passwords for all of your accounts. You can make it easier on users who have memberships with your website by providing the ability to login using social accounts like Facebook and Google.
+In this guide you will add social login capability to your login template
+What you need before you begin
+Memberships functionality (requires CMS Enterprise)
+A membership login template
+A website page you wish to restrict access to
+A contact list you will give page access to (a list which just contains your email would be good for testing before using a real list)
+1. Open your login template
+In your theme, find and open your login template. Membership login templates are required to have the template annotation
+templateType: membership_login_page
+2. Add the membership social login module
+Add the code for the
+membership_social_logins
+module to your template where you want the button(s) to appear.
+Copy code snippet
+{% module "social" path="@hubspot/membership_social_logins" %}
+{%
+module
+"social"
+path
+=
+"@hubspot/membership_social_logins"
+%}
+The module supports both Google and Facebook login. You can add both, or just one of them to your login page.
+The module supports both Google and Facebook login. You can add both, or just one of them to your login page.
+Add Google login button
+You will create credentials in the Google developer console. You will be given a
+client ID
+which you will then use in your module tag.
+Go to the
+Credentials page
+.
+Select
+"Create credentials > OAuth client ID"
+Select
+"Web application"
+application type.
+Name your application something that communicates what your users will be logging into on your HubSpot site.
+Click
+"Create"
+Copy the
+Client ID
+of your newly created OAuth client.
+In your template file, find the social login module, add the parameter
+google_clientid="YourAppID"
+replace "YourAppID" with the app ID you just copied.
+Add the parameter
+google_enabled=true
+. This will make the Google login button appear.
+Add Facebook login button
+To add the facebook login button you will create an app in Facebook's developer dashboard. The app will be given a
+Facebook App Id
+.
+Log into your Facebook developer account
+(
+Register a new account
+if you don't have one)
+Use the
+"Create App"
+button.
+Select
+"Build connected experiences"
+, then
+"continue"
+.
+Name your app something that communicates what your users will be logging into on your HubSpot site. Select
+"Create app"
+.
+You should now see a screen that says "add products to your app".
+Select
+"Facebook Login"
+Open
+"Settings"
+in the left side navigation panel and under Client OAuth Settings, enter your redirect URL in the
+"Valid OAuth Redirect URIs"
+field.
+In the top bar you will see your
+app id
+. Copy it to your clipboard.
+In your template file, find the social login module, add the parameter
+facebook_appid="YourAppID"
+replace "YourAppID" with the app ID you just copied.
+Add the parameter
+facebook_enabled=true
+. This will make the facebook login button appear.
+HubSpot does not have control over the UI that Google and Facebook provide. Should their UI change these instructions may become confusing or no longer work. The most important part is that you create a client/app, then get it's ID. Provide that id through the default module's parameter for that provider and their respective "enabled" parameter.
+Below is an example of what your code may look like. If you are only adding one of the providers, you would not need to include an id, and the enabled parameter for services you are not supporting.
+Copy code snippet
+{% module "social" path="@hubspot/membership_social_logins",
+clientid="1234567890-abc123def456.apps.googleusercontent.com"
+appid="12345678"
+facebook_enabled=true
+google_enabled=true
+%}
+xxxxxxxxxx
+6
+1
+{%
+module
+"social"
+path
+=
+"@hubspot/membership_social_logins"
+,
+2
+clientid
+=
+"1234567890-abc123def456.apps.googleusercontent.com"
+3
+appid
+=
+"12345678"
+4
+facebook_enabled
+=
+true
+5
+google_enabled
+=
+true
+6
+%}
+3. Test the social login
+Create a contact list
+with just your email address in it.
+Email address must also be used for your Google or Facebook account.
+Set a page to "Private registration required",
+choose your newly created test list.
+Visit one of these pages using incognito mode so you are not signed in. You should see your login template with the social login functionality.
+Attempt to log in using the social login buttons.
+If you're seeing any issues, look back through the instructions, ensure your client ID or app ID is entered correctly and passed to the module. Ensure if you have security set up for it that your site's domain is set as a trusted domain in the app settings.
+You're done!
+Congratulations you successfully added social login functionality to your login template! Your users can now use their Google and/or Facebook to log in.
+Related resources
+Memberships
+Memberships SSO
+CRM Objects in CMS Hub
+Membership social logins module reference
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Templates
+Modules
+Fields
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Overview
+Google Sign-In for Memberships
+Social login for membership pages
+Microsoft Sign-In for Memberships
+SSO for memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

@@ -1,0 +1,111 @@
+HubSpot APIs | Deprecated APIs | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Sunsetted APIs
+Deprecated APIs
+API Endpoints
+HubSpot APIs | Deprecated APIs
+Sunsetted and deprecated APIs
+The APIs listed in the sections below will
+not
+receive future updates to functionality, and in some cases, will be fully sunsetted and unavailable for use in your integrations.
+It's highly recommended that you subscribe to the
+HubSpot Developer Changelog
+to follow along with the latest updates, breaking changes, and other significant changes to functionality.
+Sunsetted APIs
+The following APIs have been fully removed, and will return an error when making a call to their associated endpoints.
+API
+Sunset date
+Notes
+CMS performance
+April 9, 2024
+For website analytics data, use the
+Analytics API
+.
+Ecommerce bridge
+February 28, 2023
+If you previously built an integration using this API, you can follow
+the migration guide
+to switch over your integration to use private apps.
+Accounting extension
+February 28, 2023
+If you previously built an integration using this API, you can follow
+this migration guide
+to switch over your integration to use private apps.
+Marketing calendar
+August 31, 2023
+You can continue to
+use the marketing calendar in HubSpot
+.
+Deprecated APIs
+The legacy endpoints listed below will
+not
+be getting a version update. These endpoints are functional and stable, but won’t be updated beyond their current version. HubSpot will continue to support them for the foreseeable future and will announce any future changes with ample notice on HubSpot's
+Developer Changelog
+.
+API
+Notes
+Social media
+Includes the following endpoints:
+Get publishing channels
+Get broadcast messages
+Get a broadcast message
+Create a broadcast message
+Cancel a broadcast message
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Endpoints
+Get set up
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+CRM
+Library
+Marketing
+Settings
+Other resources
+Legal
+Deprecated

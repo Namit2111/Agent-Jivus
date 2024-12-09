@@ -1,0 +1,128 @@
+Events API | Event Analytics | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Query individual event completions
+Select by object ID
+Select by object property
+Querying and filtering for event types
+API Guides
+Analytics and events
+Events API | Event Analytics
+Event Analytics
+Event analytics endpoint reference
+Use the event analytics API to fetch events associated with CRM records of any type (
+Marketing Hub
+Enterprise
+,
+Sales Hub
+Enterprise
+,
+Service Hub
+Enterprise
+, or
+CMS Hub
+Enterprise
+only). This includes standard events, such as website page views and email opens, as well as
+custom events
+.
+For example, use this API to view a timeline of the interactions that a contact has had with your content. You can then use this timeline to build a dataset for custom analytics or present a contact timeline in an external application.
+Query individual event completions
+This API returns events for one CRM record at a time. You can select the record by specifying the
+objectType
+and including either the
+objectId
+or
+objectProperty
+query parameter.
+Select by object ID
+To specify a record by its ID, add the
+objectId
+query parameter. For example, to specify a contact record with the ID of
+2832
+, you would make the following
+GET
+request:
+/events/v3/events/?objectType=contact&objectId=224834
+Select by object property
+To specify a record by a unique property instead of contact ID, add the
+objectProperty
+parameter. Reference the property by including the property name and the value in the following format:
+objectProperty.{propname}={propvalue}
+For example, to specify a contact by their email address, you would make the following
+GET
+request:
+/events/v3/events/?objectType=contact&objectProperty.email=user12@dev.com
+Querying and filtering for event types
+When querying for the events associated with a given CRM object, the response will include all event types, including custom behavioral events.
+To only return event completions for a specific event type, you can include an
+eventType
+parameter, followed by the event name. To get a list of all available event types, you can make a
+GET
+request to
+/events/v3/events/event-types
+. The response will return all event types in your account. You can then use one of these event names as a query parameter in a
+GET
+request to the
+/events/v3/events
+endpoint.
+For example:
+/events/v3/events/eventType={EVENT_NAME}&objectType=contact&objectId=224834
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+Custom events
+Email analytics
+Event analytics
+Reporting
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Marketing
+Settings
+Legal

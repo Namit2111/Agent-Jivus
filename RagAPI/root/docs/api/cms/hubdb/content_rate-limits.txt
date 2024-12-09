@@ -1,0 +1,1471 @@
+CMS API | HubDB | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Rate limits
+Draft vs live tables
+Create a HubDB table
+Add table columns
+Add table rows
+Import rows from CSV
+Date formatting
+Reset options
+Retrieve HubDB data
+Filter returned rows
+Sort returned rows
+Configuring HubDB tables for dynamic pages
+Changes in v3
+API Guides
+CMS
+CMS API | HubDB
+CMS API | HubDB
+HubDB endpoint reference
+HubDB is a relational data store that presents data as rows, columns, and cells in a table, much like a spreadsheet. HubDB tables can be added or modified
+within your HubSpot account
+, but you can also use the API endpoints documented here. For information on using data from HubDB tables on your website or in
+programmable emails
+, check out
+HubSpot's CMS developer documentation
+.
+Similar to HubSpot website pages, HubDB tables support
+draft
+and
+published
+versions. This allows you to update data in the table, either for testing or to allow for a manual approval process, without affecting any live pages. Learn more about
+drafted versus live tables
+.
+If a table is set to be
+allowed for public access
+, you can access the published version of the table and rows without any authentication by specifying your HubSpot account ID via the query parameter
+portalId
+.
+If you're migrating from v2 of the HubDB API, learn more about the
+changes in the current (v3) API
+.
+Please note:
+endpoints that support
+GET
+also support
+CORS
+, so you can access data in a table client-side using JavaScript and your account ID. Other methods and the
+Get all tables
+endpoint require authentication and do not support
+CORS
+.
+Rate limits
+HubDB API requests have different rate limits, depending on the type of request:
+Any
+GET
+requests made that don't require authentication (including client-side JavaScript requests) are limited to 10 requests per second. These requests won't count towards the daily limit.
+All other requests
+using authentication
+follow the
+standard limits
+.
+Draft vs live tables
+HubDB tables have both draft and live versions and live versions can be published or unpublished. This will allow you to update data in the table, either for page previews or testing or to allow for a manual approval process, without affecting any live pages.
+In this API, separate endpoints are designated for the draft and published versions of a table. For example, you can retrieve the published version of a table by making a
+GET
+request to the following endpoint:
+/cms/v3/hubdb/tables/{tableIdOrName}
+And to retrieve any content that has been drafted but not yet published, you would add
+/draft
+to the end of the URL:
+/cms/v3/hubdb/tables/{tableIdOrName}/draft
+Draft data can be reviewed and then pushed in HubSpot, or with the
+/push-live
+endpoint. The draft data can also be discarded via
+/reset
+endpoint, allowing you to revert to the current live version of the data without disruption.
+Create a HubDB table
+To create a HubDB table, make a
+POST
+request to
+/cms/v3/hubdb/tables
+.
+In the request body, specify the following required fields:
+Field
+Type
+Description
+Example
+name
+String
+The internal name of the table. This name cannot be changed once the table is created. Names can only include lowercase letters, digits, and underscores and cannot begin with a number.
+"name": "my_table"
+label
+String
+The label of the table that users see when editing the table in HubSpot.
+"label":"My table"
+In addition, you can specify the following optional fields:
+Field
+Type
+Description
+Example
+useForPages
+Boolean
+Whether the table can be used for
+creating dynamic pages
+.
+"useForPages": false
+allowPublicAPIAccess
+Boolean
+Whether the table can be read without authorization.
+"allowPublicApiAccess": false
+allowChildTables
+Boolean
+Whether child tables can be created for the table.
+"allowChildTables": false
+enableChildTablePages
+Boolean
+Whether
+multilevel dynamic pages
+should be created using child tables.
+"enableChildTablePages": false
+columns
+Object
+The columns of the table. Learn more about column properties in the
+Add table columns
+sections.
+See "Add table columns" section below
+Without any columns added yet, your create request might look like the following:
+Copy code snippet
+// Example request
+{
+"name": "test_table",
+"label": "Test Table",
+"useForPages": false,
+"allowPublicApiAccess": false,
+"allowChildTables": true,
+"enableChildTablePages": false,
+"columns": []
+}
+1
+// Example request
+2
+{
+3
+"name"
+:
+"test_table"
+,
+4
+"label"
+:
+"Test Table"
+,
+5
+"useForPages"
+:
+false
+,
+6
+"allowPublicApiAccess"
+:
+false
+,
+7
+"allowChildTables"
+:
+true
+,
+8
+"enableChildTablePages"
+:
+false
+,
+9
+"columns"
+: []
+10
+}
+Add table columns
+Each column in a HubDB table can be defined with the following properties:
+Field
+Type
+Description
+Example
+name
+String
+Required. The internal name of the column. Cannot be changed after the column is created.
+"name": "row_name"
+label
+String
+Optional. The label for the column that users will see when editing the table in HubSpot.
+"label": "Row label"
+type
+String
+The data type of the column. Must be one of the following:
+TEXT
+: a text field.
+RICHTEXT
+: a text field that supports basic HTML formatting. Not recommended for raw HTML, as it may impact whether the HTML is editable in HubSpot. Editing the code in HubSpot may also impact the way the code is rendered.
+NUMBER
+: a number field.
+BOOLEAN
+: represented as a checkbox in HubSpot. Use
+0
+for unchecked and
+1
+for checked.
+DATE
+: stores a specific date as a millisecond timestamp set to midnight UTC.
+DATETIME
+: stores a date and a time as a millisecond timestamp.
+SELECT
+: the column can only be set to one of a set of options. See the
+options
+field below for required properties.
+MULTISELECT
+: the column can be set to one or more of a set of options. See the
+options
+field below for required properties.
+LOCATION
+: stores a latitude and longitude location.
+IMAGE
+: stores the URL of an image.
+VIDEO
+: stores the player ID of the video.
+FOREIGN_ID
+: the column will reference a column from another HubDB table. In addition, you must define the other HubDB table with the following properties:
+foreignTableId: the ID of the other HubDB table.
+foreignColumnId: the ID of the column in the other HubDB table.
+CURRENCY
+: stores the number as a currency value.
+FILE
+: stores a file from the file manager. You'll also need to include a
+fileType
+field to specify whether the field can store all file types (
+FILE
+) or only document types such as PDF (
+DOCUMENT
+).
+"type": "type"
+options
+Object
+A list of options for select and multiselect columns. Each option is defined with a
+name
+along with a
+type
+equal to
+option
+.
+"option": [{"name":"Option 1", "type":"option"}, {"name": "Option 2", "type": "option"}]
+Using the above fields, your request to create a new HubDB table might look like the following:
+Copy code snippet
+// Example request
+{
+"label": "Test Table",
+"name": "test_table",
+"columns": [
+{
+"name": "text_column",
+"label": "Text Column",
+"archived": false,
+"type": "TEXT"
+},
+{
+"name": "number_column",
+"label": "Number Column",
+"archived": false,
+"type": "NUMBER"
+},
+{
+"name": "multiselect",
+"label": "Multi Select Column",
+"archived": false,
+"type": "multiselect",
+"options": [
+{
+"name": "Option 1",
+"type": "option"
+},
+{
+"name": "Option 2",
+"type": "option"
+}
+]
+}
+],
+"useForPages": true,
+"allowChildTables": true,
+"enableChildTablePages": false,
+"allowPublicApiAccess": false
+}
+xxxxxxxxxx
+39
+1
+// Example request
+2
+{
+3
+"label"
+:
+"Test Table"
+,
+4
+"name"
+:
+"test_table"
+,
+5
+"columns"
+: [
+6
+{
+7
+"name"
+:
+"text_column"
+,
+8
+"label"
+:
+"Text Column"
+,
+9
+"archived"
+:
+false
+,
+10
+"type"
+:
+"TEXT"
+11
+},
+12
+{
+13
+"name"
+:
+"number_column"
+,
+14
+"label"
+:
+"Number Column"
+,
+15
+"archived"
+:
+false
+,
+16
+"type"
+:
+"NUMBER"
+17
+},
+18
+{
+19
+"name"
+:
+"multiselect"
+,
+20
+"label"
+:
+"Multi Select Column"
+,
+21
+"archived"
+:
+false
+,
+22
+"type"
+:
+"multiselect"
+,
+23
+"options"
+: [
+24
+{
+25
+"name"
+:
+"Option 1"
+,
+26
+"type"
+:
+"option"
+27
+},
+28
+{
+29
+"name"
+:
+"Option 2"
+,
+30
+"type"
+:
+"option"
+31
+}
+32
+]
+33
+}
+34
+],
+35
+"useForPages"
+:
+true
+,
+36
+"allowChildTables"
+:
+true
+,
+37
+"enableChildTablePages"
+:
+false
+,
+38
+"allowPublicApiAccess"
+:
+false
+39
+}
+After creating a table, columns will be assigned IDs in ascending order. When updating existing columns, include the column's
+id
+field in the input object.
+Add table rows
+You can add rows either manually through the API, or you can
+import rows from a CSV file
+.
+To add rows to a HubDB table, make a
+POST
+request to
+/cms/v3/hubdb/tables/{tableIdOrName}/rows
+.
+For each table row, you can include the following fields:
+Field
+Type
+Description
+Example
+values
+Object
+A list of key-value pairs with the column name and the value you want to add to it.
+If you don't want to set a specific value for a column, you can omit the column name from the list of key-value pairs.
+"values": { "text_column": "sample text", "number_column": 76}
+path
+String
+For tables
+enabled for dynamic pages
+,
+path
+is the path suffix used for the page created for this row.
+"path": "example_url_path"
+name
+String
+For tables
+enabled for dynamic pages
+,
+name
+is the HTML title used for the page created for this row.
+"name": "Example Title"
+childTableId
+Number
+When creating
+multilevel dynamic pages
+,
+childTableId
+specifies the child table ID.
+"childTableId": 123456
+Using the above fields, your request might look similar to the following:
+Copy code snippet
+// Example request
+{
+"values": {
+"text_column": "sample text value",
+"number_column": 76,
+"rich_text_column": "<strong>This is a styled paragraph.</strong>",
+"date_column": 1591228800000,
+"date_time_column": 1604450520000,
+"boolean_column": 1,
+"select_column": {
+"name": "option 1",
+"type": "option"
+},
+"multiselect_column": [
+{
+"name": "Option 1",
+"type": "option"
+},
+{
+"name": "Option 2",
+"type": "option"
+}
+],
+"url_column": "https://www.hubspot.com/marketing",
+"video_column": 3392210008,
+"image_column": {
+"url": "https://f.hubspotusercontentqa00.net/hubfs/99992002/image3%20(1).jpg",
+"width": 1600,
+"height": 900,
+"type": "image"
+},
+"foreign_id_column": [
+{
+"id": "4364402239",
+"type": "foreignid"
+},
+{
+"id": "4364402240",
+"type": "foreignid"
+}
+]
+},
+"path": "test_path",
+"name": "test_title",
+"childTableId": "1902373"
+}
+xxxxxxxxxx
+46
+1
+// Example request
+2
+{
+3
+"values"
+: {
+4
+"text_column"
+:
+"sample text value"
+,
+5
+"number_column"
+:
+76
+,
+6
+"rich_text_column"
+:
+"<strong>This is a styled paragraph.</strong>"
+,
+7
+"date_column"
+:
+1591228800000
+,
+8
+"date_time_column"
+:
+1604450520000
+,
+9
+"boolean_column"
+:
+1
+,
+10
+"select_column"
+: {
+11
+"name"
+:
+"option 1"
+,
+12
+"type"
+:
+"option"
+13
+},
+14
+"multiselect_column"
+: [
+15
+{
+16
+"name"
+:
+"Option 1"
+,
+17
+"type"
+:
+"option"
+18
+},
+19
+{
+20
+"name"
+:
+"Option 2"
+,
+21
+"type"
+:
+"option"
+22
+}
+23
+],
+24
+"url_column"
+:
+"https://www.hubspot.com/marketing"
+,
+25
+"video_column"
+:
+3392210008
+,
+26
+"image_column"
+: {
+27
+"url"
+:
+"https://f.hubspotusercontentqa00.net/hubfs/99992002/image3%20(1).jpg"
+,
+28
+"width"
+:
+1600
+,
+29
+"height"
+:
+900
+,
+30
+"type"
+:
+"image"
+31
+},
+32
+"foreign_id_column"
+: [
+33
+{
+34
+"id"
+:
+"4364402239"
+,
+35
+"type"
+:
+"foreignid"
+36
+},
+37
+{
+38
+"id"
+:
+"4364402240"
+,
+39
+"type"
+:
+"foreignid"
+40
+}
+41
+]
+42
+},
+43
+"path"
+:
+"test_path"
+,
+44
+"name"
+:
+"test_title"
+,
+45
+"childTableId"
+:
+"1902373"
+46
+}
+Import rows from CSV
+To import data into a HubDB table from a CSV file, make a
+POST
+request to
+/cms/v3/hubdb/tables/{tableIdOrName}/draft/import
+.
+The import endpoint takes a
+multipart/form-data
+POST
+request:
+config
+:
+a set of JSON-formatted options for the import.
+file
+:
+the CSV file that you want to import.
+In
+config
+, include the following fields as a JSON string:
+Field
+Type
+Description
+Example
+skipRows
+Number
+The number of header rows that should be skipped over. This field defaults to
+1
+, skipping the first row and treating it as a header. Set this to
+0
+if all of the rows are valid data.
+"skipRows": 0
+separator
+String
+The column delimiter in the CSV file. Set to
+","
+by default.
+"separator": ","
+idSourceColumn
+Number
+The index of the column in the source file containing the row’s ID (
+hs_id
+).If this column is specified, the import will update the existing rows in the table for the matching row IDs from the CSV file. This is optional and you can ignore this during the first time you import data into a table.See the
+Reset options
+section below more detailed information.
+"idSourceColumn": 1
+resetTable
+Boolean
+Defaults to
+false
+, meaning that the table's rows will be updated without removing any existing rows. If set to
+true
+, the spreadsheet rows will overwrite table data, meaning that any rows in the table that aren't in the spreadsheet will be deleted.See the
+Reset options
+section below more detailed information.
+"resetTable": true
+nameSourceColumn
+Number
+For tables
+enabled for dynamic pages
+,
+nameSourceColumn
+specifies the column in the CSV file that contains the row's
+name
+. Column numbers are in ascending order, with the first column being
+1
+.
+"nameSourcecolumn": 5
+pathSourceColumn
+Number
+For tables
+enabled for dynamic pages
+,
+pathSourceColumn
+specifies the column in the CSV file that contains the row's
+path
+. Column numbers are in ascending order, with the first column being
+1
+.
+"pathSourcecolumn": 6
+childTableSourceColumn
+Number
+Specifies the column in the CSV file that contains the row's
+childTableId
+. Column numbers are in ascending order, with the first column being
+1
+.
+"childTableSourcecolumn": 3
+columnMappings
+Array
+A list of mappings for the columns in the source file to the columns in the destination HubDB table.Each mapping must have the following format:
+{"source":1,"target”:"columnIdOrName"}
+source:
+the column index in the source file. For example,
+2
+for the second column.
+target:
+the ID or name of the HubDB table column. You can get the ID or name of a column by
+getting the details for the table
+.
+If your file has an
+hs_id
+column, you shouldn't include it in
+columnMappings
+. Instead, include it as the
+idSourceColumn
+to update existing rows.
+"columnMappings": [{"source":1, "target": 2}, {"source": 2, "target": "column_name"}]
+primaryKeyColumn
+String
+The name of a column in the target HubDB table that will be used for deduplication. The column's ID cannot be used for this field.
+"primaryKeyColumn": "column_name"
+encoding
+String
+The file's encoding type. For example,
+utf-8
+,
+ascii
+,
+iso-8859-2
+,
+iso-8859-5
+,
+iso-2022-jp
+,
+windows-1252
+.
+"encoding": "utf-8"
+format
+String
+Only CSV is supported.
+"format": "csv"
+Using the above table, your
+config
+JSON might look like the following:
+Copy code snippet
+// Example config JSON
+{
+"skipRows": 1,
+"separator": ",",
+"idSourceColumn": 1,
+"resetTable": false,
+"columnMappings": [
+{
+"target": 1,
+"source": 2
+},
+{
+"target": 2,
+"source": "zip_code"
+}
+],
+"primaryKeyColumn": "name",
+"encoding": "utf-8",
+"format": "csv"
+}
+xxxxxxxxxx
+20
+1
+// Example config JSON
+2
+{
+3
+"skipRows"
+:
+1
+,
+4
+"separator"
+:
+","
+,
+5
+"idSourceColumn"
+:
+1
+,
+6
+"resetTable"
+:
+false
+,
+7
+"columnMappings"
+: [
+8
+{
+9
+"target"
+:
+1
+,
+10
+"source"
+:
+2
+11
+},
+12
+{
+13
+"target"
+:
+2
+,
+14
+"source"
+:
+"zip_code"
+15
+}
+16
+],
+17
+"primaryKeyColumn"
+:
+"name"
+,
+18
+"encoding"
+:
+"utf-8"
+,
+19
+"format"
+:
+"csv"
+20
+}
+If using cURL, your command might look like the following:
+Copy code snippet
+curl -L -X POST 'https://api.hubspotqa.com/hubdb/api/v2/tables/xxxxxx/import?portalId=xxxxxxx' \
+-H 'Content-Type: multipart/form-data' \
+-F 'config="{\"skipRows\":1,\"format\":\"csv\",\"separator\":\",\",\"encoding\":\"iso-8859-1\",\"columnMappings\":[{\"target\":1,\"source\":7},{\"target\":3,\"source\":8}],\"idSourceColumn\":1,\"pathSourceColumn\":null,\"nameSourceColumn\":null,\"childTableSourceColumn\":null,\"resetTable\":true}"' \
+-F 'file=@"/Users/xxxxxxxxxxxxx/Downloads/filename.csv"'
+xxxxxxxxxx
+4
+1
+curl
+-L
+-X
+POST
+'https://api.hubspotqa.com/hubdb/api/v2/tables/xxxxxx/import?portalId=xxxxxxx'
+\
+2
+-H
+'Content-Type: multipart/form-data'
+\
+3
+-F
+'config="{\"skipRows\":1,\"format\":\"csv\",\"separator\":\",\",\"encoding\":\"iso-8859-1\",\"columnMappings\":[{\"target\":1,\"source\":7},{\"target\":3,\"source\":8}],\"idSourceColumn\":1,\"pathSourceColumn\":null,\"nameSourceColumn\":null,\"childTableSourceColumn\":null,\"resetTable\":true}"'
+\
+4
+-F
+'file=@"/Users/xxxxxxxxxxxxx/Downloads/filename.csv"'
+Date formatting
+There are several formats you can use when importing data into a date-type column.
+Integers
+yyyy/mm/dd
+yyyy/mm/dd
+mm/dd/yyyy
+mm/dd/yy
+These formats require the month to precede the day (i.e.,
+dd/mm/yy
+is not accepted). Integers can be separated by hyphens (
+-
+) or slashes (
+/
+).
+Relaxed dates
+You can also import date formats that are less standardized than integer-based dates. For example:**
+The 1st of March in the year 2022
+Fri Mar 4 2022
+March 4th '22
+Relative dates
+HubSpot will parse the following date formats relative to the current day:**
+next Thursday
+Today
+tomorrow
+3 days from now
+Reset options
+When importing data from a CSV file into a HubDB table, you can set the
+resetTable
+field to
+true
+or
+false
+(default) to manage whether HubDB row data is overwritten.
+If
+resetTable
+is set to
+true
+:
+If the rows in the CSV file does not have a row ID column (
+hs_id
+or row ID is specified as
+0
+, those rows will be inserted with the new row IDs generated.
+If the row IDs in the CSV file already exists in the target table, the existing rows in the table will be updated with the new values from the input file.
+If the table has rows but the input CSV file does not have those row IDs, those rows will be deleted from the target table.
+If the row IDs in the input CSV file do not exist in the target table, those rows will be inserted with the new row IDs generated and the row IDs given in the input file will be ignored.
+If the input CSV file does not contain the row ID column at all, all the rows will be deleted from the target table and the rows from the input file will be inserted with the new row IDs generated.
+If
+resetTable
+is set to
+false
+(default):
+If the row IDs in the CSV file already exists in the target table, the existing rows in the table will be updated with the new values from the input file.
+If the table has rows but the input CSV file does not have those row IDs, those rows will
+not
+be deleted from the target table and those rows will remain unchanged.
+If the row IDs in the input CSV file do not exist in the target table, those rows will be inserted with the new row IDs generated and the row IDs given in the input file will be ignored.
+If the rows in the CSV file does not have a row ID column or row ID is specified as
+0
+, those rows will be inserted with the new row IDs generated.
+Retrieve HubDB data
+There are multiple ways to retrieve HubDB data, depending on whether you're looking for table details or the rows of a table:
+To retrieve table details from all published tables, make a
+GET
+request to
+/cms/v3/hubdb/tables
+.
+To retrieve table details from a specific published table, make a
+GET
+request to
+/cms/v3/hubdb/tables/{tableIdOrName}
+.
+To retrieve all rows from a specific table, make a
+GET
+request to
+/cms/v3/hubdb/tables/{tableIdOrName}/rows
+.
+To retrieve a specific row from a table, make a
+GET
+request to
+/cms/v3/hubdb/tables/{tableIdOrName}/rows/{rowId}
+.
+When retrieving row data, you can further filter and sort the results.
+If a table is set to be
+allowed for public access
+, you can access the published version of the table and rows without any authentication by specifying your HubSpot account ID via the query parameter
+portalId
+.
+Filter returned rows
+When retrieving HubDB table data, you can apply filters as query parameters to receive specific data. Filter query parameters are constructed as follows:
+columnName__operator
+.
+For example, if you have a number column named
+bar
+, you can filter results to only include rows where
+bar
+is greater than 10:
+&bar__gt=10
+.
+All filters are ANDed together (OR filters are not currently supported).
+When filtering, keep the following in mind:
+When passing values for
+multiselect
+columns, the values should be comma-separated (e.g.
+multiselect_column__contains=1,2
+).
+For
+datetime
+filters, you can use relative dates in place of timestamps in order to specify a value relative to the current time. For example,
+-3h
+would correspond to the timestamp 3 hours before now, whereas
+10s
+would correspond to 10 seconds in the future. Supported time units are ms (milliseconds), s (seconds), m (minutes), h (hours), d (days). Current time can be used by specifying a zero value: 0s
+For the purposes of these filters, the built in column
+hs_id
+is a
+number
+column, the
+hs_created_at
+column is a
+datetime
+, and the
+hs_path
+and
+hs_name
+columns are
+text
+columns.
+Below, learn which operators can be applied to which column types:
+Operator
+Name
+Description
+eq (or none)
+Equals
+All column types.This filter is applied if no operator is used. When used with multiselect columns, returns rows that exact match supplied values.
+ne
+Not equal to
+All column types.
+contains
+Contains
+Text, richtext, and multiselect.When used with multiselect columns, returns rows that contain all of the supplied values. This filter is
+case sensitive
+.
+lt
+Less than
+Number, date, and datetime.
+lte
+Less than or equal to
+Number, date, and datetime.
+gt
+Greater than
+Number, date, and datetime.
+gte
+Greater than or equal to
+Number, date, and datetime.
+is_null
+Null
+All column types except boolean.This filter doesn't require a value (e.g.
+&exampleColumn__is_null=
+).
+not_null
+Not null
+All column types except boolean.This filter doesn't require a value (e.g.
+&exampleColumn__not_null=
+).
+like
+Like
+Text and richtext.
+not_like
+Not like
+Text and richtext.
+icontains
+Contains
+Text and richtext.This filter is
+case insensitive
+.
+startswith
+Starts with
+Text and richtext.
+in
+In
+Number, select, and multiselect.Returns rows where the column includes at least one of the passed options. When there is no other
+sort
+in the query parameter, the results will be sorted in the order in which values are specified in the
+in
+operator.
+Sort returned rows
+When retrieving HubDB data, you can apply sorting as a query parameter to determine the order of the returned data. To sort data, add a
+sort
+query parameter and specify the column name:
+&sort=columnName
+By default, data will be returned in the natural order of the specified column. You can reverse the sort by adding a
+-
+to the column name:
+&sort=-columnName
+You can include this parameter multiple times to sort by multiple columns.
+In addition to sorting by a column, there are three functions that can be used:
+geo_distance(location_column_name, latitude, longitude):
+takes the name of a location column and coordinates, returns the rows ordered by how far away the values of the specified location column are from the provided coordinates.
+length(column_name):
+takes the name of a column, returns the rows ordered by the length of the column value (calculated as a string)
+random():
+returns the rows in random order.
+These functions also support reverse ordering. For example, the following
+geo_distance
+sort returns items that are the farthest away first:
+sort=-geo_distance(location_column,42.37,-71.07)
+Configuring HubDB tables for dynamic pages
+Using HubSpot's CMS, you can use a HubDB table as a data source to
+generate dynamic pages
+. For example, you can create a table that contains a row for each member of your executive team, with columns containing information that you want to display on a page. After selecting that table as the dynamic data source for a page, that page will generate a listing page that displays all rows as summary items, along with separate pages for each row, similar to a blog listing page and blog post pages.
+To enable a table to be selected as a data source in the content editor, you'll need to set
+useForPage
+to
+true
+. You can optionally include
+dynamicMetaTags
+to specify which columns to use for each page's metadata.
+Please note:
+when specifying
+dynamicMetaTags
+, you'll need to ensure that the page is using
+page_meta
+HubL tags instead of
+content
+. Learn more in the
+dynamic pages guide
+.
+For example, the code below would create a table that can be used for dynamic pages, and specifies the three columns to use for page metadata.
+Copy code snippet
+// Example POST request to create table
+{
+"name": "dynamic_page_table",
+"label": "Dynamic page table",
+"useForPages": true,
+"columns": [
+{
+"name": "meta_description",
+"label": "Meta description",
+"archived": false,
+"type": "TEXT"
+},
+{
+"name": "featured_image",
+"label": "Featured image",
+"archived": false,
+"type": "IMAGE"
+},
+{
+"name": "canonical_url",
+"label": "Canonical URL",
+"archived": false,
+"type": "URL"
+}
+],
+"dynamicMetaTags": {
+"DESCRIPTION": 1,
+"FEATURED_IMAGE_URL": 2,
+"LINK_REL_CANONICAL_URL": 3
+}
+}
+xxxxxxxxxx
+31
+1
+// Example POST request to create table
+2
+{
+3
+"name"
+:
+"dynamic_page_table"
+,
+4
+"label"
+:
+"Dynamic page table"
+,
+5
+"useForPages"
+:
+true
+,
+6
+"columns"
+: [
+7
+{
+8
+"name"
+:
+"meta_description"
+,
+9
+"label"
+:
+"Meta description"
+,
+10
+"archived"
+:
+false
+,
+11
+"type"
+:
+"TEXT"
+12
+},
+13
+{
+14
+"name"
+:
+"featured_image"
+,
+15
+"label"
+:
+"Featured image"
+,
+16
+"archived"
+:
+false
+,
+17
+"type"
+:
+"IMAGE"
+18
+},
+19
+{
+20
+"name"
+:
+"canonical_url"
+,
+21
+"label"
+:
+"Canonical URL"
+,
+22
+"archived"
+:
+false
+,
+23
+"type"
+:
+"URL"
+24
+}
+25
+],
+26
+"dynamicMetaTags"
+: {
+27
+"DESCRIPTION"
+:
+1
+,
+28
+"FEATURED_IMAGE_URL"
+:
+2
+,
+29
+"LINK_REL_CANONICAL_URL"
+:
+3
+30
+}
+31
+}
+Parameter
+Type
+Description
+useForPages
+Boolean
+Set to
+true
+to enable the table to be used as a data source for dynamic pages.
+dynamicMetaTags
+Object
+Specifies the columns by ID to use for metadata on each dynamic page. Can contain:
+DESCRIPTION
+FEATURED_IMAGE_URL
+LINK_REL_CANONICAL_URL
+For any metadata fields not specified, pages will inherit the respective values from its parent page.
+DESCRIPTION
+Number
+The numeric ID of the column to use for each page's meta description.
+FEATURED_IMAGE_URL
+Number
+The numeric ID of the column to use for each page's featured image URL.
+LINK_REL_CANONICAL_URL
+Number
+The numeric ID of the column to use for each page's canonical URL.
+Changes in v3
+Tables should have both
+name
+and
+label
+. This name cannot be changed once the table is created. Names can only include lowercase letters, digits, and underscores and cannot begin with a number. Both
+name
+and
+label
+should be unique in the account.
+API supports both table
+id
+and
+name
+in the URL paths.
+GET
+row endpoints return column
+name
+instead of
+id
+in
+values
+field. Also,
+POST
+/
+PUT
+/
+PATCH
+row endpoints require column
+name
+instead of
+id
+in
+values
+field.
+Row update
+PATCH
+endpoints now accept sparse updates, which means you can specify only the column values that you need to update (whereas you had to specify all the column values in the previous versions). When you update a column with a list of values such as multiselect, you need to specify the list of all the values. In order to delete the value for a column, you need to specify the column with the value as
+null
+in the request.
+Removed the endpoints to
+get
+/
+update
+/
+delete
+a row cell in favor of the row update
+PATCH
+endpoints.
+Import endpoint now supports an optional field
+idSourceColumn
+along with existing fields in the JSON-formatted options. You can use this field to specify the column in the csv file which contains row ids. To import new rows along with the new values for existing rows, you can simply specify
+0
+as the row id for the new rows and the valid row ids for the existing columns. See more details in the Import section below. Also you can use column names or ids in the target field of the column mappings in the JSON-formatted options.
+Clone endpoint requires a new name and new label.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Blogs
+Content audit
+Domains
+HubDB
+Media bridge
+Pages
+Performance
+Site search
+Source code
+URL redirects
+Conversations
+Library
+CRM
+Marketing
+Settings
+Legal

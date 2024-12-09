@@ -1,0 +1,769 @@
+CRM API | Companies | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create companies
+Properties
+Associations
+Retrieve companies
+Update companies
+Associate existing companies with records and activities
+Remove an association
+Pin an activity on a company record
+Delete companies
+API Guides
+CRM
+Objects
+CRM API | Companies
+Companies
+Companies endpoint reference
+In HubSpot, companies store information about the organizations that interact with your business. The companies endpoints allow you to manage create and manage company records, as well as sync company data between HubSpot and other systems.
+Learn more about objects, records, properties, and associations APIs in the
+Understanding the CRM
+guide. For more general information about objects and records in HubSpot,
+learn how to manage your CRM database
+.
+Create companies
+To create new companies, make a
+POST
+request to
+/crm/v3/objects/companies
+.
+In your request, include your company data in a properties object. You can also add an associations object to associate your new company with existing records (e.g., contacts, deals), or activities (e.g., meetings, notes).
+Properties
+Company details are stored in company properties. There are
+default HubSpot company properties
+, but you can also
+create custom properties
+.
+When creating a new company, you should include
+at least one
+of the following properties in your request:
+name
+or
+domain
+. It is recommended to always include
+domain
+, because domain names are the
+primary unique identifier
+to avoid duplicate companies in HubSpot. If a company has
+multiple domains
+, you can add them through the API by using the
+hs_additional_domains
+field with semicolons separating each domain. For example:
+"hs_additional_domains" : "domain.com; domain2.com; domain3.com"
+.
+To view all available properties, you can retrieve a list of your account's company properties by making a
+GET
+request to
+/crm/v3/properties/companies
+. Learn more about the the
+properties API
+.
+Please note:
+if you've included
+lifecyclestage
+in your request, values must refer to the lifecycle stage's internal name. The internal names of default stages are text values, and do not change even if you edit the stage's
+label
+(e.g.,
+subscriber
+or
+marketingqualifiedlead
+). The internal names of
+custom stages
+are numeric values. You can find a stage's internal ID in your
+lifecycle stage settings,
+or by retrieving the lifecycle stage property via API.
+For example, to create a new company, your request may look similar to the following:
+JSON
+JSON
+More
+Copy code snippet
+///Example request body
+{
+"properties": {
+"name": "HubSpot",
+"domain": "hubspot.com",
+"city": "Cambridge",
+"industry": "Technology",
+"phone": "555-555-555",
+"state": "Massachusetts",
+"lifecyclestage": "51439524"
+}
+}
+1
+///Example request body
+2
+{
+3
+"properties"
+: {
+4
+"name"
+:
+"HubSpot"
+,
+5
+"domain"
+:
+"hubspot.com"
+,
+6
+"city"
+:
+"Cambridge"
+,
+7
+"industry"
+:
+"Technology"
+,
+8
+"phone"
+:
+"555-555-555"
+,
+9
+"state"
+:
+"Massachusetts"
+,
+10
+"lifecyclestage"
+:
+"51439524"
+11
+}
+12
+}
+Associations
+When creating a new company, you can also associate the company with
+existing records
+or
+activities
+in an associations object. For example, to associate a new company with an existing contact and email, your request would look like the following:
+JSON
+JSON
+More
+Copy code snippet
+///Example request body
+{
+"properties": {
+"name": "HubSpot",
+"domain": "hubspot.com",
+"city": "Cambridge",
+"industry": "Technology",
+"phone": "555-555-555",
+"state": "Massachusetts",
+"lifecyclestage": "51439524"
+},
+"associations": [
+{
+"to": {
+"id": 101
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 280
+}
+]
+},
+{
+"to": {
+"id": 556677
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 185
+}
+]
+}
+]
+}
+xxxxxxxxxx
+36
+1
+///Example request body
+2
+{
+3
+"properties"
+: {
+4
+"name"
+:
+"HubSpot"
+,
+5
+"domain"
+:
+"hubspot.com"
+,
+6
+"city"
+:
+"Cambridge"
+,
+7
+"industry"
+:
+"Technology"
+,
+8
+"phone"
+:
+"555-555-555"
+,
+9
+"state"
+:
+"Massachusetts"
+,
+10
+"lifecyclestage"
+:
+"51439524"
+11
+},
+12
+"associations"
+: [
+13
+{
+14
+"to"
+: {
+15
+"id"
+:
+101
+16
+},
+17
+"types"
+: [
+18
+{
+19
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+20
+"associationTypeId"
+:
+280
+21
+}
+22
+]
+23
+},
+24
+{
+25
+"to"
+: {
+26
+"id"
+:
+556677
+27
+},
+28
+"types"
+: [
+29
+{
+30
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+31
+"associationTypeId"
+:
+185
+32
+}
+33
+]
+34
+}
+35
+]
+36
+}
+In the associations object, you should include the following:
+Parameter
+Description
+to
+The record or activity you want to associate with the company, specified by its unique
+id
+value.
+types
+The type of the association between the company and the record/activity. Include the
+associationCategory
+and
+associationTypeId
+. Default association type IDs are listed
+here
+, or you can retrieve the value for custom association types (i.e. labels) via the
+associations API
+.
+Retrieve companies
+You can retrieve companies individually or in batches.
+To retrieve an individual company, make a
+GET
+request to
+/crm/v3/objects/companies/{companyId}
+.
+To request a list of all companies, make a
+GET
+request to
+/crm/v3/objects/companies
+.
+For these endpoints, you can include the following query parameters in the request URL:
+Parameter
+Description
+properties
+A comma separated list of the properties to be returned in the response. If the requested company doesn't have a value for a property, it will not appear in the response.
+propertiesWithHistory
+A comma separated list of the current and historical properties to be returned in the response. If the requested company doesn't have a value for a property, it will not appear in the response.
+associations
+A comma separated list of objects to retrieve associated IDs for. Any specified associations that don't exist will not be returned in the response. Learn more about the
+associations API.
+To retrieve a batch of specific companies by record ID or a
+custom unique identifier property
+, make a
+POST
+request to
+crm/v3/objects/companies/batch/read
+. The batch endpoint
+cannot
+retrieve associations. Learn how to batch read associations with the
+associations API
+.
+For the batch read endpoint, you can also use the optional
+idProperty
+parameter to retrieve companies by a custom
+unique identifier property
+. By default, the
+id
+values in the request refer to the record ID (
+hs_object_id
+), so the
+idProperty
+parameter is not required when retrieving by record ID. To use a custom unique value property to retrieve companies, you must include the
+idProperty
+parameter.
+For example, to retrieve a batch of companies, your request could look like either of the following:
+Copy code snippet
+///Example request body with record ID
+{
+"properties": ["name", "domain"],
+"inputs": [
+{
+"id": "56789"
+},
+{
+"id": "23456"
+}
+]
+}
+xxxxxxxxxx
+12
+1
+///Example request body with record ID
+2
+{
+3
+"properties"
+: [
+"name"
+,
+"domain"
+],
+4
+"inputs"
+: [
+5
+{
+6
+"id"
+:
+"56789"
+7
+},
+8
+{
+9
+"id"
+:
+"23456"
+10
+}
+11
+]
+12
+}
+Copy code snippet
+///Example request body with a unique value property
+{
+"properties": ["name", "domain"],
+"idProperty": "uniquepropertyexample",
+"inputs": [
+{
+"id": "abc"
+},
+{
+"id": "def"
+}
+]
+}
+xxxxxxxxxx
+13
+1
+///Example request body with a unique value property
+2
+{
+3
+"properties"
+: [
+"name"
+,
+"domain"
+],
+4
+"idProperty"
+:
+"uniquepropertyexample"
+,
+5
+"inputs"
+: [
+6
+{
+7
+"id"
+:
+"abc"
+8
+},
+9
+{
+10
+"id"
+:
+"def"
+11
+}
+12
+]
+13
+}
+To retrieve companies with current and historical values for a property, your request could look like:
+Copy code snippet
+///Example request body with record ID (current and historical values)
+{
+"propertiesWithHistory": ["name"],
+"inputs": [
+{
+"id": "56789"
+},
+{
+"id": "23456"
+}
+]
+}
+xxxxxxxxxx
+12
+1
+///Example request body with record ID (current and historical values)
+2
+{
+3
+"propertiesWithHistory"
+: [
+"name"
+],
+4
+"inputs"
+: [
+5
+{
+6
+"id"
+:
+"56789"
+7
+},
+8
+{
+9
+"id"
+:
+"23456"
+10
+}
+11
+]
+12
+}
+Update companies
+You can update companies individually or in batches. For existing companies, the company's record ID is a unique value that you can use to update the company via API.
+To update an individual company by its company ID, make a
+PATCH
+request to
+/crm/v3/objects/companies/{companyId}
+, and include the data you want to update.
+Please note
+: if updating the
+lifecyclestage
+property, you can only set the value
+forward
+in the stage order. To set the lifecycle stage backward, you'll first need to clear the record's existing lifecycle stage value. The value can be
+cleared manually
+, or may be automatically cleared via a
+workflow
+or an integration that syncs contact data.
+Associate existing companies with records and activities
+To associate a company with other CRM records or an activity, make a
+PUT
+request to
+/crm/v3/objects/companies/{companyId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}
+.
+To retrieve the
+associationTypeId
+value, refer to
+this list
+of default values, or make a
+GET
+request to
+/crm/v4/associations/{fromObjectType}/{toObjectType}/labels
+.
+Learn more about associating records with the
+associations API
+.
+Remove an association
+To remove an association between a company and a record or activity, make a
+DELETE
+request to the following URL:
+/crm/v3/objects/companies/{companyId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}
+.
+Pin an activity on a company record
+You can pin an activity on a company record via API by including the
+hs_pinned_engagement_id
+field in your request. In the field, include the
+id
+of the activity to pin, which can be retrieved via the
+engagements APIs
+. You can pin one activity per record, and the activity must already be associated with the company prior to pinning.
+To set or update a company's pinned activity, your request could look like:
+Copy code snippet
+///Example request body PATCH /crm/v3/objects/companies/{companyId}
+{
+"properties": {
+"hs_pinned_engagement_id": 123456789
+}
+}
+xxxxxxxxxx
+6
+1
+///Example request body PATCH /crm/v3/objects/companies/{companyId}
+2
+{
+3
+"properties"
+: {
+4
+"hs_pinned_engagement_id"
+:
+123456789
+5
+}
+6
+}
+You can also create a company, associate it with an existing activity, and pin the activity in the same request. For example:
+Copy code snippet
+///Example request body POST /crm/v3/objects/companies
+{
+"properties": {
+"domain": "example.com",
+"name": "Example Company",
+"hs_pinned_engagement_id": 123456789
+},
+"associations": [
+{
+"to": {
+"id": 123456789
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 189
+}
+]
+}
+]
+}
+xxxxxxxxxx
+21
+1
+///Example request body POST /crm/v3/objects/companies
+2
+{
+3
+"properties"
+: {
+4
+"domain"
+:
+"example.com"
+,
+5
+"name"
+:
+"Example Company"
+,
+6
+"hs_pinned_engagement_id"
+:
+123456789
+7
+},
+8
+"associations"
+: [
+9
+{
+10
+"to"
+: {
+11
+"id"
+:
+123456789
+12
+},
+13
+"types"
+: [
+14
+{
+15
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+16
+"associationTypeId"
+:
+189
+17
+}
+18
+]
+19
+}
+20
+]
+21
+}
+Delete companies
+You can delete companies individually or in batches, which will add the company to the recycling bin in HubSpot. You can later
+restore the company within HubSpot
+.
+To delete an individual company by its ID, make a
+DELETE
+request to
+/crm/v3/objects/companies/{companyId}
+.
+Learn more about batch deleting companies in the
+reference documentation
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+Custom objects
+Companies
+Contacts
+Deal splits
+Beta
+Deals
+Feedback submissions
+Goals
+New
+Leads
+Line items
+Products
+Tickets
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

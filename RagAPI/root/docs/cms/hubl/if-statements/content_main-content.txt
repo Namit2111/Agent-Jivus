@@ -1,0 +1,681 @@
+If statements | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Basic if statement syntax
+Using elif and else
+Unless statements
+ifchanged
+Inline if statements
+Ternary operators
+CMS Reference
+HubL (templating language)
+If statements
+If Statements
+You can include conditional logic in your modules and templates by using HubL
+if statements
+and
+unless statements
+. If statements often contain HubL
+supported operators
+and can be used to execute
+expression tests
+.
+Please note:
+if you're using
+personalization tokens
+within a conditional statement of your email module, you must
+enable programmable email for the module
+.
+Information passed via the
+v3
+or
+v4
+single send APIs will not function within
+if
+statements, as the templates compile before the information populates.
+Basic if statement syntax
+HubL uses if statements to help define the logic of a template. The syntax of HubL if statements is very similar to conditional logic in Python.
+if
+statements are wrapped in
+statement delimiters
+, starting with an opening
+if
+statement and ending with an
+endif
+.
+The example below provides the basic syntax of an if statement, where "condition" would be replaced with the boolean rule that you were going to evaluate as being true of false.
+Copy code snippet
+{% if condition %}
+If the condition is true print this to template.
+{% endif %}
+1
+{%
+if
+condition
+%}
+2
+If the condition is true print this to template.
+3
+{%
+endif
+%}
+Now that you have seen the basic syntax, let's look at a few actual examples of basic if statements. The next examples below show if statements that check to see whether or not a HubL module with the name
+my_module
+and whether a variable named
+my_module
+are present on a template. Notice that without any operators, the if statement will evaluate whether or not the module is defined in the context of the template.
+Copy code snippet
+{% module "my_module" path="@hubspot/rich_text", label="My rich text module", html="Default module text" export_to_template_context=true %}
+{% if widget_data.my_module %}
+A module named "my_module" is defined in this template.
+{% endif %}
+{% set my_variable = "A string value for my variable" %}
+{% if my_variable %}
+The variable named my_variable is defined in this template.
+{% endif %}
+​
+x
+1
+{%
+module
+"my_module"
+path
+=
+"@hubspot/rich_text"
+, label
+=
+"My rich text module"
+, html
+=
+"Default module text"
+export_to_template_context
+=
+true
+%}
+2
+​
+3
+{%
+if
+widget_data.my_module
+%}
+4
+A module named "my_module" is defined in this template.
+5
+{%
+endif
+%}
+6
+​
+7
+​
+8
+{%
+set
+my_variable
+=
+"A string value for my variable"
+%}
+9
+{%
+if
+my_variable
+%}
+10
+The variable named my_variable is defined in this template.
+11
+{%
+endif
+%}
+Notice that when evaluating the HubL module, the module name is left in quotes within the
+if
+statement and while testing the variable no quotes are used around the variable name. In both examples above, the module and the variable exist in the template, so the statements evaluate to print the markup. Please note that these examples are only testing whether the module and variable are defined, not whether or not they have a value.
+Now let's look at an
+if
+statement that evaluates whether a module has a value, instead of evaluating whether it exists on the template. To do this, we need to use the
+export_to_template_context
+parameter. In the example below, if the text module is valued in the content editor, the markup would print. If the module's text field were cleared, no markup would render. If you are working within custom modules, there is a simplified
+widget.widget_name
+syntax outlined in the
+example here
+.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% module "product_names" path="@hubspot/text", label="Enter the product names that you would like to render the coupon ad for", value="all of our products", export_to_template_context=True %}
+{% if widget_data.product_names.value %}
+<div class="coupon-ad">
+<h3>For a limited time, get 50% off {{ widget_data.product_names.value}}! </h3>
+</div>
+{% endif %}
+xxxxxxxxxx
+7
+1
+{%
+module
+"product_names"
+path
+=
+"@hubspot/text"
+, label
+=
+"Enter the product names that you would like to render the coupon ad for"
+, value
+=
+"all of our products"
+, export_to_template_context
+=
+True
+%}
+2
+​
+3
+{%
+if
+widget_data.product_names.value
+%}
+4
+<
+div
+class
+=
+"coupon-ad"
+>
+5
+<
+h3
+>
+For a limited time, get 50% off
+{{
+widget_data.product_names.value
+}}
+!
+</
+h3
+>
+6
+</
+div
+>
+7
+{%
+endif
+%}
+Using elif and else
+if
+statements can be made more sophisticated with additional conditional statements or with a rule that executes when the condition or conditions are false.
+elif
+statements allow you to add additional conditions to your logic that will be evaluated after the previous condition.
+else
+statements define a rule that executes when all other conditions are false. You can have an unlimited number of
+elif
+statements within a single if statement, but only one
+else
+statement.
+Below is the basic syntax example of if statement that uses the
+<= operator
+to check the value of a variable. In this example, the template would print: "Variable named number is less than or equal to 6."
+Copy code snippet
+{% set number = 5 %}
+{% if number <= 2 %}
+Variable named number is less than or equal to 2.
+{% elif number <= 4 %}
+Variable named number is less than or equal to 4.
+{% elif number <= 6 %}
+Variable named number is less than or equal to 6.
+{% else %}
+Variable named number is greater than 6.
+{% endif %}
+xxxxxxxxxx
+11
+1
+{%
+set
+number
+=
+5
+%}
+2
+​
+3
+{%
+if
+number
+<=
+2
+%}
+4
+Variable named number is less than or equal to 2.
+5
+{%
+elif
+number
+<=
+4
+%}
+6
+Variable named number is less than or equal to 4.
+7
+{%
+elif
+number
+<=
+6
+%}
+8
+Variable named number is less than or equal to 6.
+9
+{%
+else
+%}
+10
+Variable named number is greater than 6.
+11
+{%
+endif
+%}
+Below is one more example that uses a choice module to render different headings for a careers page, based on the department chosen by the user. The example uses the
+== operator
+, to check for certain predefined values in the choice module.
+Copy code snippet
+{% choice "department" label="Choose department", value="Marketing", choices="Marketing, Sales, Dev, Services" export_to_template_context=True %}
+{% if widget_data.department.value == "Marketing" %}
+<h3>Want to join our amazing Marketing team?!</h3>
+<h4>We have exciting career opportunities on the {{ widget_data.department.value }} team.</h4>
+{% elif widget_data.department.value == "Sales" %}
+<h3>Are you a Sales superstar?</h3>
+<h4>We have exciting career opportunities on the {{ widget_data.department.value }} team.</h4>
+{% elif widget_data.department.value == "Dev" %}
+<h3>Do you love to ship code?</h3>
+<h4>We have exciting career opportunities on the {{ widget_data.department.value }} team.</h4>
+{% else %}
+<h3>Want to work with our awesome customers?</h3>
+<h4>We have exciting career opportunities on the {{ widget_data.department.value }} team.</h4>
+{% endif %}
+xxxxxxxxxx
+23
+1
+{%
+choice
+"department"
+label
+=
+"Choose department"
+, value
+=
+"Marketing"
+, choices
+=
+"Marketing, Sales, Dev, Services"
+export_to_template_context
+=
+True
+%}
+2
+​
+3
+{%
+if
+widget_data.department.value
+==
+"Marketing"
+%}
+4
+​
+5
+<
+h3
+>
+Want to join our amazing Marketing team?!
+</
+h3
+>
+6
+<
+h4
+>
+We have exciting career opportunities on the
+{{
+widget_data.department.value
+}}
+team.
+</
+h4
+>
+7
+​
+8
+{%
+elif
+widget_data.department.value
+==
+"Sales"
+%}
+9
+​
+10
+<
+h3
+>
+Are you a Sales superstar?
+</
+h3
+>
+11
+<
+h4
+>
+We have exciting career opportunities on the
+{{
+widget_data.department.value
+}}
+team.
+</
+h4
+>
+12
+​
+13
+{%
+elif
+widget_data.department.value
+==
+"Dev"
+%}
+14
+​
+15
+<
+h3
+>
+Do you love to ship code?
+</
+h3
+>
+16
+<
+h4
+>
+We have exciting career opportunities on the
+{{
+widget_data.department.value
+}}
+team.
+</
+h4
+>
+17
+​
+18
+{%
+else
+%}
+19
+​
+20
+<
+h3
+>
+Want to work with our awesome customers?
+</
+h3
+>
+21
+<
+h4
+>
+We have exciting career opportunities on the
+{{
+widget_data.department.value
+}}
+team.
+</
+h4
+>
+22
+​
+23
+{%
+endif
+%}
+Unless statements
+unless
+statements are conditionals just like
+if
+statements, but they work on the inverse logic. They will render and compile the code between the opening and closing tags, unless the single boolean condition evaluates to true. Unless statements begin with an
+unless
+and end with an
+endunless
+.
+unless
+statements support
+else
+but not
+elif
+.
+Below is an example that prints an "Under construction" header, unless the rich text field is valued. If the rich text field has content, then that content will display.
+Copy code snippet
+{% module "my_page_content" path="@hubspot/rich_text", label="Enter your page content", html="" export_to_template_context=true %}
+{{ widget_data.my_page_content.html }}
+{% unless widget_data.my_page_content.html %}
+<h1>This page is under construction.</h1>
+<h3>Come back soon!</h3>
+{% endunless %}
+xxxxxxxxxx
+8
+1
+{%
+module
+"my_page_content"
+path
+=
+"@hubspot/rich_text"
+, label
+=
+"Enter your page content"
+, html
+=
+""
+export_to_template_context
+=
+true
+%}
+2
+​
+3
+{{
+widget_data.my_page_content.html
+}}
+4
+​
+5
+{%
+unless
+widget_data.my_page_content.html
+%}
+6
+<
+h1
+>
+This page is under construction.
+</
+h1
+>
+7
+<
+h3
+>
+Come back soon!
+</
+h3
+>
+8
+{%
+endunless
+%}
+ifchanged
+In addition to if and unless statements, HubL supports
+ifchanged
+statements. These statements can be used to only render markup when a variable has changed since a prior invocation of this tag.
+Inline if statements
+HubL supports inline
+if
+statements. These can be used to write conditional logic in a concise manner with
+operators and expression tests
+.
+Copy code snippet
+{% set color = "Blue" if is_blue is truthy else "Red" %}     // color == "blue"
+{{ "Blue" if is_blue is truthy else "Red" }}     // "Blue"
+{% set dl = true %}
+<a href="http://example.com/some.pdf" {{"download" if dl }} >Download PDF</a>
+xxxxxxxxxx
+6
+1
+{%
+set
+color
+=
+"Blue"
+if
+is_blue is truthy
+else
+"Red"
+%}
+// color == "blue"
+2
+​
+3
+{{
+"Blue"
+if
+is_blue is truthy
+else
+"Red"
+}}
+// "Blue"
+4
+​
+5
+{%
+set
+dl
+=
+true
+%}
+6
+<
+a
+href
+=
+"http://example.com/some.pdf"
+{{
+"download"
+if
+dl
+}}
+>
+Download PDF
+</
+a
+>
+Ternary operators
+It is also possible to use ternary operators to quickly write conditional logic with
+operators and expression tests
+.
+Copy code snippet
+// If the variable is_blue is true, output "blue", otherwise output"red"
+{{ is_blue is truthy ? "blue" : "red" }}
+// Set the variable is_red to false if is_blue is true, otherwise set to true
+{% set is_red = is_blue is truthy ? false : true %}
+xxxxxxxxxx
+5
+1
+// If the variable is_blue is true, output "blue", otherwise output"red"
+2
+{{
+is_blue is truthy
+?
+"blue"
+:
+"red"
+}}
+3
+​
+4
+// Set the variable is_red to false if is_blue is true, otherwise set to true
+5
+{%
+set
+is_red
+=
+is_blue is truthy
+?
+false
+:
+true
+%}
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Reference
+Overview
+Modules
+HubL (templating language)
+Overview
+Operators and expression tests
+Filters
+Functions
+Loops
+Tags
+Variables
+Variables and macros syntax
+Quote template variables
+Beta
+If statements
+Deprecated
+Forms
+Fields
+Serverless functions

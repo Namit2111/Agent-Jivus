@@ -1,0 +1,1279 @@
+CRM API | Timeline events | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create an event template
+Create event templates through the API
+Create event templates in HubSpot
+Define event tokens
+Create event tokens through the API
+Define header and detail templates
+Define header and detail templates through the API
+Define all aspects of an event template in a single call
+Create an event
+Set the event timestamp
+Associate an event with a CRM object
+Timeline extensions
+Stamp event data onto CRM object properties
+Understand
+Set up a custom icon
+Related docs
+API Guides
+CRM
+Extensions
+CRM API | Timeline events
+Timeline Events
+Timeline events endpoint reference
+The CRM extensions allow information from other systems to appear on HubSpot contact, company, or deal objects. The timeline events endpoints allow you to do this by creating custom timeline events. If you'd prefer your data to be editable by users but none of the default CRM objects fit your needs, you can consider using
+custom objects
+.
+For example, you want to better segment your contacts based on their interactions with your company and content. To do this, you need more information about them. Your app can create custom events (contacts who registered but did not attend a recent webinar, which variant of a sign-up flow a contact completed, etc.) that give you more context about the interactions contacts have with your company.
+Create an event template
+Before you can start creating events, you must create an event template. Event templates describe actions your app will add to the timeline of a contact, company, or deal object in HubSpot. Examples of these actions include viewing a video, registering for a webinar, or filling out a survey. A single app can create up to 750 event templates.
+Event templates are created for contacts by default, but they can be created for companies or deals using the
+objectType
+field. See creating a timeline event template for more details.
+Each event template has its own set of tokens and templates. You can use events created for contacts as criteria when creating new contact lists or workflows, such as: 'Create a list of all contacts with a Video Like where the video name contains XYZ,' where your event template is named "Video Like" and has an event token named "video name."
+Create event templates through the API
+For this example, we'll create a new 'Example Webinar Registration' event template. For authentication, use the developer API key found in your app developer account.
+Copy code snippet
+curl -X POST
+-H "Content-Type: application/json" -d '
+{
+"name": "Example Webinar Registration",
+"objectType": "contacts"
+}' \
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates?hapikey=<<developerAPIkey>>''
+1
+curl
+-X
+POST
+2
+-H
+"Content-Type: application/json"
+-d
+'
+3
+{
+4
+"name": "Example Webinar Registration",
+5
+"objectType": "contacts"
+6
+}'
+\
+7
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates?hapikey=<<developerAPIkey>>''
+Be sure to replace
+<<appId>>
+with your own App ID, which can be found on both the
+My Apps
+and app details pages in your developer account. You'll also need to replace
+<<developerHapikey>>
+with your own developer API key, which you can find by navigating to
+Apps
+>
+Get HubSpot API key
+.
+The properties
+headerTemplate
+and
+detailTemplate
+could also be provided here. (See "Defining Templates" below.)
+This
+POST
+request will return the full, saved event template definition. Be sure to note the
+id
+property in this response. This is the event template ID, which you'll need to make any updates to this event template or tokens in the future.
+You can see all event templates defined for an app via this GET command, which will also return the event template IDs:
+Copy code snippet
+curl -X GET 'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates?hapikey=<<developerAPIkey>>'
+xxxxxxxxxx
+curl
+-X
+GET
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates?hapikey=<<developerAPIkey>>'
+Create event templates in HubSpot
+In addition to using the API to create and manage timeline event templates, you can also manage event templates in your HubSpot developer account.
+In your app settings, navigate to Timeline events and use the "Create event type" button to create a new event template for this app. If you've created any event templates before, you'll see them here as well.
+You'll start with a draft of your new event template. Once you've set the object type and the detail and header templates for the event, click "Create."
+When creating or editing your event template, set any tokens you want to use with it in the
+Data
+tab.
+Please note:
+if you delete a template, once it's deleted, existing events using that template will be permanently removed from accounts with your app connected. You'll no longer be able to create new events of this type, but you'll still see legacy event data in lists and reports. It may take several hours to see these changes reflected in HubSpot.
+Define event tokens
+Once you've defined an event template, you'll likely want to define its tokens as well. Event template tokens allow you to attach custom data to events that can be displayed in the timeline, and for contacts, can be used for list segmentation and automation. You can create up to 500 tokens per timeline event template.
+Please note:
+company and deal events
+cannot
+be used in list segmentation or automation.
+Create event tokens through the API
+Using the event template ID created in Step 1, we'll add some tokens to identify the webinar our contacts registered for.
+Copy code snippet
+curl -X POST -H "Content-Type: application/json" -d '
+{
+"name": "webinarName",
+"label": "Webinar Name",
+"type": "string"
+}' \
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates/<<eventTemplateId>>/tokens?hapikey=<<developerHapikey>>'
+curl -X POST -H "Content-Type: application/json" -d '
+{
+"name": "webinarId",
+"label": "Webinar Id",
+"type": "string"
+}' \
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates/<<eventTemplateId>>/tokens?hapikey=<<developerHapikey>>'
+curl -X POST -H "Content-Type: application/json" -d '
+{
+"name": "webinarType",
+"label": "Webinar Type",
+"type": "enumeration",
+"options": [
+{
+"value": "regular",
+"label": "Regular"
+},
+{
+"value": "ama",
+"label": "Ask me anything"
+}
+]
+}' \
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates/<<eventTemplateId>>/tokens?hapikey=<<developerHapikey>>'
+​
+x
+1
+curl
+-X
+POST
+-H
+"Content-Type: application/json"
+-d
+'
+2
+{
+3
+"name": "webinarName",
+4
+"label": "Webinar Name",
+5
+"type": "string"
+6
+}'
+\
+7
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates/<<eventTemplateId>>/tokens?hapikey=<<developerHapikey>>'
+8
+​
+9
+curl
+-X
+POST
+-H
+"Content-Type: application/json"
+-d
+'
+10
+{
+11
+"name": "webinarId",
+12
+"label": "Webinar Id",
+13
+"type": "string"
+14
+}'
+\
+15
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates/<<eventTemplateId>>/tokens?hapikey=<<developerHapikey>>'
+16
+​
+17
+curl
+-X
+POST
+-H
+"Content-Type: application/json"
+-d
+'
+18
+{
+19
+"name": "webinarType",
+20
+"label": "Webinar Type",
+21
+"type": "enumeration",
+22
+"options": [
+23
+{
+24
+"value": "regular",
+25
+"label": "Regular"
+26
+},
+27
+{
+28
+"value": "ama",
+29
+"label": "Ask me anything"
+30
+}
+31
+]
+32
+}'
+\
+33
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates/<<eventTemplateId>>/tokens?hapikey=<<developerHapikey>>'
+Similarly, a
+GET
+will return all tokens defined on an event template:
+Copy code snippet
+curl -X GET -H "Content-Type: application/json" 'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates/<<eventTemplateId>>?hapikey=<<developerHapikey>>'
+xxxxxxxxxx
+curl
+-X
+GET
+-H
+"Content-Type: application/json"
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates/<<eventTemplateId>>?hapikey=<<developerHapikey>>'
+The supported token types include:
+string
+number
+enumeration
+— One of a set of options. See the webinarType example above.
+date
+— All dates must be in milliseconds in Unix time.
+Note
+: Event tokens cannot be named log or lookup. These tokens are reserved as helpers by Handlebars.js, the library used to render in-app events. For more information, check out the Handlebars.js docs
+here.
+Define header and detail templates
+Header and detail templates define how to display a timeline event. You can specify
+Markdown
+documents with
+Handlebars
+templates. The header template should be a one-line description of the event; and the details template is the drill-down view of the event (examples below).
+The event tokens are passed as data to the templates. Using our example, you can reference the
+webinarName
+token in the template by using
+{{webinarName}}
+The
+extraData
+of an event (discussed below in "Understanding extraData") can only be referenced in the details template.
+Define header and detail templates through the API
+Header and detail templates can be defined on the event template via the event template endpoints. For example, we can add templates to our 'Example Webinar Registration' by modifying that with a
+PUT
+:
+Copy code snippet
+curl -X PUT -H "Content-Type: application/json" -d '
+{
+"id": "<<eventTemplateId>>",
+"name": "Example Name Change",
+"headerTemplate": "Registered for [{{webinarName}}](https://mywebinarsystem/webinar/{{webinarId}})",
+"detailTemplate": "Registration occurred at {{#formatDate timestamp}}{{/formatDate}}"
+}' \
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates/<<eventTemplateId>>?hapikey=<<developerHapikey>>'
+xxxxxxxxxx
+8
+1
+curl
+-X
+PUT
+-H
+"Content-Type: application/json"
+-d
+'
+2
+{
+3
+"id": "<<eventTemplateId>>",
+4
+"name": "Example Name Change",
+5
+"headerTemplate": "Registered for [{{webinarName}}](https://mywebinarsystem/webinar/{{webinarId}})",
+6
+"detailTemplate": "Registration occurred at {{#formatDate timestamp}}{{/formatDate}}"
+7
+}'
+\
+8
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates/<<eventTemplateId>>?hapikey=<<developerHapikey>>'
+Note the use of the
+#formatDate
+directive—it's something we've defined to allow for user-friendly date formatting.
+Once an event is created for a contact using this (see "
+Creating an event
+" below), here's what will show up in that contact's timeline:
+Clicking on "Show details" renders the details template:
+To set the icon that is displayed next to the events, see "
+Setting up a custom icon"
+below.
+The 'Example App Name' text above is the name of the app. In the CRM timeline, events can be filtered by app.
+Define all aspects of an event template in a single call
+Now that you’ve seen each aspect of an event template is progressively defined, you can define it all in one
+POST
+call.
+Copy code snippet
+curl -X POST -H "Content-Type: application/json" -d '
+{
+"name": "Another Webinar Registration",
+"objectType": "contacts",
+"headerTemplate": "Registered for [{{webinarName}}](https://mywebinarsystem/webinar/{{webinarId}})",
+"detailTemplate": "Registration occurred at {{#formatDate timestamp}}{{/formatDate}}",
+"tokens": [
+{
+"name": "webinarName",
+"label": "Webinar Name",
+"type": "string"
+},
+{
+"name": "webinarId",
+"label": "Webinar Id",
+"type": "string"
+},
+{
+"name": "webinarType",
+"label": "Webinar Type",
+"type": "enumeration",
+"options": [
+{
+"value": "regular",
+"label": "Regular"
+},
+{
+"value": "ama",
+"label": "Ask me anything"
+}
+]
+}
+]
+}' \
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates?hapikey=<<developerAPIkey>>'
+xxxxxxxxxx
+35
+1
+curl
+-X
+POST
+-H
+"Content-Type: application/json"
+-d
+'
+2
+{
+3
+"name": "Another Webinar Registration",
+4
+"objectType": "contacts",
+5
+"headerTemplate": "Registered for [{{webinarName}}](https://mywebinarsystem/webinar/{{webinarId}})",
+6
+"detailTemplate": "Registration occurred at {{#formatDate timestamp}}{{/formatDate}}",
+7
+"tokens": [
+8
+{
+9
+"name": "webinarName",
+10
+"label": "Webinar Name",
+11
+"type": "string"
+12
+},
+13
+{
+14
+"name": "webinarId",
+15
+"label": "Webinar Id",
+16
+"type": "string"
+17
+},
+18
+{
+19
+"name": "webinarType",
+20
+"label": "Webinar Type",
+21
+"type": "enumeration",
+22
+"options": [
+23
+{
+24
+"value": "regular",
+25
+"label": "Regular"
+26
+},
+27
+{
+28
+"value": "ama",
+29
+"label": "Ask me anything"
+30
+}
+31
+]
+32
+}
+33
+]
+34
+}'
+\
+35
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates?hapikey=<<developerAPIkey>>'
+Create an event
+Now that an event template is set up with tokens and templates, we're ready to create events for our customers' contacts, companies, deals, and tickets. The examples below assume we're working with the
+contacts
+event template created above. If the event template above is not set up to have the tokens
+webinarName
+and
+webinarId
+, then you will get an error when trying to create the event. Here's an example
+POST
+for creating an event:
+Please note
+: developer API keys and private app access tokens
+cannot
+be used as authentication when creating events. To create an event, the associated HubSpot account needs to grant access to your app via
+OAuth
+. Once you receive an
+OAuth access token,
+you can use it to add events to the account.
+Copy code snippet
+curl -X POST -H "Content-Type: application/json" \
+-H "Authorization: Bearer <<OAuth2AccessToken>>" \
+-d '
+{
+"eventTemplateId": "<<eventTemplateId>>",
+"email": "a.test.contact@email.com",
+"tokens": {
+"webinarName": "A Test Webinar",
+"webinarId": "001001",
+"webinarType": "regular"
+}
+}' \
+'https://api.hubapi.com/crm/v3/timeline/events'
+xxxxxxxxxx
+13
+1
+curl
+-X
+POST
+-H
+"Content-Type: application/json"
+\
+2
+-H
+"Authorization: Bearer <<OAuth2AccessToken>>"
+\
+3
+-d
+'
+4
+{
+5
+"eventTemplateId": "<<eventTemplateId>>",
+6
+"email": "a.test.contact@email.com",
+7
+"tokens": {
+8
+"webinarName": "A Test Webinar",
+9
+"webinarId": "001001",
+10
+"webinarType": "regular"
+11
+}
+12
+}'
+\
+13
+'https://api.hubapi.com/crm/v3/timeline/events'
+This generates an event on
+a.test.contact@email.com
+'s timeline (assuming the templates in 'Defining Templates' above):
+Set the event timestamp
+The timestamp of the event determines where the event will appear in the object's timeline. By default, the event timestamp is when the POST command is sent. You can customize the event time by providing it in the request body in a timestamp property:
+Copy code snippet
+curl -X POST -H "Content-Type: application/json" \
+-H "Authorization: Bearer <<OAuth2AccessToken>>" \
+-d '
+{
+"eventTemplateId": "<<eventTemplateId>>",
+"email": "a.test.contact@email.com",
+"timestamp": "2020-03-18T15:30:32Z",
+"tokens": {
+"webinarName": "A Test Webinar",
+"webinarId": "001001",
+"webinarType": "regular"
+}
+}' \
+'https://api.hubapi.com/crm/v3/timeline/events'
+xxxxxxxxxx
+14
+1
+curl
+-X
+POST
+-H
+"Content-Type: application/json"
+\
+2
+-H
+"Authorization: Bearer <<OAuth2AccessToken>>"
+\
+3
+-d
+'
+4
+{
+5
+"eventTemplateId": "<<eventTemplateId>>",
+6
+"email": "a.test.contact@email.com",
+7
+"timestamp": "2020-03-18T15:30:32Z",
+8
+"tokens": {
+9
+"webinarName": "A Test Webinar",
+10
+"webinarId": "001001",
+11
+"webinarType": "regular"
+12
+}
+13
+}'
+\
+14
+'https://api.hubapi.com/crm/v3/timeline/events'
+This is preferred if you know the exact time an action occurred. In this example, if we have the timestamp for this webinar registration, we should provide it in this POST.
+Timestamps can be in milliseconds epoch time or in
+ISO 8601
+format.
+Associate an event with a CRM object
+In order to create an event, you must be able to associate the event with a contact, company, or deal in the customer's account.
+In the examples above, the objectType was set to contact, and we used email to associate the event with a contact. Email addresses must be unique for contacts in HubSpot, so if there's an existing contact with the provided email, that contact will be updated. If there isn't an existing contact, a new contact will be created. By default, this new contact will only have the email contact property provided. Learn more about
+stamping event data onto contact properties
+to add additional data to contact properties.
+Copy code snippet
+// {
+"eventTemplateId": "<<eventTemplateId>>",
+"email": "a.test.contact@email.com",
+"tokens": {
+"webinarName": "A Test Webinar",
+"webinarId": "001001",
+"webinarType": "regular"
+}
+}
+xxxxxxxxxx
+9
+1
+// {
+2
+"eventTemplateId"
+:
+"<<eventTemplateId>>"
+,
+3
+"email"
+:
+"a.test.contact@email.com"
+,
+4
+"tokens"
+: {
+5
+"webinarName"
+:
+"A Test Webinar"
+,
+6
+"webinarId"
+:
+"001001"
+,
+7
+"webinarType"
+:
+"regular"
+8
+}
+9
+}
+If you are working with known contacts, you can also use the contact
+vid
+to associate the event. In those cases, you would use
+objectId
+in the request JSON. You must include the vid of an existing contact, as you will not be able to create new contacts using
+objectId
+. This example uses the
+objectId
+instead of email:
+Copy code snippet
+// {
+"eventTemplateId": "<<eventTemplateId>>",
+"objectId": "29851",
+"tokens": {
+"webinarName": "A Test Webinar",
+"webinarId": "001001",
+"webinarType": "regular"
+}
+}
+xxxxxxxxxx
+9
+1
+// {
+2
+"eventTemplateId"
+:
+"<<eventTemplateId>>"
+,
+3
+"objectId"
+:
+"29851"
+,
+4
+"tokens"
+: {
+5
+"webinarName"
+:
+"A Test Webinar"
+,
+6
+"webinarId"
+:
+"001001"
+,
+7
+"webinarType"
+:
+"regular"
+8
+}
+9
+}
+You can also associate an event with a contact by usertoken, or
+utk
+. The usertoken is used by the HubSpot tracking code to track visitors, and is stored in the
+hubspotutk
+cookie. Use the
+utk
+parameter to associate an event with a contact by usertoken. Note: It is not possible to associate events with anonymous visitors using the usertoken, so if the event is associated using only the
+utk
+, and the provided usertoken is not already associated with a contact, no new contact would be created and the event would not be visible in HubSpot. However, the event would appear in the timeline if a new contact was associated with the usertoken through another means (usually through a
+form submission including the hutk
+, or through the
+identify method of the Tracking Code API
+). For this reason, we recommend including the
+email
+in addition to the
+utk
+to make sure that the event gets associated with a new or existing contact.
+If you're working with an event template for contacts, it's possible to include multiple identification parameters with the event, so any combination of the
+email
+,
+objectId
+, and
+utk
+parameters may be included. If multiple parameters are included, the objectId (vid) will have the highest priority when determining which contact to associate with the event, followed by
+utk
+, with
+email
+being the lowest priority. This means that you can update the email address of an existing object by including a new email address in the
+email
+parameter with the
+vid
+of a known object in
+objectId
+. This example uses the email address and usertoken together:
+Copy code snippet
+// {
+"eventTemplateId": "<<eventTemplateId>>",
+"email": "a.test.contact@email.com",
+"utk": "89b5afb740d41f4cd6651ac5237edf09"
+"tokens": {
+"webinarName": "A Test Webinar",
+"webinarId": "001001",
+"webinarType": "regular"
+}
+xxxxxxxxxx
+9
+1
+// {
+2
+"eventTemplateId"
+:
+"<<eventTemplateId>>"
+,
+3
+"email"
+:
+"a.test.contact@email.com"
+,
+4
+"utk"
+:
+"89b5afb740d41f4cd6651ac5237edf09"
+5
+"tokens"
+: {
+6
+"webinarName"
+:
+"A Test Webinar"
+,
+7
+"webinarId"
+:
+"001001"
+,
+8
+"webinarType"
+:
+"regular"
+9
+}
+In addition to working with contacts, it's also possible to create event templates for companies and deals. For those event templates, you must use
+objectId
+to associate the event with the company or deal. For companies, the
+objectId
+must be set to the
+companyId
+of the company you want to associate the event with, and for deals you would set the
+objectId
+to the
+dealId
+of the deal object.
+In the example below, assuming the event template was set to the
+COMPANY
+objectType
+, this event would be associate with the company object with
+companyId
+528253914:
+Copy code snippet
+// {
+"eventTemplateId": "<<eventTemplateId>>",
+"objectId": "3001",
+"tokens": {
+"dealProperty": "Custom property for deal"
+}
+}
+xxxxxxxxxx
+7
+1
+// {
+2
+"eventTemplateId"
+:
+"<<eventTemplateId>>"
+,
+3
+"objectId"
+:
+"3001"
+,
+4
+"tokens"
+: {
+5
+"dealProperty"
+:
+"Custom property for deal"
+6
+}
+7
+}
+Timeline extensions
+The timeline extensions feature can be used to display data from an external system using an iFrame. When included, the event will display a link that will open a modal window displaying the iFrame contents when clicked. The details for the iFrame are set in the timelineIFrame field, which is an object containing the following fields:
+linkLabel
+- The text used to display the link that will display the IFrame.
+headerLabel
+- The label of the modal window that displays the IFrame contents.
+url
+- The URI of the IFrame contents.
+width
+- The width of the modal window.
+height
+- The height of the modal window.
+For example, using this data for an event:
+Copy code snippet
+// {
+"eventTemplateId": "<<eventTemplateId>>",
+"email": "a.test.contact@email.com",
+"tokens": {
+"webinarName": "A Test Webinar",
+"webinarId": "001001",
+"webinarType": "regular"
+},
+"timelineIFrame": {
+"linkLabel":"View external data",
+"headerLabel":"Example iframe",
+"url":"https://www.example.com",
+"width":800,
+"height":300
+}
+}
+xxxxxxxxxx
+16
+1
+// {
+2
+"eventTemplateId"
+:
+"<<eventTemplateId>>"
+,
+3
+"email"
+:
+"a.test.contact@email.com"
+,
+4
+"tokens"
+: {
+5
+"webinarName"
+:
+"A Test Webinar"
+,
+6
+"webinarId"
+:
+"001001"
+,
+7
+"webinarType"
+:
+"regular"
+8
+},
+9
+"timelineIFrame"
+: {
+10
+"linkLabel"
+:
+"View external data"
+,
+11
+"headerLabel"
+:
+"Example iframe"
+,
+12
+"url"
+:
+"https://www.example.com"
+,
+13
+"width"
+:800,
+14
+"height"
+:300
+15
+}
+16
+}
+Would create this event, including the "View external data" link:
+Clicking that link would open a modal window displaying the page set in the
+url
+:
+Stamp event data onto CRM object properties
+In many cases, you'll want to modify the properties for the contacts, companies, or deals to which you're adding events. This often happens in cases where adding the event will actually create a contact—you'll likely want to update the first and last name properties on the contact so that you don't just create a contact with only an email address and an event.
+You can stamp data onto the associated object from an event by mapping your custom event tokens to contact, company, or deal properties.
+Consider this
+PUT
+command for updating a custom event template, note the
+objectPropertyName
+field:
+Copy code snippet
+curl -X PUT -H "Content-Type: application/json" -d '
+{
+"label" : "Updated Webinar Name",
+"objectPropertyName": "zz_webinar_name"
+}' \
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates/<<eventTemplateId>>/tokens/<<tokenName>>?hapikey=<<developerHapikey>>'
+xxxxxxxxxx
+6
+1
+curl
+-X
+PUT
+-H
+"Content-Type: application/json"
+-d
+'
+2
+{
+3
+"label" : "Updated Webinar Name",
+4
+"objectPropertyName": "zz_webinar_name"
+5
+}'
+\
+6
+'https://api.hubapi.com/crm/v3/timeline/<<appId>>/event-templates/<<eventTemplateId>>/tokens/<<tokenName>>?hapikey=<<developerHapikey>>'
+This uses
+objectPropertyName
+to map this custom event token to the
+contact
+Object
+zz_webinar_name
+property. This means that when we create a new event that specifies a
+webinarName
+token, the
+zz_webinar_name
+property of the associated
+contact
+will also be set. You can set these to custom or predefined HubSpot properties.
+For example, let's say we already created a
+companyName
+token referencing a
+zz_company_name
+custom property on the contact. Then creating an event like this causes the
+zz_company_name
+and
+zz_webinar_name
+properties to be set on the contact with the email address
+a.test.contact@email.com
+:
+Copy code snippet
+curl -X POST -H "Content-Type: application/json" \
+-H "Authorization: Bearer <<OAuth2AccessToken>>" \
+-d '
+{
+"eventTemplateId": "<<eventTemplateId>>",
+"email": "a.test.contact@email.com",
+"tokens": {
+"webinarName": "Test Webinar will update contact property",
+"companyName": "TestCo",
+"webinarId": "001001",
+"webinarType": "regular"
+}
+}' \
+'https://api.hubapi.com/crm/v3/timeline/events'
+xxxxxxxxxx
+14
+1
+curl
+-X
+POST
+-H
+"Content-Type: application/json"
+\
+2
+-H
+"Authorization: Bearer <<OAuth2AccessToken>>"
+\
+3
+-d
+'
+4
+{
+5
+"eventTemplateId": "<<eventTemplateId>>",
+6
+"email": "a.test.contact@email.com",
+7
+"tokens": {
+8
+"webinarName": "Test Webinar will update contact property",
+9
+"companyName": "TestCo",
+10
+"webinarId": "001001",
+11
+"webinarType": "regular"
+12
+}
+13
+}'
+\
+14
+'https://api.hubapi.com/crm/v3/timeline/events'
+Note: If an event token is stamped to a custom property, and that custom property is not present for a HubSpot account, then the value will still be set for the event, but it will be ignored for the corresponding object.
+Understand
+extraData
+You may need to add detailed data to an event that doesn't fit the simple token-value structure used by the event template tokens. You may need to add a list or some hierarchical breakdown to an integration event. This is where
+extraData
+comes in.
+You can add an
+extraData
+attribute to an event’s JSON body. The value of this
+extraData
+can be any valid JSON. For example:
+Copy code snippet
+curl -X POST -H "Content-Type: application/json" \
+-H "Authorization: Bearer <<OAuth2AccessToken>>" \
+-d '
+{
+"eventTemplateId": "<<eventTemplateId>>",
+"email": "a.test.contact@email.com",
+"tokens": {
+"webinarName": "Test Webinar will update contact property",
+"companyName": "TestCo",
+"webinarId": "001001",
+"webinarType": "regular"
+},
+"extraData": {
+"pollData": [
+{
+"question": "How excited are you for this webinar?",
+"answer":"Quite!"
+},
+{
+"question": "How frequently do you use our product?",
+"answer":"Daily"
+}
+],
+"coWorkers": [
+{
+"name": "Joe Coworker",
+"email":"joe.coworker@testco.com"
+},
+{
+"name": "Jane Coworker",
+"email":"jane.coworker@testco.com"
+}
+]
+}
+}' \
+'https://api.hubapi.com/crm/v3/timeline/events'
+xxxxxxxxxx
+36
+1
+curl
+-X
+POST
+-H
+"Content-Type: application/json"
+\
+2
+-H
+"Authorization: Bearer <<OAuth2AccessToken>>"
+\
+3
+-d
+'
+4
+{
+5
+"eventTemplateId": "<<eventTemplateId>>",
+6
+"email": "a.test.contact@email.com",
+7
+"tokens": {
+8
+"webinarName": "Test Webinar will update contact property",
+9
+"companyName": "TestCo",
+10
+"webinarId": "001001",
+11
+"webinarType": "regular"
+12
+},
+13
+"extraData": {
+14
+"pollData": [
+15
+{
+16
+"question": "How excited are you for this webinar?",
+17
+"answer":"Quite!"
+18
+},
+19
+{
+20
+"question": "How frequently do you use our product?",
+21
+"answer":"Daily"
+22
+}
+23
+],
+24
+"coWorkers": [
+25
+{
+26
+"name": "Joe Coworker",
+27
+"email":"joe.coworker@testco.com"
+28
+},
+29
+{
+30
+"name": "Jane Coworker",
+31
+"email":"jane.coworker@testco.com"
+32
+}
+33
+]
+34
+}
+35
+}'
+\
+36
+'https://api.hubapi.com/crm/v3/timeline/events'
+An example of using
+extraData
+in a details template:
+Copy code snippet
+//
+Registration occurred at {{#formatDate timestamp}}{{/formatDate}}
+#### Poll Questions
+{{#each extraData.pollData}}
+**{{question}}**: {{answer}}
+{{/each}}
+#### Co-Workers
+{{#each extraData.coWorkers}}
+* {{name}}
+{{/each}}
+xxxxxxxxxx
+12
+1
+//
+2
+Registration occurred at {{
+#formatDate timestamp}}{{/formatDate}}
+3
+​
+4
+#### Poll Questions
+5
+{{
+#each extraData.pollData}}
+6
+**{{question}}**: {{answer}}
+7
+{{/each}}
+8
+​
+9
+#### Co-Workers
+10
+{{
+#each extraData.coWorkers}}
+11
+* {{name}}
+12
+{{/each}}
+Which will result in a timeline event that looks like this:
+Note: The
+extraData
+attribute can only be referenced in the details template for an event. It can't be used in either the header template or in list segmentation.
+Set up a custom icon
+To add visual appeal to your timeline items, you'll want to add a custom icon.
+This image file for this icon should:
+Have roughly square dimensions
+Have a transparent background
+Have the content in the center of the icon
+Be able to size down to 30x30 pixels
+Have a file size of 5MB or less
+To set the icon used for timeline events, navigate to Timeline events. Click on the placeholder image or the existing icon to set or update it.
+Once you set the icon(s), they will be shown next to all of the timeline events associated with this application:
+Related docs
+Understanding the CRM
+CRM cards
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Calling SDK
+CRM cards
+Timeline events
+Third-party calling
+Beta
+Video conferencing extension
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

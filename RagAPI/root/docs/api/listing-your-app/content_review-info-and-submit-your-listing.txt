@@ -1,0 +1,435 @@
+App Marketplace | Listing your app | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create and submit an app listing
+Listing info
+App details
+Pricing
+App features
+Support info
+Review info and submit your listing
+Create and update a localized listing for an existing app listing
+Edit a live app listing
+Unpublish a live app listing
+Apps
+Marketplace
+App Marketplace | Listing your app
+Listing your app
+After you’ve created an app in your developer account that meets the
+App Marketplace listing requirements
+, you can submit a listing to add it to the
+HubSpot App Marketplace
+. The HubSpot Ecosystem Quality team will review your submission and follow up via email if the app has been approved or rejected.
+Please note:
+you must be a
+super admin
+to update and submit an app listing.
+In this article:
+Create and submit an app listing
+Create and update a localized listing for an existing app listing
+Edit a live app listing
+Unpublish a live app listing
+Create and submit an app listing
+Please note:
+before submitting an app listing, review the
+App listing requirements page
+to understand how to fill your listing.
+In your
+app developer account
+, navigate to
+App Marketplace
+>
+Listings
+.
+In the upper right, click
+Create listing
+. If this button is grayed out, listings have already been created for all your existing apps.
+Select the
+app
+you want to create a listing for and click
+Next
+. Apps that are already listed on the App Marketplace will not appear here.
+On the next screen, click the
+Select the languages your app is available in
+dropdown menu and select the
+languages
+your app software is offered in. The App Marketplace is available in 14 languages: German, English, Spanish, French, Italian, Japanese, Dutch, Portuguese, Chinese, Finnish, Danish, Norwegian, Polish, and Swedish.
+Click the
+Select the primary listing language for [app name]
+dropdown menu and select the
+default language
+users will see when browsing the App Marketplace.
+Click
+Next
+.
+The app listing wizard has five tabs of information to fill out.
+Listing info
+On the
+Listing info
+tab:
+In the
+App information
+section, add your
+Public app name
+,
+Company name
+,
+Tagline
+, and
+Install Button URL
+.
+In the
+App icon
+section, upload an 800px by 800px icon for your app. This will appear in the App Marketplace and connected users’ accounts. When creating your icon:
+Do
+: use a JPG, JPEG, or PNG file, fill the entire space (800px by 800px) - your image should touch at least two edges, and use a high-resolution, unpixellated image.
+Do not
+: include text in your icon, use a wordmark, or leave extra whitespace around your icon.
+In the
+Categorize your app
+section, you can select up to two
+categories
+for your app. You can also add any
+search terms
+that can be used to find your app in the App Marketplace. Learn more about the
+different categories available
+.
+App details
+On the
+App details
+tab:
+In the
+Demo video
+section, upload a
+video
+to show how your app works. Refer to the
+How to Make a Great App Demo Video
+page for best practices and examples of how to create a demo video.
+In the
+Screenshots
+section, add
+images
+and
+alt text
+showing how your app works. You can add up to eight images.
+Click Add
+shared data
+.In the
+Shared data
+section, let users know how data will flow between your app and HubSpot.
+In the right panel, select which app object syncs with which HubSpot object, and the direction of the sync. In the
+App Overview
+section, give a brief
+description
+of how your app can help users carry out their goals.
+To add another object sync, click
+Add another object
+.
+In the
+HubSpot features your app works with
+section, add up to
+10 HubSpot tools and features
+your app works with.
+In the
+Other tools your software integrates with
+section, select up to
+six other tools or apps
+that your software integrates with.
+In the
+Languages your app is available in
+section, select all
+languages
+available for your app. You can only create additional App Marketplace listings in these languages.
+Pricing
+On the
+Pricing
+tab:
+In the top section, select the
+currency
+you want to list the app in. You can select from over 100 currencies.
+You can also set up
+pricing plans
+for your app by adding the
+pricing model
+,
+plan name
+,
+tagline
+,
+pricing detail
+, and
+features list
+.
+Depending on the pricing model selected, you may need to add more information, such as the frequency of payment, one-time fees, or monthly prices. Hover over the
+information icon
+to learn more about each pricing model.
+You can add up to five pricing plans. To add additional pricing plans, click
+Add another plan
+In the
+Link to your software’s pricing plan
+section, enter the
+URL
+where users can find more information on your pricing plans.
+In the
+Agency pricing plans
+section, enter the
+URL
+where users can learn more about pricing for partner or consulting services.
+App features
+On the
+App features
+tab, add features and guide customers on how to use them. There is no limit on the number of app features that can be created for your app.
+Click
+Add a feature
+.
+On the
+Feature details
+page:
+Enter your
+Feature name
+.
+Select all
+scope groups
+a customer needs to have this feature. Scope groups are used to determine whether the customer's HubSpot account is compatible with the app features.
+Enter a
+description
+.
+Select an
+image
+.
+Select where you want to display the feature:
+On your app's marketplace listing
+or
+As a feature discovery card
+.
+You can show a maximum of five app features in the app marketplace listing and a maximum of 10 app features as discovery cards.
+If you select to display the feature as a feature discovery card:
+Select a primary button:
+Link to a feature:
+select which HubSpot feature the button should link to.
+Create custom
+: enter
+Button text
+and the
+Button URL
+.
+No primary button
+Select a how-to guide to onboard your customers:
+Create a guide from scratch:
+enter a
+title
+,
+description
+, and
+image or video
+.
+External link to guide:
+enter a
+Guide URL
+.
+Video only guide:
+upload a
+video
+.
+To add another guide, click
+Add another section
+.
+Support info
+On the
+Support info
+tab:
+In the
+Contact info
+section, add a support contact method for users who have questions while using your app. Add your
+support email
+,
+company website,
+and
+languages
+that customer support is offered.
+In the
+Support resources
+section, include
+links
+to your app’s setup documentation.
+In the
+Terms of Service and Privacy Policy
+section, add
+links
+to your privacy documentation.
+Review info and submit your listing
+On the
+Review info
+tab:
+In the
+App review instructions
+section, enter any
+app review instructions
+that the HubSpot Ecosystem Quality team requires to test and review your app.
+In the
+App Partner Program points of contact
+section, include the contact information of any people who need to be communicated with regarding the app listing, and the developer of the app. You must include the person's
+role
+, f
+irst and last name
+,
+email
+, and
+country
+where they are based in.
+To add another point of contact, click
+Add another point of contact
+.
+To submit the listing for review, click
+Submit for review
+in the upper right corner. If the
+Submit for review
+button is grayed out, check that you’ve filled out all the required fields and have
+Super admin
+permissions. If you’ve missed any required fields, you will see a number in the tab heading indicating the number of missed fields. Click each tab to enter the missing information, then return to the
+Review info
+tab and click
+Submit for review
+.
+Create and update a localized listing for an existing app listing
+You will need to set a primary language on your existing app listing and have your primary listing already published in the HubSpot Marketplace in order to create listings in other languages.
+In your HubSpot app developer account, click
+App Marketplace
+>
+Listings
+.
+If you already have an app listed in the Marketplace, you’ll see a yellow banner above the listed app asking you to set your primary listing language. Click
+Set it now
+. You will need to set the primary listing language for the app listing before you're able to create new language listings.
+In the dialog box, click the
+Select the languages your app is available in
+dropdown menu and select the
+languages
+your app software is available in.
+Click the
+Select the primary listing language for [app name]
+dropdown menu and select the
+default language
+users will see when browsing the App Marketplace.
+Click
+Save.
+Once you have set a primary language, you will be able to add a new localized listing:
+Hover over the
+app listing
+and click
+More
+>
+Create listing in another language
+.
+If you'd like to auto translate your listing to other languages, click to toggle the
+Auto translate
+switch on.
+If you've selected this option, any translated listings will be automatically and immediately published to the marketplace. The auto translated listings will bypass admin review.
+Once the listings are translated, any edits made in the primary listing will
+not
+automatically update in the translated listings. To update an auto translated listing:
+Delete the existing translated listing and then create translated listing again in the same languages. When creating a new listing, changes from the primary listing will be pulled in.
+You can also manually update the translated listing. However, manual changes will go through the review process and has to be approved by HubSpot admins before being published.
+Click the
+Language for this listing
+dropdown menu and select the
+language
+you want to create this listing in.
+When a user has set the language in their account, then they will automatically see the listing in that same language. For example, if you've create a listing in Spanish, and a user has set Spanish as their
+account's default language
+, the listing will appear to the user in Spanish.
+If the
+Auto translate
+option has been turned on, the languages selected will be auto translated and published as new listings.
+Click
+Create
+. If you're manually creating a listing, follow the steps to create and submit a listing in the selected language.
+Please note:
+All parts of your localized listing should be in the same language, including product screenshots and demo videos.
+Updating your primary listing does not automatically update your localized listings. Each must be updated independently.
+Edit a live app listing
+Once an app listing is live on the App Marketplace, to edit the listing:
+In your developer account, click
+App Marketplace > Listings
+.
+Hover over the listing you’d like to edit and click
+More
+>
+Edit
+.
+Make your changes then click
+Submit for review
+.
+Unpublish a live app listing
+In your developer account, click
+App Marketplace
+>
+Listings
+.
+Hover over the listing you want to unpublish and click
+More
+>
+Unpublish live listing
+.
+In the dialog box, enter the reason for unpublishing the app, the click
+Submit unpublish request
+.
+Unpublish requests are processed by the HubSpot Marketplace team within 10 business days of submission.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+Apps
+Overview
+Authentication
+Private apps
+Public apps
+Extensions
+API usage
+Marketplace
+App certification requirements
+App listing requirements
+Listing your app
+Provide testing credentials for your app
+Understand app categories
+App for app certification
+Measuring app performance

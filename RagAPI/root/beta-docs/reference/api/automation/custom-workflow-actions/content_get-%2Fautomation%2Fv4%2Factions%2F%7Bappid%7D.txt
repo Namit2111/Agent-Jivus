@@ -1,0 +1,1465 @@
+Custom workflow actions - v4 | HubSpot API
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Introduction
+Use cases for this API
+Callbacks
+Completes a batch of callbacks
+POST
+Completes a single callback
+POST
+Definitions
+Get extension definition by Id
+GET
+Get paged extension definitions
+GET
+Create a new extension definition
+POST
+Patch an existing extension definition
+PATCH
+Archive an extension definition
+DEL
+Functions
+Get a function for a given definition
+GET
+Get all functions by a type for a given definition
+GET
+Get all functions for a given definition
+GET
+Insert a function for a definition
+PUT
+Insert a function for a definition
+PUT
+Archive a function for a definition
+DEL
+Delete a function for a definition
+DEL
+Revisions
+Get all revisions for a given definition
+GET
+Gets a revision for a given definition by revision id
+GET
+API Endpoints
+Automation
+Custom workflow actions
+Custom workflow actions
+API Version: v4
+Introduction
+Use the automation API to define custom actions in the HubSpot workflows tool, which allows users in your account to integrate with external services as they build out a HubSpot workflow.
+Use cases for this API
+You want to empower other users in your account to automate specialized parts of their day-to-day processes (e.g., creating highly customized quotes based on the data from an enrolled contact and their associations).
+Related guide:
+Custom Workflow Actions Guide
+Supported products
+Requires one of the following products or higher.
+Marketing Hub
+-
+Professional
+Sales Hub
+-
+Professional
+Service Hub
+-
+Professional
+Callbacks
+Completes a batch of callbacks
+post
+/automation/v4/actions/callbacks/complete
+Copy full URL
+Requirements
+Standard scope(s)
+automation
+Granular scope(s)
+None
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request POST \
+--url https://api.hubapi.com/automation/v4/actions/callbacks/complete \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '{
+"inputs": [
+{
+"outputFields": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"callbackId": "string"
+}
+]
+}'
+xxxxxxxxxx
+16
+1
+curl
+--request
+POST \
+2
+--url
+https://api.hubapi.com/automation/v4/actions/callbacks/complete \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'{
+6
+"inputs": [
+7
+{
+8
+"outputFields": {
+9
+"additionalProp1": "string",
+10
+"additionalProp2": "string",
+11
+"additionalProp3": "string"
+12
+},
+13
+"callbackId": "string"
+14
+}
+15
+]
+16
+}'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 204
+No content
+Completes a single callback
+post
+/automation/v4/actions/callbacks/{callbackId}/complete
+Copy full URL
+Requirements
+Standard scope(s)
+automation
+Granular scope(s)
+None
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request POST \
+--url https://api.hubapi.com/automation/v4/actions/callbacks/callbackId/complete \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '{
+"outputFields": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+}
+}'
+xxxxxxxxxx
+11
+1
+curl
+--request
+POST \
+2
+--url
+https://api.hubapi.com/automation/v4/actions/callbacks/callbackId/complete \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'{
+6
+"outputFields": {
+7
+"additionalProp1": "string",
+8
+"additionalProp2": "string",
+9
+"additionalProp3": "string"
+10
+}
+11
+}'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 204
+No content
+Definitions
+Get extension definition by Id
+get
+/automation/v4/actions/{appId}/{definitionId}
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/automation/v4/actions/0/definitionId?archived=false&hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+xxxxxxxxxx
+2
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0/definitionId?archived=false&hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Get paged extension definitions
+get
+/automation/v4/actions/{appId}
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+app​Id
+int32
+Path param
+limit
+int32
+Query param
+The maximum number of results to display per page.
++ Set test value
+after
+string
+Query param
+The paging cursor token of the last successfully read resource will be returned as the
+paging.next.after
+JSON property of a paged response containing more results.
++ Set test value
+Show more
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/automation/v4/actions/0?archived=false&hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+xxxxxxxxxx
+2
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0?archived=false&hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Create a new extension definition
+post
+/automation/v4/actions/{appId}
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request POST \
+--url 'https://api.hubapi.com/automation/v4/actions/0?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY' \
+--header 'content-type: application/json' \
+--data '{
+"inputFields": [
+{
+"isRequired": true,
+"automationFieldType": "string",
+"typeDefinition": {
+"helpText": "string",
+"referencedObjectType": "CONTACT",
+"name": "string",
+"options": [
+{
+"hidden": true,
+"displayOrder": 0,
+"doubleData": 0,
+"description": "string",
+"readOnly": true,
+"label": "string",
+"value": "string"
+}
+],
+"description": "string",
+"externalOptionsReferenceType": "string",
+"label": "string",
+"type": "string",
+"fieldType": "booleancheckbox",
+"optionsUrl": "string",
+"externalOptions": true
+},
+"supportedValueTypes": [
+"STATIC_VALUE"
+]
+}
+],
+"outputFields": [
+{
+"typeDefinition": {
+"helpText": "string",
+"referencedObjectType": "CONTACT",
+"name": "string",
+"options": [
+{
+"hidden": true,
+"displayOrder": 0,
+"doubleData": 0,
+"description": "string",
+"readOnly": true,
+"label": "string",
+"value": "string"
+}
+],
+"description": "string",
+"externalOptionsReferenceType": "string",
+"label": "string",
+"type": "string",
+"fieldType": "booleancheckbox",
+"optionsUrl": "string",
+"externalOptions": true
+}
+}
+],
+"archivedAt": 0,
+"functions": [
+{
+"functionSource": "string",
+"functionType": "PRE_ACTION_EXECUTION",
+"id": "string"
+}
+],
+"actionUrl": "string",
+"published": true,
+"executionRules": [
+{
+"labelName": "string",
+"conditions": {
+"additionalProp1": {},
+"additionalProp2": {},
+"additionalProp3": {}
+}
+}
+],
+"objectTypes": [
+"string"
+],
+"objectRequestOptions": {
+"properties": [
+"string"
+]
+},
+"labels": {
+"additionalProp1": {
+"inputFieldDescriptions": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"appDisplayName": "string",
+"outputFieldLabels": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"inputFieldOptionLabels": {
+"additionalProp1": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"additionalProp2": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"additionalProp3": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+}
+},
+"actionDescription": "string",
+"executionRules": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"inputFieldLabels": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"actionName": "string",
+"actionCardContent": "string"
+},
+"additionalProp2": {
+"inputFieldDescriptions": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"appDisplayName": "string",
+"outputFieldLabels": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"inputFieldOptionLabels": {
+"additionalProp1": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"additionalProp2": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"additionalProp3": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+}
+},
+"actionDescription": "string",
+"executionRules": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"inputFieldLabels": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"actionName": "string",
+"actionCardContent": "string"
+},
+"additionalProp3": {
+"inputFieldDescriptions": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"appDisplayName": "string",
+"outputFieldLabels": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"inputFieldOptionLabels": {
+"additionalProp1": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"additionalProp2": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"additionalProp3": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+}
+},
+"actionDescription": "string",
+"executionRules": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"inputFieldLabels": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"actionName": "string",
+"actionCardContent": "string"
+}
+}
+}'
+xxxxxxxxxx
+223
+1
+curl
+--request
+POST \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+\
+3
+--header
+'content-type: application/json'
+\
+4
+--data
+'{
+5
+"inputFields": [
+6
+{
+7
+"isRequired": true,
+8
+"automationFieldType": "string",
+9
+"typeDefinition": {
+10
+"helpText": "string",
+11
+"referencedObjectType": "CONTACT",
+12
+"name": "string",
+13
+"options": [
+14
+{
+15
+"hidden": true,
+16
+"displayOrder": 0,
+17
+"doubleData": 0,
+18
+"description": "string",
+19
+"readOnly": true,
+20
+"label": "string",
+21
+"value": "string"
+22
+}
+23
+],
+24
+"description": "string",
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 201
+Loading
+Patch an existing extension definition
+patch
+/automation/v4/actions/{appId}/{definitionId}
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PATCH \
+--url 'https://api.hubapi.com/automation/v4/actions/0/definitionId?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY' \
+--header 'content-type: application/json' \
+--data '{
+"inputFields": [
+{
+"isRequired": true,
+"automationFieldType": "string",
+"typeDefinition": {
+"helpText": "string",
+"referencedObjectType": "CONTACT",
+"name": "string",
+"options": [
+{
+"hidden": true,
+"displayOrder": 0,
+"doubleData": 0,
+"description": "string",
+"readOnly": true,
+"label": "string",
+"value": "string"
+}
+],
+"description": "string",
+"externalOptionsReferenceType": "string",
+"label": "string",
+"type": "string",
+"fieldType": "booleancheckbox",
+"optionsUrl": "string",
+"externalOptions": true
+},
+"supportedValueTypes": [
+"STATIC_VALUE"
+]
+}
+],
+"outputFields": [
+{
+"typeDefinition": {
+"helpText": "string",
+"referencedObjectType": "CONTACT",
+"name": "string",
+"options": [
+{
+"hidden": true,
+"displayOrder": 0,
+"doubleData": 0,
+"description": "string",
+"readOnly": true,
+"label": "string",
+"value": "string"
+}
+],
+"description": "string",
+"externalOptionsReferenceType": "string",
+"label": "string",
+"type": "string",
+"fieldType": "booleancheckbox",
+"optionsUrl": "string",
+"externalOptions": true
+}
+}
+],
+"actionUrl": "string",
+"published": true,
+"executionRules": [
+{
+"labelName": "string",
+"conditions": {
+"additionalProp1": {},
+"additionalProp2": {},
+"additionalProp3": {}
+}
+}
+],
+"objectTypes": [
+"string"
+],
+"objectRequestOptions": {
+"properties": [
+"string"
+]
+},
+"labels": {
+"additionalProp1": {
+"inputFieldDescriptions": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"appDisplayName": "string",
+"outputFieldLabels": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"inputFieldOptionLabels": {
+"additionalProp1": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"additionalProp2": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"additionalProp3": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+}
+},
+"actionDescription": "string",
+"executionRules": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"inputFieldLabels": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"actionName": "string",
+"actionCardContent": "string"
+},
+"additionalProp2": {
+"inputFieldDescriptions": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"appDisplayName": "string",
+"outputFieldLabels": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"inputFieldOptionLabels": {
+"additionalProp1": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"additionalProp2": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"additionalProp3": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+}
+},
+"actionDescription": "string",
+"executionRules": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"inputFieldLabels": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"actionName": "string",
+"actionCardContent": "string"
+},
+"additionalProp3": {
+"inputFieldDescriptions": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"appDisplayName": "string",
+"outputFieldLabels": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"inputFieldOptionLabels": {
+"additionalProp1": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"additionalProp2": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"additionalProp3": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+}
+},
+"actionDescription": "string",
+"executionRules": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"inputFieldLabels": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"actionName": "string",
+"actionCardContent": "string"
+}
+}
+}'
+xxxxxxxxxx
+215
+1
+curl
+--request
+PATCH \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0/definitionId?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+\
+3
+--header
+'content-type: application/json'
+\
+4
+--data
+'{
+5
+"inputFields": [
+6
+{
+7
+"isRequired": true,
+8
+"automationFieldType": "string",
+9
+"typeDefinition": {
+10
+"helpText": "string",
+11
+"referencedObjectType": "CONTACT",
+12
+"name": "string",
+13
+"options": [
+14
+{
+15
+"hidden": true,
+16
+"displayOrder": 0,
+17
+"doubleData": 0,
+18
+"description": "string",
+19
+"readOnly": true,
+20
+"label": "string",
+21
+"value": "string"
+22
+}
+23
+],
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Archive an extension definition
+delete
+/automation/v4/actions/{appId}/{definitionId}
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request DELETE \
+--url 'https://api.hubapi.com/automation/v4/actions/0/definitionId?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+xxxxxxxxxx
+2
+1
+curl
+--request
+DELETE \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0/definitionId?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 204
+No content
+Functions
+Get a function for a given definition
+get
+/automation/v4/actions/{appId}/{definitionId}/functions/{functionType}/{functionId}
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions/functionType/functionId?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+xxxxxxxxxx
+2
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions/functionType/functionId?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Get all functions by a type for a given definition
+get
+/automation/v4/actions/{appId}/{definitionId}/functions/{functionType}
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions/functionType?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+xxxxxxxxxx
+2
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions/functionType?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Get all functions for a given definition
+get
+/automation/v4/actions/{appId}/{definitionId}/functions
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+xxxxxxxxxx
+2
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Insert a function for a definition
+put
+/automation/v4/actions/{appId}/{definitionId}/functions/{functionType}
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PUT \
+--url 'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions/functionType?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY' \
+--header 'content-type: text/plain' \
+--data string
+xxxxxxxxxx
+4
+1
+curl
+--request
+PUT \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions/functionType?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+\
+3
+--header
+'content-type: text/plain'
+\
+4
+--data
+string
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Insert a function for a definition
+put
+/automation/v4/actions/{appId}/{definitionId}/functions/{functionType}/{functionId}
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PUT \
+--url 'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions/functionType/functionId?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY' \
+--header 'content-type: text/plain' \
+--data string
+xxxxxxxxxx
+4
+1
+curl
+--request
+PUT \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions/functionType/functionId?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+\
+3
+--header
+'content-type: text/plain'
+\
+4
+--data
+string
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Archive a function for a definition
+delete
+/automation/v4/actions/{appId}/{definitionId}/functions/{functionType}/{functionId}
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request DELETE \
+--url 'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions/functionType/functionId?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+xxxxxxxxxx
+2
+1
+curl
+--request
+DELETE \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions/functionType/functionId?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 204
+No content
+Delete a function for a definition
+delete
+/automation/v4/actions/{appId}/{definitionId}/functions/{functionType}
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request DELETE \
+--url 'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions/functionType?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+xxxxxxxxxx
+2
+1
+curl
+--request
+DELETE \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0/definitionId/functions/functionType?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 204
+No content
+Revisions
+Get all revisions for a given definition
+get
+/automation/v4/actions/{appId}/{definitionId}/revisions
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/automation/v4/actions/0/definitionId/revisions?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+xxxxxxxxxx
+2
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0/definitionId/revisions?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Gets a revision for a given definition by revision id
+get
+/automation/v4/actions/{appId}/{definitionId}/revisions/{revisionId}
+Copy full URL
+Requirements
+Scopes
+None
+Limits
+Standard API rate limits
+Auth Methods
+Developer account API key
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/automation/v4/actions/0/definitionId/revisions/revisionId?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+xxxxxxxxxx
+2
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/automation/v4/actions/0/definitionId/revisions/revisionId?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Endpoints
+Get set up
+Analytics and events
+App management
+Automation
+Create & manage workflows
+Custom workflow actions
+Custom code actions
+Sequences
+Beta
+CMS
+Conversations
+CRM
+Library
+Marketing
+Settings
+Other resources
+Legal
+Deprecated

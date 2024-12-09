@@ -1,0 +1,344 @@
+Optimizing your HubSpot CMS site for speed | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Common website performance bottlenecks
+What HubSpot handles for you
+Improve your Website speed further
+Start with a good foundation
+Images
+What you can do
+Autoplaying video
+What you can do
+JavaScript
+What you can do
+SEO recommendations tool
+Code Alerts
+Additional resources for improving your site's speed
+Image Optimization
+Performance testing
+Measurement tools
+Grading tools
+CMS Development
+Content and structure
+Performance
+Optimizing your HubSpot CMS site for speed
+Optimizing your HubSpot CMS site for performance
+Supported products
+Requires one of the following products or higher.
+Content Hub
+-
+Starter
+Marketing Hub
+-
+Professional
+Great user experience is a factor of content quality, speed, security and
+accessibility.
+Optimizing for these generally also improves Search Engine Optimization (SEO).
+Better performance is all about providing a better experience for end users. Achieving better performance is all about solving for your individual site's bottlenecks.
+Common website performance bottlenecks
+Most web performance optimization techniques and best practices are not HubSpot-specific. Instead, they fall into a few categories:
+Loading performance:
+the efficiency of transferring all of the files needed for your web page to the user's browser. The quantity of files, size of files, and the delivery speed of those files determines loading performance.
+Rendering performance:
+the efficiency for the browser to take everything it downloaded, process it, and display the computed end result to the user.
+Rendering performance in particular is complex and is impacted by several factors, including:
+The loading of Cascading Style Sheets (
+CSS
+)
+The loading of JavaScript (
+JS
+)
+The loading of media, such as images and videos
+The device or web browser the visitor is using
+The speed of response to user interactions
+CSS is render-blocking, which means that poorly written CSS can cause Cumulative Layout Shift (
+CLS
+) during page rendering. Images can cause CLS, and take up RAM. Video players can cause CLS, some file formats require more processing work. JS can manipulate the
+Document Object Model (
+DOM
+)
+and
+Cascading Style Sheet Object Model (
+CSSOM
+)
+of a page, causing any of those issues. JS can also be resource intensive. All of these factors need to be balanced and best practices followed to ensure a fast experience for all visitors.
+What HubSpot handles for you
+HubSpot's CMS automatically handles many common performance issues, including:
+CDN with Image optimization and automatic WebP conversion
+HTTP2
+Javascript and CSS minification
+Browser and server caching
+Prerendering
+Domain Rewriting
+Brotli compression (with fallback to GZIP Compression)
+HubSpot Blog posts support AMP
+When including CSS in a custom module, HubSpot intelligently loads
+module.css
+only when a module is used on a page, and only loads it once regardless of how many instances of the module are on the page. By default,
+module.css
+does not load asynchronously, but you can change this by including
+css_render_options
+in the module’s
+meta.json
+file.
+Improve your Website speed further
+Along with everything that HubSpot handles, there are some things you can do as a developer that have a big impact on your site's performance.
+Start with a good foundation
+It's easier to build from a great foundation that was built with performance in mind, than trying to fix performance issues later. Building a fast car from the ground up is easier than buying a slow car and trying to make it fast.
+The
+HubSpot CMS Boilerplate
+was built to be fast, and encourage best practices. See the
+GitHub README
+to review the current scores in Lighthouse and Website Grader.
+By building from the boilerplate, you're already starting from a set of high scores. This means that you can focus your attention on the code you want to add on top of the boilerplate.
+Build a site based on boilerplate
+Images
+Images are prevalent on almost every page on the web. Images are usually the largest files on a page. The more images, and the larger the images, the longer your page will take to load. Animated images such as gifs and animated webp files also take up more space than non-animated images of the same size. Some image formats also are more performant than others, and better for certain scenarios.
+What you can do
+The most important thing you can do is
+optimize your images
+for the web. Image optimization is very much a shared responsibility among both content creators and developers. While HubSpot converts your images to webp and you can resize images using
+resize_image_url()
+, uploading a non webp file that is already sized appropriately can help.
+Use fewer images per page.
+Use the right image format for the use-case
+.
+Use Scalable Vector Graphics (SVGs) where possible. SVGs can scale in size infinitely without losing quality. Inlining your SVGs makes sense when you are making animations. In static graphics creating an SVG sprite sheet or simply treating it as a normal img element, or background image is typically better for performance.
+Intelligently
+lazy load images
+.
+Make sure
+img
+elements contain height and width HTML attributes. This makes it so web browsers can intelligently optimize for
+cumulative layout shift
+during render time and also makes it so HubSpot can generate a
+srcset
+for you.
+Use the
+CSS aspect-ratio
+property to reserve space when img dimensions may change.
+Use
+resize_image_url
+to force images to be resized to a certain resolution.
+For background images,
+use media queries
+in combination with
+resize_image_url
+to deliver images at sizes that make sense for the device.
+For large hero images - you can preload them by using
+<link rel="preload" as="image" href="http://example.com/img_url.jpg">
+within a
+require_head
+tag
+. Use this technique sparingly, overusing it can actually hurt performance.
+If you fully control the HTML for an
+img
+and can predict it's sizes at different viewport sizes, providing a custom
+srcset
+and
+sizes
+attribute can help. You can use the
+resize_image_url
+function to generate the alternate sizes. A custom tailored
+srcset
+and
+sizes
+based on the actual usage of the
+img
+element, will likely be more effective than the HubSpot generated one, but the automatically generated one is better than nothing.
+Add to your
+img
+element
+decoding="async"
+. This tells the browser that it can start loading other content on the page at the same time as it's loading and processing the image.
+Autoplaying video
+Video backgrounds and auto-playing videos can certainly set a website apart. Unfortunately they come at a cost. Video backgrounds are often used for website headers. When a video auto-plays, it means the browser needs to start loading the video right away. This can be especially problematic for users on slower connections or using cellphone data.
+What you can do
+Avoid using autoplaying video. If what you're showing is a background animation, consider using CSS animations or javascript animations. If you must display an autoplaying video:
+Choose a reasonable resolution for the video based on your use-case, and apply an effect over the video to make a lower resolution less noticeable.
+Make sure the video scales in quality based on the device and connection, the best way to do this is using a video sharing/hosting service like YouTube, Vidyard, or Vimeo.
+Disable autoplaying on mobile, show a fallback image instead.
+If the video is loaded by iframe, add
+loading="lazy"
+. This tells the browser it can wait to render and process the iframe until the user is close to displaying it on screen.
+JavaScript
+JavaScript (
+JS
+) is useful for adding interactivity to your website. Loading a lot of JS code in general increases the file size of the JS files and the amount of time it takes for the browser to render interactive elements. Loading JS in the
+<head>
+can also be a problem as javaScript is
+render blocking resource
+by default. Additionally JS is running on the visitors device, meaning it is limited to the resources that device has.
+What you can do
+When HubSpot's CMS first came out jQuery was loaded in the
+<head>
+by default. You can remove it entirely in
+Settings > Website > Pages,
+or
+upgrade to the latest version of jQuery
+. Take care when changing these settings on older websites if you did not build them, they may have been built reliant on jQuery or based on jQuery loading in the header.
+Ensure javascript is loaded just before the
+</body>
+to prevent render blocking. You can use
+require_js
+to load js for modules or templates only when needed and without accidentally loading the javascript multiple times for multiple instances of a module.
+Consider refactoring your JS to be more efficient. Use fewer JS plugins, use semantic HTML where it can help. For example for dropdowns, use
+<details>
+and
+<summary>
+. For modals use
+<dialog>
+.
+If you're using a giant JS library just for a few small features, consider using vanilla JS or loading a subset of the library if possible.
+Use
+require_js
+to load JS only when necessary and only once per page. When using
+require_js
+, use
+async
+or
+defer
+attributes to improve page performance.
+To control where and when a module's JavaScript loads, use
+js_render_options
+in the module's meta.json file.
+If loading external resources use
+preconnect and DNS prefetch
+appropriately to deliver a faster experience.
+Limit the number of tracking scripts you use. Tracking scripts often try to understand all of the actions a user is taking on a page to provide you insights. That is a lot of code analyzing what the user is doing. Each tracking script amplifies this.
+When
+handling interactions from a user, prioritize how you respond
+to focus on what's most important to be done right away, and defer through
+setTimeOut
+and/or
+RequestAnimationFrame
+any code that needs to happen in response to the user interaction, but can happen later or is not going to be visible to the user right away.
+SEO recommendations tool
+The HubSpot Recommendations tool is a great way to get performance and SEO feedback specific to your website.
+Learn more about the recommendations tool
+Code Alerts
+Code Alerts is a CMS Hub Enterprise feature which acts as a centralized overview of issues that are identified inside of your HubSpot CMS website. Fixing issues that are identified in Code Alerts can help to optimize your website performance. Issues identified comprise several different areas from HubL limits to CSS issues.
+Learn more about Code Alerts.
+Additional resources for improving your site's speed
+There is a lot that can be done to optimize a site for speed and many of the topics warrant a further breakdown. We've compiled some great resources we encourage you to check out when working on optimizing your site.
+Site Speed and Performance: what you can do, and how HubSpot Helps
+How we improved page speed on HubSpot.com
+15 tips to speed up your website
+5 easy ways to help reduce your website page's loading time
+8 step guide to achieving 100% Google Page Speed
+Website Optimization - HubSpot Academy
+Web.dev
+How we optimize the HubSpot CMS - Jeff Boulter
+The humble img element and Core Web Vitals - Smashing Magazine
+Image Optimization
+Optimizing your images for the web prior to uploading and serving them helps ensure you won't serve an oversized image for the screen and use-case.
+Popular image optimization tools:
+ImageOptim
+Adobe Photoshop
+Adobe Illustrator
+Optimizilla
+Performance testing
+Testing performance and optimizing for it should be apart of any website build out. There are many tools available for testing a website's speed, some of which grade and some of which only measure. It's important to understand these tools and how they work, so you can make educated decisions around performance improvements.
+Popular performance tools include:
+Website Grader
+GTMetrix
+Google Page Speed Insights
+and other
+Google performance tools
+.
+Pingdom
+WebPageTest
+Measurement tools
+Tools that measure will usually test the follow aspects of a page:
+Loading time
+Script execution time
+Time until first contentful paint
+Network times for assets downloading
+These tools will generally provide results that state specific times for each of these metrics. If you retest, generally the measurements will shift slightly because not every page load is exactly the same.
+Grading tools
+In addition to measuring, grading tools will assign a grade to your page based on its testing, often in a letter or percent form. While these tools are intended to motivate making improvements, there are many different metrics and aspects to performance that need to be taken into account when reviewing results.
+It's recommended to use multiple tools and strive for the best score you can in each. Understand, though, they will weight things differently. Efforts that may improve a score in one tool may not improve it in others.
+It's not recommended to base your overall performance off of one metric's grade. Some metrics have different levels of affect on perceived performance, which results in some tools weighing these metrics differently to calculate their final grade.
+There is no industry-wide standard for how to weigh metrics for grading. Over time, weights can and will change, as has occurred with
+Google Page Speed
+. There is also no industry-wide accepted for what is considered the minimum or maximum "good" value for individual metrics. Some tools base this off of a percentile of websites that have been tested., meaning that your scores are being compared to other sites.
+Over time, a high grade for speed range has become more difficult to attain. Some tools instead look at user experience, visitor retention, and ROI-based research to determine what the threshold for a good score should be.
+Not all tools take into account subsequent page load performance. For example, the HubSpot module system separates CSS and JS for individual modules, and only loads those assets when the module is actually placed on the page. This can result in several smaller CSS files, which could get flagged by Google Page Speed Insights. But by doing this, the next page load won't need to download any of the CSS or JS for any modules that repeat on the next page, as they're cached. This means that subsequent page loads would be kilobytes instead of a monolithic file.
+Related:
+How Lighthouse performance scoring works
+Website Optimization Roadmap (Core Web Vitals) | Mark Ryba
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Overview
+Lazy loading
+Optimize site performance
+Prerendering
+Reverse proxy support
+Themes
+Templates
+Modules
+Fields
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

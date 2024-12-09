@@ -1,0 +1,432 @@
+Specify drag and drop areas in a custom email template | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+1. Create a new HTML template
+2. Add HubL tags to template head
+Required tag
+Optional tags
+3. Create a drag and drop area
+Create an empty drag and drop area
+Create a drag and drop area with empty columns
+4. Add a drag and drop area with modules
+5. Further customize and style your drag and drop template
+CMS Development
+Content and structure
+Templates
+Drag and drop
+Specify drag and drop areas in a custom email template
+Specify a drag and drop area in a custom email template
+Supported products
+Requires one of the following products or higher.
+Content Hub
+-
+Professional
+Marketing Hub
+-
+Professional
+Drag and drop areas
+allow developers to create sections of custom email templates that support layout, stylistic and content changes directly within the email editor. This allows developers to create fewer email templates with global structure, that support content creators making a multitude of pages with various purposes and layouts.
+Please note:
+custom email templates can only contain one drag and drop area.
+1. Create a new HTML template
+Create a new html template that will include the HubL and HTML code which will make up your drag and drop section:
+In your HubSpot account, navigate to
+Content
+>
+Design manager.
+.
+In the left sidebar, create a new file by clicking
+File
+>
+New file
+.
+In the dialog box, click the
+What would you like to build today?
+dropdown menu and select
+HTML + HubL
+.
+Click
+Next
+.
+Click the
+Template type
+dropdown menu then select
+Email
+.
+Enter a
+name
+for the template.
+To update the template's location, click
+Change
+under
+File location
+, then select a new folder where the template will be created.
+Click
+Create
+.
+2. Add HubL tags to template head
+Review the following required and optional tags you can include in the
+<head>
+section of your email template for styling and compatibility purposes:
+Required tag
+{{ dnd_area_stylesheet }}
+This tag will provide the following:
+Adds associated media queries
+Fixes known styling issues in Outlook
+Resets margins and paddings
+Enables anti-aliasing
+Adds some CSS
+Optional tags
+To ensure that your template renders consistently across all major email clients, you can also include the following optional HubL tags to your template:
+{{ email_header_includes }}
+This tag will inject CSS into your template to help render styling consistently, fix common styling issues, and add metadata to the email's HTML. When parsing this HubL tag, the following content will be added within the
+<head>
+of the email's HTML:
+Parameter
+Description
+Prevent iOS 11 from automatically scaling emails
+Informs browsers and email clients how you expect them to interpret different characters.
+This tag enables CSS3 and media queries on Windows Phone 7.5, informs Internet Explorer to render content in the highest mode possible, and allows the browser to choose which version of Internet Explorer that the email should be rendered with.
+Sets the viewable area to the width of the device screen, which helps make your email responsive.
+{{ reset_css_stylesheet }}
+Including this tag will fix a number of styling issues in Outlook, and will also reset your email's margins and paddings.
+{{ outlook_background_snippet }}
+This tag will set the background image or color in Outlook, providing that you've specified an associated background CSS rule.
+3. Create a drag and drop area
+After you add the
+{{ dnd_area_stylesheet }}
+HubL tag and any other optional tags to the
+<head>
+of your template, you can configure a
+dnd_area
+in the template body.
+Create an empty drag and drop area
+A
+dnd_area
+is the container that makes a portion of the web page editable in terms of its structure, design, and content. The body of a
+dnd_area
+tag supplies the default content for the drag-and-drop area.
+The drag-and-drop area can be enclosed within either a
+<div>
+or a
+<table>
+. One constraint of the drag-and-drop area is that the minimum width is set to 624 pixels, and this value cannot be overridden.
+This tag on its own will generate a drop zone for content creators to drag modules into within the email editor.
+The following code would specify an empty drag and drop area:
+Copy code snippet
+{% dnd_area "main" %}
+<!-- generates an empty drag and drop area drop-section -->
+{% end_dnd_area %}
+1
+{%
+dnd_area
+"main"
+%}
+2
+<!-- generates an empty drag and drop area drop-section -->
+3
+{%
+end_dnd_area
+%}
+Create a drag and drop area with empty columns
+You can also customize your drag and drop area to specify default sections and columns by using the
+dnd_section
+and
+dnd_column
+fields.
+For example, the following HubL code would specify a drag and drop area with 3 columns:
+Copy code snippet
+{% dnd_area "main" %}
+{% dnd_section padding={'top': 25, 'bottom': '20} %}
+{% dnd_column width=4 %}
+{% end_dnd_column %}
+{% dnd_column width=4 %}
+{% end_dnd_column %}
+{% dnd_column width=4 %}
+{% end_dnd_column %}
+{% end_dnd_section %}
+{% end_dnd_area %}
+xxxxxxxxxx
+10
+1
+{%
+dnd_area
+"main"
+%}
+2
+{%
+dnd_section padding
+=
+{
+'top'
+:
+25
+,
+'bottom'
+:
+'20} %}
+3
+{% dnd_column width=4 %}
+4
+{% end_dnd_column %}
+5
+{% dnd_column width=4 %}
+6
+{% end_dnd_column %}
+7
+{% dnd_column width=4 %}
+8
+{% end_dnd_column %}
+9
+{% end_dnd_section %}
+10
+{% end_dnd_area %}
+The
+dnd_row
+HubL tag is
+not
+currently supported in email templates.
+4. Add a drag and drop area with modules
+To pre-populate a section with content, you can use the
+dnd_module
+tag to include a module by referencing its path. The module must be added within a section and column to pre-populate the drag-and-drop area with content.
+In the example below, a default HubSpot module is referenced, but you can also include modules you've built, by specifying their path within your Design Tools file tree.
+To specify a default value for the
+dnd_module
+, you can use the
+module_attribute
+tag.
+Copy code snippet
+{% dnd_area "main", full_width=False %}
+{% dnd_section padding={
+'top':'25',
+'bottom':'20'
+}, full_width=False %}
+{% dnd_column width=6 %}
+{% dnd_module path='@hubspot/image_email', img={
+'alt':'NavyLogo',
+'height':38,
+'src':'email_dnd_template_images/NavyLogo.png',
+'width':120
+}, alignment='center', hs_enable_module_padding=True, hs_wrapper_css={
+'padding-bottom':'10px',
+'padding-left':'20px',
+'padding-right':'20px',
+'padding-top':'10px'
+} %}
+{% end_dnd_module %}
+{% end_dnd_column %}
+{% dnd_column width=6 %}
+{% end_dnd_column %}
+{% end_dnd_section %}
+{% end_dnd_area %}
+xxxxxxxxxx
+23
+1
+{%
+dnd_area
+"main"
+, full_width
+=
+False
+%}
+2
+{%
+dnd_section padding
+=
+{
+3
+'top'
+:
+'25'
+,
+4
+'bottom'
+:
+'20'
+5
+}, full_width
+=
+False
+%}
+6
+{%
+dnd_column width
+=
+6
+%}
+7
+{%
+dnd_module path
+=
+'@hubspot/image_email'
+, img
+=
+{
+8
+'alt'
+:
+'NavyLogo'
+,
+9
+'height'
+:
+38
+,
+10
+'src'
+:
+'email_dnd_template_images/NavyLogo.png'
+,
+11
+'width'
+:
+120
+12
+}, alignment
+=
+'center'
+, hs_enable_module_padding
+=
+True, hs_wrapper_css
+=
+{
+13
+'padding-bottom'
+:
+'10px'
+,
+14
+'padding-left'
+:
+'20px'
+,
+15
+'padding-right'
+:
+'20px'
+,
+16
+'padding-top'
+:
+'10px'
+17
+}
+%}
+18
+{%
+end_dnd_module
+%}
+19
+{%
+end_dnd_column
+%}
+20
+{%
+dnd_column width
+=
+6
+%}
+21
+{%
+end_dnd_column
+%}
+22
+{%
+end_dnd_section
+%}
+23
+{%
+end_dnd_area
+%}
+5. Further customize and style your drag and drop template
+Each drag and drop HubL tag (e.g.,
+dnd_area
+,
+dnd_section
+,
+dnd_column
+etc.) includes different parameters that you can use to provide default styling and specify other behavior, such as the label that will appear in the email editor sidebar.
+To learn more about the parameters available for each tag, check out the links below for each tag:
+dnd_area
+dnd_section
+dnd_column
+dnd_module
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Templates
+Overview
+Default email modules
+Template types
+Drag and drop
+Overview
+Drag and drop area in a custom email template
+Drag and drop areas tutorial
+Sections
+Modules
+Fields
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

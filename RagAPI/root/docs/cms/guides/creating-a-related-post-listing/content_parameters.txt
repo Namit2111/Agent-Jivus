@@ -1,0 +1,443 @@
+Creating a related blog post listing with the blog related posts HubL tag | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Parameters
+Example usages of the related_blog_posts HubL tag
+Display posts from a specific author across multiple blogs
+Display posts with the tag "sales enablement", restricted to a specific publish date time frame
+Display posts using a JS callback to control HTML output
+CMS Reference
+HubL (templating language)
+Tags
+Creating a related blog post listing with the blog related posts HubL tag
+Creating a related blog post listing with the blog related posts HubL tag
+The
+related_blog_posts
+HubL tag can be used to create dynamic and related blog post listing based on a variety of parameters. It allows for generating listings of posts across blogs, with the ability to filter by tags, authors, post paths and publish dates. Developers can also specify the HTML output of the module using a macro. This HubL tag can be used on both blog posts and pages. This tutorial will walk through the parameters and usage options for the blog related posts HubL tag.
+Please note that the
+related_blog_posts
+HubL tag does not generate an editable module on the post/page level, it is configured in its entirety with HubL.
+Parameters
+The list of posts is generated from a relevancy score based on a comparison of the set parameter values against posts matching these parameters, or relating to the post the HubL tag appears on. None of the parameters are required, however, specifying parameters will allow you to further control which posts are returned. For comma-separated parameters, the more values you set, the more diverse the returned listing will be. The
+post_formatter
+parameter allows you to specify a
+macro
+to generate the HTML output of the module. For a full list of parameters and example default HTML output, please see the
+related_blog_posts
+spec.
+Parameter
+Type
+Description
+Default
+limit
+number
+The max number of blog posts to list.
+3
+blog_ids
+'default' or blog id
+The ID(s) of a blogs to include posts from.
+none
+tags
+String
+The tag(s) that should be used to determine if a post is relevant (comma separated). If a blog post has one of these tags or a similar tag, the post’s relevancy is increased, improving its ranking in the listing.
+none
+blog_authors
+String
+The names of authors to include posts from (comma separated)
+none
+blog_post_ids
+String
+The ID(s) of a blog posts to use when finding relevant blog posts to list (comma separated). This parameter should only be used when the widget is appearing on pages, as on blog posts, it will default to the post the widget is appearing on.
+none
+post_formatter
+String
+The name of a custom macro to render returned blog posts. The macro is passed three parameters which are the blog post object to format, the count in the iteration of blog posts, and the total count of blog posts in the results. If not specified or set to “default”, the built-in formatter will be used to format each post.
+Note: It is recommended to use the callback parameter below in place of the ‘post_formatter’ parameter as the HTML of the tag will render more quickly, decreasing page load times.
+none
+callback
+String
+The name of a javascript function to render returned blog posts. The function is passed an array of blog post objects to format. If neither the callback, or post_formatter parameters are specified, the tag will generate HTML in a default format.
+none
+path_prefixes
+String
+URL paths or subdirectories to include posts from (comma separated). If a blog post has a similar prefix in its path, the post’s relevancy is increased, improving its ranking in the listing.
+none
+start_date
+date/time
+Allows for filtering of posts published after a date/time.
+none
+end_date
+Date/Time
+Allows for filtering of posts published before a date/time.
+False
+blog_post_override
+String
+The ID(s) of a blog posts which should always show up in the returned listing, despite all other parameter values and filters (comma separated).
+none
+We strongly recommend using the
+callback
+parameter instead of the
+post_formatter
+parameter to ensure faster page load times.
+Please note that if the
+related_blog_posts
+HubL tag is being used on a post, the
+blog_post_ids
+parameter should not be specified, as on blog posts, it will default to the post the widget is appearing on.
+Example usages of the related_blog_posts HubL tag
+Below are some example ways to use this tag to enhance your website.
+Display posts from a specific author across multiple blogs
+In this example, we generate a listing of posts written by one of the three specified
+blog_authors
+across two different blogs.
+Copy code snippet
+{% related_blog_posts blog_ids="3241539189,3261083894", limit=6, blog_authors="John Smith,Joe Smith,Frank Smith" %}
+{%
+related_blog_posts blog_ids
+=
+"3241539189,3261083894"
+, limit
+=
+6
+, blog_authors
+=
+"John Smith,Joe Smith,Frank Smith"
+%}
+Display posts with the tag "sales enablement", restricted to a specific publish date time frame
+In this example, we generate a listing of 10 posts related to a specific blog post, with the tag "sales enablement", and restricted to a specific publish date time frame. This example specifies the
+blog_post_ids
+parameter, so it would be used on a page.
+Copy code snippet
+{% related_blog_posts blog_post_ids="3267910554", limit=10, tags="sales enablement", start_date="2018-02-05", end_date="2018-06-10" %}
+xxxxxxxxxx
+{%
+related_blog_posts blog_post_ids
+=
+"3267910554"
+, limit
+=
+10
+, tags
+=
+"sales enablement"
+, start_date
+=
+"2018-02-05"
+, end_date
+=
+"2018-06-10"
+%}
+Display posts using a JS callback to control HTML output
+In this example, we generate a listing of 5 posts using the
+callback
+parameter to control the HTML output of the post listing. (Instead of the
+post_formatter
+parameter using a
+macro
+.)
+Copy code snippet
+{% related_blog_posts limit=5, callback="blog_post_formatter" %}
+<script>
+var blog_post_formatter = function(blogposts) {
+var formatted = "<div>";
+for (var i = 0; i < blogposts.length; i++) {
+var blogpost = blogposts[i];
+formatted += '<div class="related-blog-item">';
+formatted += `<span>Related Post ${i + 1}/${blogposts.length}</span><br>`;
+formatted += `<a class="related-blog-title" href="${blogpost.url}"><span>${blogpost.name}</span></a>`;
+formatted += `<div class="hs-related-blog-byline">by <span class="related-blog-author">${blogpost.blogAuthor.fullName}</span><span class="related-blog-posted-at"> posted on </span><span class="related-blog-date">${new Date(blogpost.publishDate).toLocaleDateString()}</span></div>`;
+formatted += `<p class="related-blog-post-summary">${blogpost.postSummary}<a href="${blogpost.url}">Read more</a></p>`;
+formatted += '<div class="related-blog-tags">';
+if (blogpost.tagList.length > 0) {
+formatted += `Tags: ${blogpost.tagList.map(tag => tag.label).join(", ")}`;
+}
+formatted += '</div>';
+if (blogpost.featuredImage) {
+formatted += `<img src="${blogpost.featuredImage}" alt="${blogpost.featuredImageAltText}">`;
+}
+formatted += '</div>';
+}
+formatted += '</div>';
+return formatted;
+}
+</script>
+​
+x
+1
+{%
+related_blog_posts limit
+=
+5
+, callback
+=
+"blog_post_formatter"
+%}
+2
+​
+3
+<
+script
+>
+4
+var
+blog_post_formatter
+=
+function
+(
+blogposts
+) {
+5
+​
+6
+var
+formatted
+=
+"<div>"
+;
+7
+for
+(
+var
+i
+=
+0
+;
+i
+<
+blogposts
+.
+length
+;
+i
+++
+) {
+8
+var
+blogpost
+=
+blogposts
+[
+i
+];
+9
+formatted
++=
+'<div class="related-blog-item">'
+;
+10
+formatted
++=
+`<span>Related Post ${
+i
++
+1
+}/${
+blogposts
+.
+length
+}</span><br>`
+;
+11
+formatted
++=
+`<a class="related-blog-title" href="${
+blogpost
+.
+url
+}"><span>${
+blogpost
+.
+name
+}</span></a>`
+;
+12
+formatted
++=
+`<div class="hs-related-blog-byline">by <span class="related-blog-author">${
+blogpost
+.
+blogAuthor
+.
+fullName
+}</span><span class="related-blog-posted-at"> posted on </span><span class="related-blog-date">${
+new
+Date
+(
+blogpost
+.
+publishDate
+).
+toLocaleDateString
+()
+}</span></div>`
+;
+13
+formatted
++=
+`<p class="related-blog-post-summary">${
+blogpost
+.
+postSummary
+}<a href="${
+blogpost
+.
+url
+}">Read more</a></p>`
+;
+14
+formatted
++=
+'<div class="related-blog-tags">'
+;
+15
+if
+(
+blogpost
+.
+tagList
+.
+length
+>
+0
+) {
+16
+formatted
++=
+`Tags: ${
+blogpost
+.
+tagList
+.
+map
+(
+tag
+=>
+tag
+.
+label
+).
+join
+(
+", "
+)
+}`
+;
+17
+}
+18
+formatted
++=
+'</div>'
+;
+19
+​
+20
+if
+(
+blogpost
+.
+featuredImage
+) {
+21
+formatted
++=
+`<img src="${
+blogpost
+.
+featuredImage
+}" alt="${
+blogpost
+.
+featuredImageAltText
+}">`
+;
+22
+}
+23
+formatted
++=
+'</div>'
+;
+24
+}
+25
+formatted
++=
+'</div>'
+;
+26
+return
+formatted
+;
+27
+}
+28
+</
+script
+>
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Reference
+Overview
+Modules
+HubL (templating language)
+Overview
+Operators and expression tests
+Filters
+Functions
+Loops
+Tags
+Standard tags
+Drag and drop areas
+Deprecated
+Related blog posts
+Variables
+Variables and macros syntax
+Quote template variables
+Beta
+If statements
+Deprecated
+Forms
+Fields
+Serverless functions

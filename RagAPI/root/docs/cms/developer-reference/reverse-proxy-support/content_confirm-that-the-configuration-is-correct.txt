@@ -1,0 +1,655 @@
+Use a reverse proxy with HubSpot | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Considerations
+1. Configure the proxy
+General instructions
+2. Confirm your configuration is correct
+Troubleshooting
+Clicks registered as bot events
+3. Add the domain to HubSpot
+Provider-specific instructions
+Set up a reverse proxy in Amazon CloudFront
+Set up a reverse proxy using nginx
+Request a consultation
+CMS Development
+Content and structure
+Performance
+Use a reverse proxy with HubSpot
+Use a reverse proxy with HubSpot
+Supported products
+Requires one of the following products or higher.
+Content Hub
+-
+Enterprise
+Websites built on HubSpot's CMS automatically use HubSpot's global CDN with hundreds of local points of presence. However, you may have an existing CDN or complex routing rules that are not possible to maintain using HubSpot's built-in CDN. In that case, you may want to set up a reverse proxy with HubSpot instead.
+A reverse proxy is a type of proxy server that takes resources from one or more servers and then returns them to the client with the appearance of it coming from the proxy server itself. For example, you have an existing website at
+www.website.com
+which is
+not
+hosted on the HubSpot CMS, while also hosting a blog on HubSpot at
+www.website.com/blog
+. Using a reverse proxy, the blog would appear to be hosted from the same server as the website when it's actually coming from HubSpot's servers.
+Below, learn more about how to set up a reverse proxy with HubSpot. By the end of the guide, you will have:
+Reviewed the
+considerations
+for whether to set up a reverse proxy.
+Configured the proxy
+in your external environment. The guide includes general instructions as well as provider-specific instructions for
+Amazon CloudFront
+and
+nginx
+.
+Confirmed that the configuration is correct
+. This guide also includes troubleshooting steps if you're seeing a
+404
+error during that process.
+Added the domain to HubSpot
+to enable content creation in HubSpot.
+Note that this guide assumes that you have an existing website or app that uses a CDN or web service which supports reverse proxies.
+Please note:
+Reverse proxy setup is
+not
+provided by HubSpot's support team.
+You may purchase time with a HubSpot Technical Consultant
+for support with implementing a reverse proxy on HubSpot, or use our
+community forums for peer-to-peer support
+.
+HubSpot’s built-in CDN and all other services have multiple instances with automatic failover and recovery. If you implement a reverse proxy, it's highly recommend that you use multiple instances with load balancing. If all requests are instead routed through a single proxy node, it’s possible that requests will trip rate limiting protocols. This would result in requests being served
+429
+or
+403
+responses until an in-browser JavaScript challenge is completed.
+Considerations
+Using your own CDN or reverse proxy may open up more configuration options, but it also requires significant operational knowledge and maintenance. Additionally, if you proxy a subpath of your site to HubSpot, your main
+sitemap.xml
+file won't include HubSpot pages unless you manually add them.
+Before proceeding with a reverse proxy setup, review the list of feature considerations below.
+Feature
+HubSpot's CDN
+Custom Solution
+Bandwith
+Included
+Additional cost
+SSL
+Included; automatic setup
+Additional cost; manual setup
+Global CDN
+Included
+?
+Automatic cache management
+Included
+No
+Anti-abuse protection
+Included
+Customer-owned
+24x7 monitoring
+Included
+Customer-owned
+Support
+Included
+Customer-owned
+IPv6
+Included
+?
+HTTP/2
+Included
+?
+Latency
+Optimal
+Additional network hop required
+1. Configure the proxy
+Adding a custom reverse proxy means that users of your website will make a request to your service and then be proxied through to HubSpot’s CDN, introducing another network hop.
+To start the proxy setup process, first configure the proxy in your external environment, such as a CDN like
+Amazon CloudFront
+or an
+nginx
+server.
+You should always implement the proxy in a load balanced environment so that traffic from your proxy rotates requests to the HubSpot CNAME origin from multiple IP addresses.
+The CNAME needed for the proxy will be in the following format:
+<HubID>.<suffix>
+, where suffix is determined by the last two digits of your HubID. Use the table below to match the last two digits of your HubID with a suffix.
+HubIDs ending with
+Suffix
+00-10
+sites-proxy.hscoscdn00.net
+11-19
+sites-proxy.hscoscdn10.net
+20-29
+sites-proxy.hscoscdn20.net
+30-39
+sites-proxy.hscoscdn30.net
+40-49
+sites-proxy.hscoscdn40.net
+50-59
+sites-proxy.hscoscdn00.net
+60-69
+sites-proxy.hscoscdn10.net
+70-79
+sites-proxy.hscoscdn20.net
+80-89
+sites-proxy.hscoscdn30.net
+90-99
+sites-proxy.hscoscdn40.net
+For example, if your HubID is
+123456
+, your correct origin CNAME would be
+123456.sites-proxy.hscoscdn00.net
+.
+Below are general instructions for configuring a reverse proxy, as well as specific guidance for
+Amazon CloudFront
+and
+nginx
+.
+Please note:
+if you have both
+Content Hub
+Enterprise
+and
+Cloudflare Enterprise
+, learn more about setting up an
+Orange-to-Orange (O2O)
+reverse proxy configuration in Cloudflare.
+General instructions
+In general, you can configure your proxy to forward requests using your origin CNAME and add the following configurations:
+Set your proxy to perform no caching for paths originating from HubSpot. HubSpot automatically manages the content of our CDN’s cache so pages are updated automatically when content is published. Note that if the service caches responses, ​pages may not update for hours or days​.
+Add or prepend to a ​
+X-Forwarded-For
+​ header with the client IP address of the original requestor. This is required to differentiate clients from each other. Many services such as CloudFront maintain these headers automatically.
+To ensure personalized content based on location works, pass a static header of
+X-HubSpot-Trust-Forwarded-For: true
+​. This will trust the
+​X-Forwarded-For​
+header, which may not have been updated by all upstream proxies.
+Pass a ​
+X-HS-Public-Host
+​ header with a value of your destination domain.
+Allow all HTTP methods.
+Ensure an SSL certificate is provisioned and installed for your proxy domain.
+Forward all query strings.
+Forward ​
+all
+​ other request and response headers as-is, including cookies.
+Ideally, all paths under your domain should proxy to HubSpot. If that’s not the case, then the following paths must proxy so assets load properly from your domain:
+/_hcms/*
+,
+/hs/*
+,
+/hubfs/*
+,
+/hs-fs/*​
+,
+/cs/c/*
+, and
+/e3t/*
+.
+2. Confirm your configuration is correct
+In accounts with
+CMS Hub
+Enterprise
+, you can identify issues with your configuration in your HubSpot domain settings:
+In your HubSpot account, click the
+settings icon
+in the main navigation bar.
+In the left sidebar menu, navigate to
+Website
+>
+Domains & URLs
+.
+Next to the domain you are using for your reverse proxy, click the
+Edit
+dropdown menu and select
+Verify Reverse Proxy Connection
+.
+Click any
+category
+that is labeled as
+Failed
+to view recommendations for fixing the issue.
+Once you've implemented your fixes, click
+Refresh test
+to check your configuration again.
+Please note:
+if you see an error in your domain settings stating that “Reverse proxy domains need your action to avoid website disruption,” learn how to
+set up a Domain Control Validation (DCV) record
+.
+For all other accounts, to can confirm your configuration, visit:
+https://[yourFullDomain]/_hcms/diagnostics
+Verify the following information:
+The current time value changes on every load. This confirms that the page is not cached.
+The
+User-Agent
+is consistent with your browser.
+The
+Accept-Language
+value is consistent with your browser.
+The
+Accept-Encoding
+header is
+*
+. This ensures that responses are compressed.
+The
+Cookie
+value is not blank.
+The
+Protocol
+is
+https
+.
+The leftmost IP address in
+X-Forwarded-For
+matches your IP address as reported by a service like
+https://www.whatismyip.com
+.
+The
+IP-Determined Location
+values are accurate to your location. These are based on the IP-related headers in
+X-Forwarded-For
+.
+Troubleshooting
+If you're seeing a
+404
+when going to the diagnostics URL, that likely means you have an issue with your configuration.
+Visit
+https://[yourFullDomain]/_hcms/_worker/headers
+to view all the headers that HubSpot is receiving from a request through your reverse proxy.
+The most important headers for proxies are:
+X-Forwarded-For
+X-HubSpot-Trust-Forwarded-For
+X-HS-Public-Host
+Verify you are not sending additional/unnecessary headers, or duplicate values.
+Clicks registered as bot events
+If you're using Amazon CloudFront and are seeing clicks registered as bot events, the User-Agent is likely being set as Amazon CloudFront instead of the visitor's User-Agent. To fix this, update your
+managed origin request policies
+to forward the visitor's User-Agent instead.
+3. Add the domain to HubSpot
+With your proxy configured, you’ll then add your domain to HubSpot. You will
+not
+be fully connecting the domain to HubSpot in the way that you would in the standard domain connection process. Rather, you’ll start the connection process to make the domain available for publishing HubSpot content, but you will not create CNAME records in your DNS provider. By the end of this process, your proxy will receive all requests to the domain and can choose to proxy certain paths to HubSpot and other paths to other content hosts.
+To add your domain to HubSpot:
+In your HubSpot account, navigate to your
+domain settings
+.
+Click
+Connect a domain
+.
+Select
+Primary
+or
+Secondary
+. Redirect and email sending domains are not supported for this feature.
+Click to toggle the
+Connect with HubSpot's built-in content delivery network (CDN)
+switch off, then click
+Connect
+.
+Select the
+content type
+you’ll be hosting on the domain, then click
+Next
+.
+Enter the
+brand domain
+. For example, for
+www.website.com
+, you would enter
+website.com
+.
+Please note:
+this domain must match the domain being requested through your reverse proxy.
+Enter the
+subdomain
+that you’ll be hosting content on. The subdomain needs to match the subdomain for the externally hosted domain. Then click
+Next
+.
+Review the domain you’ve entered, then click
+Next
+.
+Next, verify your domain so that HubSpot can confirm your domain ownership and allow content publishing:
+In your DNS provider, create the records using the provided values.
+In HubSpot, click
+Verify
+. It can take up to 4 hours for HubSpot to recognize changes made to your DNS provider and verify your hostname.
+Provider-specific instructions
+While you can use the
+general instructions above
+to set up your proxy, below are steps for setting up a reverse proxy with
+Amazon CloudFront
+and
+nginx
+specifically.
+Please note:
+if you have both
+Content Hub
+Enterprise
+and
+Cloudflare Enterprise
+, learn more about setting up an
+Orange-to-Orange (O2O)
+reverse proxy configuration in Cloudflare.
+Set up a reverse proxy in Amazon CloudFront
+To set up a reverse proxy in Amazon CloudFront, you’ll need to create a new distribution with a new alternate domain name, create a new origin, then create cache behaviors for the page paths where your HubSpot content is hosted. You can learn more about working with distributions in the
+AWS documentation
+.
+Log in to your Amazon CloudFront account.
+In the left sidebar, navigate to
+Distributions
+.
+If you’re starting from scratch, you’ll first need to create a new distribution by clicking
+Create Distribution
+. Alternatively, you can edit an existing distribution or skip to the
+origin and behaviors setup steps
+.
+On the
+General
+tab, click
+Edit
+.
+In the
+Alternate Domain Names (CNAMEs)
+field, add the domain, including the subdomain. This must match the domain you added to HubSpot.
+Confirm your changes by clicking
+Yes, Edit
+. You’ll then be directed back to the
+General
+tab where your domain should now be listed next to
+Alternate Domain Names (CNAMEs)
+.
+You’ll also need to create a new CNAME record in your DNS provider using the value from the
+Domain Name
+field. This value should look something like
+<value>.cloudfront.net
+.
+Next, set up a new origin:
+Click the
+Origins and Origin Groups
+tab.
+Click
+Create Origin
+, then set up your origin:
+In the
+Origin domain
+field, enter the
+<HubID>.<suffix>
+CNAME value from the
+table above
+. This value should look something like
+123.sites-proxy.hscoscdn20.net
+.
+Under
+Add custom header
+, click
+Add header
+. Then, add the following header details:
+To ensure personalized content based on location works, either pass a
+X-Client-IP
+header with a value of the end user’s IP (preferred) or pass a static header of
+X-HubSpot-Trust-Forwarded-For: true
+. The latter will trust the
+X-Forwarded-For
+header, which may not have been updated by all upstream proxies.
+Pass a
+X-HS-Public-Host
+header with a value of your destination domain.
+Click
+Create
+to save your changes.
+Then, set up
+cache behaviors
+for the page paths you’ll be hosting HubSpot content on:
+Click the
+Behaviors
+tab.
+Click
+Create Behavior
+.
+In the
+Path pattern
+field, enter the URL path of the page that your HubSpot content is hosted on. This can be a path to a specific page, or a flexible URL such as a wildcard. Learn more about
+path patterns
+.
+Click the
+Origin and Origin Groups
+field, then select the origin you created earlier.
+Click
+Save changes
+.
+With your distribution, origin, and behaviors configured, the reverse proxy will now be available for HubSpot pages that you create at the specified paths. Proceed to the steps for
+configuring your domain in HubSpot
+.
+Please note:
+by default, if no Origin Request Policy configuration is specified, Amazon CloudFront
+strips cookies, query parameters and most of headers
+before forwarding the request to your origin. This includes setting the User-Agent to
+Amazon CloudFront
+, which will result in clicks to be marked as bot events. To resolve this, you should
+update origin request policies
+to forward the visitor's User-Agent instead.
+Set up a reverse proxy using nginx
+To configure a reverse proxy with nginx, you’ll need to create a location configuration file that includes SSL information and the location path information.
+Please note:
+full documentation for setting up reverse proxies with nginx can be found in the
+nginx documentation
+. In particular, you may want to review documentation for settings such as
+securing upstream traffic
+,
+proxy_ssl
+, and
+$proxy_protocol_addr
+.
+When working with nginx, there are several headers and settings required to route traffic. Below are snippets of a sample nginx location configuration file to use as a starting point.
+Copy code snippet
+location ~ ^(/|/some-other-path) {
+proxy_set_header Host $http_host;
+proxy_set_header X-HS-Public-Host www.example.com;
+proxy_pass_request_headers on;
+proxy_set_header X-HubSpot-Trust-Forwarded-For true;
+proxy_pass https://2XX93.sites-proxy.hscoscdnXX.net;
+proxy_ssl_name www.example.com;
+proxy_ssl_server_name on;
+proxy_set_header   X-Real-IP $proxy_protocol_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header   X-HubSpot-Client-IP $proxy_protocol_addr;
+}
+location ~ ^(/hs|/_hcms|/hubfs|/hs-fs|/cs/c) {
+proxy_set_header Host $http_host;
+proxy_set_header X-HS-Public-Host www.example.com;
+proxy_pass_request_headers on;
+proxy_set_header X-HubSpot-Trust-Forwarded-For true;
+proxy_pass https://2XX93.sites-proxy.hscoscdnXX.net;
+proxy_ssl_name www.example.com;
+proxy_ssl_server_name on;
+proxy_set_header   X-Real-IP  $proxy_protocol_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_set_header   X-HubSpot-Client-IP $proxy_protocol_addr;
+}
+​
+x
+1
+location ~ ^(/|/some-other-path) {
+2
+proxy_set_header Host
+$http_host
+;
+3
+proxy_set_header X-HS-Public-Host www.example.com;
+4
+proxy_pass_request_headers on;
+5
+proxy_set_header X-HubSpot-Trust-Forwarded-For
+true
+;
+6
+proxy_pass https://2XX93.sites-proxy.hscoscdnXX.net;
+7
+proxy_ssl_name www.example.com;
+8
+proxy_ssl_server_name on;
+9
+proxy_set_header   X-Real-IP
+$proxy_protocol_addr
+;
+10
+proxy_set_header   X-Forwarded-Proto
+$scheme
+;
+11
+proxy_set_header   X-Forwarded-For
+$proxy_add_x_forwarded_for
+;
+12
+proxy_set_header   X-HubSpot-Client-IP
+$proxy_protocol_addr
+;
+13
+}
+14
+​
+15
+location ~ ^(/hs|/_hcms|/hubfs|/hs-fs|/cs/c) {
+16
+proxy_set_header Host
+$http_host
+;
+17
+proxy_set_header X-HS-Public-Host www.example.com;
+18
+proxy_pass_request_headers on;
+19
+proxy_set_header X-HubSpot-Trust-Forwarded-For
+true
+;
+20
+proxy_pass https://2XX93.sites-proxy.hscoscdnXX.net;
+21
+proxy_ssl_name www.example.com;
+22
+proxy_ssl_server_name on;
+23
+proxy_set_header   X-Real-IP
+$proxy_protocol_addr
+;
+24
+proxy_set_header   X-Forwarded-Proto
+$scheme
+;
+25
+proxy_set_header   X-Forwarded-For
+$proxy_add_x_forwarded_for
+;
+26
+proxy_set_header   X-HubSpot-Client-IP
+$proxy_protocol_addr
+;
+27
+}
+In the above code, note that the proxy connection and content host domain are different: one is a HubSpot provided CNAME (
+see configuration table
+), and the other is the domain that the content should be served from, matching the domain you’ll add to HubSpot. This is due to the SNI (Server Name Indication) connection process that establishes a secure connection between your proxy and HubSpot’s servers.
+To enable this in your nginx proxy, ensure that you include the settings below, which are also in the above code:
+Copy code snippet
+proxy_ssl_name www.example.com;
+proxy_ssl_server_name on;
+xxxxxxxxxx
+2
+1
+proxy_ssl_name www.example.com;
+2
+proxy_ssl_server_name on;
+These settings instruct nginx to send the server domain name with the SNI SSL connection handshake since the origin domain is different from the Host.
+Request a consultation
+Fill out the form below to request a consultation from a HubSpot Technical Consultant.
+First Name
+Last Name
+CD: CSM Full Name
+CD: CSM Email
+Email
+*
+Hub ID
+*
+Website URL
+*
+Tell us a little more about what you're looking for
+Content Language
+GACLIENTID
+[DO NOT USE] GAUSERID
+GATRACKID
+We're committed to your privacy. HubSpot uses the information you provide to us to contact you about our relevant content, products, and services. You may unsubscribe from these communications at any time. For more information, check out our
+Privacy Policy.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Overview
+Lazy loading
+Optimize site performance
+Prerendering
+Reverse proxy support
+Themes
+Templates
+Modules
+Fields
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

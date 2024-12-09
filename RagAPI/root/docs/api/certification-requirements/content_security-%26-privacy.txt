@@ -1,0 +1,346 @@
+App Marketplace | App certification requirements | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Overview
+Benefits of earning certification
+Review criteria
+Security & Privacy
+Feedback example
+Reliability & Performance
+Feedback examples
+Usability & Accessibility | App
+Feedback example
+Usability & Accessibility | App Marketplace Listing
+Feedback examples
+Usability & Accessibility | Supporting Documentation
+Feedback example
+Value
+Feedback example
+The app certification and recertification review process
+Frequently asked questions
+Related resources
+Apps
+Marketplace
+App Marketplace | App certification requirements
+Getting certified in the App Marketplace
+App certification involves the HubSpot Ecosystem Quality team reviewing and confirming that your
+listed app
+meets the requirements below for security, privacy, reliability, performance, usability, accessibility, and value.
+Certified apps stand out in the
+App Marketplace
+with a reputation for quality and trustworthiness. Your app will also earn
+special benefits
+and receive constructive feedback from the HubSpot Ecosystem Quality team during app certification review.
+Please note:
+These requirements are subject to change, as HubSpot is continuously making improvements to the HubSpot App Marketplace and Ecosystem. HubSpot can reject an app certification request at their discretion if it doesn't meet the set standards.
+HubSpot will
+not
+review your app unless you submit a demo video as instructed when
+applying for app certification
+.
+You can only submit one app at a time for certification. If you submit more than one app for certification at the same time, they will be rejected based on the order of submission.
+Overview
+Below is an overview of app certification requirements. For more detail, see the
+review criteria section
+.
+Your app must:
+Be associated with a single HubSpot app ID.
+Your listed public app must be unique. If you have already listed an app and want to replace it, you should update the existing app instead of listing a new one.
+Do not create multiple apps that solve for the same use case. Apps with similar functionality and use the same APIs should be consolidated into a single app.
+Use
+OAuth authentication
+and all scopes it requires.
+Be associated with a
+verified domain
+.
+Public assets associated with your app must abide by security best practices.
+See the
+detailed list of security and privacy requirements
+.
+App activity is defined by OAuth-authenticated requests to HubSpot's
+APIs
+and
+signed requests
+from HubSpot
+webhook subscriptions
+and extensions (e.g.
+CRM card
+data fetch requests).
+Active installs are the number of unique HubSpot production accounts, unaffiliated with your organization, showing successful
+app activity
+within the past 30 days.
+Benefits of earning certification
+In addition to the
+benefits of listing your app
+, certified apps receive:
+A "HubSpot Certified App" badge displayed on its App Marketplace listing.
+More prominent visibility in the HubSpot App Marketplace:
+Inclusion in the "HubSpot Certified App" search filter.
+Eligibility for inclusion in curated App Marketplace collections.
+Access to the "HubSpot Certified App" badge and social media images to share the app's certification achievement.
+Favorable consideration in HubSpot's partnership and amplification initiatives.
+Review criteria
+To earn certification, your app must demonstrate quality by meeting quantitative measures and qualitative descriptors of security, privacy, reliability, performance, usability, accessibility, and value. The requirements below are organized by these categories and include examples of constructive feedback you may receive.
+Security & Privacy
+Your app must:
+Be associated with a single HubSpot app ID. Your app must authorize API requests with the public HubSpot app ID (and
+OAuth client ID
+) associated with your app listing.
+A listing must not redirect to a different public or private app.
+Your listed public app must not require another public or private app to function.
+Be authenticated by the
+OAuth authorization code flow
+Asking users to copy and paste OAuth codes or tokens is prohibited. Users should only be asked to grant access
+Apps must request, manage, and refresh access tokens without user involvement
+Use all
+scopes
+it requests for installation (i.e. both in the required
+scope
+parameter and the
+optional_scope
+parameter).
+Have
+advanced scope settings
+turned on and select all required, conditionally required, and optional scopes the app requests for installation.
+Extraneous scopes must be removed.
+If certain scopes only apply to a subset of your app's user base, they should be included as conditionally required or optional scopes.
+Be associated with a
+verified domain
+.
+Your public assets will be assessed for security best practices related to outdated software and various web server vulnerabilities and findings.
+Feedback example
+Your app currently requires four scopes:
+contacts
+,
+timeline
+,
+forms
+, and
+content
+. According to our logs, however, it only made requests to the CRM Contacts and Timeline Events APIs in the last 30 days. Since the
+forms
+and
+content
+scopes are not required for either of these functions, please remove them as required from the app’s settings to minimize the permissions users must accept.
+Reliability & Performance
+Your app must:
+Be in good standing, meaning:
+In compliance with all applicable terms.
+Not have been rejected for certification in the last six months.
+Not have any unresolved support escalations with mutual customers.
+Use stable, public versions of HubSpot's APIs and extensions.
+Using the latest public versions is recommended.
+Undocumented, beta, and developer preview APIs are considered unstable and must not be used in your production app.
+Note: If your app uses APIs that are not stable or public, please surface this during the certification review or to the App Partner Manager team to discuss options.
+Maintain a reasonable volume of
+activity
+from HubSpot customer accounts unaffiliated with your organization.
+Your app must adhere to the
+API usage guidelines
+and best practices, including:
+Respecting rate limits (i.e. 100 inbound requests every 10 seconds per connected HubSpot account).
+Refreshing OAuth access tokens before they expire.
+Caching data for repeat calls when possible.
+Using batch APIs and webhook subscriptions to reduce request volume when possible.
+Using APIs to create properties, workflows, and custom workflow actions instead of requiring user action.
+Your app must maintain an average success rate above
+95%
+across all
+activities
+Requests resulting in error responses count against this success rate.
+Some unavoidable or expected errors may be excluded when calculating success rates across all
+activities
+.
+Your app may have a browser extension to deliver supplementary functionality and value to customers:
+Browser extensions must not be created specifically for the HubSpot UI or as a workaround to HubSpot's APIs.
+Browser extensions must not inject capabilities or components into HubSpot's UI.
+Officially supported UI extensions (e.g.
+CRM cards
+and
+custom workflow actions
+) provide more consistent user experiences for customers
+Your app will be subjected to an additional security assessment if it includes a browser extension.
+Feedback examples
+Your app’s API success rate falls below the 95% threshold required for certification. Our logs show a 83% success rate in the last 30 days. The vast majority of these requests returned
+429
+burst rate limit errors. To reduce this error rate, we recommend throttling requests to 100 requests per 10 seconds for each account.
+Your app is generating errors around trying to update contacts using an
+undefined
+email address, which will not work with this endpoint. Your app should skip these requests if a record does not have an email address.
+Your app is making requests with expired OAuth tokens and receiving
+401
+errors before refreshing the token. To minimize these errors, we recommend that your app keep track of when tokens expire or refresh tokens before making requests. If you start seeing
+401
+errors for 100% of requests and are unable to refresh the access token, consider the app uninstalled and stop making requests for the account until a user re-authenticates your app.
+Your app is generating
+403
+errors from trying to use the Contact Lists API with Marketing Hub Free accounts, which do not have access to contact lists. If your app repeatedly gets
+403
+errors for missing the proper scopes, it should stop making calls to retrieve lists from that account.
+Your app’s webhook subscriptions frequently fail with
+500
+and
+503
+errors. Make sure that your server can handle the volume of requests (currently limited to 150 per second) so that customer data is not lost.
+Your app is pulling many contacts one at a time instead of pulling them in batches. We recommend using
+batch endpoints
+instead.
+Usability & Accessibility | App
+Your app must be
+listed
+in the HubSpot
+App Marketplace
+for at least six months.
+Your app must demonstrate
+usability best practices
+.
+Installation and use should not cause confusion or frustration for mutual customers or otherwise negatively affect the core HubSpot user experience.
+Feedback example
+Your app currently requires users to manually configure workflow webhook actions to send text messages. Consider creating custom workflow actions via the app which are flexible enough to accommodate many use cases.
+Usability & Accessibility | App Marketplace Listing
+Your App Marketplace listing must:
+Accurately describe your app's current functionality.
+If functionality changes based on a user's product or subscription level, either for HubSpot or your solution, differences must be made clear.
+Contain clear and accurate pricing information, including a link to your current pricing page.
+If multiple packages support your app, the App Marketplace listing must, at minimum, include the least expensive option.
+Use placeholder data or hide data to not display personal identifiable information (PII).
+Include:
+Informative and up-to-date visual aids, which may include screenshots or a video. Refer to the
+How to Make a Great App Demo Video
+page for best practices and examples of how to create a demo video.
+An up-to-date "Setup documentation URL" which contains a subdomain and leads directly to the page hosting documentation for your app. This link must not lead to your homepage.
+Not include:
+Any data or statistics, unless a case study is provided as a resource.
+Feedback examples
+Your App Marketplace listing includes few specific details about your app’s functionality. Please enhance the listing with screenshots which depict app functionality and include more thorough descriptions of common use cases and in-app behavior.
+HubSpot customers are used to a “try before you buy” experience when purchasing our products and services. For this reason, we recommend your app provide a free trial or freemium sign-up experience. Some app partners who do not have pricing pages or free trials have created “HubSpot plans,” offering mutual customers transparent pricing, touchless sign-up, and other benefits.
+Usability & Accessibility | Supporting Documentation
+Supporting documentation for your app must:
+Exist on a live, publicly accessible URL (i.e. no paywalls or login required) and adhere to current accessibility, privacy, and GDPR standards.
+Be up-to-date and consistent with the current version of your app.
+Clearly describe:
+What your app does.
+How to install your app and connect a HubSpot account with screenshots of each step, including the scope approval screen.
+How to configure your app once it is installed.
+How to use your app, including both manual and automated interactions.
+How to disconnect HubSpot from your app.
+How to uninstall your app from a HubSpot account.
+How disconnecting and uninstalling might affect users' HubSpot accounts and data.
+Include images. Any images containing screenshots of the HubSpot UI should be up-to-date and consistent with our
+design system
+.
+Videos are also recommended, but not required. Videos should be updated regularly and reflect the current version of your app.
+Feedback example
+The setup guide for your app includes a screenshot depicting the scopes your app requires for installation. This screenshot does not show the
+business-intelligence
+scope, which is selected in your app’s settings. Please update the screenshot so that it reflects the current required scopes.
+Value
+Your app's active install count, retention, and HubSpot App Marketplace reviews are assessed as indicators of the value mutual customers find in your app.
+Your app must have at least 60
+active
+, unique installs to qualify for and retain certification. The accounts with installs must be unaffiliated with your organization. Test accounts will also be excluded.
+If your app has fewer than 60 active installs, then you will be asked to cancel certification request.
+If your app has fewer than the three active installs required to be listed, then your app may be removed from the App Marketplace.
+Your app listing must have responses from your team for any negative reviews of your app.
+Feedback example
+Your app has not maintained at least 60 active installs over the trailing six month period. As such, its certified status will be removed. You may re-apply for certification in six months.
+The app certification and recertification review process
+The HubSpot Ecosystem Quality team responds to
+app Certification requests
+within
+10 business days
+. The entire app review and feedback process should take no more than
+60 days
+from the time feedback is shared. Review the criteria listed
+here
+for providing testing credentials to your app.
+Should your app meet all requirements, it will earn certified status and a “HubSpot Certified App” badge will be displayed to customers and prospects on the App Marketplace. Your app will also appear when users select the “HubSpot Certified App” filter.
+Should your app not successfully complete the review, you may re-apply in six months.
+After being certified for one year, the HubSpot Ecosystem Quality team may review your app to ensure it still meets the rigorous certification requirements. If you app no longer meets these standards, the team will collaborate with you for up to sixty days to resolve concerns.
+Please note:
+if your app falls out of compliance with the certification requirements listed above at any time, HubSpot may immediately initiate a recertification process, even if your app has been certified for less than one year. As stated in the
+App Partner Program Agreement
+, HubSpot also reserve the right to unpublish your app at any time.
+Frequently asked questions
+Are there any costs associated with app certification?
+Will I be notified when my app will be eligible again for certification if it was previously rejected?
+How should I promote my certified app to my customers?
+I enjoy experimenting with the newest beta APIs. Is app certification right for me?
+I'd like my app to be featured on the App Marketplace. Is this what app certification is for?
+Why and how will my public assets be assessed for security best practices?
+My app was certified over a year ago. What do I have to do to keep my certification status and what does it mean to get recertified?
+Find your
+App Partner Manager
+and their email information by logging into your developer account and navigating to
+App Marketplace
+>
+Listings
+. Hover over your app, click
+More
+>
+View Listing Details
+.
+Related resources
+How to apply for app certification
+How to list your app
+App listing requirements
+Developer community forum
+Contact the App Partner team
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+Apps
+Overview
+Authentication
+Private apps
+Public apps
+Extensions
+API usage
+Marketplace
+App certification requirements
+App listing requirements
+Listing your app
+Provide testing credentials for your app
+Understand app categories
+App for app certification
+Measuring app performance

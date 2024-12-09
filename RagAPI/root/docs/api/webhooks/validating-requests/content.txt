@@ -1,0 +1,961 @@
+Webhooks | Validating Requests | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Validate requests using the v1 request signature
+v1 request signature examples:
+Validate requests using the v2 request signature
+Example for a GET request
+Example for a POST request
+Validate the v3 request signature
+Apps
+Authentication
+Webhooks | Validating Requests
+Validating requests from HubSpot
+To ensure that the requests that your integration is receiving from HubSpot are actually coming from HubSpot, several headers are populated in the request. You can use these headers, along with fields of the incoming request, to verify the signature of the request.
+The method used to verify the signature depends on the version of the signature:
+To validate a request using the latest version of the HubSpot signature, use the
+X-HubSpot-Signature-V3
+header and follow the
+associated instructions for validating the v3 version of the signature
+.
+For backwards compatibility, requests from HubSpot also include older versions of the signature. To validate an older version of the signature, check the
+X-HubSpot-Signature-Version
+header, then follow the associated instructions below based on whether the version is
+v1
+or
+v2
+.
+In the instructions below, learn how to derive a hash value from your app's client secret and the fields of an incoming request. Once you compute the hash value, compare it to the signature. If the two are equal, then the request has passed validation. Otherwise, the request may have been tampered with in transit or someone may be spoofing requests to your endpoint.
+Validate requests using the v1 request signature
+If your app is subscribed to
+CRM object events via the webhooks API
+, requests from HubSpot will be sent with the
+X-HubSpot-Signature-Version
+header set to
+v1
+. The
+X-HubSpot-Signature
+header will be an SHA-256 hash built using the client secret of your app combined with details of the request.
+To verify this version of the signature, perform the following steps:
+Create a string that concatenates together the following:
+Client secret
++
+request body
+(if present).
+Create a SHA-256 hash of the resulting string.
+Compare the hash value to the value of the
+X-HubSpot-Signature
+header:
+If they're equal then this request has passed validation.
+If these values do not match, then this request may have been tampered with in-transit or someone may be spoofing requests to your endpoint.
+Example for a request with a body:
+Copy code snippet
+//Client secret : yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
+// Request body: [
+{"eventId":1,"subscriptionId":12345,"
+portalId":62515",
+occurredAt":1564113600000",
+subscriptionType":"contact.creation",
+"attemptNumber":0,
+"objectId":123,
+"changeSource":"CRM",
+"changeFlag":"NEW",
+"appId":54321}
+]
+1
+//Client secret : yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
+2
+// Request body: [
+3
+{
+"eventId"
+:
+1
+,
+"subscriptionId"
+:
+12345
+,
+"
+4
+portalId
+":62515"
+,
+5
+occurredAt
+":1564113600000"
+,
+6
+subscriptionType
+":"
+contact
+.
+creation
+",
+7
+"attemptNumber"
+:
+0
+,
+8
+"objectId"
+:
+123
+,
+9
+"changeSource"
+:
+"CRM"
+,
+10
+"changeFlag"
+:
+"NEW"
+,
+11
+"appId"
+:
+54321
+}
+12
+]
+v1 request signature examples:
+Python
+Ruby
+Node.js
+Python
+Ruby
+Node.js
+More
+Copy code snippet
+NOTE: This is only an example for generating the expected hash.
+You will need to compare this expected hash with the actual hash in the
+X-HubSpot-Signature header.
+>>> import hashlib
+>>> client_secret = 'yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy'
+>>> request_body = '[{"eventId":1,"subscriptionId":12345,"portalId":62515,"occurredAt":1564113600000,"subscriptionType":"contact.creation","attemptNumber":0,"objectId":123,"changeSource":"CRM","changeFlag":"NEW","appId":54321}]'
+>>> source_string = client_secret + request_body
+>>> source_string
+'yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy[{"eventId":1,"subscriptionId":12345,"portalId":62515,"occurredAt":1564113600000,"subscriptionType":"contact.creation","attemptNumber":0,"objectId":123,"changeSource":"CRM","changeFlag":"NEW","appId":54321}]'
+>>> hashlib.sha256(source_string).hexdigest()
+'232db2615f3d666fe21a8ec971ac7b5402d33b9a925784df3ca654d05f4817de'
+​
+x
+1
+NOTE: This is only an example for generating the expected hash.
+2
+You will need to compare this expected hash with the actual hash in the
+3
+X-HubSpot-Signature header.
+4
+​
+5
+>>> import hashlib
+6
+​
+7
+>>> client_secret = 'yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy'
+8
+>>> request_body = '[{"eventId":1,"subscriptionId":12345,"portalId":62515,"occurredAt":1564113600000,"subscriptionType":"contact.creation","attemptNumber":0,"objectId":123,"changeSource":"CRM","changeFlag":"NEW","appId":54321}]'
+9
+>>> source_string = client_secret + request_body
+10
+>>> source_string
+11
+'yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy[{"eventId":1,"subscriptionId":12345,"portalId":62515,"occurredAt":1564113600000,"subscriptionType":"contact.creation","attemptNumber":0,"objectId":123,"changeSource":"CRM","changeFlag":"NEW","appId":54321}]'
+12
+>>> hashlib.sha256(source_string).hexdigest()
+13
+'232db2615f3d666fe21a8ec971ac7b5402d33b9a925784df3ca654d05f4817de'
+The resulting hash would be:
+232db2615f3d666fe21a8ec971ac7b5402d33b9a925784df3ca654d05f4817de
+Validate requests using the v2 request signature
+If your app is handling data from a
+webhook action in a workflow
+, or if you're returning data for a
+custom CRM card
+, the request from HubSpot is sent with the
+X-HubSpot-Signature-Version
+header set to
+v2
+. The
+X-HubSpot-Signature
+header will be an SHA-256 hash built using the client secret of your app combined with details of the request.
+To verify this signature, perform the following steps:
+Create a string that concatenates together the following:
+Client secret
++
+http method
++
+URI
++
+request body
+(if present)
+Create a SHA-256 hash of the resulting string.
+Compare the hash value to the signature.
+If they're equal then this request has passed validation.
+If these values do not match, then this request may have been tampered with in-transit or someone may be spoofing requests to your endpoint.
+Notes:
+The URI used to build the source string must exactly match the original request, including the protocol. If you're having trouble validating the signature, ensure that any query parameters are in the exact same order they were listed in the original request.
+The source string should be UTF-8 encoded before calculating the SHA-256 hash.
+Example for a GET request
+For a
+GET
+request, you'd need your app's client secret and specific fields from the metadata of your request. These fields are listed below with placeholder values included:
+Client secret:
+yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
+HTTP method:
+GET
+URI:
+https://www.example.com/webhook_uri
+Request body:
+""
+The resulting concatenated string would be:
+yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyyGEThttps://www.example.com/webhook_uri
+After calculating a SHA-256 hash of the concatenated string above, the resulting signature you'd expect to match to the one in the header would be:
+eee2dddcc73c94d699f5e395f4b9d454a069a6855fbfa152e91e88823087200e
+Example for a POST request
+For a
+POST
+request, you'd need your app's client secret, specific fields from the metadata of your request, and a string representation of the body of the request (e.g., using
+JSON.stringify(request.body)
+for a Node.js service). These fields are listed below with placeholder values included:
+Client secret:
+yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
+HTTP method:
+POST
+URI:
+https://www.example.com/webhook_uri
+Request body:
+{"example_field":"example_value"}
+The resulting concatenated string would be:
+yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyyPOSThttps://www.example.com/webhook_uri{"example_field":"example_value"}
+After calculating a SHA-256 hash of the concatenated string above, the resulting signature you'd expect to match to the one in the header would be:
+9569219f8ba981ffa6f6f16aa0f48637d35d728c7e4d93d0d52efaa512af7900
+After [SHA-ing] the signature, you could then compare the resulting expected signature to the one provided in the x-hubspot-signature header of the request:
+The Node.js code snippet below details how you could incorporate
+v2
+request validation for a
+GET
+request if you were running an Express server to handle incoming requests. Keep in mind that the code block below is an example and omits certain dependencies you might need to run a fully-featured Express service. Confirm that you're running the latest stable and secure libraries when implementing request validation for your specific service.
+Copy code snippet
+// Introduce any dependencies. Only several dependencies related to this example are included below:
+const express = require('express');
+const bodyParser = require('body-parser');
+const crypto = require('crypto');
+const app = express();
+// Add any custom handling or setup code for your Node.js service here.
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+// Example Node.js request validation code.
+app.get('/example-service', (request, response, next) => {
+const { url, method, headers, hostname } = request;
+const requestSignature = headers['x-hubspot-signature'];
+// Compute expected signature
+const uri = `https://${hostname}${url}`;
+const encodedString = Buffer.from(
+`${process.env.CLIENT_SECRET}${method}${uri}`,
+'ascii'
+).toString('utf-8');
+const expectedSignature = crypto
+.createHash('sha256')
+.update(encodedString)
+.digest('hex');
+console.log('Expected signature: %s', requestSignature);
+console.log('Request signature: %s', expectedSignature);
+// Add your custom handling to compare request signature to expected signature
+if (requestSignature !== expectedSignature) {
+console.log('Request of signature does NOT match!');
+response.status(400).send('Bad request');
+} else {
+console.log('Request of signature matches!');
+response.status(200).send();
+}
+});
+xxxxxxxxxx
+39
+1
+// Introduce any dependencies. Only several dependencies related to this example are included below:
+2
+const
+express
+=
+require
+(
+'express'
+);
+3
+const
+bodyParser
+=
+require
+(
+'body-parser'
+);
+4
+const
+crypto
+=
+require
+(
+'crypto'
+);
+5
+const
+app
+=
+express
+();
+6
+​
+7
+// Add any custom handling or setup code for your Node.js service here.
+8
+app
+.
+use
+(
+bodyParser
+.
+urlencoded
+({
+extended
+:
+false
+}));
+9
+app
+.
+use
+(
+bodyParser
+.
+json
+());
+10
+​
+11
+// Example Node.js request validation code.
+12
+app
+.
+get
+(
+'/example-service'
+, (
+request
+,
+response
+,
+next
+)
+=>
+{
+13
+const
+{
+url
+,
+method
+,
+headers
+,
+hostname
+}
+=
+request
+;
+14
+​
+15
+const
+requestSignature
+=
+headers
+[
+'x-hubspot-signature'
+];
+16
+​
+17
+// Compute expected signature
+18
+const
+uri
+=
+`https://${
+hostname
+}${
+url
+}`
+;
+19
+const
+encodedString
+=
+Buffer
+.
+from
+(
+20
+`${
+process
+.
+env
+.
+CLIENT_SECRET
+}${
+method
+}${
+uri
+}`
+,
+21
+'ascii'
+22
+).
+toString
+(
+'utf-8'
+);
+23
+const
+expectedSignature
+=
+crypto
+24
+.
+createHash
+(
+'sha256'
+)
+25
+.
+update
+(
+encodedString
+)
+26
+.
+digest
+(
+'hex'
+);
+27
+​
+28
+console
+.
+log
+(
+'Expected signature: %s'
+,
+requestSignature
+);
+29
+console
+.
+log
+(
+'Request signature: %s'
+,
+expectedSignature
+);
+30
+​
+31
+// Add your custom handling to compare request signature to expected signature
+32
+if
+(
+requestSignature
+!==
+expectedSignature
+) {
+33
+console
+.
+log
+(
+'Request of signature does NOT match!'
+);
+34
+response
+.
+status
+(
+400
+).
+send
+(
+'Bad request'
+);
+35
+}
+else
+{
+36
+console
+.
+log
+(
+'Request of signature matches!'
+);
+37
+response
+.
+status
+(
+200
+).
+send
+();
+38
+}
+39
+});
+Validate the v3 request signature
+The
+X-HubSpot-Signature-v3
+header will be an HMAC SHA-256 hash built using the client secret of your app combined with details of the request. It will also include a
+X-HubSpot-Request-Timestamp
+header.
+When validating a request using the X-HubSpot-Signature-v3 header, you'll need to
+Reject the request if the timestamp is older than 5 minutes.
+In the request URI, decode any of the URL-encoded characters listed in the table below. You do not need to decode the question mark that denotes the beginning of the query string.
+Encoded value
+Decoded value
+%3A
+:
+%2F
+/
+%3F
+?
+%40
+@
+%21
+!
+%24
+$
+%27
+'
+%28
+(
+%29
+)
+%2A
+*
+%2C
+,
+%3B
+;
+Create a utf-8 encoded string that concatenates together the following:
+requestMethod
++
+requestUri
++
+requestBody
++ timestamp. The timestamp is provided by the
+X-HubSpot-Request-Timestamp
+header.
+Create an HMAC SHA-256 hash of the resulting string using the application secret as the secret for the HMAC SHA-256 function.
+Base64 encode the result of the HMAC function.
+Compare the hash value to the signature. If they're equal then this request has been verified as originating from HubSpot. It's recommended that you use constant-time string comparison to guard against timing attacks.
+The Node.js code snippet below details how you could incorporate v3 request validation for a
+POST
+request if you were running an Express server to handle incoming requests. Keep in mind that the code block below is an example and omits certain dependencies you might need to run a fully-featured Express service. Confirm that you're running the latest stable and secure libraries when implementing request validation for your specific service.
+Copy code snippet
+// Introduce any dependencies. Only several dependencies related to this example are included below:
+require('dotenv').config();
+const express = require('express');
+const bodyParser = require('body-parser');
+const crypto = require('crypto');
+const app = express();
+const port = process.env.PORT || 4000;
+app.use(bodyParser.urlencoded({ extended: false}));
+app.use(bodyParser.json());
+app.post('/webhook-test', (request, response) => {
+response.status(200).send('Received webhook subscription trigger');
+const {
+url,
+method,
+body,
+headers,
+hostname
+} = request;
+// Parse headers needed to validate signature
+const signatureHeader = headers["x-hubspot-signature-v3"]
+const timestampHeader = headers["x-hubspot-request-timestamp"];
+// Validate timestamp
+const MAX_ALLOWED_TIMESTAMP = 300000; // 5 minutes in milliseconds
+const currentTime = Date.now();
+if (currentTime - timestamp > MAX_ALLOWED_TIMESTAMP) {
+console.log("Timestamp is invalid, reject request");
+// Add any rejection logic here
+}
+// Concatenate request method, URI, body, and header timestamp
+const uri = `https://${hostname}${url}`;
+const rawString = `${method}${uri}${JSON.stringify(body)}${timestamp}`;
+// Create HMAC SHA-256 hash from resulting string above, then base64-encode it
+const hashedString = crypto.createHmac("sha256", process.env.CLIENT_SECRET).update(rawString).digest("base64");
+// Validate signature: compare computed signature vs. signature in header
+if (crypto.timingSafeEqual(Buffer.from(hashedString), Buffer.from(signatureHeader)) {
+console.log("Signature matches! Request is valid.");
+// Proceed with any request processing as needed.
+} else {
+console.log("Signature does not match: request is invalid");
+// Add any rejection logic here.
+}
+});
+xxxxxxxxxx
+50
+1
+// Introduce any dependencies. Only several dependencies related to this example are included below:
+2
+require
+(
+'dotenv'
+).
+config
+();
+3
+const
+express
+=
+require
+(
+'express'
+);
+4
+const
+bodyParser
+=
+require
+(
+'body-parser'
+);
+5
+const
+crypto
+=
+require
+(
+'crypto'
+);
+6
+const
+app
+=
+express
+();
+7
+const
+port
+=
+process
+.
+env
+.
+PORT
+||
+4000
+;
+8
+​
+9
+app
+.
+use
+(
+bodyParser
+.
+urlencoded
+({
+extended
+:
+false
+}));
+10
+app
+.
+use
+(
+bodyParser
+.
+json
+());
+11
+​
+12
+app
+.
+post
+(
+'/webhook-test'
+, (
+request
+,
+response
+)
+=>
+{
+13
+response
+.
+status
+(
+200
+).
+send
+(
+'Received webhook subscription trigger'
+);
+14
+​
+15
+const
+{
+16
+url
+,
+17
+method
+,
+18
+body
+,
+19
+headers
+,
+20
+hostname
+21
+}
+=
+request
+;
+22
+​
+23
+// Parse headers needed to validate signature
+24
+const
+signatureHeader
+=
+headers
+[
+"x-hubspot-signature-v3"
+]
+25
+const
+timestampHeader
+=
+headers
+[
+"x-hubspot-request-timestamp"
+];
+26
+​
+27
+// Validate timestamp
+28
+const
+MAX_ALLOWED_TIMESTAMP
+=
+300000
+;
+// 5 minutes in milliseconds
+29
+const
+currentTime
+=
+Date
+.
+now
+();
+30
+if
+(
+currentTime
+-
+timestamp
+>
+MAX_ALLOWED_TIMESTAMP
+) {
+31
+console
+.
+log
+(
+"Timestamp is invalid, reject request"
+);
+32
+// Add any rejection logic here
+33
+}
+34
+​
+35
+// Concatenate request method, URI, body, and header timestamp
+36
+const
+uri
+=
+`https://${
+hostname
+}${
+url
+}`
+;
+37
+const
+rawString
+=
+`${
+method
+}${
+uri
+}${
+JSON
+.
+stringify
+(
+body
+)
+}${
+timestamp
+}`
+;
+38
+​
+39
+// Create HMAC SHA-256 hash from resulting string above, then base64-encode it
+40
+const
+hashedString
+=
+crypto
+.
+createHmac
+(
+"sha256"
+,
+process
+.
+env
+.
+CLIENT_SECRET
+).
+update
+(
+rawString
+).
+digest
+(
+"base64"
+);
+41
+​
+42
+// Validate signature: compare computed signature vs. signature in header
+43
+if
+(
+crypto
+.
+timingSafeEqual
+(
+Buffer
+.
+from
+(
+hashedString
+),
+Buffer
+.
+from
+(
+signatureHeader
+)) {
+44
+console
+.
+log
+(
+"Signature matches! Request is valid."
+);
+45
+// Proceed with any request processing as needed.
+46
+}
+else
+{
+47
+console
+.
+log
+(
+"Signature does not match: request is invalid"
+);
+48
+// Add any rejection logic here.
+49
+}
+50
+});
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+Apps
+Overview
+Authentication
+Auth methods on HubSpot
+Request validation
+Working with OAuth
+OAuth 2 quickstart
+Scopes
+Private apps
+Public apps
+Extensions
+API usage
+Marketplace

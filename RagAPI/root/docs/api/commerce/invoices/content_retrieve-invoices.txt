@@ -1,0 +1,587 @@
+CRM API | Invoices | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Retrieve invoices
+Properties
+Search for invoices by properties
+Associations
+Retrieving an invoice with associated line items
+API Guides
+CRM
+Commerce
+CRM API | Invoices
+Invoices
+Invoices endpoint reference
+Use the invoices API to fetch information about an account's
+invoices
+. This is a read-only API, so it cannot be used for creating new or managing existing invoices.
+For example, use this API to
+fetch all currently open invoices
+.
+Retrieve invoices
+Depending on the information you need, there are a few ways to retrieve invoices:
+To retrieve all invoices, make a
+GET
+request to
+crm/v3/objects/invoices
+.
+To retrieve a specific invoice, make a
+GET
+request to the above URL and specify an invoice ID. For example:
+crm/v3/objects/invoices/44446244097
+.
+To retrieve invoices that meet a specific set of criteria, you can make a
+POST
+request to the search endpoint and include filters in the request body. See an example of using the
+search endpoint below
+.
+The response will include a few default properties, including the create date, last modified date.
+Copy code snippet
+// Example response
+{
+"id": "44446244097",
+"properties": {
+"hs_createdate": "2023-03-08T14:54:17.333Z",
+"hs_lastmodifieddate": "2024-03-01T22:33:09.011Z",
+"hs_object_id": "44446244097"
+},
+"createdAt": "2023-03-08T14:54:17.333Z",
+"updatedAt": "2024-03-01T22:33:09.011Z",
+"archived": false
+}
+1
+// Example response
+2
+{
+3
+"id"
+:
+"44446244097"
+,
+4
+"properties"
+: {
+5
+"hs_createdate"
+:
+"2023-03-08T14:54:17.333Z"
+,
+6
+"hs_lastmodifieddate"
+:
+"2024-03-01T22:33:09.011Z"
+,
+7
+"hs_object_id"
+:
+"44446244097"
+8
+},
+9
+"createdAt"
+:
+"2023-03-08T14:54:17.333Z"
+,
+10
+"updatedAt"
+:
+"2024-03-01T22:33:09.011Z"
+,
+11
+"archived"
+:
+false
+12
+}
+Properties
+To return specific properties, include a
+properties
+query parameter in the request URL along with comma-separated property names. For example, making a
+GET
+request to the following URL would result in the response below:
+crm/v3/objects/invoices?properties=hs_invoice_status,hs_amount_billed
+Copy code snippet
+// Example response
+{
+"id": "44446244097",
+"properties": {
+"hs_amount_billed": "20.00",
+"hs_createdate": "2023-03-08T14:54:17.333Z",
+"hs_invoice_status": "open",
+"hs_lastmodifieddate": "2024-03-01T22:33:09.011Z",
+"hs_object_id": "44446244097"
+},
+"createdAt": "2023-03-08T14:54:17.333Z",
+"updatedAt": "2024-03-01T22:33:09.011Z",
+"archived": false
+}
+xxxxxxxxxx
+14
+1
+// Example response
+2
+{
+3
+"id"
+:
+"44446244097"
+,
+4
+"properties"
+: {
+5
+"hs_amount_billed"
+:
+"20.00"
+,
+6
+"hs_createdate"
+:
+"2023-03-08T14:54:17.333Z"
+,
+7
+"hs_invoice_status"
+:
+"open"
+,
+8
+"hs_lastmodifieddate"
+:
+"2024-03-01T22:33:09.011Z"
+,
+9
+"hs_object_id"
+:
+"44446244097"
+10
+},
+11
+"createdAt"
+:
+"2023-03-08T14:54:17.333Z"
+,
+12
+"updatedAt"
+:
+"2024-03-01T22:33:09.011Z"
+,
+13
+"archived"
+:
+false
+14
+}
+To view all available invoice properties, make a
+GET
+request to
+crm/v3/properties/invoices
+. Learn more about using the
+properties API
+.
+Below are some common invoice properties that you may want to query.
+Property name
+Label in UI
+Description
+hs_invoice_status
+Invoice status
+The current status of the invoice. Values include:
+draft
+open
+paid
+voided
+hs_amount_billed
+Amount billed
+The amount billed on the invoice.
+hs_balance_due
+Balance due
+The balance due on the invoice.
+hs_due_date
+Due date
+The date the invoice is due.
+hs_number
+Number
+The invoice number (e.g.,
+INV_1003
+)
+Search for invoices by properties
+You can use the search
+endpoint
+to retrieve invoices that meet a specific set of
+filter criteria
+. This will be a
+POST
+request that includes your filter criteria in the request body.
+For example, to search for all open invoices, you would make a
+POST
+request to
+crm/v3/objects/invoices/search
+with the following request body:
+Copy code snippet
+// Example search request body
+{
+"filterGroups": [
+{
+"filters": [
+{
+"propertyName": "hs_invoice_status",
+"value": "open",
+"operator": "EQ"
+}
+]
+}
+],
+"properties": ["hs_invoice_status", "hs_due_date"]
+}
+xxxxxxxxxx
+15
+1
+// Example search request body
+2
+{
+3
+"filterGroups"
+: [
+4
+{
+5
+"filters"
+: [
+6
+{
+7
+"propertyName"
+:
+"hs_invoice_status"
+,
+8
+"value"
+:
+"open"
+,
+9
+"operator"
+:
+"EQ"
+10
+}
+11
+]
+12
+}
+13
+],
+14
+"properties"
+: [
+"hs_invoice_status"
+,
+"hs_due_date"
+]
+15
+}
+Note that the
+filters
+array specifies the search criteria, while the
+properties
+array specifies which properties to return.
+Associations
+While you cannot set associations using this API, you can retrieve association information by making a GET request to the following URL:
+crm/v3/objects/invoice/{`hs_object_id}`/associations/{associatedObjectName}
+Associated objects can include
+contacts
+,
+companies
+,
+deals
+,
+line items
+,
+discounts
+,
+fees
+, and
+taxes
+. To create associations between an invoice and these objects, you can
+update the invoice in HubSpot
+.
+Below is an example of how you might use this API combined with another API to get a specific set of association information.
+Please note:
+line items belong to one single parent object. For example, if retrieving line items from an invoice, the line item ID’s will be different to those on a deal, or a quote.
+Retrieving an invoice with associated line items
+To retrieve an invoice and the line items associated with it, make a
+GET
+request to:
+crm/v3/objects/invoice/{`hs_object_id}`/associations/line_items
+This will return the IDs of the currently associated line items, along with meta information about the association type.
+Copy code snippet
+// Example response
+{
+"results": [
+{
+"id": "1526712436",
+"type": "invoice_to_line_item"
+},
+{
+"id": "1526712437",
+"type": "invoice_to_line_item"
+}
+]
+}
+xxxxxxxxxx
+13
+1
+// Example response
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"id"
+:
+"1526712436"
+,
+6
+"type"
+:
+"invoice_to_line_item"
+7
+},
+8
+{
+9
+"id"
+:
+"1526712437"
+,
+10
+"type"
+:
+"invoice_to_line_item"
+11
+}
+12
+]
+13
+}
+You can then use the returned IDs to request more information about the line items through the
+line items API
+. For example, you could batch retrieve line items by ID by making a
+POST
+request to the following URL with the request body below:
+crm/v3/objects/line_items/batch/read
+Copy code snippet
+// Example request body
+{
+"inputs": [{ "id": "1526712436" }, { "id": "1526712437" }],
+"properties": ["name", "amount"]
+}
+xxxxxxxxxx
+5
+1
+// Example request body
+2
+{
+3
+"inputs"
+: [{
+"id"
+:
+"1526712436"
+}, {
+"id"
+:
+"1526712437"
+}],
+4
+"properties"
+: [
+"name"
+,
+"amount"
+]
+5
+}
+The response would be formatted as follows:
+Copy code snippet
+// Example response
+{
+"status":"COMPLETE",
+"results":[
+{
+"id":"1359205183",
+"properties":{
+"amount":"123.00",
+"createdate":"2023-04-26T14:52:35.885Z"
+"hs_lastmodifieddate":"2023-04-26T14:52:35.885Z",
+"hs_object_id":"1359205183",
+"name":"itemname"
+},
+"createdAt":"2023-04-26T14:52:35.885Z",
+"updatedAt":"2023-04-26T14:52:35.885Z",
+"archived":false
+}
+],
+"startedAt":"2024-03-11T20:09:44.151Z",
+"completedAt":"2024-03-11T20:09:44.195Z"
+}
+xxxxxxxxxx
+21
+1
+// Example response
+2
+{
+3
+"status"
+:
+"COMPLETE"
+,
+4
+"results"
+:[
+5
+{
+6
+"id"
+:
+"1359205183"
+,
+7
+"properties"
+:{
+8
+"amount"
+:
+"123.00"
+,
+9
+"createdate"
+:
+"2023-04-26T14:52:35.885Z"
+10
+"hs_lastmodifieddate"
+:
+"2023-04-26T14:52:35.885Z"
+,
+11
+"hs_object_id"
+:
+"1359205183"
+,
+12
+"name"
+:
+"itemname"
+13
+},
+14
+"createdAt"
+:
+"2023-04-26T14:52:35.885Z"
+,
+15
+"updatedAt"
+:
+"2023-04-26T14:52:35.885Z"
+,
+16
+"archived"
+:
+false
+17
+}
+18
+],
+19
+"startedAt"
+:
+"2024-03-11T20:09:44.151Z"
+,
+20
+"completedAt"
+:
+"2024-03-11T20:09:44.195Z"
+21
+}
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Carts
+Discounts
+Fees
+Invoices
+Orders
+Quotes
+Taxes
+Payments
+Subscriptions
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

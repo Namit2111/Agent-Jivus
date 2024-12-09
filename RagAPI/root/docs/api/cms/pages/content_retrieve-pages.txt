@@ -1,0 +1,5644 @@
+CMS API | Pages | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Changes in v3
+Retrieve pages
+Filtering
+State values
+A/B filters
+Multi-language filters
+Sorting
+Create pages
+Editing pages
+Edit Draft
+Reset Draft
+Publishing pages
+Publish Draft (Scheduled)
+A/B testing
+Create Test
+End Test
+Multi-language content
+Create a New Language Variant
+Attach a Page to an Existing Multi-Language Group
+Detach a Page from a Multi-Language Group
+API Guides
+CMS
+CMS API | Pages
+Pages
+Pages endpoint reference
+Use this API to create, manage, and publish website and landing pages. Learn more about
+creating and customizing pages within HubSpot
+. For example, fetch a currently drafted page, then publish it so that it's live on your website.
+Changes in v3
+The following properties are deprecated and no longer included within the response:
+campaign_name
+is_draft
+style_override_id
+meta_keywords
+Retrieve pages
+To retrieve an account's pages, make a
+GET
+request to
+cms/v3/pages/{landing-pages|site-pages}
+. You can filter and sort the returned pages by adding query parameters to the request URL, which are described below. For example, to retrieve all website pages that are currently published or scheduled to publish, you would make a
+GET
+request to the following URL:
+cms/v3/pages/site-pages?state__in=PUBLISHED_OR_SCHEDULED
+You'll receive a response containing information about the page, along with the page's content.
+Copy code snippet
+// Example response
+{
+"total": 1,
+"results": [
+{
+"archivedAt": "1970-01-01T00:00:00Z",
+"archivedInDashboard": false,
+"attachedStylesheets": [],
+"authorName": "Eric D.",
+"categoryId": 1,
+"contentTypeCategory": 4,
+"createdAt": "2024-02-06T19:02:33.991Z",
+"createdById": "2931299",
+"currentState": "PUBLISHED",
+"domain": "",
+"featuredImage": "",
+"featuredImageAltText": "",
+"htmlTitle": "My test page",
+"id": "155890290211",
+"layoutSections": {
+"dnd_area": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"label": "Main section",
+"name": "dnd_area",
+"params": {},
+"rowMetaData": [
+{
+"cssClass": "dnd-section",
+"styles": {
+"backgroundColor": {
+"a": 1,
+"b": 250,
+"g": 248,
+"r": 245
+},
+"forceFullWidthSection": false
+}
+},
+{
+"cssClass": "dnd-section",
+"styles": {
+"backgroundColor": {
+"a": 1,
+"b": 255,
+"g": 255,
+"r": 255
+},
+"forceFullWidthSection": false
+}
+}
+],
+"rows": [
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-column-2",
+"params": {
+"css_class": "dnd-column"
+},
+"rowMetaData": [
+{
+"cssClass": "dnd-row"
+},
+{
+"cssClass": "dnd-row"
+},
+{
+"cssClass": "dnd-row"
+}
+],
+"rows": [
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-3",
+"params": {
+"child_css": {},
+"css": {},
+"css_class": "dnd-module",
+"extra_classes": "widget-type-rich_text",
+"html": "<div style='text-align:center;'>\n<h2><strong>About</strong></h2>\n</div>",
+"path": "@hubspot/rich_text",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 12,
+"x": 0
+}
+},
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-column-4",
+"params": {
+"css_class": "dnd-column"
+},
+"rowMetaData": [
+{
+"cssClass": "dnd-row",
+"styles": {}
+}
+],
+"rows": [
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-5",
+"params": {
+"child_css": {},
+"css": {},
+"css_class": "dnd-module",
+"extra_classes": "widget-type-linked_image",
+"horizontal_alignment": "CENTER",
+"img": {
+"alt": "Growth theme placeholder image",
+"loading": "lazy",
+"max_height": 500,
+"max_width": 500,
+"size_type": "auto_custom_max",
+"src": "//7528309.fs1.hubspotusercontent-na1.net/hubfs/7528309/raw_assets/public/mV0_d-cms-growth-theme_hubspot/growth/images/service-one.jpg"
+},
+"path": "@hubspot/linked_image",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"style": "margin-bottom: 22px;",
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"styles": {
+"flexboxPositioning": "TOP_CENTER"
+},
+"type": "custom_widget",
+"w": 12,
+"x": 0
+}
+}
+],
+"type": "cell",
+"w": 6,
+"x": 0
+},
+"6": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-column-6",
+"params": {
+"css_class": "dnd-column"
+},
+"rowMetaData": [
+{
+"cssClass": "dnd-row"
+}
+],
+"rows": [
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-7",
+"params": {
+"child_css": {},
+"css": {},
+"css_class": "dnd-module",
+"extra_classes": "widget-type-rich_text",
+"html": "<p>Add a short description about the work that you do at your company. Try to narrow in on your specialization so that you can capture the attention of your clients. Talk about the value that you can deliver through a paid consultation.</p>",
+"path": "@hubspot/rich_text",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 12,
+"x": 0
+}
+}
+],
+"type": "cell",
+"w": 6,
+"x": 6
+}
+},
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-8",
+"params": {
+"button_link": {
+"no_follow": false,
+"open_in_new_tab": false,
+"rel": "",
+"sponsored": false,
+"url": {
+"href": "#book"
+},
+"user_generated_content": false
+},
+"button_text": "Book a consultation",
+"child_css": {},
+"css": {},
+"css_class": "dnd-module",
+"path": "../modules/button",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"styles": {
+"alignment": {
+"alignment": {
+"css": "",
+"horizontal_align": "CENTER"
+}
+}
+},
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 12,
+"x": 0
+}
+}
+],
+"styles": {},
+"type": "cell",
+"w": 12,
+"x": 0
+}
+},
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-column-9",
+"params": {
+"css_class": "dnd-column"
+},
+"rowMetaData": [
+{
+"cssClass": "dnd-row",
+"styles": {}
+},
+{
+"cssClass": "dnd-row"
+},
+{
+"cssClass": "dnd-row"
+}
+],
+"rows": [
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-10",
+"params": {
+"child_css": {},
+"css": {},
+"css_class": "dnd-module",
+"extra_classes": "widget-type-rich_text",
+"html": "<a id=\"services\" data-hs-anchor=\"true\"></a>\n<div style=\"text-align: center;\">\n<h2>A suite of tools at your disposal</h2>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>\n</div>",
+"path": "@hubspot/rich_text",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 12,
+"x": 0
+}
+},
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-11",
+"params": {
+"child_css": {},
+"content": {
+"content": "<h3 style='text-align:center;'>Service</h3><p>Summarize the service you provide. Add a message about the value that you can provide to your customers.</p>"
+},
+"css": {},
+"css_class": "dnd-module",
+"icon": {
+"icon": {
+"icon_set": "fontawesome-5.0.10",
+"name": "balance-scale",
+"type": "SOLID",
+"unicode": "f24e"
+}
+},
+"path": "../modules/service-card",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"styles": {
+"card": {
+"spacing": {
+"spacing": {
+"css": "margin-bottom: 22px;\n",
+"margin": {
+"bottom": {
+"units": "px",
+"value": 22
+}
+}
+}
+}
+},
+"icon": {
+"background": {
+"color": {
+"color": "#494a52",
+"css": "#494a52",
+"hex": "#494a52",
+"opacity": 100,
+"rgb": "rgb(73, 74, 82)",
+"rgba": "rgba(73, 74, 82, 1)"
+}
+}
+}
+},
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 4,
+"x": 0
+},
+"4": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-12",
+"params": {
+"child_css": {},
+"content": {
+"content": "<h3 style='text-align:center;'>Service</h3><p>Summarize the service you provide. Add a message about the value that you can provide to your customers.</p>"
+},
+"css": {},
+"css_class": "dnd-module",
+"icon": {
+"icon": {
+"icon_set": "fontawesome-5.0.10",
+"name": "industry",
+"type": "SOLID",
+"unicode": "f275"
+}
+},
+"path": "../modules/service-card",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"styles": {
+"card": {
+"spacing": {
+"spacing": {
+"css": "margin-bottom: 22px;\n",
+"margin": {
+"bottom": {
+"units": "px",
+"value": 22
+}
+}
+}
+}
+},
+"icon": {
+"background": {
+"color": {
+"color": "#494a52",
+"css": "#494a52",
+"hex": "#494a52",
+"opacity": 100,
+"rgb": "rgb(73, 74, 82)",
+"rgba": "rgba(73, 74, 82, 1)"
+}
+}
+}
+},
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 4,
+"x": 4
+},
+"8": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-13",
+"params": {
+"child_css": {},
+"content": {
+"content": "<h3 style='text-align:center;'>Service</h3><p>Summarize the service you provide. Add a message about the value that you can provide to your customers.</p>"
+},
+"css": {},
+"css_class": "dnd-module",
+"icon": {
+"icon": {
+"icon_set": "fontawesome-5.0.10",
+"name": "server",
+"type": "SOLID",
+"unicode": "f233"
+}
+},
+"path": "../modules/service-card",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"styles": {
+"card": {
+"spacing": {
+"spacing": {
+"css": "margin-bottom: 22px;\n",
+"margin": {
+"bottom": {
+"units": "px",
+"value": 22
+}
+}
+}
+}
+},
+"icon": {
+"background": {
+"color": {
+"color": "#494a52",
+"css": "#494a52",
+"hex": "#494a52",
+"opacity": 100,
+"rgb": "rgb(73, 74, 82)",
+"rgba": "rgba(73, 74, 82, 1)"
+}
+}
+}
+},
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 4,
+"x": 8
+}
+},
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-14",
+"params": {
+"button_link": {
+"no_follow": false,
+"open_in_new_tab": false,
+"rel": "",
+"sponsored": false,
+"url": {
+"href": "#book"
+},
+"user_generated_content": false
+},
+"button_text": "Book a consultation",
+"child_css": {},
+"css": {},
+"css_class": "dnd-module",
+"path": "../modules/button",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"styles": {
+"alignment": {
+"alignment": {
+"css": "",
+"horizontal_align": "CENTER"
+}
+}
+},
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 12,
+"x": 0
+}
+}
+],
+"type": "cell",
+"w": 12,
+"x": 0
+}
+}
+],
+"type": "cell",
+"w": 12,
+"x": 0
+}
+},
+"name": "My test page",
+"pageRedirected": false,
+"publicAccessRules": [],
+"publicAccessRulesEnabled": false,
+"publishDate": "2024-03-28T18:48:55Z",
+"publishImmediately": true,
+"published": true,
+"slug": "my-test-page",
+"state": "PUBLISHED_OR_SCHEDULED",
+"subcategory": "site_page",
+"templatePath": "@hubspot/growth/templates/paid-consultation.html",
+"translations": {},
+"updatedAt": "2024-03-28T18:49:44.134Z",
+"updatedById": "2931299",
+"url": "https://www.website.com/my-test-page",
+"useFeaturedImage": false,
+"widgetContainers": {},
+"widgets": {}
+}
+]
+}
+1
+// Example response
+2
+{
+3
+"total"
+:
+1
+,
+4
+"results"
+: [
+5
+{
+6
+"archivedAt"
+:
+"1970-01-01T00:00:00Z"
+,
+7
+"archivedInDashboard"
+:
+false
+,
+8
+"attachedStylesheets"
+: [],
+9
+"authorName"
+:
+"Eric D."
+,
+10
+"categoryId"
+:
+1
+,
+11
+"contentTypeCategory"
+:
+4
+,
+12
+"createdAt"
+:
+"2024-02-06T19:02:33.991Z"
+,
+13
+"createdById"
+:
+"2931299"
+,
+14
+"currentState"
+:
+"PUBLISHED"
+,
+15
+"domain"
+:
+""
+,
+16
+"featuredImage"
+:
+""
+,
+17
+"featuredImageAltText"
+:
+""
+,
+18
+"htmlTitle"
+:
+"My test page"
+,
+19
+"id"
+:
+"155890290211"
+,
+20
+"layoutSections"
+: {
+21
+"dnd_area"
+: {
+22
+"cells"
+: [],
+23
+"cssClass"
+:
+""
+,
+24
+"cssId"
+:
+""
+,
+25
+"cssStyle"
+:
+""
+,
+26
+"label"
+:
+"Main section"
+,
+27
+"name"
+:
+"dnd_area"
+,
+28
+"params"
+: {},
+29
+"rowMetaData"
+: [
+30
+{
+31
+"cssClass"
+:
+"dnd-section"
+,
+32
+"styles"
+: {
+33
+"backgroundColor"
+: {
+34
+"a"
+:
+1
+,
+35
+"b"
+:
+250
+,
+36
+"g"
+:
+248
+,
+37
+"r"
+:
+245
+38
+},
+39
+"forceFullWidthSection"
+:
+false
+40
+}
+41
+},
+42
+{
+43
+"cssClass"
+:
+"dnd-section"
+,
+44
+"styles"
+: {
+45
+"backgroundColor"
+: {
+46
+"a"
+:
+1
+,
+47
+"b"
+:
+255
+,
+48
+"g"
+:
+255
+,
+49
+"r"
+:
+255
+50
+},
+51
+"forceFullWidthSection"
+:
+false
+52
+}
+53
+}
+54
+],
+55
+"rows"
+: [
+56
+{
+57
+"0"
+: {
+58
+"cells"
+: [],
+59
+"cssClass"
+:
+""
+,
+60
+"cssId"
+:
+""
+,
+61
+"cssStyle"
+:
+""
+,
+62
+"name"
+:
+"dnd_area-column-2"
+,
+63
+"params"
+: {
+64
+"css_class"
+:
+"dnd-column"
+65
+},
+66
+"rowMetaData"
+: [
+67
+{
+68
+"cssClass"
+:
+"dnd-row"
+69
+},
+70
+{
+71
+"cssClass"
+:
+"dnd-row"
+72
+},
+73
+{
+74
+"cssClass"
+:
+"dnd-row"
+75
+}
+76
+],
+77
+"rows"
+: [
+78
+{
+79
+"0"
+: {
+80
+"cells"
+: [],
+81
+"cssClass"
+:
+""
+,
+82
+"cssId"
+:
+""
+,
+83
+"cssStyle"
+:
+""
+,
+84
+"name"
+:
+"dnd_area-module-3"
+,
+85
+"params"
+: {
+86
+"child_css"
+: {},
+87
+"css"
+: {},
+88
+"css_class"
+:
+"dnd-module"
+,
+89
+"extra_classes"
+:
+"widget-type-rich_text"
+,
+90
+"html"
+:
+"<div style='text-align:center;'>\n<h2><strong>About</strong></h2>\n</div>"
+,
+91
+"path"
+:
+"@hubspot/rich_text"
+,
+92
+"schema_version"
+:
+2
+,
+93
+"smart_objects"
+: [],
+94
+"smart_type"
+:
+"NOT_SMART"
+,
+95
+"wrap_field_tag"
+:
+"div"
+96
+},
+97
+"rowMetaData"
+: [],
+98
+"rows"
+: [],
+99
+"type"
+:
+"custom_widget"
+,
+100
+"w"
+:
+12
+,
+101
+"x"
+:
+0
+102
+}
+103
+},
+104
+{
+105
+"0"
+: {
+106
+"cells"
+: [],
+107
+"cssClass"
+:
+""
+,
+108
+"cssId"
+:
+""
+,
+109
+"cssStyle"
+:
+""
+,
+110
+"name"
+:
+"dnd_area-column-4"
+,
+111
+"params"
+: {
+112
+"css_class"
+:
+"dnd-column"
+113
+},
+114
+"rowMetaData"
+: [
+115
+{
+116
+"cssClass"
+:
+"dnd-row"
+,
+117
+"styles"
+: {}
+118
+}
+119
+],
+120
+"rows"
+: [
+121
+{
+122
+"0"
+: {
+123
+"cells"
+: [],
+124
+"cssClass"
+:
+""
+,
+125
+"cssId"
+:
+""
+,
+126
+"cssStyle"
+:
+""
+,
+127
+"name"
+:
+"dnd_area-module-5"
+,
+128
+"params"
+: {
+129
+"child_css"
+: {},
+130
+"css"
+: {},
+131
+"css_class"
+:
+"dnd-module"
+,
+132
+"extra_classes"
+:
+"widget-type-linked_image"
+,
+133
+"horizontal_alignment"
+:
+"CENTER"
+,
+134
+"img"
+: {
+135
+"alt"
+:
+"Growth theme placeholder image"
+,
+136
+"loading"
+:
+"lazy"
+,
+137
+"max_height"
+:
+500
+,
+138
+"max_width"
+:
+500
+,
+139
+"size_type"
+:
+"auto_custom_max"
+,
+140
+"src"
+:
+"//7528309.fs1.hubspotusercontent-na1.net/hubfs/7528309/raw_assets/public/mV0_d-cms-growth-theme_hubspot/growth/images/service-one.jpg"
+141
+},
+142
+"path"
+:
+"@hubspot/linked_image"
+,
+143
+"schema_version"
+:
+2
+,
+144
+"smart_objects"
+: [],
+145
+"smart_type"
+:
+"NOT_SMART"
+,
+146
+"style"
+:
+"margin-bottom: 22px;"
+,
+147
+"wrap_field_tag"
+:
+"div"
+148
+},
+149
+"rowMetaData"
+: [],
+150
+"rows"
+: [],
+151
+"styles"
+: {
+152
+"flexboxPositioning"
+:
+"TOP_CENTER"
+153
+},
+154
+"type"
+:
+"custom_widget"
+,
+155
+"w"
+:
+12
+,
+156
+"x"
+:
+0
+157
+}
+158
+}
+159
+],
+160
+"type"
+:
+"cell"
+,
+161
+"w"
+:
+6
+,
+162
+"x"
+:
+0
+163
+},
+164
+"6"
+: {
+165
+"cells"
+: [],
+166
+"cssClass"
+:
+""
+,
+167
+"cssId"
+:
+""
+,
+168
+"cssStyle"
+:
+""
+,
+169
+"name"
+:
+"dnd_area-column-6"
+,
+170
+"params"
+: {
+171
+"css_class"
+:
+"dnd-column"
+172
+},
+173
+"rowMetaData"
+: [
+174
+{
+175
+"cssClass"
+:
+"dnd-row"
+176
+}
+177
+],
+178
+"rows"
+: [
+179
+{
+180
+"0"
+: {
+181
+"cells"
+: [],
+182
+"cssClass"
+:
+""
+,
+183
+"cssId"
+:
+""
+,
+184
+"cssStyle"
+:
+""
+,
+185
+"name"
+:
+"dnd_area-module-7"
+,
+186
+"params"
+: {
+187
+"child_css"
+: {},
+188
+"css"
+: {},
+189
+"css_class"
+:
+"dnd-module"
+,
+190
+"extra_classes"
+:
+"widget-type-rich_text"
+,
+191
+"html"
+:
+"<p>Add a short description about the work that you do at your company. Try to narrow in on your specialization so that you can capture the attention of your clients. Talk about the value that you can deliver through a paid consultation.</p>"
+,
+192
+"path"
+:
+"@hubspot/rich_text"
+,
+193
+"schema_version"
+:
+2
+,
+194
+"smart_objects"
+: [],
+195
+"smart_type"
+:
+"NOT_SMART"
+,
+196
+"wrap_field_tag"
+:
+"div"
+197
+},
+198
+"rowMetaData"
+: [],
+199
+"rows"
+: [],
+200
+"type"
+:
+"custom_widget"
+,
+201
+"w"
+:
+12
+,
+202
+"x"
+:
+0
+203
+}
+204
+}
+205
+],
+206
+"type"
+:
+"cell"
+,
+207
+"w"
+:
+6
+,
+208
+"x"
+:
+6
+209
+}
+210
+},
+211
+{
+212
+"0"
+: {
+213
+"cells"
+: [],
+214
+"cssClass"
+:
+""
+,
+215
+"cssId"
+:
+""
+,
+216
+"cssStyle"
+:
+""
+,
+217
+"name"
+:
+"dnd_area-module-8"
+,
+218
+"params"
+: {
+219
+"button_link"
+: {
+220
+"no_follow"
+:
+false
+,
+221
+"open_in_new_tab"
+:
+false
+,
+222
+"rel"
+:
+""
+,
+223
+"sponsored"
+:
+false
+,
+224
+"url"
+: {
+225
+"href"
+:
+"#book"
+226
+},
+227
+"user_generated_content"
+:
+false
+228
+},
+229
+"button_text"
+:
+"Book a consultation"
+,
+230
+"child_css"
+: {},
+231
+"css"
+: {},
+232
+"css_class"
+:
+"dnd-module"
+,
+233
+"path"
+:
+"../modules/button"
+,
+234
+"schema_version"
+:
+2
+,
+235
+"smart_objects"
+: [],
+236
+"smart_type"
+:
+"NOT_SMART"
+,
+237
+"styles"
+: {
+238
+"alignment"
+: {
+239
+"alignment"
+: {
+240
+"css"
+:
+""
+,
+241
+"horizontal_align"
+:
+"CENTER"
+242
+}
+243
+}
+244
+},
+245
+"wrap_field_tag"
+:
+"div"
+246
+},
+247
+"rowMetaData"
+: [],
+248
+"rows"
+: [],
+249
+"type"
+:
+"custom_widget"
+,
+250
+"w"
+:
+12
+,
+251
+"x"
+:
+0
+252
+}
+253
+}
+254
+],
+255
+"styles"
+: {},
+256
+"type"
+:
+"cell"
+,
+257
+"w"
+:
+12
+,
+258
+"x"
+:
+0
+259
+}
+260
+},
+261
+{
+262
+"0"
+: {
+263
+"cells"
+: [],
+264
+"cssClass"
+:
+""
+,
+265
+"cssId"
+:
+""
+,
+266
+"cssStyle"
+:
+""
+,
+267
+"name"
+:
+"dnd_area-column-9"
+,
+268
+"params"
+: {
+269
+"css_class"
+:
+"dnd-column"
+270
+},
+271
+"rowMetaData"
+: [
+272
+{
+273
+"cssClass"
+:
+"dnd-row"
+,
+274
+"styles"
+: {}
+275
+},
+276
+{
+277
+"cssClass"
+:
+"dnd-row"
+278
+},
+279
+{
+280
+"cssClass"
+:
+"dnd-row"
+281
+}
+282
+],
+283
+"rows"
+: [
+284
+{
+285
+"0"
+: {
+286
+"cells"
+: [],
+287
+"cssClass"
+:
+""
+,
+288
+"cssId"
+:
+""
+,
+289
+"cssStyle"
+:
+""
+,
+290
+"name"
+:
+"dnd_area-module-10"
+,
+291
+"params"
+: {
+292
+"child_css"
+: {},
+293
+"css"
+: {},
+294
+"css_class"
+:
+"dnd-module"
+,
+295
+"extra_classes"
+:
+"widget-type-rich_text"
+,
+296
+"html"
+:
+"<a id=\"services\" data-hs-anchor=\"true\"></a>\n<div style=\"text-align: center;\">\n<h2>A suite of tools at your disposal</h2>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>\n</div>"
+,
+297
+"path"
+:
+"@hubspot/rich_text"
+,
+298
+"schema_version"
+:
+2
+,
+299
+"smart_objects"
+: [],
+300
+"smart_type"
+:
+"NOT_SMART"
+,
+301
+"wrap_field_tag"
+:
+"div"
+302
+},
+303
+"rowMetaData"
+: [],
+304
+"rows"
+: [],
+305
+"type"
+:
+"custom_widget"
+,
+306
+"w"
+:
+12
+,
+307
+"x"
+:
+0
+308
+}
+309
+},
+310
+{
+311
+"0"
+: {
+312
+"cells"
+: [],
+313
+"cssClass"
+:
+""
+,
+314
+"cssId"
+:
+""
+,
+315
+"cssStyle"
+:
+""
+,
+316
+"name"
+:
+"dnd_area-module-11"
+,
+317
+"params"
+: {
+318
+"child_css"
+: {},
+319
+"content"
+: {
+320
+"content"
+:
+"<h3 style='text-align:center;'>Service</h3><p>Summarize the service you provide. Add a message about the value that you can provide to your customers.</p>"
+321
+},
+322
+"css"
+: {},
+323
+"css_class"
+:
+"dnd-module"
+,
+324
+"icon"
+: {
+325
+"icon"
+: {
+326
+"icon_set"
+:
+"fontawesome-5.0.10"
+,
+327
+"name"
+:
+"balance-scale"
+,
+328
+"type"
+:
+"SOLID"
+,
+329
+"unicode"
+:
+"f24e"
+330
+}
+331
+},
+332
+"path"
+:
+"../modules/service-card"
+,
+333
+"schema_version"
+:
+2
+,
+334
+"smart_objects"
+: [],
+335
+"smart_type"
+:
+"NOT_SMART"
+,
+336
+"styles"
+: {
+337
+"card"
+: {
+338
+"spacing"
+: {
+339
+"spacing"
+: {
+340
+"css"
+:
+"margin-bottom: 22px;\n"
+,
+341
+"margin"
+: {
+342
+"bottom"
+: {
+343
+"units"
+:
+"px"
+,
+344
+"value"
+:
+22
+345
+}
+346
+}
+347
+}
+348
+}
+349
+},
+350
+"icon"
+: {
+351
+"background"
+: {
+352
+"color"
+: {
+353
+"color"
+:
+"#494a52"
+,
+354
+"css"
+:
+"#494a52"
+,
+355
+"hex"
+:
+"#494a52"
+,
+356
+"opacity"
+:
+100
+,
+357
+"rgb"
+:
+"rgb(73, 74, 82)"
+,
+358
+"rgba"
+:
+"rgba(73, 74, 82, 1)"
+359
+}
+360
+}
+361
+}
+362
+},
+363
+"wrap_field_tag"
+:
+"div"
+364
+},
+365
+"rowMetaData"
+: [],
+366
+"rows"
+: [],
+367
+"type"
+:
+"custom_widget"
+,
+368
+"w"
+:
+4
+,
+369
+"x"
+:
+0
+370
+},
+371
+"4"
+: {
+372
+"cells"
+: [],
+373
+"cssClass"
+:
+""
+,
+374
+"cssId"
+:
+""
+,
+375
+"cssStyle"
+:
+""
+,
+376
+"name"
+:
+"dnd_area-module-12"
+,
+377
+"params"
+: {
+378
+"child_css"
+: {},
+379
+"content"
+: {
+380
+"content"
+:
+"<h3 style='text-align:center;'>Service</h3><p>Summarize the service you provide. Add a message about the value that you can provide to your customers.</p>"
+381
+},
+382
+"css"
+: {},
+383
+"css_class"
+:
+"dnd-module"
+,
+384
+"icon"
+: {
+385
+"icon"
+: {
+386
+"icon_set"
+:
+"fontawesome-5.0.10"
+,
+387
+"name"
+:
+"industry"
+,
+388
+"type"
+:
+"SOLID"
+,
+389
+"unicode"
+:
+"f275"
+390
+}
+391
+},
+392
+"path"
+:
+"../modules/service-card"
+,
+393
+"schema_version"
+:
+2
+,
+394
+"smart_objects"
+: [],
+395
+"smart_type"
+:
+"NOT_SMART"
+,
+396
+"styles"
+: {
+397
+"card"
+: {
+398
+"spacing"
+: {
+399
+"spacing"
+: {
+400
+"css"
+:
+"margin-bottom: 22px;\n"
+,
+401
+"margin"
+: {
+402
+"bottom"
+: {
+403
+"units"
+:
+"px"
+,
+404
+"value"
+:
+22
+405
+}
+406
+}
+407
+}
+408
+}
+409
+},
+410
+"icon"
+: {
+411
+"background"
+: {
+412
+"color"
+: {
+413
+"color"
+:
+"#494a52"
+,
+414
+"css"
+:
+"#494a52"
+,
+415
+"hex"
+:
+"#494a52"
+,
+416
+"opacity"
+:
+100
+,
+417
+"rgb"
+:
+"rgb(73, 74, 82)"
+,
+418
+"rgba"
+:
+"rgba(73, 74, 82, 1)"
+419
+}
+420
+}
+421
+}
+422
+},
+423
+"wrap_field_tag"
+:
+"div"
+424
+},
+425
+"rowMetaData"
+: [],
+426
+"rows"
+: [],
+427
+"type"
+:
+"custom_widget"
+,
+428
+"w"
+:
+4
+,
+429
+"x"
+:
+4
+430
+},
+431
+"8"
+: {
+432
+"cells"
+: [],
+433
+"cssClass"
+:
+""
+,
+434
+"cssId"
+:
+""
+,
+435
+"cssStyle"
+:
+""
+,
+436
+"name"
+:
+"dnd_area-module-13"
+,
+437
+"params"
+: {
+438
+"child_css"
+: {},
+439
+"content"
+: {
+440
+"content"
+:
+"<h3 style='text-align:center;'>Service</h3><p>Summarize the service you provide. Add a message about the value that you can provide to your customers.</p>"
+441
+},
+442
+"css"
+: {},
+443
+"css_class"
+:
+"dnd-module"
+,
+444
+"icon"
+: {
+445
+"icon"
+: {
+446
+"icon_set"
+:
+"fontawesome-5.0.10"
+,
+447
+"name"
+:
+"server"
+,
+448
+"type"
+:
+"SOLID"
+,
+449
+"unicode"
+:
+"f233"
+450
+}
+451
+},
+452
+"path"
+:
+"../modules/service-card"
+,
+453
+"schema_version"
+:
+2
+,
+454
+"smart_objects"
+: [],
+455
+"smart_type"
+:
+"NOT_SMART"
+,
+456
+"styles"
+: {
+457
+"card"
+: {
+458
+"spacing"
+: {
+459
+"spacing"
+: {
+460
+"css"
+:
+"margin-bottom: 22px;\n"
+,
+461
+"margin"
+: {
+462
+"bottom"
+: {
+463
+"units"
+:
+"px"
+,
+464
+"value"
+:
+22
+465
+}
+466
+}
+467
+}
+468
+}
+469
+},
+470
+"icon"
+: {
+471
+"background"
+: {
+472
+"color"
+: {
+473
+"color"
+:
+"#494a52"
+,
+474
+"css"
+:
+"#494a52"
+,
+475
+"hex"
+:
+"#494a52"
+,
+476
+"opacity"
+:
+100
+,
+477
+"rgb"
+:
+"rgb(73, 74, 82)"
+,
+478
+"rgba"
+:
+"rgba(73, 74, 82, 1)"
+479
+}
+480
+}
+481
+}
+482
+},
+483
+"wrap_field_tag"
+:
+"div"
+484
+},
+485
+"rowMetaData"
+: [],
+486
+"rows"
+: [],
+487
+"type"
+:
+"custom_widget"
+,
+488
+"w"
+:
+4
+,
+489
+"x"
+:
+8
+490
+}
+491
+},
+492
+{
+493
+"0"
+: {
+494
+"cells"
+: [],
+495
+"cssClass"
+:
+""
+,
+496
+"cssId"
+:
+""
+,
+497
+"cssStyle"
+:
+""
+,
+498
+"name"
+:
+"dnd_area-module-14"
+,
+499
+"params"
+: {
+500
+"button_link"
+: {
+501
+"no_follow"
+:
+false
+,
+502
+"open_in_new_tab"
+:
+false
+,
+503
+"rel"
+:
+""
+,
+504
+"sponsored"
+:
+false
+,
+505
+"url"
+: {
+506
+"href"
+:
+"#book"
+507
+},
+508
+"user_generated_content"
+:
+false
+509
+},
+510
+"button_text"
+:
+"Book a consultation"
+,
+511
+"child_css"
+: {},
+512
+"css"
+: {},
+513
+"css_class"
+:
+"dnd-module"
+,
+514
+"path"
+:
+"../modules/button"
+,
+515
+"schema_version"
+:
+2
+,
+516
+"smart_objects"
+: [],
+517
+"smart_type"
+:
+"NOT_SMART"
+,
+518
+"styles"
+: {
+519
+"alignment"
+: {
+520
+"alignment"
+: {
+521
+"css"
+:
+""
+,
+522
+"horizontal_align"
+:
+"CENTER"
+523
+}
+524
+}
+525
+},
+526
+"wrap_field_tag"
+:
+"div"
+527
+},
+528
+"rowMetaData"
+: [],
+529
+"rows"
+: [],
+530
+"type"
+:
+"custom_widget"
+,
+531
+"w"
+:
+12
+,
+532
+"x"
+:
+0
+533
+}
+534
+}
+535
+],
+536
+"type"
+:
+"cell"
+,
+537
+"w"
+:
+12
+,
+538
+"x"
+:
+0
+539
+}
+540
+}
+541
+],
+542
+"type"
+:
+"cell"
+,
+543
+"w"
+:
+12
+,
+544
+"x"
+:
+0
+545
+}
+546
+},
+547
+"name"
+:
+"My test page"
+,
+548
+"pageRedirected"
+:
+false
+,
+549
+"publicAccessRules"
+: [],
+550
+"publicAccessRulesEnabled"
+:
+false
+,
+551
+"publishDate"
+:
+"2024-03-28T18:48:55Z"
+,
+552
+"publishImmediately"
+:
+true
+,
+553
+"published"
+:
+true
+,
+554
+"slug"
+:
+"my-test-page"
+,
+555
+"state"
+:
+"PUBLISHED_OR_SCHEDULED"
+,
+556
+"subcategory"
+:
+"site_page"
+,
+557
+"templatePath"
+:
+"@hubspot/growth/templates/paid-consultation.html"
+,
+558
+"translations"
+: {},
+559
+"updatedAt"
+:
+"2024-03-28T18:49:44.134Z"
+,
+560
+"updatedById"
+:
+"2931299"
+,
+561
+"url"
+:
+"https://www.website.com/my-test-page"
+,
+562
+"useFeaturedImage"
+:
+false
+,
+563
+"widgetContainers"
+: {},
+564
+"widgets"
+: {}
+565
+}
+566
+]
+567
+}
+Filtering
+When retrieving pages, you can add query parameters to the request URL to filter the results. Each filter will follow the same general syntax:
+propertyName__operator=value
+. You can include as many filters as you'd like, and all specified filters will be applied to narrow down the results.For example, you can filter the results to only include pages where the name property contains the word
+marketing
+using this parameter:
+name__icontains=marketing
+.The table below lists the page properties that can be used as filters, along with which operators each property can use.
+Property
+Available operators
+id
+eq
+,
+in
+,
+not_in
+slug
+eq
+,
+in
+,
+nin
+,
+icontains
+campaign
+eq
+,
+in
+state
+eq
+,
+ne
+,
+in
+,
+nin
+,
+contains
+See
+available states
+for filtering options.
+publishDate
+eq
+,
+gt
+,
+gte
+,
+lt
+,
+lte
+createdAt
+eq
+,
+gt
+,
+gte
+,
+lt
+,
+lte
+updatedAt
+eq
+,
+gt
+,
+gte
+,
+lt
+,
+lte
+templatePath
+eq
+,
+contains
+,
+startswith
+name
+eq
+,
+in
+,
+icontains
+mabExperimentId
+eq
+,
+in
+abTestId
+eq
+,
+in
+archivedAt
+eq
+,
+gt
+,
+gte
+,
+lt
+,
+lte
+createdById
+eq
+updatedById
+eq
+domain
+eq
+,
+not_like
+,
+contains
+This will display as blank for content published on a domain that is primary for that content type.
+subcategory
+eq
+,
+ne
+,
+in
+,
+nin
+folderId
+eq
+,
+in
+,
+null
+,
+not_null
+language
+in
+,
+not_null
+translatedFromId
+null
+,
+not_null
+dynamicPageHubDbTableId
+eq
+,
+not_null
+Below are the definitions for each operator, along with any available synonyms.
+Operator
+Description
+eq
+Filters for results that are equal to the specified value.Synonyms:
+exact
+,
+is
+ne
+Filters for results that are not equal to the specified value.Synonyms:
+neq
+,
+not
+contains
+Filters for results that contain the specified, case-sensitive value. Not accepted for the
+name
+property.Synonym:
+like
+.
+icontains
+Filters for results by the specified value, not case sensitive. Synonym:
+ilike
+.
+not_like
+Filters for results that don't contain a specified value.Synonym:
+nlike
+lt
+Filters for results that are less than a specified number value, such as a unix timestamp in milliseconds.
+lte
+Filters for results that are less than or equal to a specified value.
+gt
+Filters for results that are greater than a specified value.
+gte
+Filters for results that are greater than or equal to a specified value.
+is_null
+Filters for results that do not have a value for the specified property.
+not_null
+Filters for results that have any value for the specified property.
+startswith
+Filters for results that start with a specified value.
+in
+In
+nin
+Not in
+State values
+To retrieve pages with a given publish state, include the
+state__in=
+query parameter with the following values:
+Draft:
+DRAFT
+,
+DRAFT_AB
+,
+DRAFT_AB_VARIANT
+,
+LOSER_AB_VARIANT
+Scheduled:
+PUBLISHED_OR_SCHEDULED
+,
+SCHEDULED_AB
+Published:
+PUBLISHED_OR_SCHEDULED
+,
+PUBLISHED_AB
+,
+PUBLISHED_AB_VARIANT
+Because both scheduled and published pages will reflect a
+PUBLISHED_OR_SCHEDULED
+state, it's recommended to also include a
+publishDate
+parameter to better understand the page's current state.
+For example, to identify the pages that are currently scheduled but not yet published, your request URL should include a
+publishDate
+parameter that uses the
+gt
+(greater than) operator with the current datetime specified. This will filter for pages with a publish time in the future:
+state__in=PUBLISHED_OR_SCHEDULED&publishDate__gt={currentTime}
+To identify the pages that are already published, your request URL would similarly include a publishDate parameter, but you would use the
+lt
+(less than) operator with the current datetime specified.
+state__in=PUBLISHED_OR_SCHEDULED&publishDate__lt={currentTime}
+Please note:
+currentState
+is a generated field which cannot be used as a filter. This field will reflect the page's current publish state.
+A/B filters
+When filtering for A/B test pages, you can use the following filters:
+Description
+Query Params
+Active A page or winning variant of a completed A/B test
+abStatus__eq=MASTER
+Active B page
+abStatus__eq=VARIANT
+Losing variant of a completed A/B test
+abStatus__eq=LOSER_VARIANT
+Please note:
+An A/B test is running only when there are published, active A and B pages.
+An A/B test is complete when a winning and losing variant have been selected, i.e. there isn’t an active B page.
+Multi-language filters
+When filtering for multi-language pages, you can use the following filters:
+Description
+Query Params
+Primary page in a multi-language group
+translatedFromId__is_null
+Variation page in a multi-language group
+translatedFromId__not_null
+Page with specific Language* (German)
+language__in=de
+Does not support language locale values (e.g.,
+en-us
+)
+Sorting
+To sort results, you can add a
+sort
+query parameter to your request URL, followed by the property name. You can reverse the sort by adding a
+-
+to the property name. For example:
+sort=-publishDate
+.By combining query parameters for filtering, sorting and paging, you can retrieve the pages that match your search criteria. For example, the request below fetches landing pages that do not have a language assigned, ordered by most recently updated. The limit and offset parameters below return the second page of results.
+Copy code snippet
+curl https://api.hubapi.com/cms/v3/pages/landing-pages?sort=-updatedAt&&language__not_null&limit=10&offset=10 \
+--request POST \
+--header "Content-Type: application/json"
+xxxxxxxxxx
+3
+1
+curl
+https://api.hubapi.com/cms/v3/pages/landing-pages
+?sort
+=
+-updatedAt
+&&language__not_null
+&limit
+=
+10
+&offset
+=
+10
+\
+2
+--request
+POST \
+3
+--header
+"Content-Type: application/json"
+Create pages
+To create a website page, make a
+POST
+request to
+/cms/v3/pages/site-pages
+. In the request body, you'll include a JSON payload that sets the page's details along with the page content contained in the
+layoutSections
+object. The required fields when creating a page are
+name
+and
+templatePath
+.For
+templatePath
+, the path should not include a slash (
+/
+) at the start. When using the
+Copy path
+function in the design manager, this slash will be included automatically but should be removed after pasting it into your request body.To set the URL of a page, set the
+domain
+and
+slug
+fields. Note that the
+url
+field is generated and cannot be updated. Learn more about
+creating and customizing pages within HubSpot
+. You can create the page as a draft so that it's not yet published by setting the
+state
+to
+DRAFT
+. See
+available states
+for more information.
+Copy code snippet
+// Example request body
+{
+"domain": "",
+"htmlTitle": "My draft",
+"name": "My test page",
+"slug": "my-test-page",
+"state": "DRAFT",
+"templatePath": "@hubspot/growth/templates/paid-consultation.html",
+"url": "https://www.bird.estate/my-draft",
+"useFeaturedImage": false,
+"layoutSections": {
+"dnd_area": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"label": "Main section",
+"name": "dnd_area",
+"params": {},
+"rowMetaData": [
+{
+"cssClass": "dnd-section",
+"styles": {
+"backgroundColor": {
+"a": 1,
+"b": 250,
+"g": 248,
+"r": 245
+},
+"forceFullWidthSection": false
+}
+},
+{
+"cssClass": "dnd-section",
+"styles": {
+"backgroundColor": {
+"a": 1,
+"b": 255,
+"g": 255,
+"r": 255
+},
+"forceFullWidthSection": false
+}
+}
+],
+"rows": [
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-column-2",
+"params": {
+"css_class": "dnd-column"
+},
+"rowMetaData": [
+{
+"cssClass": "dnd-row"
+},
+{
+"cssClass": "dnd-row"
+},
+{
+"cssClass": "dnd-row"
+}
+],
+"rows": [
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-3",
+"params": {
+"child_css": {},
+"css": {},
+"css_class": "dnd-module",
+"extra_classes": "widget-type-rich_text",
+"html": "<div style='text-align:center;'>\n<h2><strong>About</strong></h2>\n</div>",
+"path": "@hubspot/rich_text",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 12,
+"x": 0
+}
+},
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-column-4",
+"params": {
+"css_class": "dnd-column"
+},
+"rowMetaData": [
+{
+"cssClass": "dnd-row",
+"styles": {}
+}
+],
+"rows": [
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-5",
+"params": {
+"child_css": {},
+"css": {},
+"css_class": "dnd-module",
+"extra_classes": "widget-type-linked_image",
+"horizontal_alignment": "CENTER",
+"img": {
+"alt": "Growth theme placeholder image",
+"loading": "lazy",
+"max_height": 500,
+"max_width": 500,
+"size_type": "auto_custom_max",
+"src": "//7528309.fs1.hubspotusercontent-na1.net/hubfs/7528309/raw_assets/public/mV0_d-cms-growth-theme_hubspot/growth/images/service-one.jpg"
+},
+"path": "@hubspot/linked_image",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"style": "margin-bottom: 22px;",
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"styles": {
+"flexboxPositioning": "TOP_CENTER"
+},
+"type": "custom_widget",
+"w": 12,
+"x": 0
+}
+}
+],
+"type": "cell",
+"w": 6,
+"x": 0
+},
+"6": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-column-6",
+"params": {
+"css_class": "dnd-column"
+},
+"rowMetaData": [
+{
+"cssClass": "dnd-row"
+}
+],
+"rows": [
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-7",
+"params": {
+"child_css": {},
+"css": {},
+"css_class": "dnd-module",
+"extra_classes": "widget-type-rich_text",
+"html": "<p>Add a short description about the work that you do at your company. Try to narrow in on your specialization so that you can capture the attention of your clients. Talk about the value that you can deliver through a paid consultation.</p>",
+"path": "@hubspot/rich_text",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 12,
+"x": 0
+}
+}
+],
+"type": "cell",
+"w": 6,
+"x": 6
+}
+},
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-8",
+"params": {
+"button_link": {
+"no_follow": false,
+"open_in_new_tab": false,
+"rel": "",
+"sponsored": false,
+"url": {
+"href": "#book"
+},
+"user_generated_content": false
+},
+"button_text": "Book a consultation",
+"child_css": {},
+"css": {},
+"css_class": "dnd-module",
+"path": "../modules/button",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"styles": {
+"alignment": {
+"alignment": {
+"css": "",
+"horizontal_align": "CENTER"
+}
+}
+},
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 12,
+"x": 0
+}
+}
+],
+"styles": {},
+"type": "cell",
+"w": 12,
+"x": 0
+}
+},
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-column-9",
+"params": {
+"css_class": "dnd-column"
+},
+"rowMetaData": [
+{
+"cssClass": "dnd-row",
+"styles": {}
+},
+{
+"cssClass": "dnd-row"
+},
+{
+"cssClass": "dnd-row"
+}
+],
+"rows": [
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-10",
+"params": {
+"child_css": {},
+"css": {},
+"css_class": "dnd-module",
+"extra_classes": "widget-type-rich_text",
+"html": "<a id=\"services\" data-hs-anchor=\"true\"></a>\n<div style=\"text-align: center;\">\n<h2>A suite of tools at your disposal</h2>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>\n</div>",
+"path": "@hubspot/rich_text",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 12,
+"x": 0
+}
+},
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-11",
+"params": {
+"child_css": {},
+"content": {
+"content": "<h3 style='text-align:center;'>Service</h3><p>Summarize the service you provide. Add a message about the value that you can provide to your customers.</p>"
+},
+"css": {},
+"css_class": "dnd-module",
+"icon": {
+"icon": {
+"icon_set": "fontawesome-5.0.10",
+"name": "balance-scale",
+"type": "SOLID",
+"unicode": "f24e"
+}
+},
+"path": "../modules/service-card",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"styles": {
+"card": {
+"spacing": {
+"spacing": {
+"css": "margin-bottom: 22px;\n",
+"margin": {
+"bottom": {
+"units": "px",
+"value": 22
+}
+}
+}
+}
+},
+"icon": {
+"background": {
+"color": {
+"color": "#494a52",
+"css": "#494a52",
+"hex": "#494a52",
+"opacity": 100,
+"rgb": "rgb(73, 74, 82)",
+"rgba": "rgba(73, 74, 82, 1)"
+}
+}
+}
+},
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 4,
+"x": 0
+},
+"4": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-12",
+"params": {
+"child_css": {},
+"content": {
+"content": "<h3 style='text-align:center;'>Service</h3><p>Summarize the service you provide. Add a message about the value that you can provide to your customers.</p>"
+},
+"css": {},
+"css_class": "dnd-module",
+"icon": {
+"icon": {
+"icon_set": "fontawesome-5.0.10",
+"name": "industry",
+"type": "SOLID",
+"unicode": "f275"
+}
+},
+"path": "../modules/service-card",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"styles": {
+"card": {
+"spacing": {
+"spacing": {
+"css": "margin-bottom: 22px;\n",
+"margin": {
+"bottom": {
+"units": "px",
+"value": 22
+}
+}
+}
+}
+},
+"icon": {
+"background": {
+"color": {
+"color": "#494a52",
+"css": "#494a52",
+"hex": "#494a52",
+"opacity": 100,
+"rgb": "rgb(73, 74, 82)",
+"rgba": "rgba(73, 74, 82, 1)"
+}
+}
+}
+},
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 4,
+"x": 4
+},
+"8": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-13",
+"params": {
+"child_css": {},
+"content": {
+"content": "<h3 style='text-align:center;'>Service</h3><p>Summarize the service you provide. Add a message about the value that you can provide to your customers.</p>"
+},
+"css": {},
+"css_class": "dnd-module",
+"icon": {
+"icon": {
+"icon_set": "fontawesome-5.0.10",
+"name": "server",
+"type": "SOLID",
+"unicode": "f233"
+}
+},
+"path": "../modules/service-card",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"styles": {
+"card": {
+"spacing": {
+"spacing": {
+"css": "margin-bottom: 22px;\n",
+"margin": {
+"bottom": {
+"units": "px",
+"value": 22
+}
+}
+}
+}
+},
+"icon": {
+"background": {
+"color": {
+"color": "#494a52",
+"css": "#494a52",
+"hex": "#494a52",
+"opacity": 100,
+"rgb": "rgb(73, 74, 82)",
+"rgba": "rgba(73, 74, 82, 1)"
+}
+}
+}
+},
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 4,
+"x": 8
+}
+},
+{
+"0": {
+"cells": [],
+"cssClass": "",
+"cssId": "",
+"cssStyle": "",
+"name": "dnd_area-module-14",
+"params": {
+"button_link": {
+"no_follow": false,
+"open_in_new_tab": false,
+"rel": "",
+"sponsored": false,
+"url": {
+"href": "#book"
+},
+"user_generated_content": false
+},
+"button_text": "Book a consultation",
+"child_css": {},
+"css": {},
+"css_class": "dnd-module",
+"path": "../modules/button",
+"schema_version": 2,
+"smart_objects": [],
+"smart_type": "NOT_SMART",
+"styles": {
+"alignment": {
+"alignment": {
+"css": "",
+"horizontal_align": "CENTER"
+}
+}
+},
+"wrap_field_tag": "div"
+},
+"rowMetaData": [],
+"rows": [],
+"type": "custom_widget",
+"w": 12,
+"x": 0
+}
+}
+],
+"type": "cell",
+"w": 12,
+"x": 0
+}
+}
+],
+"type": "cell",
+"w": 12,
+"x": 0
+}
+}
+}
+xxxxxxxxxx
+538
+1
+// Example request body
+2
+{
+3
+"domain"
+:
+""
+,
+4
+"htmlTitle"
+:
+"My draft"
+,
+5
+"name"
+:
+"My test page"
+,
+6
+"slug"
+:
+"my-test-page"
+,
+7
+"state"
+:
+"DRAFT"
+,
+8
+"templatePath"
+:
+"@hubspot/growth/templates/paid-consultation.html"
+,
+9
+"url"
+:
+"https://www.bird.estate/my-draft"
+,
+10
+"useFeaturedImage"
+:
+false
+,
+11
+"layoutSections"
+: {
+12
+"dnd_area"
+: {
+13
+"cells"
+: [],
+14
+"cssClass"
+:
+""
+,
+15
+"cssId"
+:
+""
+,
+16
+"cssStyle"
+:
+""
+,
+17
+"label"
+:
+"Main section"
+,
+18
+"name"
+:
+"dnd_area"
+,
+19
+"params"
+: {},
+20
+"rowMetaData"
+: [
+21
+{
+22
+"cssClass"
+:
+"dnd-section"
+,
+23
+"styles"
+: {
+24
+"backgroundColor"
+: {
+25
+"a"
+:
+1
+,
+26
+"b"
+:
+250
+,
+27
+"g"
+:
+248
+,
+28
+"r"
+:
+245
+29
+},
+30
+"forceFullWidthSection"
+:
+false
+31
+}
+32
+},
+33
+{
+34
+"cssClass"
+:
+"dnd-section"
+,
+35
+"styles"
+: {
+36
+"backgroundColor"
+: {
+37
+"a"
+:
+1
+,
+38
+"b"
+:
+255
+,
+39
+"g"
+:
+255
+,
+40
+"r"
+:
+255
+41
+},
+42
+"forceFullWidthSection"
+:
+false
+43
+}
+44
+}
+45
+],
+46
+"rows"
+: [
+47
+{
+48
+"0"
+: {
+49
+"cells"
+: [],
+50
+"cssClass"
+:
+""
+,
+51
+"cssId"
+:
+""
+,
+52
+"cssStyle"
+:
+""
+,
+53
+"name"
+:
+"dnd_area-column-2"
+,
+54
+"params"
+: {
+55
+"css_class"
+:
+"dnd-column"
+56
+},
+57
+"rowMetaData"
+: [
+58
+{
+59
+"cssClass"
+:
+"dnd-row"
+60
+},
+61
+{
+62
+"cssClass"
+:
+"dnd-row"
+63
+},
+64
+{
+65
+"cssClass"
+:
+"dnd-row"
+66
+}
+67
+],
+68
+"rows"
+: [
+69
+{
+70
+"0"
+: {
+71
+"cells"
+: [],
+72
+"cssClass"
+:
+""
+,
+73
+"cssId"
+:
+""
+,
+74
+"cssStyle"
+:
+""
+,
+75
+"name"
+:
+"dnd_area-module-3"
+,
+76
+"params"
+: {
+77
+"child_css"
+: {},
+78
+"css"
+: {},
+79
+"css_class"
+:
+"dnd-module"
+,
+80
+"extra_classes"
+:
+"widget-type-rich_text"
+,
+81
+"html"
+:
+"<div style='text-align:center;'>\n<h2><strong>About</strong></h2>\n</div>"
+,
+82
+"path"
+:
+"@hubspot/rich_text"
+,
+83
+"schema_version"
+:
+2
+,
+84
+"smart_objects"
+: [],
+85
+"smart_type"
+:
+"NOT_SMART"
+,
+86
+"wrap_field_tag"
+:
+"div"
+87
+},
+88
+"rowMetaData"
+: [],
+89
+"rows"
+: [],
+90
+"type"
+:
+"custom_widget"
+,
+91
+"w"
+:
+12
+,
+92
+"x"
+:
+0
+93
+}
+94
+},
+95
+{
+96
+"0"
+: {
+97
+"cells"
+: [],
+98
+"cssClass"
+:
+""
+,
+99
+"cssId"
+:
+""
+,
+100
+"cssStyle"
+:
+""
+,
+101
+"name"
+:
+"dnd_area-column-4"
+,
+102
+"params"
+: {
+103
+"css_class"
+:
+"dnd-column"
+104
+},
+105
+"rowMetaData"
+: [
+106
+{
+107
+"cssClass"
+:
+"dnd-row"
+,
+108
+"styles"
+: {}
+109
+}
+110
+],
+111
+"rows"
+: [
+112
+{
+113
+"0"
+: {
+114
+"cells"
+: [],
+115
+"cssClass"
+:
+""
+,
+116
+"cssId"
+:
+""
+,
+117
+"cssStyle"
+:
+""
+,
+118
+"name"
+:
+"dnd_area-module-5"
+,
+119
+"params"
+: {
+120
+"child_css"
+: {},
+121
+"css"
+: {},
+122
+"css_class"
+:
+"dnd-module"
+,
+123
+"extra_classes"
+:
+"widget-type-linked_image"
+,
+124
+"horizontal_alignment"
+:
+"CENTER"
+,
+125
+"img"
+: {
+126
+"alt"
+:
+"Growth theme placeholder image"
+,
+127
+"loading"
+:
+"lazy"
+,
+128
+"max_height"
+:
+500
+,
+129
+"max_width"
+:
+500
+,
+130
+"size_type"
+:
+"auto_custom_max"
+,
+131
+"src"
+:
+"//7528309.fs1.hubspotusercontent-na1.net/hubfs/7528309/raw_assets/public/mV0_d-cms-growth-theme_hubspot/growth/images/service-one.jpg"
+132
+},
+133
+"path"
+:
+"@hubspot/linked_image"
+,
+134
+"schema_version"
+:
+2
+,
+135
+"smart_objects"
+: [],
+136
+"smart_type"
+:
+"NOT_SMART"
+,
+137
+"style"
+:
+"margin-bottom: 22px;"
+,
+138
+"wrap_field_tag"
+:
+"div"
+139
+},
+140
+"rowMetaData"
+: [],
+141
+"rows"
+: [],
+142
+"styles"
+: {
+143
+"flexboxPositioning"
+:
+"TOP_CENTER"
+144
+},
+145
+"type"
+:
+"custom_widget"
+,
+146
+"w"
+:
+12
+,
+147
+"x"
+:
+0
+148
+}
+149
+}
+150
+],
+151
+"type"
+:
+"cell"
+,
+152
+"w"
+:
+6
+,
+153
+"x"
+:
+0
+154
+},
+155
+"6"
+: {
+156
+"cells"
+: [],
+157
+"cssClass"
+:
+""
+,
+158
+"cssId"
+:
+""
+,
+159
+"cssStyle"
+:
+""
+,
+160
+"name"
+:
+"dnd_area-column-6"
+,
+161
+"params"
+: {
+162
+"css_class"
+:
+"dnd-column"
+163
+},
+164
+"rowMetaData"
+: [
+165
+{
+166
+"cssClass"
+:
+"dnd-row"
+167
+}
+168
+],
+169
+"rows"
+: [
+170
+{
+171
+"0"
+: {
+172
+"cells"
+: [],
+173
+"cssClass"
+:
+""
+,
+174
+"cssId"
+:
+""
+,
+175
+"cssStyle"
+:
+""
+,
+176
+"name"
+:
+"dnd_area-module-7"
+,
+177
+"params"
+: {
+178
+"child_css"
+: {},
+179
+"css"
+: {},
+180
+"css_class"
+:
+"dnd-module"
+,
+181
+"extra_classes"
+:
+"widget-type-rich_text"
+,
+182
+"html"
+:
+"<p>Add a short description about the work that you do at your company. Try to narrow in on your specialization so that you can capture the attention of your clients. Talk about the value that you can deliver through a paid consultation.</p>"
+,
+183
+"path"
+:
+"@hubspot/rich_text"
+,
+184
+"schema_version"
+:
+2
+,
+185
+"smart_objects"
+: [],
+186
+"smart_type"
+:
+"NOT_SMART"
+,
+187
+"wrap_field_tag"
+:
+"div"
+188
+},
+189
+"rowMetaData"
+: [],
+190
+"rows"
+: [],
+191
+"type"
+:
+"custom_widget"
+,
+192
+"w"
+:
+12
+,
+193
+"x"
+:
+0
+194
+}
+195
+}
+196
+],
+197
+"type"
+:
+"cell"
+,
+198
+"w"
+:
+6
+,
+199
+"x"
+:
+6
+200
+}
+201
+},
+202
+{
+203
+"0"
+: {
+204
+"cells"
+: [],
+205
+"cssClass"
+:
+""
+,
+206
+"cssId"
+:
+""
+,
+207
+"cssStyle"
+:
+""
+,
+208
+"name"
+:
+"dnd_area-module-8"
+,
+209
+"params"
+: {
+210
+"button_link"
+: {
+211
+"no_follow"
+:
+false
+,
+212
+"open_in_new_tab"
+:
+false
+,
+213
+"rel"
+:
+""
+,
+214
+"sponsored"
+:
+false
+,
+215
+"url"
+: {
+216
+"href"
+:
+"#book"
+217
+},
+218
+"user_generated_content"
+:
+false
+219
+},
+220
+"button_text"
+:
+"Book a consultation"
+,
+221
+"child_css"
+: {},
+222
+"css"
+: {},
+223
+"css_class"
+:
+"dnd-module"
+,
+224
+"path"
+:
+"../modules/button"
+,
+225
+"schema_version"
+:
+2
+,
+226
+"smart_objects"
+: [],
+227
+"smart_type"
+:
+"NOT_SMART"
+,
+228
+"styles"
+: {
+229
+"alignment"
+: {
+230
+"alignment"
+: {
+231
+"css"
+:
+""
+,
+232
+"horizontal_align"
+:
+"CENTER"
+233
+}
+234
+}
+235
+},
+236
+"wrap_field_tag"
+:
+"div"
+237
+},
+238
+"rowMetaData"
+: [],
+239
+"rows"
+: [],
+240
+"type"
+:
+"custom_widget"
+,
+241
+"w"
+:
+12
+,
+242
+"x"
+:
+0
+243
+}
+244
+}
+245
+],
+246
+"styles"
+: {},
+247
+"type"
+:
+"cell"
+,
+248
+"w"
+:
+12
+,
+249
+"x"
+:
+0
+250
+}
+251
+},
+252
+{
+253
+"0"
+: {
+254
+"cells"
+: [],
+255
+"cssClass"
+:
+""
+,
+256
+"cssId"
+:
+""
+,
+257
+"cssStyle"
+:
+""
+,
+258
+"name"
+:
+"dnd_area-column-9"
+,
+259
+"params"
+: {
+260
+"css_class"
+:
+"dnd-column"
+261
+},
+262
+"rowMetaData"
+: [
+263
+{
+264
+"cssClass"
+:
+"dnd-row"
+,
+265
+"styles"
+: {}
+266
+},
+267
+{
+268
+"cssClass"
+:
+"dnd-row"
+269
+},
+270
+{
+271
+"cssClass"
+:
+"dnd-row"
+272
+}
+273
+],
+274
+"rows"
+: [
+275
+{
+276
+"0"
+: {
+277
+"cells"
+: [],
+278
+"cssClass"
+:
+""
+,
+279
+"cssId"
+:
+""
+,
+280
+"cssStyle"
+:
+""
+,
+281
+"name"
+:
+"dnd_area-module-10"
+,
+282
+"params"
+: {
+283
+"child_css"
+: {},
+284
+"css"
+: {},
+285
+"css_class"
+:
+"dnd-module"
+,
+286
+"extra_classes"
+:
+"widget-type-rich_text"
+,
+287
+"html"
+:
+"<a id=\"services\" data-hs-anchor=\"true\"></a>\n<div style=\"text-align: center;\">\n<h2>A suite of tools at your disposal</h2>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>\n</div>"
+,
+288
+"path"
+:
+"@hubspot/rich_text"
+,
+289
+"schema_version"
+:
+2
+,
+290
+"smart_objects"
+: [],
+291
+"smart_type"
+:
+"NOT_SMART"
+,
+292
+"wrap_field_tag"
+:
+"div"
+293
+},
+294
+"rowMetaData"
+: [],
+295
+"rows"
+: [],
+296
+"type"
+:
+"custom_widget"
+,
+297
+"w"
+:
+12
+,
+298
+"x"
+:
+0
+299
+}
+300
+},
+301
+{
+302
+"0"
+: {
+303
+"cells"
+: [],
+304
+"cssClass"
+:
+""
+,
+305
+"cssId"
+:
+""
+,
+306
+"cssStyle"
+:
+""
+,
+307
+"name"
+:
+"dnd_area-module-11"
+,
+308
+"params"
+: {
+309
+"child_css"
+: {},
+310
+"content"
+: {
+311
+"content"
+:
+"<h3 style='text-align:center;'>Service</h3><p>Summarize the service you provide. Add a message about the value that you can provide to your customers.</p>"
+312
+},
+313
+"css"
+: {},
+314
+"css_class"
+:
+"dnd-module"
+,
+315
+"icon"
+: {
+316
+"icon"
+: {
+317
+"icon_set"
+:
+"fontawesome-5.0.10"
+,
+318
+"name"
+:
+"balance-scale"
+,
+319
+"type"
+:
+"SOLID"
+,
+320
+"unicode"
+:
+"f24e"
+321
+}
+322
+},
+323
+"path"
+:
+"../modules/service-card"
+,
+324
+"schema_version"
+:
+2
+,
+325
+"smart_objects"
+: [],
+326
+"smart_type"
+:
+"NOT_SMART"
+,
+327
+"styles"
+: {
+328
+"card"
+: {
+329
+"spacing"
+: {
+330
+"spacing"
+: {
+331
+"css"
+:
+"margin-bottom: 22px;\n"
+,
+332
+"margin"
+: {
+333
+"bottom"
+: {
+334
+"units"
+:
+"px"
+,
+335
+"value"
+:
+22
+336
+}
+337
+}
+338
+}
+339
+}
+340
+},
+341
+"icon"
+: {
+342
+"background"
+: {
+343
+"color"
+: {
+344
+"color"
+:
+"#494a52"
+,
+345
+"css"
+:
+"#494a52"
+,
+346
+"hex"
+:
+"#494a52"
+,
+347
+"opacity"
+:
+100
+,
+348
+"rgb"
+:
+"rgb(73, 74, 82)"
+,
+349
+"rgba"
+:
+"rgba(73, 74, 82, 1)"
+350
+}
+351
+}
+352
+}
+353
+},
+354
+"wrap_field_tag"
+:
+"div"
+355
+},
+356
+"rowMetaData"
+: [],
+357
+"rows"
+: [],
+358
+"type"
+:
+"custom_widget"
+,
+359
+"w"
+:
+4
+,
+360
+"x"
+:
+0
+361
+},
+362
+"4"
+: {
+363
+"cells"
+: [],
+364
+"cssClass"
+:
+""
+,
+365
+"cssId"
+:
+""
+,
+366
+"cssStyle"
+:
+""
+,
+367
+"name"
+:
+"dnd_area-module-12"
+,
+368
+"params"
+: {
+369
+"child_css"
+: {},
+370
+"content"
+: {
+371
+"content"
+:
+"<h3 style='text-align:center;'>Service</h3><p>Summarize the service you provide. Add a message about the value that you can provide to your customers.</p>"
+372
+},
+373
+"css"
+: {},
+374
+"css_class"
+:
+"dnd-module"
+,
+375
+"icon"
+: {
+376
+"icon"
+: {
+377
+"icon_set"
+:
+"fontawesome-5.0.10"
+,
+378
+"name"
+:
+"industry"
+,
+379
+"type"
+:
+"SOLID"
+,
+380
+"unicode"
+:
+"f275"
+381
+}
+382
+},
+383
+"path"
+:
+"../modules/service-card"
+,
+384
+"schema_version"
+:
+2
+,
+385
+"smart_objects"
+: [],
+386
+"smart_type"
+:
+"NOT_SMART"
+,
+387
+"styles"
+: {
+388
+"card"
+: {
+389
+"spacing"
+: {
+390
+"spacing"
+: {
+391
+"css"
+:
+"margin-bottom: 22px;\n"
+,
+392
+"margin"
+: {
+393
+"bottom"
+: {
+394
+"units"
+:
+"px"
+,
+395
+"value"
+:
+22
+396
+}
+397
+}
+398
+}
+399
+}
+400
+},
+401
+"icon"
+: {
+402
+"background"
+: {
+403
+"color"
+: {
+404
+"color"
+:
+"#494a52"
+,
+405
+"css"
+:
+"#494a52"
+,
+406
+"hex"
+:
+"#494a52"
+,
+407
+"opacity"
+:
+100
+,
+408
+"rgb"
+:
+"rgb(73, 74, 82)"
+,
+409
+"rgba"
+:
+"rgba(73, 74, 82, 1)"
+410
+}
+411
+}
+412
+}
+413
+},
+414
+"wrap_field_tag"
+:
+"div"
+415
+},
+416
+"rowMetaData"
+: [],
+417
+"rows"
+: [],
+418
+"type"
+:
+"custom_widget"
+,
+419
+"w"
+:
+4
+,
+420
+"x"
+:
+4
+421
+},
+422
+"8"
+: {
+423
+"cells"
+: [],
+424
+"cssClass"
+:
+""
+,
+425
+"cssId"
+:
+""
+,
+426
+"cssStyle"
+:
+""
+,
+427
+"name"
+:
+"dnd_area-module-13"
+,
+428
+"params"
+: {
+429
+"child_css"
+: {},
+430
+"content"
+: {
+431
+"content"
+:
+"<h3 style='text-align:center;'>Service</h3><p>Summarize the service you provide. Add a message about the value that you can provide to your customers.</p>"
+432
+},
+433
+"css"
+: {},
+434
+"css_class"
+:
+"dnd-module"
+,
+435
+"icon"
+: {
+436
+"icon"
+: {
+437
+"icon_set"
+:
+"fontawesome-5.0.10"
+,
+438
+"name"
+:
+"server"
+,
+439
+"type"
+:
+"SOLID"
+,
+440
+"unicode"
+:
+"f233"
+441
+}
+442
+},
+443
+"path"
+:
+"../modules/service-card"
+,
+444
+"schema_version"
+:
+2
+,
+445
+"smart_objects"
+: [],
+446
+"smart_type"
+:
+"NOT_SMART"
+,
+447
+"styles"
+: {
+448
+"card"
+: {
+449
+"spacing"
+: {
+450
+"spacing"
+: {
+451
+"css"
+:
+"margin-bottom: 22px;\n"
+,
+452
+"margin"
+: {
+453
+"bottom"
+: {
+454
+"units"
+:
+"px"
+,
+455
+"value"
+:
+22
+456
+}
+457
+}
+458
+}
+459
+}
+460
+},
+461
+"icon"
+: {
+462
+"background"
+: {
+463
+"color"
+: {
+464
+"color"
+:
+"#494a52"
+,
+465
+"css"
+:
+"#494a52"
+,
+466
+"hex"
+:
+"#494a52"
+,
+467
+"opacity"
+:
+100
+,
+468
+"rgb"
+:
+"rgb(73, 74, 82)"
+,
+469
+"rgba"
+:
+"rgba(73, 74, 82, 1)"
+470
+}
+471
+}
+472
+}
+473
+},
+474
+"wrap_field_tag"
+:
+"div"
+475
+},
+476
+"rowMetaData"
+: [],
+477
+"rows"
+: [],
+478
+"type"
+:
+"custom_widget"
+,
+479
+"w"
+:
+4
+,
+480
+"x"
+:
+8
+481
+}
+482
+},
+483
+{
+484
+"0"
+: {
+485
+"cells"
+: [],
+486
+"cssClass"
+:
+""
+,
+487
+"cssId"
+:
+""
+,
+488
+"cssStyle"
+:
+""
+,
+489
+"name"
+:
+"dnd_area-module-14"
+,
+490
+"params"
+: {
+491
+"button_link"
+: {
+492
+"no_follow"
+:
+false
+,
+493
+"open_in_new_tab"
+:
+false
+,
+494
+"rel"
+:
+""
+,
+495
+"sponsored"
+:
+false
+,
+496
+"url"
+: {
+497
+"href"
+:
+"#book"
+498
+},
+499
+"user_generated_content"
+:
+false
+500
+},
+501
+"button_text"
+:
+"Book a consultation"
+,
+502
+"child_css"
+: {},
+503
+"css"
+: {},
+504
+"css_class"
+:
+"dnd-module"
+,
+505
+"path"
+:
+"../modules/button"
+,
+506
+"schema_version"
+:
+2
+,
+507
+"smart_objects"
+: [],
+508
+"smart_type"
+:
+"NOT_SMART"
+,
+509
+"styles"
+: {
+510
+"alignment"
+: {
+511
+"alignment"
+: {
+512
+"css"
+:
+""
+,
+513
+"horizontal_align"
+:
+"CENTER"
+514
+}
+515
+}
+516
+},
+517
+"wrap_field_tag"
+:
+"div"
+518
+},
+519
+"rowMetaData"
+: [],
+520
+"rows"
+: [],
+521
+"type"
+:
+"custom_widget"
+,
+522
+"w"
+:
+12
+,
+523
+"x"
+:
+0
+524
+}
+525
+}
+526
+],
+527
+"type"
+:
+"cell"
+,
+528
+"w"
+:
+12
+,
+529
+"x"
+:
+0
+530
+}
+531
+}
+532
+],
+533
+"type"
+:
+"cell"
+,
+534
+"w"
+:
+12
+,
+535
+"x"
+:
+0
+536
+}
+537
+}
+538
+}
+Editing pages
+Pages in HubSpot have both draft and live versions. The draft version may be updated without affecting the live page content. Drafts can be reviewed and then published by a user working in HubSpot. They may also be scheduled for publication at a future time via the
+/schedule
+endpoint. Draft changes can be discarded via the
+/reset
+endpoint, allowing users to go back to the current live version of the page without disruption.
+Edit Draft
+The draft version of a page can be updated via a
+PATCH
+request to the
+{objectid}/draft
+endpoint. This endpoint accepts a JSON payload representing the page model.Modifying the content of a page via these APIs is
+not
+recommended -- the content editor in HubSpot is the simplest way to modify website content.You can modify the
+widgets
+,
+widgetContainers
+, and
+layoutSections
+properties via this endpoint. They store page-level module data, contained directly in the template (
+widgets
+), within flex columns (
+widgetContainers
+) and in drag-and-drop areas (
+layoutSections
+).The properties provided in the supplied payload will override the existing draft properties without any complex merging logic. Consequently, when updating nested properties such as those within the
+widgets
+,
+widgetContainers
+, or
+layoutSections
+of the page, you must include the full definition of the object. Partial updates are not supported.
+Reset Draft
+The draft version of a page can be reset to the current live version via a
+POST
+request to the
+{objectId}/draft/reset
+endpoint. This endpoint accepts no payload and simply reverts the draft version of the target page to match the current live version.
+Publishing pages
+Unpublished changes to a published page can be pushed live via a
+POST
+request to the
+{objectId}/draft/push-live
+endpoint. This endpoint accepts no payload and will only update an already published page, not publish a drafted page.
+Publish Draft (Scheduled)
+The draft version of a page can be scheduled for publication at a future time via a
+POST
+request to the
+schedule
+endpoint. This endpoint accepts a JSON payload containing the
+id
+of the target page and a
+publishDate
+. Learn more about
+scheduling page publication.
+A/B testing
+A/B tests can be used to tune and optimize content by splitting traffic to a page across two variants of differing formats. Conversion rate of each page is monitored over time so that a winner can be chosen based on the relative success of each variant. Learn more about
+running A/B tests in HubSpot
+. The following properties will be populated on pages with active or completed A/B tests:
+abTestId
+: Unique identifier for the page’s associated A/B test
+abStatus
+: Indicates whether the page is an A/B primary, variant, or loser variant
+Create Test
+An A/B test variant can be created via a
+POST
+request to the
+ab-test/create-variation
+endpoint. This endpoint accepts a JSON payload containing the
+contentId
+of the page to test and a
+variationName
+for the variant to be created.Upon creation, the new test variant can be
+updated
+and
+published
+in the same manner as a standard page.
+End Test
+Once enough traffic has been monitored across each variant and a clear winner has been determined, an A/B test can be terminated via a
+POST
+request to the
+ab-test/end
+endpoint. This endpoint accepts a JSON payload containing the
+abTestId
+of the target A/B test and the
+winnerId
+of the content deemed the winner.
+Multi-language content
+In HubSpot, you can group together language variants of the same content. Learn more about
+working with multi-language pages in HubSpot
+. The following properties will be populated on pages within a multi-language group:
+translatedFromId
+: unique identifier for the primary language page of the multi-language group. This property will be null on the primary page itself.
+language
+: the ISO 639 code representing the language of the page.
+translations
+: a map of ISO 639 codes to variant page objects within the multi-language group.
+Create a New Language Variant
+A new language variant of an existing page can be created via a
+POST
+request to the
+multi-language/create-language-variant
+endpoint. This endpoint accepts a JSON payload containing the
+id
+of the page to clone and the
+language
+identifier of the new variant.
+Attach a Page to an Existing Multi-Language Group
+A page can be added to an existing multi-language group via a
+POST
+request to the
+multi-language/attach-to-lang-group
+endpoint. This endpoint accepts a JSON payload containing the
+id
+of the target page, the
+language
+identifier of the page being added, and the
+primaryId
+of the page designated as the primary page in the target multi-language group.
+Detach a Page from a Multi-Language Group
+A page can be removed from a multi-languages group via a
+POST
+request to the
+multi-language/detach-from-lang-group
+endpoint. This endpoint accepts a JSON payload containing the
+id
+of the target page.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Blogs
+Content audit
+Domains
+HubDB
+Media bridge
+Pages
+Performance
+Site search
+Source code
+URL redirects
+Conversations
+Library
+CRM
+Marketing
+Settings
+Legal

@@ -1,0 +1,536 @@
+Alias mapping | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Simple implementation
+Complex implementation
+CMS Development
+Content and structure
+Fields
+Alias mapping
+Alias mapping
+Alias mapping enables you to create field mappings in a module so that you can move, rename, or replace its fields without impacting pages that are using the module.
+For example, a module is being used on a live page. You want to move some fields into the
+Styles
+tab
+, such as color or font, but a content creator has already selected values for those fields in the editor. If you were to move those fields without setting up alias mapping, HubSpot would not be able to relocate those fields and they would revert to their default values, which would undo the styling on the live page.
+Instead, you can include an
+aliases_mapping
+property to map the field to another one in
+fields.json
+. Then, when a value has not been set for the original field, HubSpot will check if a value exists in the mapped field. If no value exists in the mapped field either, it will use the default value instead. This property can be used to map field values between different versions of a module only when the stored data type of the old field is the same as the new field's stored data type.
+For a visual walkthrough of this feature, check out the video below.
+To migrate existing fields to aliases:
+Create new fields and map them to old fields using the
+aliases_mapping
+property in the
+fields.json
+file.
+Remove the old field definition.
+Update the
+module.html
+file to use the new fields definition.
+Please note:
+You cannot map fields that are of a different data type to each other. For example, you can't map a background gradient field to an image field. The stored value has to be a valid value for the new field's type.
+When creating a new field with an alias mapping to an old field, the default values and required properties of both fields should be the same.
+Below are examples of implementing this for both simple and complex changes:
+Simple implementation
+: mapping a color field to another new color field.
+Complex implementation
+: mapping a number field to a font field's
+size
+subfield to control font size.
+Simple implementation
+In simple situations, the field type of the old field and the field type of the new field should be the same. For example:
+Old color field to new color field.
+Old text field to new text field.
+Old spacing field to new spacing field.
+Below is an example of using
+aliases_mapping
+when moving a color field from the module's
+Content
+tab to the
+Styles
+tab.
+Original module code:
+JSON
+JSON
+More
+Copy code snippet
+[
+{
+"label": "Button Color",
+"name": "old_button_color_field",
+"type": "color",
+"required": true,
+"default": {
+"color": "#FFFFFF",
+"opacity": 100
+}
+}
+]
+1
+[
+2
+{
+3
+"label"
+:
+"Button Color"
+,
+4
+"name"
+:
+"old_button_color_field"
+,
+5
+"type"
+:
+"color"
+,
+6
+"required"
+:
+true
+,
+7
+"default"
+: {
+8
+"color"
+:
+"#FFFFFF"
+,
+9
+"opacity"
+:
+100
+10
+}
+11
+}
+12
+]
+Updated module code:
+JSON
+JSON
+More
+Copy code snippet
+[
+{
+"label": "Styles",
+"name": "styles",
+"type": "group",
+"tab": "STYLE",
+"children": [
+{
+"label": "Button Color",
+"name": "new_button_color_field",
+"type": "color",
+"required": true,
+"aliases_mapping": {
+"property_aliases_paths": {
+"new_button_color_field": ["old_button_color_field"]
+}
+},
+"default": {
+"color": "#FFFFFF",
+"opacity": 100
+}
+}
+]
+}
+]
+xxxxxxxxxx
+25
+1
+[
+2
+{
+3
+"label"
+:
+"Styles"
+,
+4
+"name"
+:
+"styles"
+,
+5
+"type"
+:
+"group"
+,
+6
+"tab"
+:
+"STYLE"
+,
+7
+"children"
+: [
+8
+{
+9
+"label"
+:
+"Button Color"
+,
+10
+"name"
+:
+"new_button_color_field"
+,
+11
+"type"
+:
+"color"
+,
+12
+"required"
+:
+true
+,
+13
+"aliases_mapping"
+: {
+14
+"property_aliases_paths"
+: {
+15
+"new_button_color_field"
+: [
+"old_button_color_field"
+]
+16
+}
+17
+},
+18
+"default"
+: {
+19
+"color"
+:
+"#FFFFFF"
+,
+20
+"opacity"
+:
+100
+21
+}
+22
+}
+23
+]
+24
+}
+25
+]
+Complex implementation
+In more complex situations, you can also map fields to subfields or other module field types as long as the data type is the same, and the new field's subfield type matches. Subfields are the properties within the field's stored value object. For example:
+Mapping a
+Rich text
+field to a
+Text
+field, as the values in both fields are stored as strings.
+Consolidating typography fields, such as changing from a number field for font size, to use a font field (which has a font size sub field). You can add an alias for the
+size
+subfield to map it to the old number field by using dot notation.
+Below is an example of changing the font sizing option from a number field to a font field which has a font size sub field.
+Original module code:
+JSON
+JSON
+More
+Copy code snippet
+[
+{
+"name": "my_number_field",
+"label": "Number field",
+"required": false,
+"locked": false,
+"display": "text",
+"step": 1,
+"type": "number",
+"min": null,
+"max": null,
+"inline_help_text": "",
+"help_text": "",
+"default": null
+}
+]
+xxxxxxxxxx
+16
+1
+[
+2
+{
+3
+"name"
+:
+"my_number_field"
+,
+4
+"label"
+:
+"Number field"
+,
+5
+"required"
+:
+false
+,
+6
+"locked"
+:
+false
+,
+7
+"display"
+:
+"text"
+,
+8
+"step"
+:
+1
+,
+9
+"type"
+:
+"number"
+,
+10
+"min"
+:
+null
+,
+11
+"max"
+:
+null
+,
+12
+"inline_help_text"
+:
+""
+,
+13
+"help_text"
+:
+""
+,
+14
+"default"
+:
+null
+15
+}
+16
+]
+Updated module code:
+JSON
+JSON
+More
+Copy code snippet
+[
+{
+"name": "my_font_field",
+"label": "font_field",
+"required": false,
+"locked": false,
+"inline_help_text": "",
+"help_text": "",
+"load_external_fonts": true,
+"type": "font",
+"aliases_mapping": {
+"property_aliases_paths": {
+"my_font_field.size": ["my_number_field"]
+}
+},
+"default": {
+"size": 12,
+"font": "Merriweather",
+"font_set": "GOOGLE",
+"size_unit": "px",
+"color": "#000",
+"styles": {}
+}
+}
+]
+xxxxxxxxxx
+25
+1
+[
+2
+{
+3
+"name"
+:
+"my_font_field"
+,
+4
+"label"
+:
+"font_field"
+,
+5
+"required"
+:
+false
+,
+6
+"locked"
+:
+false
+,
+7
+"inline_help_text"
+:
+""
+,
+8
+"help_text"
+:
+""
+,
+9
+"load_external_fonts"
+:
+true
+,
+10
+"type"
+:
+"font"
+,
+11
+"aliases_mapping"
+: {
+12
+"property_aliases_paths"
+: {
+13
+"my_font_field.size"
+: [
+"my_number_field"
+]
+14
+}
+15
+},
+16
+"default"
+: {
+17
+"size"
+:
+12
+,
+18
+"font"
+:
+"Merriweather"
+,
+19
+"font_set"
+:
+"GOOGLE"
+,
+20
+"size_unit"
+:
+"px"
+,
+21
+"color"
+:
+"#000"
+,
+22
+"styles"
+: {}
+23
+}
+24
+}
+25
+]
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Templates
+Modules
+Fields
+Overview
+Module and theme fields best practices
+Custom fonts
+Alias mapping
+Brand and settings inheritance
+oEmbed
+Write fields using JavaScript
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

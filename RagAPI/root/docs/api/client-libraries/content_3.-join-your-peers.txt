@@ -1,0 +1,121 @@
+Getting started overview | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+On this page
+The advantages of a connected platform
+1. Install tools to help you build
+2. Decide what to build
+3. Join your peers
+4. Learn more, your way
+Getting Started
+Getting started overview
+Getting started overview
+Whether you’re a new HubSpot developer or looking to expand your skills, this section will guide you through the process of getting up and running. You’ll explore the different development routes available, as well as the specific tooling and accounts you’ll need to achieve your goals.
+The advantages of a connected platform
+First, it’s helpful to consider what makes HubSpot a powerful platform for developers.
+The foundation of every HubSpot account is the
+CRM
+(Customer Relationship Management) platform, a database of business relationships and processes. HubSpot offers different routes for external developers and partners to work with the CRM so they can create extra value for HubSpot end users. This includes:
+Creating integrations and/or extensions with HubSpot’s APIs to sync data between HubSpot and external platforms.
+Building custom websites using the HubSpot CMS (Content Management System). In addition to a full suite of content management tools, the CMS fully integrates with the CRM. This makes campaign launches, capturing leads and ongoing customer communications easier to manage.
+Customizing the CRM with UI extensions. Developers can use React to build flexible custom cards that integrate seamlessly with HubSpot.
+In the next section, you’ll get an overview of the tooling that’s available for HubSpot developers. Then, you'll choose a route to continue on your HubSpot developer journey.
+1. Install tools to help you build
+There are a wide range of tools available for HubSpot developers. The mix of tools you’ll need will depend on your specific goals.
+HubSpot CLI:
+installing the HubSpot CLI for local development is a great starting point for many development tasks. The CLI is used when building UI Extensions and CMS assets, and can be used to create and manage secrets, HubDB tables, and custom object data from your account. You'll need to have
+Node.js
+installed (version 18 or higher is required, and the LTS version is recommended). To install the CLI globally, run the following command:
+Copy code snippet
+npm i -g @hubspot/cli
+npm
+i
+-g
+@hubspot/cli
+Visual studio code:
+installing
+Visual Studio Code
+means you can take advantage of the
+HubSpot Visual Studio Code extension
+, which allows you to centralize your development workflow.
+Client libraries
+: HubSpot provides client libraries for
+Node
+,
+PHP
+,
+Ruby
+, and
+Python
+.
+Postman:
+use
+Postman
+to access
+HubSpot's Postman Collections
+. Throughout HubSpot's API documentation, you'll find buttons for running calls using the collection.
+Learn more about
+HubSpot's developer tooling
+.
+2. Decide what to build
+There’s no one-size-fits-all route to developing with HubSpot. It’s a flexible platform that can meet a wide range of needs.
+One of the four broad categories listed below should cover most of these needs. You can choose the one that’s most relevant for you right now for a brief introduction, along with some immediate steps to get you started. You can also get a sense of the best tools for the job, and whether a specific
+type of HubSpot account
+is required.
+Use APIs and build integrations
+Build apps for the marketplace
+Customize the HubSpot UI
+Build custom websites
+3. Join your peers
+Connect with your peers that are already building on HubSpot. Ask questions, share knowledge, build community, and maybe even make some friends along the way.
+Developer Slack
+Developer Forums
+Developer Advocacy GitHub
+4. Learn more, your way
+Once you’re up and running, there are plenty of resources available to help you dig deeper. You can access in-depth guides, detailed reference docs or
+HubSpot academy courses
+, depending on your preferred learning style.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Slack

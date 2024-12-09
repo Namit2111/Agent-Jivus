@@ -1,0 +1,4145 @@
+HubL filters | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+abs
+add
+attr
+batch
+between_times
+bool
+capitalize
+center
+convert_rgb
+cut
+datetimeformat (deprecated)
+default
+dictsort
+difference
+divide
+divisible
+escape_html
+escape_attr
+escape_jinjava
+escape_js
+escape_url
+escapejson
+filesizeformat
+first
+float
+forceescape
+format
+format_currency (deprecated)
+format_currency_value
+format_date
+format_datetime
+format_time
+fromjson
+geo_distance
+groupby
+indent
+int
+intersect
+ipaddr
+join
+last
+length
+list
+log
+lower
+map
+md5
+minus_time
+multiply
+plus_time
+pprint
+random
+regex_replace
+reject
+rejectattr
+render
+replace
+reverse
+root
+round
+safe
+sanitize_html
+select
+selectattr
+shuffle
+slice
+sort
+split
+string
+striptags
+strtodate
+strtotime
+sum
+symmetric_difference
+title
+tojson
+trim
+truncate
+truncatehtml
+unescape_html
+union
+unique
+unixtimestamp
+upper
+urlencode
+urldecode
+urlize
+wordcount
+wordwrap
+xmlattr
+CMS Reference
+HubL (templating language)
+HubL filters
+HubL filters
+Filters affect the ultimate output of your HubL. They can be applied to various HubL statements and expressions to alter the template markup outputted by the server.
+The basic syntax of a filter is
+|filtername
+. The filter is added directly following the statement or the expression, within its delimiters. Some filters have additional parameters that can be added in parentheses. The basic syntax of a filter with a string, a number, and a boolean parameters is:
+|filtername("stringParameter", 10, true)
+. Notice that string parameters should be written in quotes. Also note that HubL filters have an alias that can be used to serve the same purpose as the primary filter.
+The following article contains all of the supported HubL filters.
+Please note:
+you can apply HubL filters to
+personalization tokens
+, such as contact and company tokens, on HubSpot CMS and blog pages, but
+not
+in emails.
+abs
+Gets the absolute value of a number. You can use this filter to ensure that a number is positive.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set my_number = -53 %}
+{{ my_number|abs }}
+1
+{%
+set
+my_number
+=
+-53
+%}
+2
+{{
+my_number
+|
+abs
+}}
+add
+Adds a numeric value to another numeric value. This filter functions the same as the
++ operator
+. The parameter in parentheses is the addend that you are combining with your initial numeric value.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set my_num = 40 %}
+{{ my_num|add(13) }}
+xxxxxxxxxx
+2
+1
+{%
+set
+my_num
+=
+40
+%}
+2
+{{
+my_num
+|
+add(
+13
+)
+}}
+attr
+Renders the attribute of a dictionary. This filter is the equivalent of printing a variable that exists within a dictionary, such as
+content.absolute_url
+.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ content|attr("absolute_url") }}
+xxxxxxxxxx
+{{
+content
+|
+attr(
+"absolute_url"
+)
+}}
+Parameter
+Description
+attribute_name
+Required
+Specifies which attribute to print.
+batch
+Groups items within a sequence.
+In the example below, there is a variable containing a sequence of types of fruits. The
+batch
+filter is applied to a loop that iterates through the sequence. The nested loop runs three times to print 3 types of fruit per row, before the outer loop runs again. Notice in the final output that since there are only 5 types of fruit, the final item is replaced by a
+&nbsp;
+(the second parameter).
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% set rows = ["apples", "oranges", "pears", "grapes", "blueberries"] %}
+<table>
+{% for row in rows|batch(3, " ") %}
+<tr>
+{% for column in row %}
+<td>{{ column }}</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
+​
+x
+1
+{%
+set
+rows
+=
+[
+"apples"
+,
+"oranges"
+,
+"pears"
+,
+"grapes"
+,
+"blueberries"
+]
+%}
+2
+​
+3
+<
+table
+>
+4
+{%
+for
+row
+in
+rows
+|
+batch(
+3
+,
+" "
+)
+%}
+5
+<
+tr
+>
+6
+{%
+for
+column
+in
+row
+%}
+7
+<
+td
+>
+{{
+column
+}}
+</
+td
+>
+8
+{%
+endfor
+%}
+9
+</
+tr
+>
+10
+{%
+endfor
+%}
+11
+</
+table
+>
+Parameter
+Type
+Description
+linecount
+Required
+Number
+The number of items to include in the batch.
+fill_with
+String
+Specifies what to include in order to fill up any missing items.
+between_times
+Calculates the time between two datetime objects in a specified time unit.
+Please note:
+you should use this filter
+only
+with variables that return a date. Starting September 30, 2024, this filter will no longer return the current date when a null value is passed. After that date, a null value in the filter will return September 30, 2024.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set begin = "2018-07-14T14:31:30+0530"|strtotime("yyyy-MM-dd'T'HH:mm:ssZ") %}
+{% set end = "2018-07-20T14:31:30+0530"|strtotime("yyyy-MM-dd'T'HH:mm:ssZ") %}
+{{ begin|between_times(end, "days") }}
+xxxxxxxxxx
+3
+1
+{%
+set
+begin
+=
+"2018-07-14T14:31:30+0530"
+|
+strtotime(
+"yyyy-MM-dd'T'HH:mm:ssZ"
+)
+%}
+2
+{%
+set
+end
+=
+"2018-07-20T14:31:30+0530"
+|
+strtotime(
+"yyyy-MM-dd'T'HH:mm:ssZ"
+)
+%}
+3
+{{
+begin
+|
+between_times(end,
+"days"
+)
+}}
+Parameter
+Type
+Description
+end
+Required
+datetime object
+The ending datetime object.
+timeunit
+Required
+String
+Valid time units are
+nanos
+,
+micros
+,
+millis
+,
+seconds
+,
+minutes
+,
+hours
+,
+half_days
+,
+days
+,
+weeks
+,
+months
+,
+years
+,
+decades
+,
+centuries
+,
+millennia
+, and
+eras
+.
+bool
+Converts a text string value to a boolean.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% if "true"|bool == true %}hello world{% endif %}
+xxxxxxxxxx
+{%
+if
+"true"
+|
+bool
+==
+true
+%}
+hello world
+{%
+endif
+%}
+capitalize
+Capitalizes the first letter of a variable value. The first character will be uppercase, all others letters will be lowercased. Subsequent words separated by spaces or hyphens will not have their first letter uppercased.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set sentence = "the first letter of a sentence should always be capitalized." %}
+{{ sentence|capitalize }}
+xxxxxxxxxx
+2
+1
+{%
+set
+sentence
+=
+"the first letter of a sentence should always be capitalized."
+%}
+2
+{{
+sentence
+|
+capitalize
+}}
+center
+Centers text within a given field length using whitespace. This filter is not recommended or particularly useful since HubSpot's HTML compiler will automatically strip out the white space; however, it is included here for the sake of comprehensiveness.
+The example below shows this filter being applied to a variable in a pre tag, so the whitespace isn't stripped out.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+<pre>
+{% set var = "string to center" %}
+before{{ var|center(80) }}after
+</pre>
+xxxxxxxxxx
+4
+1
+<
+pre
+>
+2
+{%
+set
+var
+=
+"string to center"
+%}
+3
+before
+{{
+var
+|
+center(
+80
+)
+}}
+after
+4
+</
+pre
+>
+Parameter
+Type
+Description
+width
+Required
+Number
+Specifies the length of whitespace to center the text in.
+convert_rgb
+Converts a HEX value to an RGB string. This is useful if you need to convert color variables to RGB to be used with a RGBA CSS declaration. In the example below, the value set by a color module is converted to an RGB value and used in an RGBA CSS declaration.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% set my_color = "#FFFFFF" %}
+{{ my_color|convert_rgb }}
+{% set my_color2="#000000" %}
+<div style="background: rgba({{ my_color2|convert_rgb }}, .5)"></div>
+xxxxxxxxxx
+4
+1
+{%
+set
+my_color
+=
+"#FFFFFF"
+%}
+2
+{{
+my_color
+|
+convert_rgb
+}}
+3
+{%
+set
+my_color2
+=
+"#000000"
+%}
+4
+<
+div
+style
+=
+"background: rgba(
+{{
+my_color2
+|
+convert_rgb
+}}
+, .5)"
+></
+div
+>
+cut
+Removes a string from a value. This filter can be used to match and cut out a specific part of a string. The parameter specifies the part of the string that should be removed. The example below removes the space and the word world from the original variable value.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set my_string = "Hello world." %}
+{{ my_string|cut(" world") }}
+xxxxxxxxxx
+2
+1
+{%
+set
+my_string
+=
+"Hello world."
+%}
+2
+{{
+my_string
+|
+cut(
+" world"
+)
+}}
+Parameter
+Type
+Description
+characters_to_cut
+Required
+String
+The part of the string that should be removed.
+datetimeformat (deprecated)
+Please note
+: this filter has been
+deprecated
+. Instead, use the
+format_datetime
+filter, which has a more standardized syntax.
+default
+If the value is undefined it will return the first parameter, otherwise the value of the variable will be printed. If you want to use default with variables that evaluate to false, you have to set the second parameter to
+true
+.
+The first example below would print the message if the variable is not defined. The second example applies the filter to an empty string, which is not undefined, but it prints a message due to the second parameter.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ my_variable|default("my_variable is not defined") }}
+{{ ""|default("the string was empty", true) }}
+xxxxxxxxxx
+2
+1
+{{
+my_variable
+|
+default(
+"my_variable is not defined"
+)
+}}
+2
+{{
+""
+|
+default(
+"the string was empty"
+,
+true
+)
+}}
+Parameter
+Type
+Description
+default_value
+Required
+String
+The value to return if the variable is undefined. If the variable is defined, the value of the variable will be returned instead.
+truthy
+Boolean
+Set to
+true
+to use with variables which evaluate to
+false
+.
+dictsort
+Sort a dict and yield (key, value) pairs. Dictionaries are unsorted by default, but you can print a dictionary, sorted by key or value. The first parameter is a boolean to determine, whether or not the sorting is case sensitive. The second parameter determines whether to sort the dict by key or value. The example below prints a sorted contact dictionary, with all the known details about the contact.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% for item in contact|dictsort(false, "value") %}
+{{item}}
+{% endfor %}
+xxxxxxxxxx
+3
+1
+{%
+for
+item
+in
+contact
+|
+dictsort(
+false
+,
+"value"
+)
+%}
+2
+{{
+item
+}}
+3
+{%
+endfor
+%}
+Parameter
+Type
+Description
+case_sensitive
+Required
+Boolean
+Determines if sorting is case sensitive.
+sort_by
+Required
+"key"
+|
+"value"
+Determines whether to sort by
+key
+or
+value
+.
+difference
+Returns the difference of two sets or lists. The list returned from the filter contains all unique elements that are in the first list but not the second.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ [1, 2, 3]|difference([2, 3, 4, 5]) }}
+xxxxxxxxxx
+{{
+[
+1
+,
+2
+,
+3
+]
+|
+difference([
+2
+,
+3
+,
+4
+,
+5
+])
+}}
+Parameter
+Type
+Description
+list
+Required
+Array
+The second list to compare to for use in finding differences from the original list.
+divide
+Divides the current value by a divisor. The parameter passed is the divisor. This filter is an alternative to the / operator.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set numerator = 106 %}
+{{ numerator|divide(2) }}
+xxxxxxxxxx
+2
+1
+{%
+set
+numerator
+=
+106
+%}
+2
+{{
+numerator
+|
+divide(
+2
+)
+}}
+Parameter
+Type
+Description
+divisor
+Required
+Number
+The number to divide the variable by.
+divisible
+An alternative to the
+divisibleby
+expression test, this filter will evaluate to true if the value is divisible by the given number.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set num = 10 %}
+{% if num|divisible(2) %}
+The number is divisible by 2
+{% endif %}
+xxxxxxxxxx
+4
+1
+{%
+set
+num
+=
+10
+%}
+2
+{%
+if
+num
+|
+divisible(
+2
+)
+%}
+3
+The number is divisible by 2
+4
+{%
+endif
+%}
+Parameter
+Type
+Description
+divisor
+Required
+Number
+The number to use when evaluating if the value is divisible.
+escape_html
+Escapes the content of an HTML input. Accepts a string and converts the characters
+&
+,
+<
+,
+>
+,
+‘
+,
+”
+, and
+escape_jinjava
+into HTML-safe sequences. Use this filter for HubL variables that are used in HTML but should not allow any HTML.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% set escape_string = "<div>This markup is printed as text</div>" %}
+{{ escape_string|escape_html }}
+xxxxxxxxxx
+2
+1
+{%
+set
+escape_string
+=
+"<div>This markup is printed as text</div>"
+%}
+2
+{{
+escape_string
+|
+escape_html
+}}
+escape_attr
+Escapes the content of an HTML attribute input. Accepts a string and converts the characters
+&
+,
+<
+,
+‘
+,
+”
+, and
+escape_jinjava
+into HTML-safe sequences. Use this filter for HubL variables that are being added to HTML attributes.
+Note that when escaping values of attributes that accept URLs, such as
+href
+, you should use the
+escape_url
+filter instead.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% set escape_string = "This <br> markup is printed as text" %}
+<img src="test.com/imageurl" alt="{{escape_string|escape_attr}}">
+xxxxxxxxxx
+2
+1
+{%
+set
+escape_string
+=
+"This <br> markup is printed as text"
+%}
+2
+<
+img
+src
+=
+"test.com/imageurl"
+alt
+=
+"
+{{
+escape_string
+|
+escape_attr
+}}
+"
+>
+escape_jinjava
+Converts the characters
+{
+and
+}
+in strings to Jinjava-safe sequences. Use this filter if you need to display text that might contain such characters in Jinjava.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set escape_string = "{{This markup is printed as text}}" %}
+{{ escape_string|escape_jinjava }}
+xxxxxxxxxx
+2
+1
+{%
+set
+escape_string
+=
+"{{This markup is printed as text}}"
+%}
+2
+{{
+escape_string
+|
+escape_jinjava
+}}
+escape_js
+Escapes strings, including
+escape_jinjava
+, so that they can be safely inserted into a JavaScript variable declaration. Use this filter for HubL variables that are used inside HTML script elements.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set escape_string = "\tThey said 'This string can safely be inserted into JavaScript.'" %}
+{{ escape_string|escape_js }}
+xxxxxxxxxx
+2
+1
+{%
+set
+escape_string
+=
+"\tThey said 'This string can safely be inserted into JavaScript.'"
+%}
+2
+{{
+escape_string
+|
+escape_js
+}}
+escape_url
+Escapes the content of a URL input, enforcing specified protocols, stripping invalid and dangerous characters, and encoding HTML entities. Returns empty if a URL is valid. Use this filter for HubL variables that are used within HTML attributes that should be valid URLs.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set escape_string = "http://example.com/with space/<html>" %}
+<a href="{{ escape_string|escape_url }}"></a>
+xxxxxxxxxx
+2
+1
+{%
+set
+escape_string
+=
+"http://example.com/with space/<html>"
+%}
+2
+<
+a
+href
+=
+"
+{{
+escape_string
+|
+escape_url
+}}
+"
+></
+a
+>
+escapejson
+Escapes strings so that they can be used as JSON values.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set escape_string = "<script>alert('oh no!')</script>" %}
+{% require_js position="head" %}
+<script data-search_input-config="config_{{ name }}" type="application/json">
+{
+"autosuggest_results_message": "{{ escape_string|escapejson }}"
+}
+</script>
+{% end_require_js %}
+xxxxxxxxxx
+8
+1
+{%
+set
+escape_string
+=
+"<script>alert('oh no!')</script>"
+%}
+2
+{%
+require_js position
+=
+"head"
+%}
+3
+<
+script
+data-search_input-config
+=
+"config_
+{{
+name
+}}
+"
+type
+=
+"application/json"
+>
+4
+{
+5
+"autosuggest_results_message": "
+{{
+escape_string
+|
+escapejson
+}}
+"
+6
+}
+7
+</
+script
+>
+8
+{%
+end_require_js
+%}
+filesizeformat
+Formats a number value into a human-readable file size (i.e. 13 kB, 4.1 MB, 102 Bytes, etc). By default, decimal prefixes are used (e.g., MB and GB), but you can set the
+binary
+parameter to
+true
+to use binary prefixes such as Mebi (MiB) and Gibi (GiB).
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set bytes = 10000 %}
+{{ bytes|filesizeformat(binary=true) }}
+xxxxxxxxxx
+2
+1
+{%
+set
+bytes
+=
+10000
+%}
+2
+{{
+bytes
+|
+filesizeformat(binary
+=
+true
+)
+}}
+Parameter
+Type
+Description
+binary
+Boolean
+If set to
+true
+, binary prefixes are used, such as Mebi (MiB) and Gibi (GiB).
+first
+Returns the first item in a sequence.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set my_sequence = ["Item 1", "Item 2", "Item 3"] %}
+{{ my_sequence|first }}
+xxxxxxxxxx
+2
+1
+{%
+set
+my_sequence
+=
+[
+"Item 1"
+,
+"Item 2"
+,
+"Item 3"
+]
+%}
+2
+{{
+my_sequence
+|
+first
+}}
+float
+Converts a value into a floating point number. If the conversion doesn’t work it will return
+0.0
+. You can override this default using the first parameter.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set my_text="25" %}
+{{ my_text|float + 17 }}
+xxxxxxxxxx
+2
+1
+{%
+set
+my_text
+=
+"25"
+%}
+2
+{{
+my_text
+|
+float
++
+17
+}}
+Parameter
+Type
+Description
+default
+Number
+Integer to return if the conversion doesn't work.
+forceescape
+Strictly enforces HTML escaping. In HubSpot's environment there isn't really a use case for double escaping, so this is generally behaves the same as the escape filter.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% set escape_string = "<div>This markup is printed as text</div>" %}
+{{ escape_string|forceescape }}
+xxxxxxxxxx
+2
+1
+{%
+set
+escape_string
+=
+"<div>This markup is printed as text</div>"
+%}
+2
+{{
+escape_string
+|
+forceescape
+}}
+format
+Applies Python string formatting to an object.
+%s
+can be replaced with another variable.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ "Hi %s %s"|format(contact.firstname, contact.lastname) }}
+xxxxxxxxxx
+{{
+"Hi %s %s"
+|
+format(contact.firstname, contact.lastname)
+}}
+format_currency (deprecated)
+Please note:
+this filter has been
+deprecated
+. Instead, use the
+format_currency_value
+filter.
+format_currency_value
+Formats a given number as a currency based on portal's default currency and locale passed in as a parameter. Replaces the deprecated
+format_currency filter
+.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ 100 | format_currency_value(locale='en-GB', currency='EUR', maxDecimalDigits=6, minDecimalDigits=1) }}
+xxxxxxxxxx
+{{
+100
+|
+format_currency_value(locale
+=
+'en-GB'
+, currency
+=
+'EUR'
+, maxDecimalDigits
+=
+6
+, minDecimalDigits
+=
+1
+)
+}}
+Parameter
+Type
+Description
+locale
+String
+The Java local Language tag
+. The default is the page's
+locale.Format : ISO639LanguageCodeInLowercase-ISO3166CountryCodeInUppercase
+.
+currency
+String
+the
+alphabetic ISO 4217 code
+of the currency, default is the portals default currency. Numeric codes are not accepted.
+minDecimalDigits
+Number
+The minimum number of decimal digits to use. Defaults to the currency's default number of decimal digits.
+maxDecimalDigits
+Number
+The maximum number of decimal digits to use. Defaults to the currency's default number of decimal digits.
+format_date
+Formats the date component of a date object.
+Please note:
+you should use this filter
+only
+with variables that return a date. Starting September 30, 2024, this filter will no longer return the current date when a null value is passed. After that date, a null value in the filter will return September 30, 2024.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ content.publish_date | format_date('long') }}
+{{ content.publish_date | format_date('yyyyy.MMMM.dd') }}
+{{ content.publish_date | format_date('medium', 'America/New_York', 'de-DE') }}
+xxxxxxxxxx
+3
+1
+{{
+content.publish_date
+|
+format_date(
+'long'
+)
+}}
+2
+{{
+content.publish_date
+|
+format_date(
+'yyyyy.MMMM.dd'
+)
+}}
+3
+{{
+content.publish_date
+|
+format_date(
+'medium'
+,
+'America/New_York'
+,
+'de-DE'
+)
+}}
+Parameter
+Type
+Description
+format
+'short'
+|
+'medium'
+|
+'long'
+|
+'full'
+| custom pattern
+The format to use. Can be a custom pattern following
+Unicode LDML
+.
+timeZone
+String
+The time zone of the output date in
+IANA TZDB format
+.
+locale
+String
+The locale to use for locale-aware formats.
+format_datetime
+Formats both the date and time components of a date object. This filter replaces the deprecated
+datetimeformat
+filter. By default, returns a datetime in the UTC-00:00 time zone.
+Please note:
+you should use this filter
+only
+with variables that return a date. Starting September 30, 2024, this filter will no longer return the current date when a null value is passed. After that date, a null value in the filter will return September 30, 2024.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ content.publish_date | format_datetime('medium', 'America/New_York', 'de-DE') }}
+xxxxxxxxxx
+{{
+content.publish_date
+|
+format_datetime(
+'medium'
+,
+'America/New_York'
+,
+'de-DE'
+)
+}}
+Parameter
+Type
+Description
+format
+'short'
+|
+'medium'
+|
+'long'
+|
+'full'
+| custom pattern
+The format to use. Can be one a custom pattern following
+Unicode LDML
+. When using
+long
+or
+full
+, timestamp will include a Z to denote zero offset UTC time (i.e.,
+2:23:00 PM Z
+). To remove the Z designator, specify a
+timeZone
+.
+timeZone
+String
+The time zone of the output date in
+IANA TZDB format
+. By default, returns UTC time.
+locale
+String
+The locale to use for locale-aware formats.
+format_time
+Formats the time component of a date object.
+Please note:
+you should use this filter
+only
+with variables that return a date. Starting September 30, 2024, this filter will no longer return the current date when a null value is passed. After that date, a null value in the filter will return September 30, 2024.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ content.updated | format_time('long') }}
+{{ content.updated | format_time('hh:mm a') }}
+{{ content.updated | format_time('medium', 'America/New_York', 'de-DE') }}
+xxxxxxxxxx
+3
+1
+{{
+content.updated
+|
+format_time(
+'long'
+)
+}}
+2
+{{
+content.updated
+|
+format_time(
+'hh:mm a'
+)
+}}
+3
+{{
+content.updated
+|
+format_time(
+'medium'
+,
+'America/New_York'
+,
+'de-DE'
+)
+}}
+Parameter
+Type
+Description
+format
+'short'
+|
+'medium'
+|
+'long'
+|
+'full'
+| custom pattern
+The format to use. Can be one a custom pattern following
+Unicode LDML
+. When using
+long
+or
+full
+, timestamp will include a Z to denote zero offset UTC time (i.e.,
+2:23:00 PM Z
+). To remove the Z designator, specify a
+timeZone
+.
+timeZone
+String
+The time zone of the output date in
+IANA TZDB format
+. By default, returns UTC time.
+locale
+String
+The locale to use for locale-aware formats.
+fromjson
+Converts a JSON string to an object.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set obj ='{ "name":"Brian","role":"Owner" }' %}
+{{ obj|fromjson }}
+xxxxxxxxxx
+2
+1
+{%
+set
+obj
+=
+'{ "name":"Brian","role":"Owner" }'
+%}
+2
+{{
+obj
+|
+fromjson
+}}
+geo_distance
+Calculates the ellipsoidal 2D distance between two points on Earth.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+<!-- in the example below
+the HubDB Location =
+42.3667, -71.1060 (Cambridge, MA) |
+Chicago, IL = 37.3435, -122.0344 -->
+{{ row.location | geo_distance(37.3435, -122.0344, "mi") }} MI
+xxxxxxxxxx
+5
+1
+<!-- in the example below
+2
+the HubDB Location =
+3
+42.3667, -71.1060 (Cambridge, MA) |
+4
+Chicago, IL = 37.3435, -122.0344 -->
+5
+{{
+row.location
+|
+geo_distance(
+37.3435
+, -122.0344,
+"mi"
+)
+}}
+MI
+groupby
+Groups a sequence of objects by a common attribute. The parameter sets the common attribute to group by.
+HubL & HTML
+Rendered Output
+HubL & HTML
+Rendered Output
+More
+Copy code snippet
+<ul>
+{% for group in contents|groupby("blog_post_author") %}
+<li>{{ group.grouper }}
+<ul>
+{% for content in group.list %}
+<li>{{ content.name }}</li>
+{% endfor %}
+</ul>
+</li>
+{% endfor %}
+</ul>
+xxxxxxxxxx
+11
+1
+<
+ul
+>
+2
+{%
+for
+group
+in
+contents
+|
+groupby(
+"blog_post_author"
+)
+%}
+3
+<
+li
+>
+{{
+group.grouper
+}}
+4
+<
+ul
+>
+5
+{%
+for
+content
+in
+group.list
+%}
+6
+<
+li
+>
+{{
+content.name
+}}
+</
+li
+>
+7
+{%
+endfor
+%}
+8
+</
+ul
+>
+9
+</
+li
+>
+10
+{%
+endfor
+%}
+11
+</
+ul
+>
+Parameter
+Description
+attribute
+Required
+The attribute to group by.
+indent
+Indents text within a given field length using whitespace. This filter is not recommended or particularly useful because HubSpot's HTML compiler will automatically strip out the white space. However, it is included here for the sake of comprehensiveness. The example below shows an
+indent
+filter being applied to a variable in a
+<pre>
+tag, so the whitespace isn't stripped out. The first parameter controls the amount of whitespace and the second boolean toggles whether to indent the first line.
+HubL & HTML
+Rendered Output
+HubL & HTML
+Rendered Output
+More
+Copy code snippet
+<pre>
+{% set var = "string to indent" %}
+{{ var|indent(2, true) }}
+</pre>
+xxxxxxxxxx
+4
+1
+<
+pre
+>
+2
+{%
+set
+var
+=
+"string to indent"
+%}
+3
+{{
+var
+|
+indent(
+2
+,
+true
+)
+}}
+4
+</
+pre
+>
+Parameter
+Type
+Description
+width
+Required
+Number
+The amount of whitespace to be applied.
+indent-first
+Required
+Boolean
+When set to
+true
+, the first line will be indented.
+int
+Converts the value into an integer. If the conversion doesn’t work it will return
+0
+. You can override this default using the first parameter.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set string="25" %}
+{{ string|int + 17 }}
+xxxxxxxxxx
+2
+1
+{%
+set
+string
+=
+"25"
+%}
+2
+{{
+string
+|
+int
++
+17
+}}
+Parameter
+Type
+Description
+default
+Required
+Number
+Integer to return if the conversion doesn't work.
+intersect
+Returns the intersection of two sets or lists. The list returned from the filter contains all unique elements that are contained in both lists.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ [1, 2, 3]|intersect([2, 3, 4, 5]) }}
+xxxxxxxxxx
+{{
+[
+1
+,
+2
+,
+3
+]
+|
+intersect([
+2
+,
+3
+,
+4
+,
+5
+])
+}}
+Parameter
+Type
+Description
+list
+Required
+Array
+The second list to compare to for use in finding where the list intersects with the original list.
+ipaddr
+Evaluates to
+true
+if the value is a valid IPv4 or IPv6 address.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set ip = "1.0.0.1" %}
+{% if ip|ipaddr %}
+The string is a valid IP address
+{% endif %}
+xxxxxxxxxx
+4
+1
+{%
+set
+ip
+=
+"1.0.0.1"
+%}
+2
+{%
+if
+ip
+|
+ipaddr
+%}
+3
+The string is a valid IP address
+4
+{%
+endif
+%}
+join
+Returns a string which is the concatenation of the strings in the sequence. The separator between elements is an empty string per default, you can define it with the optional parameter. The second parameter can be used to specify an attribute to join.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set my_list = [1, 2, 3] %}
+{% set sep = "---" %}
+{{ my_list|join }}
+{{ my_list|join("|") }}
+{{ my_list|join(sep) }}
+xxxxxxxxxx
+5
+1
+{%
+set
+my_list
+=
+[
+1
+,
+2
+,
+3
+]
+%}
+2
+{%
+set
+sep
+=
+"---"
+%}
+3
+{{
+my_list
+|
+join
+}}
+4
+{{
+my_list
+|
+join(
+"|"
+)
+}}
+5
+{{
+my_list
+|
+join(sep)
+}}
+Parameter
+Type
+Description
+delimiter
+String
+The delimiter to use when concatenating strings.
+attribute
+HubL Variable
+Attribute of value to join in an object.
+last
+Returns the last item of a sequence.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set my_sequence = ["Item 1", "Item 2", "Item 3"] %}
+{% my_sequence|last %}
+xxxxxxxxxx
+2
+1
+{%
+set
+my_sequence
+=
+[
+"Item 1"
+,
+"Item 2"
+,
+"Item 3"
+]
+%}
+2
+{%
+my_sequence
+|
+last
+%}
+length
+Returns the number of items of a sequence or mapping.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set services = ["Web design", "SEO", "Inbound Marketing", "PPC"] %}
+{{ services|length }}
+xxxxxxxxxx
+2
+1
+{%
+set
+services
+=
+[
+"Web design"
+,
+"SEO"
+,
+"Inbound Marketing"
+,
+"PPC"
+]
+%}
+2
+{{
+services
+|
+length
+}}
+list
+Converts values into a list. Strings will be returned as separate characters unless contained in square bracket sequence delimiters
+[ ]
+.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set one = 1 %}
+{% set two = 2 %}
+{% set three = "three" %}
+{% set four = ["four"] %}
+{% set list_num = one|list + two|list + three|list + four|list %}
+{{ list_num }}
+xxxxxxxxxx
+6
+1
+{%
+set
+one
+=
+1
+%}
+2
+{%
+set
+two
+=
+2
+%}
+3
+{%
+set
+three
+=
+"three"
+%}
+4
+{%
+set
+four
+=
+[
+"four"
+]
+%}
+5
+{%
+set
+list_num
+=
+one
+|
+list
++
+two
+|
+list
++
+three
+|
+list
++
+four
+|
+list
+%}
+6
+{{
+list_num
+}}
+log
+Calculates the natural logarithm of a number.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ 10|log }}
+{{ 65536|log(2) }}
+xxxxxxxxxx
+2
+1
+{{
+10
+|
+log
+}}
+2
+{{
+65536
+|
+log(
+2
+)
+}}
+Parameter
+Type
+Description
+base
+Number
+The base to use for the log calculation.
+lower
+Converts all letters in a value to lowercase.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set text="Text to MAKE LowercaSe" %}
+{{ text|lower }}
+xxxxxxxxxx
+2
+1
+{%
+set
+text
+=
+"Text to MAKE LowercaSe"
+%}
+2
+{{
+text
+|
+lower
+}}
+map
+Applies a filter on a sequence of objects or looks up an attribute. This is useful when dealing with a list of objects where you're only interested in a certain value of it.
+The basic usage is mapping on an attribute. For example, if you want to use conditional logic to check if a value is present in a particular attribute of a dict. Alternatively, you can let it invoke a filter by passing the name of the filter and the arguments afterwards.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{# Usage 1 #}
+Apply a filter to a sequence:
+{% set seq = ["item1", "item2", "item3"] %}
+{{ seq|map("upper") }}
+{# Usage 2 #}
+Look up an attribute:
+{{ content|map("currentState")}}
+xxxxxxxxxx
+8
+1
+{#
+Usage 1
+#}
+2
+Apply a filter to a sequence:
+3
+{%
+set
+seq
+=
+[
+"item1"
+,
+"item2"
+,
+"item3"
+]
+%}
+4
+{{
+seq
+|
+map(
+"upper"
+)
+}}
+5
+​
+6
+{#
+Usage 2
+#}
+7
+Look up an attribute:
+8
+{{
+content
+|
+map(
+"currentState"
+)
+}}
+Parameter
+Type
+Description
+filter
+String
+Filter to apply to the sequence of objects.
+md5
+Calculates the
+md5 hash
+of the given object.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ content.absolute_url|md5 }}
+xxxxxxxxxx
+{{
+content.absolute_url
+|
+md5
+}}
+minus_time
+Subtracts an amount of time from a datetime object.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set date = "2018-07-14T14:31:30+0530"|strtotime("yyyy-MM-dd'T'HH:mm:ssZ") %}
+{{ date }}
+{{ date|minus_time(2, "months") }}
+xxxxxxxxxx
+3
+1
+{%
+set
+date
+=
+"2018-07-14T14:31:30+0530"
+|
+strtotime(
+"yyyy-MM-dd'T'HH:mm:ssZ"
+)
+%}
+2
+{{
+date
+}}
+3
+{{
+date
+|
+minus_time(
+2
+,
+"months"
+)
+}}
+Parameter
+Type
+Description
+diff
+Required
+Number
+Amount to subtract.
+timeunit
+Required
+String
+Valid time units are
+nanos
+,
+micros
+,
+millis
+,
+seconds
+,
+minutes
+,
+hours
+,
+half_days
+,
+days
+,
+weeks
+,
+months
+,
+years
+,
+decades
+,
+centuries
+,
+millennia
+, and
+eras
+.
+multiply
+Multiplies a value with a number. Functions the same as the
+* operator
+.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set n = 20 %}
+{{ n|multiply(3) }}
+xxxxxxxxxx
+2
+1
+{%
+set
+n
+=
+20
+%}
+2
+{{
+n
+|
+multiply(
+3
+)
+}}
+plus_time
+Adds an amount of time to a datetime object.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set date = "2018-07-14T14:31:30+0530"|strtotime("yyyy-MM-dd'T'HH:mm:ssZ") %}
+{{ date }}
+{{ date|plus_time(5, "days") }}
+xxxxxxxxxx
+3
+1
+{%
+set
+date
+=
+"2018-07-14T14:31:30+0530"
+|
+strtotime(
+"yyyy-MM-dd'T'HH:mm:ssZ"
+)
+%}
+2
+{{
+date
+}}
+3
+{{
+date
+|
+plus_time(
+5
+,
+"days"
+)
+}}
+Parameter
+Type
+Description
+diff
+Required
+Number
+Amount to subtract.
+timeunit
+Required
+String
+Valid time units are
+nanos
+,
+micros
+,
+millis
+,
+seconds
+,
+minutes
+,
+hours
+,
+half_days
+,
+days
+,
+weeks
+,
+months
+,
+years
+,
+decades
+,
+centuries
+,
+millennia
+, and
+eras
+.
+pprint
+Pretty print a variable. This prints the type of variable and other info that is useful for debugging.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set this_var ="Variable that I want to debug" %}
+{{ this_var|pprint }}
+xxxxxxxxxx
+2
+1
+{%
+set
+this_var
+=
+"Variable that I want to debug"
+%}
+2
+{{
+this_var
+|
+pprint
+}}
+random
+Return a random item from the sequence.
+Please note:
+when using this filter, the page will be
+prerendered
+periodically rather than every time the page content is updated. This means that the filtered content will
+not
+be updated on every page reload.
+This may not be an issue for certain types of content, such as displaying a random list of blog posts. However, if you need content to change randomly on every page load, you should instead use JavaScript to randomize the content client-side.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% for content in contents|random %}
+<div class="post-item">Post item markup</div>
+{% endfor %}
+xxxxxxxxxx
+3
+1
+{%
+for
+content
+in
+contents
+|
+random
+%}
+2
+<
+div
+class
+=
+"post-item"
+>
+Post item markup
+</
+div
+>
+3
+{%
+endfor
+%}
+regex_replace
+Searches for a regex pattern and replaces with a sequence of characters. The first argument is a RE2-style regex pattern, the second is the replacement string.
+Learn more about
+RE2 regex syntax
+.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ "contact-us-2"|regex_replace("[^a-zA-Z]", "") }}
+xxxxxxxxxx
+{{
+"contact-us-2"
+|
+regex_replace(
+"[^a-zA-Z]"
+,
+""
+)
+}}
+reject
+Filters a sequence of objects by applying an
+expression test
+to the object and rejecting the ones with the test succeeding.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set some_numbers = [10, 12, 13, 3, 5, 17, 22] %}
+{{ some_numbers|reject("even") }}
+xxxxxxxxxx
+2
+1
+{%
+set
+some_numbers
+=
+[
+10
+,
+12
+,
+13
+,
+3
+,
+5
+,
+17
+,
+22
+]
+%}
+2
+{{
+some_numbers
+|
+reject(
+"even"
+)
+}}
+Parameter
+Type
+Description
+exp_text
+String
+The name of the
+expression test
+to apply to the object.
+rejectattr
+Filters a sequence of objects by applying a test to an attribute of an object and rejecting the ones with the test succeeding.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% for content in contents|rejectattr("post_list_summary_featured_image") %}
+<div class="post-item">
+{% if content.post_list_summary_featured_image %}
+<div class="hs-featured-image-wrapper">
+<a href="{{content.absolute_url}}" title="" class="hs-featured-image-link">
+<img src="{{ content.post_list_summary_featured_image }}" class="hs-featured-image">
+</a>
+</div>
+{% endif %}
+{{ content.post_list_content|safe }}
+</div>
+{% endfor %}
+xxxxxxxxxx
+12
+1
+{%
+for
+content
+in
+contents
+|
+rejectattr(
+"post_list_summary_featured_image"
+)
+%}
+2
+<
+div
+class
+=
+"post-item"
+>
+3
+{%
+if
+content.post_list_summary_featured_image
+%}
+4
+<
+div
+class
+=
+"hs-featured-image-wrapper"
+>
+5
+<
+a
+href
+=
+"
+{{
+content.absolute_url
+}}
+"
+title
+=
+""
+class
+=
+"hs-featured-image-link"
+>
+6
+<
+img
+src
+=
+"
+{{
+content.post_list_summary_featured_image
+}}
+"
+class
+=
+"hs-featured-image"
+>
+7
+</
+a
+>
+8
+</
+div
+>
+9
+{%
+endif
+%}
+10
+{{
+content.post_list_content
+|
+safe
+}}
+11
+</
+div
+>
+12
+{%
+endfor
+%}
+Parameter
+Type
+Description
+attribute_name
+Required
+String
+Specifies the attribute to select. You can access nested attributes using dot notation.
+exp_test
+String
+The name of the
+expression test
+to apply to the object.
+render
+Renders strings containing HubL early so that the output can be passed into other filters.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{{ personalization_token("contact.lastname", "default value")|render|lower }}
+xxxxxxxxxx
+{{
+personalization_token(
+"contact.lastname"
+,
+"default value"
+)
+|
+render
+|
+lower
+}}
+replace
+Replaces all instances of a substring with a new one.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% if topic %}
+<h3>Posts about {{ page_meta.html_title|replace("Blog | ", "") }}</h3>
+{% endif %}
+xxxxxxxxxx
+3
+1
+{%
+if
+topic
+%}
+2
+<
+h3
+>
+Posts about
+{{
+page_meta.html_title
+|
+replace(
+"Blog | "
+,
+""
+)
+}}
+</
+h3
+>
+3
+{%
+endif
+%}
+Parameter
+Type
+Description
+old
+Required
+String
+The substring that should be replaced.
+new
+Required
+String
+Replacement string.
+count
+Number
+If provided, only the firstcount occurrences are replaced.
+reverse
+Reverses the object or return an iterator the iterates over it the other way round. To reverse a list use
+.reverse()
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %}
+{% for num in nums|reverse %}
+{{ num }}
+{% endfor %}
+xxxxxxxxxx
+4
+1
+{%
+set
+nums
+=
+[
+1
+,
+2
+,
+3
+,
+4
+,
+5
+,
+6
+,
+7
+,
+8
+,
+9
+,
+10
+]
+%}
+2
+{%
+for
+num
+in
+nums
+|
+reverse
+%}
+3
+{{
+num
+}}
+4
+{%
+endfor
+%}
+root
+Calculates the square root of a value.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ 16|root }}
+{{ 625|root(4) }}
+xxxxxxxxxx
+2
+1
+{{
+16
+|
+root
+}}
+2
+{{
+625
+|
+root(
+4
+)
+}}
+Parameter
+Type
+Description
+nth_root
+Number
+The nth root to use for the calculation.
+round
+Rounds a number to a given precision.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ 52.5|round }}
+{{ 52.5|round(0, "floor") }}
+xxxxxxxxxx
+2
+1
+{{
+52.5
+|
+round
+}}
+2
+{{
+52.5
+|
+round(
+0
+,
+"floor"
+)
+}}
+Parameter
+Type
+Description
+precision
+Number
+Specifies the precision of the rounding.
+rounding_method
+'common'
+(default) |
+'ceil'
+|
+'floor'
+Options include
+common
+round either up or down (default);
+ceil
+always rounds up;
+floor
+always rounds down.
+safe
+Mark a value as safe which means that in an environment with automatic escaping enabled this variable will not be escaped.
+HubL
+Rendered HTML Output
+HubL
+Rendered HTML Output
+More
+Copy code snippet
+{{ content.post_list_content|safe }}
+xxxxxxxxxx
+{{
+content.post_list_content
+|
+safe
+}}
+sanitize_html
+Sanitizes the content of an HTML input for the output of rich text content. Accepts a string, then strips HTML tags that are not allowed. Use this filter for HubL variables that are used in HTML that should allow safe HTML.
+You can include the following parameters to allow specific types of HTML tags:
+FORMATTING
+,
+BLOCKS
+,
+STYLES
+,
+LINKS
+,
+TABLES
+,
+IMAGES
+. For example,
+sanitize_html(IMAGES)
+.
+Using
+sanitize_html
+will include all parameters in the filter.
+You can also include a
+STRIP
+parameter to strip
+all
+HTML. All content is run through
+escape_jinjava
+as well to prevent nested interpretation.
+HubL
+Rendered HTML Output
+HubL
+Rendered HTML Output
+More
+Copy code snippet
+{% set escape_string = "This <br> <div>markup is <img src='test.com/image'> <span>printed</span> as text.</div>" %}
+{{ escape_string|sanitize_html("IMAGES") }}
+xxxxxxxxxx
+2
+1
+{%
+set
+escape_string
+=
+"This <br> <div>markup is <img src='test.com/image'> <span>printed</span> as text.</div>"
+%}
+2
+{{
+escape_string
+|
+sanitize_html(
+"IMAGES"
+)
+}}
+select
+Filters a sequence of objects by applying a test to the objects and only selecting the ones with the test succeeding.
+HubL
+Rendered HTML Output
+HubL
+Rendered HTML Output
+More
+Copy code snippet
+{% set some_numbers = [10, 12, 13, 3, 5, 17, 22] %}
+{{ some_numbers|select("even") }}
+xxxxxxxxxx
+2
+1
+{%
+set
+some_numbers
+=
+[
+10
+,
+12
+,
+13
+,
+3
+,
+5
+,
+17
+,
+22
+]
+%}
+2
+{{
+some_numbers
+|
+select(
+"even"
+)
+}}
+Parameter
+Type
+Description
+exp_text
+String
+The expression test to apply to the object.
+selectattr
+Filters a sequence of objects by applying a test to an attribute of the objects and only selecting the ones with the test succeeding.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% for content in contents|selectattr("post_list_summary_featured_image") %}
+<div class="post-item">
+{% if content.post_list_summary_featured_image %}
+<div class="hs-featured-image-wrapper">
+<a href="{{content.absolute_url}}" title="" class="hs-featured-image-link">
+<img src="{{ content.post_list_summary_featured_image }}" class="hs-featured-image">
+</a>
+</div>
+{% endif %}
+{{ content.post_list_content|safe }}
+</div>
+{% endfor %}
+xxxxxxxxxx
+12
+1
+{%
+for
+content
+in
+contents
+|
+selectattr(
+"post_list_summary_featured_image"
+)
+%}
+2
+<
+div
+class
+=
+"post-item"
+>
+3
+{%
+if
+content.post_list_summary_featured_image
+%}
+4
+<
+div
+class
+=
+"hs-featured-image-wrapper"
+>
+5
+<
+a
+href
+=
+"
+{{
+content.absolute_url
+}}
+"
+title
+=
+""
+class
+=
+"hs-featured-image-link"
+>
+6
+<
+img
+src
+=
+"
+{{
+content.post_list_summary_featured_image
+}}
+"
+class
+=
+"hs-featured-image"
+>
+7
+</
+a
+>
+8
+</
+div
+>
+9
+{%
+endif
+%}
+10
+{{
+content.post_list_content
+|
+safe
+}}
+11
+</
+div
+>
+12
+{%
+endfor
+%}
+| Parameter | Description |
+| --- | --- | --- |
+|
+attribute_name
+Required
+| The attribute to test for. You can access nested attributes using dot notation. |
+|
+exp_test
+| The name of the
+expression test
+to apply to the object. |  |
+|
+val
+| Value to test against. |
+shuffle
+Randomizes the order of iteration through a sequence. The example below shuffles a standard blog loop.
+Please note:
+when using this filter, the page will be
+prerendered
+periodically rather than every time the page content is updated. This means that the filtered content will
+not
+be updated on every page reload.
+This may not be an issue for certain types of content, such as displaying a random list of blog posts. However, if you need content to change randomly on every page load, you should instead use JavaScript to randomize the content client-side.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% for content in contents|shuffle %}
+<div class="post-item">Markup of each post</div>
+{% endfor %}
+xxxxxxxxxx
+3
+1
+{%
+for
+content
+in
+contents
+|
+shuffle
+%}
+2
+<
+div
+class
+=
+"post-item"
+>
+Markup of each post
+</
+div
+>
+3
+{%
+endfor
+%}
+slice
+Slices an iterator and returns a list of lists containing those items. The first parameter specifies how many items will be sliced, and the second parameter specifies characters to fill in empty slices.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% set items = ["laptops", "tablets", "smartphones", "smart watches", "TVs"] %}
+<div class="columwrapper">
+{% for column in items|slice(3," ") %}
+<ul class="column-{{ loop.index }}">
+{% for item in column %}
+<li>{{ item }}</li>
+{% endfor %}
+</ul>
+{% endfor %}
+</div>
+xxxxxxxxxx
+10
+1
+{%
+set
+items
+=
+[
+"laptops"
+,
+"tablets"
+,
+"smartphones"
+,
+"smart watches"
+,
+"TVs"
+]
+%}
+2
+<
+div
+class
+=
+"columwrapper"
+>
+3
+{%
+for
+column
+in
+items
+|
+slice(
+3
+,
+" "
+)
+%}
+4
+<
+ul
+class
+=
+"column-
+{{
+loop.index
+}}
+"
+>
+5
+{%
+for
+item
+in
+column
+%}
+6
+<
+li
+>
+{{
+item
+}}
+</
+li
+>
+7
+{%
+endfor
+%}
+8
+</
+ul
+>
+9
+{%
+endfor
+%}
+10
+</
+div
+>
+Parameter
+Type
+Description
+slices
+Required
+Number
+How many items will be sliced.
+filler
+Required
+String
+Specifies characters to fill in empty slices.
+sort
+Sorts an iterable. This filter requires all parameters to sort by an attribute in HubSpot. The first parameter is a boolean to reverse the sort order. The second parameter determines whether or not the sorting is case sensitive. And the final parameter specifies an attribute to sort by. In the example below, posts from a blog are rendered and alphabetized by name.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% set my_posts = blog_recent_posts("default", limit=5) %}
+{% for item in my_posts|sort(False, False, "name") %}
+{{ item.name }}<br>
+{% endfor %}
+xxxxxxxxxx
+7
+1
+{%
+set
+my_posts
+=
+blog_recent_posts(
+"default"
+, limit
+=
+5
+)
+%}
+2
+​
+3
+{%
+for
+item
+in
+my_posts
+|
+sort(False, False,
+"name"
+)
+%}
+4
+{{
+item.name
+}}
+<
+br
+>
+5
+​
+6
+​
+7
+{%
+endfor
+%}
+Parameter
+Type
+Description
+reverse
+Required
+Boolean
+Set to
+true
+to reverse the sort order.
+case_sensitive
+Required
+Boolean
+Set to
+true
+to make sorting case sensitive.
+attribute
+Required
+String
+Attribute to sort by. Omit when sorting a list.
+split
+Splits the input string into a list on the given separator. The first parameter specifies the separator to split the variable by. The second parameter determines how many times the variable should be split. Any remaining items would remained group. In the example below, a string of names is split at the
+;
+for the first 4 names.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% set string_to_split = "Stephen; David; Cait; Nancy; Mike; Joe; Niall; Tim; Amanda" %}
+{% set names = string_to_split|split(";", 4) %}
+<ul>
+{% for name in names %}
+<li>{{ name }}</li>
+{% endfor %}
+</ul>
+xxxxxxxxxx
+7
+1
+{%
+set
+string_to_split
+=
+"Stephen; David; Cait; Nancy; Mike; Joe; Niall; Tim; Amanda"
+%}
+2
+{%
+set
+names
+=
+string_to_split
+|
+split(
+";"
+,
+4
+)
+%}
+3
+<
+ul
+>
+4
+{%
+for
+name
+in
+names
+%}
+5
+<
+li
+>
+{{
+name
+}}
+</
+li
+>
+6
+{%
+endfor
+%}
+7
+</
+ul
+>
+Parameter
+Type
+Description
+character_to_split_by
+Required
+String
+Specifies the separator to split the variable by.
+number_of_splits
+Number
+Determines how many times the variable should be split. Any remaining items would remain grouped.
+string
+Converts a different variable type to a string. In the example below, a integer is converted into a string (
+pprint
+is used to confirm the change in variable type).
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set number_to_string = 45 %}
+{{ number_to_string|string|pprint }}
+xxxxxxxxxx
+2
+1
+{%
+set
+number_to_string
+=
+45
+%}
+2
+{{
+number_to_string
+|
+string
+|
+pprint
+}}
+striptags
+Strips SGML/XML tags and replace adjacent whitespace by one space. This filter can be used to remove any HTML tags from a variable.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% set some_html = "<div><strong>Some text</strong></div>" %}
+{{ some_html|striptags }}
+xxxxxxxxxx
+2
+1
+{%
+set
+some_html
+=
+"<div><strong>Some text</strong></div>"
+%}
+2
+{{
+some_html
+|
+striptags
+}}
+strtodate
+Converts a date string and date format to a date object.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ '3/3/21'|strtodate('M/d/yy') }}
+xxxxxxxxxx
+{{
+'3/3/21'
+|
+strtodate(
+'M/d/yy'
+)
+}}
+Parameter
+Type
+Description
+dateFormat
+Required
+String
+The
+date format
+to use.
+strtotime
+Converts a datetime string and a datetime format into a datetime object.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ "2018-07-14T14:31:30+0530"|strtotime("yyyy-MM-dd'T'HH:mm:ssZ")|unixtimestamp }}
+xxxxxxxxxx
+{{
+"2018-07-14T14:31:30+0530"
+|
+strtotime(
+"yyyy-MM-dd'T'HH:mm:ssZ"
+)
+|
+unixtimestamp
+}}
+Parameter
+Type
+Description
+datetimeFormat
+Required
+String
+The
+Date and time format
+to use.
+sum
+Adds numeric values in a sequence. The first parameter can specify an optional attribute and the second parameter sets a value to return if there is nothing in the variable to sum.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+// Simple sum
+{% set sum_this = [1, 2, 3, 4, 5] %}
+{{ sum_this|sum }}
+// Sum of attribute
+{% set items = [15, 10] %}
+{% set dict_var = [{"name": "Item1", "price": "20"}, {"name": "Item2", "price": "10"}] %}
+Total: {{ dict_var|sum(attribute="price") }}
+xxxxxxxxxx
+8
+1
+// Simple sum
+2
+{%
+set
+sum_this
+=
+[
+1
+,
+2
+,
+3
+,
+4
+,
+5
+]
+%}
+3
+{{
+sum_this
+|
+sum
+}}
+4
+​
+5
+// Sum of attribute
+6
+{%
+set
+items
+=
+[
+15
+,
+10
+]
+%}
+7
+{%
+set
+dict_var
+=
+[{
+"name"
+:
+"Item1"
+,
+"price"
+:
+"20"
+}, {
+"name"
+:
+"Item2"
+,
+"price"
+:
+"10"
+}]
+%}
+8
+Total:
+{{
+dict_var
+|
+sum(attribute
+=
+"price"
+)
+}}
+Parameter
+Type
+Description
+attribute
+String
+Attribute to sum.
+return_if_nothing
+String
+Value to return if there is nothing in the variable to sum.
+symmetric_difference
+Returns the symmetric difference of two sets or lists. The list returned from the filter contains all unique elements that are in the first list but not the second, or are in the second list but not the first.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ [1, 2, 3]|symmetric_difference([2, 3, 4, 5]) }}
+xxxxxxxxxx
+{{
+[
+1
+,
+2
+,
+3
+]
+|
+symmetric_difference([
+2
+,
+3
+,
+4
+,
+5
+])
+}}
+Parameter
+Type
+Description
+list
+Required
+Array
+The second list to compare to for use in finding the symmetric difference with the original list.
+title
+Returns a title case version of the value (i.e., words will start with uppercase letters but all remaining characters are lowercase).
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set my_title="my title should be title case" %}
+{{ my_title|title }}
+xxxxxxxxxx
+2
+1
+{%
+set
+my_title
+=
+"my title should be title case"
+%}
+2
+{{
+my_title
+|
+title
+}}
+tojson
+Writes an object as a JSON string.
+HubL
+Rendered JSON Output
+HubL
+Rendered JSON Output
+More
+Copy code snippet
+{% for content in contents %}
+{{ content.blog_post_author|tojson }}
+{% endfor %}
+xxxxxxxxxx
+3
+1
+{%
+for
+content
+in
+contents
+%}
+2
+{{
+content.blog_post_author
+|
+tojson
+}}
+3
+{%
+endfor
+%}
+trim
+Strips leading and trailing whitespace. HubSpot already trims whitespace from markup, but this filter is documented for the sake of comprehensiveness.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ " remove whitespace " }}
+{{ " remove whitespace "|trim }}
+xxxxxxxxxx
+2
+1
+{{
+" remove whitespace "
+}}
+2
+{{
+" remove whitespace "
+|
+trim
+}}
+truncate
+Cuts off text after a certain number of characters. The default is 255.
+Note that HTML characters are included in this count. The length is specified with the first parameter which defaults to 255. If the second parameter is
+true
+, the filter will cut the text at length. Otherwise it will discard the last word. If the text was in fact truncated it will append an ellipsis sign ("..."). If you want a different ellipsis sign than "..." you can specify it using the third parameter.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ "I only want to show the first sentence. Not the second."|truncate(40) }}
+{{ "I only want to show the first sentence. Not the second."|truncate(35, true, "..........") }}
+xxxxxxxxxx
+2
+1
+{{
+"I only want to show the first sentence. Not the second."
+|
+truncate(
+40
+)
+}}
+2
+{{
+"I only want to show the first sentence. Not the second."
+|
+truncate(
+35
+,
+true
+,
+".........."
+)
+}}
+Parameter
+Type
+Description
+number_of_characters
+Required
+Number
+Number of characters to truncate the text by. Default is 255.
+breakword
+Boolean
+If
+true
+, the filter will cut the text at length. If
+false
+, it will discard the last word.
+end
+String
+Override the default '...' trailing characters after the truncation.
+truncatehtml
+Truncates a given string, respecting HTML markup (i.e. will properly close all nested tags). This will prevent a tag from remaining open after truncation. HTML characters do not count towards the character total.
+This filter has a length parameter and a truncation symbol parameter. There is a third boolean parameter that specifies whether words will be broken at length. This parameter is
+false
+by default in order to preserve the length of words. If using only one of the optional parameters, use keyword arguments, such as
+truncatehtml(70, breakwords = false)
+.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% set html_text = "<p>I want to truncate this text without breaking my HTML<p>" %}
+{{ html_text|truncatehtml(28, "..." , false) }}
+xxxxxxxxxx
+2
+1
+{%
+set
+html_text
+=
+"<p>I want to truncate this text without breaking my HTML<p>"
+%}
+2
+{{
+html_text
+|
+truncatehtml(
+28
+,
+"..."
+,
+false
+)
+}}
+Parameter
+Type
+Description
+number_of_characters
+Required
+Number
+Number of characters to truncate the text by. Default is 255.
+end
+String
+Override the default '...' trailing characters after the truncation.
+breakword
+Boolean
+Boolean value. If true, the filter will cut the text at length. If false, it will discard the last word.
+unescape_html
+Converts text with HTML-encoded entities to their Unicode equivalents.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set escape_string = "me & you" %}
+{{ escape_string|unescape_html }}
+xxxxxxxxxx
+2
+1
+{%
+set
+escape_string
+=
+"me & you"
+%}
+2
+{{
+escape_string
+|
+unescape_html
+}}
+union
+Returns the union of two sets or lists. The list returned from the filter contains all unique elements that are in either list.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ [1, 2, 3]|union([2, 3, 4, 5]) }}
+xxxxxxxxxx
+{{
+[
+1
+,
+2
+,
+3
+]
+|
+union([
+2
+,
+3
+,
+4
+,
+5
+])
+}}
+Parameter
+Type
+Description
+list
+Required
+Array
+The second list to union with the original list.
+unique
+Extracts a unique set from a sequence or dict of objects. When filtering a dict, such as a list of posts returned by a function, you can specify which attribute is used to deduplicate items in the dict.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set my_sequence = ["one", "one", "two", "three" ] %}
+{{ my_sequence|unique }}
+xxxxxxxxxx
+2
+1
+{%
+set
+my_sequence
+=
+[
+"one"
+,
+"one"
+,
+"two"
+,
+"three"
+]
+%}
+2
+{{
+my_sequence
+|
+unique
+}}
+Parameter
+Type
+Description
+attr
+String
+Specifies the attribute that should be used when filtering a dict value.
+unixtimestamp
+Converts a datetime object into a Unix timestamp.
+Please note:
+you should use this filter
+only
+with variables that return a date. Starting September 30, 2024, this filter will no longer return the current date when a null value is passed. After that date, a null value in the filter will return
+September 30, 2024
+.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{{ local_dt }}
+{{ local_dt|unixtimestamp }}
+xxxxxxxxxx
+2
+1
+{{
+local_dt
+}}
+2
+{{
+local_dt
+|
+unixtimestamp
+}}
+upper
+Converts all letters in a value to uppercase.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set text="text to make uppercase" %}
+{{ text|title }}
+xxxxxxxxxx
+2
+1
+{%
+set
+text
+=
+"text to make uppercase"
+%}
+2
+{{
+text
+|
+title
+}}
+urlencode
+Escapes and URL encodes a string using UTF-8 formatting. Accepts both dictionaries and regular strings as well as pairwise iterables.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set encode_value="Escape & URL encode this string" %}
+{{ encode_value|urlencode }}
+xxxxxxxxxx
+2
+1
+{%
+set
+encode_value
+=
+"Escape & URL encode this string"
+%}
+2
+{{
+encode_value
+|
+urlencode
+}}
+urldecode
+Decodes encoded URL strings back to the original URL. Accepts both dictionaries and regular strings as well as pairwise iterables.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set decode_value="Escape+%26+URL+decode+this+string" %}
+{{ decode_value|urldecode }}
+xxxxxxxxxx
+2
+1
+{%
+set
+decode_value
+=
+"Escape+%26+URL+decode+this+string"
+%}
+2
+{{
+decode_value
+|
+urldecode
+}}
+urlize
+Converts URLs in plain text into clickable links. If you pass the filter an additional integer it will shorten the urls to that number. The second parameter is a boolean that dictates whether the link is rel="no follow". The final parameter lets you specify whether the link will open in a new tab.
+Parameter
+Type
+Description
+shorten_text
+Number
+Integer that will shorten the urls to desired number.
+no_follow
+Boolean
+When set to
+true
+, the link will include
+rel="no follow"
+.
+target="_blank"
+String
+Specifies whether the link will open in a new tab.
+HubL
+Rendered HTML Output
+HubL
+Rendered HTML Output
+More
+Copy code snippet
+{{ "http://hubspot.com/"|urlize }}
+{{ "http://hubspot.com/"|urlize(10,true) }}
+{{ "http://hubspot.com/"|urlize("",true) }}
+{{ "http://hubspot.com/"|urlize("",false,target="_blank") }}
+xxxxxxxxxx
+4
+1
+{{
+"http://hubspot.com/"
+|
+urlize
+}}
+2
+{{
+"http://hubspot.com/"
+|
+urlize(
+10
+,true)
+}}
+3
+{{
+"http://hubspot.com/"
+|
+urlize(
+""
+,true)
+}}
+4
+{{
+"http://hubspot.com/"
+|
+urlize(
+""
+,false,target
+=
+"_blank"
+)
+}}
+wordcount
+Counts the number of words in a string.
+If the string contains HTML, use the
+striptags
+filter to get an accurate count.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{%  set count_words = "Count the number of words in this variable"  %}
+{{ count_words|wordcount }}
+xxxxxxxxxx
+2
+1
+{%
+set
+count_words
+=
+"Count the number of words in this variable"
+%}
+2
+{{
+count_words
+|
+wordcount
+}}
+wordwrap
+Causes words to wrap at a given character count. This works best in a
+<pre>
+because HubSpot strips whitespace by default.
+HubL
+Rendered Output
+HubL
+Rendered Output
+More
+Copy code snippet
+{% set wrap_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur, ipsum non sagittis euismod, ex risus rhoncus lectus, vel maximus leo enim sit amet dui. Ut laoreet ultricies quam at fermentum." %}
+{{ wrap_text|wordwrap(10) }}
+xxxxxxxxxx
+2
+1
+{%
+set
+wrap_text
+=
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur, ipsum non sagittis euismod, ex risus rhoncus lectus, vel maximus leo enim sit amet dui. Ut laoreet ultricies quam at fermentum."
+%}
+2
+{{
+wrap_text
+|
+wordwrap(
+10
+)
+}}
+Parameter
+Description
+character_count
+Required
+Number of characters to wrap the content at.
+xmlattr
+Creates an HTML/XML attribute string, based on the items in a dict. All values that are neither none nor undefined are automatically escaped. It automatically prepends a space in front of the item if the filter returned something unless the first parameter is false.
+HubL & HTML
+Rendered HTML Output
+HubL & HTML
+Rendered HTML Output
+More
+Copy code snippet
+{% set html_attributes = {"class": "bold", "id": "sidebar"} %}
+<div {{ html_attributes|xmlattr }}></div>
+xxxxxxxxxx
+2
+1
+{%
+set
+html_attributes
+=
+{
+"class"
+:
+"bold"
+,
+"id"
+:
+"sidebar"
+}
+%}
+2
+<
+div
+{{
+html_attributes
+|
+xmlattr
+}}
+></
+div
+>
+Parameter
+Type
+Description
+autospace
+Required
+Boolean
+Set to
+true
+to add a space in front of the item.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Reference
+Overview
+Modules
+HubL (templating language)
+Overview
+Operators and expression tests
+Filters
+Functions
+Loops
+Tags
+Variables
+Variables and macros syntax
+Quote template variables
+Beta
+If statements
+Deprecated
+Forms
+Fields
+Serverless functions

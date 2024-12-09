@@ -1,0 +1,293 @@
+Integrate the HubSpot mobile chat SDK into your iOS app (BETA) | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Installation
+Configuration
+Open HubSpot Chat View
+Show the chat view as a sheet in SwiftUI
+Show the chat as a presented view controller in UIKit
+Identify users with the HubSpot visitor identification token
+Add custom chat data properties
+Clearing data on logout
+Reference documentation
+API Guides
+Conversations
+Mobile chat SDK
+Integrate the HubSpot mobile chat SDK into your iOS app (BETA)
+Integrate the HubSpot mobile chat SDK into your iOS app (BETA)
+Please note:
+This functionality is currently in development
+. It is subject to change based on testing and feedback. By using these instructions you agree to adhere to
+HubSpot's Developer Terms
+&
+HubSpot's Developer Beta Terms
+.
+To ask questions or provide feedback on the beta, you can join the
+HubSpot Developer Slack Community
+and join the
+#mobile-chat-sdk-beta
+channel.
+Learn how to opt your account into this beta
+here
+.
+You can use the HubSpot mobile chat SDK to integrate your iOS mobile application with HubSpot's live chat functionality.
+The mobile chat SDK allows you to:
+Integrate HubSpot chat into your mobile app to deliver real-time, in-app customer support.
+Leverage the
+bot
+and
+knowledge base
+tools to help deflect customer inquires when your support agents are unavailable.
+Alert users of new messages via push notifications.
+Customize the chat experience to align with your business's brand and UI.
+Installation
+To get start developing with the mobile chat SDK:
+Add the
+GitHub repository URL
+of the mobile chat SDK to your project using Swift Package Manager. From your project settings, select the
+Package Dependencies
+tab, then search for the
+HubSpot mobile chat SDK GitHub URL
+to add it to your project.
+While this feature is in beta, you may need to configure Xcode with your GitHub account since this repository is private:
+To add your GitHub account directly in Xcode, navigate to
+Xcode
+>
+Settings
+in the top menu bar, then click
+Account
+. Click the
++ icon
+to add your GitHub account.
+If you're developing your app using a CLI tool like
+xcodebuild
+, you may need to specify the
+-scmProvider system
+or
+-scmProvider xcode
+arguments to choose whether your system git credentials or xcode credentials are used.
+Configuration
+After you've added the mobile SDK to your project using the Swift Package Manager, include your
+HubSpot-Info.plist config
+file in your project, then mark it as included in the app target.
+During app startup, or in another suitable location in your app's code where you initialize your app components, call the configure method on the SDK.
+Copy code snippet
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+// Override point for customization after application launch.
+// This will configure the SDK using the `Hubspot-Info.plist` file that is bundled in app
+try! HubspotManager.configure()
+return true
+}
+​
+x
+1
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+2
+​
+3
+// Override point for customization after application launch.
+4
+​
+5
+// This will configure the SDK using the `Hubspot-Info.plist` file that is bundled in app
+6
+try! HubspotManager.configure()
+7
+​
+8
+return true
+9
+}
+Open HubSpot Chat View
+You can present the chat view modally as a
+sheet
+, as a fullscreen view, or pushed into a navigation stack. The simplest way to get started is to present the chat as a sheet in response to a button press in the UI of your app.
+The chat view can be initialized using the
+HubSpotChatView.init(manager:pushData:chatFlow:)
+method, using either default values or with customized chat settings.
+Show the chat view as a sheet in SwiftUI
+The chat view is a SwiftUI View, meaning it can be the contents of a
+sheet
+, or embedded in your existing UI like any other view. You can present it as a sheet using the
+.sheet
+modifier, in response to a user action such as tapping a button.
+Copy code snippet
+Button(action: {
+showChat.toggle()
+}, label: {
+Text("Chat Now")
+}).sheet(isPresented: $showChat, content: {
+HubspotChatView(chatFlow: "support")
+})
+xxxxxxxxxx
+7
+1
+Button(action: {
+2
+showChat.toggle()
+3
+}, label: {
+4
+Text("Chat Now")
+5
+}).sheet(isPresented: $showChat, content: {
+6
+HubspotChatView(chatFlow: "support")
+7
+})
+In the example above,
+$showChat
+is a state property in the view:
+Copy code snippet
+@State var showChat = false
+xxxxxxxxxx
+@State var showChat = false
+Show the chat as a presented view controller in UIKit
+Although the HubSpot Chat View is a SwiftUI view, it will also work when contained in a
+UIHostingController
+. For example, you can present the chat view from a UIViewController button action.
+Copy code snippet
+@IBAction
+func onButtonPress(_ source: Any) {
+//Init chat view with no arguments , or use alternative initialiser for configuring chat specifics
+let chatView = HubspotChatView()
+//Create a hosting controller to hold the chat view
+let hostingVC = UIHostingController(rootView: chatView)
+// Present the view controller like any other (or push into a navigation stack)
+self.present(hostingVC, animated: true)
+}
+xxxxxxxxxx
+11
+1
+@IBAction
+2
+func onButtonPress(_ source: Any) {
+3
+​
+4
+//Init chat view with no arguments , or use alternative initialiser for configuring chat specifics
+5
+let chatView = HubspotChatView()
+6
+//Create a hosting controller to hold the chat view
+7
+let hostingVC = UIHostingController(rootView: chatView)
+8
+​
+9
+// Present the view controller like any other (or push into a navigation stack)
+10
+self.present(hostingVC, animated: true)
+11
+}
+Identify users with the HubSpot visitor identification token
+You can identify users by using the visitor identification API, detailed in
+this article
+. This API is best implemented in your own server project, where you can pass the identity token to your app based on whether suits your specific setup (i.e., passing a token in response to a visitor going through a login page as a result of a dedicated API that you own).
+Once a token is generated, it can associated with a contact's email address by calling
+HubspotManager/setUserIdentity(identityToken:email:)
+. This should be called before opening a chat view.
+Add custom chat data properties
+The SDK supports setting key-value pairs to keep track of data you might need to track while a chat session is open. You can set your own custom values, or declare common permission preferences such as photo or notification permissions.
+Use the
+HubspotManager/setChatProperties(data:)
+method and provide the associated key and value you want to set. This is best called before starting a chat, and will apply to all new chats. You could set an account status, or other identifiers when setting up your user. These will then appear in all chats opened for the remainder of the app launch.
+For example, the following code would set several pre-defined permissions and custom properties:
+Copy code snippet
+var properties: [String: String] = [
+ChatPropertyKey.cameraPermissions.rawValue: self.checkCameraPermissions(),
+"myapp-install-id": appUniqueId,
+"subscription-tier": "premium"
+]
+HubspotManager.shared.setChatProperties(data: properties)
+xxxxxxxxxx
+7
+1
+var properties: [String: String] = [
+2
+ChatPropertyKey.cameraPermissions.rawValue: self.checkCameraPermissions(),
+3
+"myapp-install-id": appUniqueId,
+4
+"subscription-tier": "premium"
+5
+]
+6
+​
+7
+HubspotManager.shared.setChatProperties(data: properties)
+Clearing data on logout
+The SDK stores in memory identification tokens, email address, and any properties set. The push token for the app is also associated with the current user, if applicable. You may want to clear this data when a user is logging out, or changing users in a multi user app. To clear this data, call
+HubspotManager/clearUserData()
+at an appropriate time in your app.
+Please note:
+calling the
+HubspotManager/clearUserData()
+only impacts the data used for future chat sessions. It has no impact on data or chat sessions already stored in HubSpot.
+Reference documentation
+You can consult the
+reference documentation
+for details on how to use each of the components in the HubSpot mobile SDK.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Create custom channels
+Beta
+Inbox & messages
+Mobile chat SDK
+Android
+iOS
+Visitor identification
+Working with chatbots
+Library
+CRM
+Marketing
+Settings
+Legal

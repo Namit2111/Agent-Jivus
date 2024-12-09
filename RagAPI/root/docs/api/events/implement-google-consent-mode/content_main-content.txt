@@ -1,0 +1,1978 @@
+Implement Google Consent Mode | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Implement Google consent mode v2 manually
+Integrate Google consent mode v2 with Google Analytics 4
+Integrate Google consent mode v2 with Google Tag Manager
+Implement advanced Google consent mode v2 manually
+Integrate Google consent mode v2 with Google Tag Manager
+Implement advanced Google consent mode for Google Analytics 4
+Implement advanced Google consent mode for Google Tag Manager
+Support basic consent mode for tags without built-in consent checks
+API Endpoints
+Analytics and events
+Cookie banner
+Implement Google Consent Mode
+Implement Google consent mode
+Google Consent Mode v2
+is a framework designed to integrate website visitor consent preferences with Google's advertising and analytics tools. With it, websites can adjust how these tools behave based on the consent status of website visitors, particularly regarding cookies and data collection. When visitors don’t consent to cookies, with
+advanced consent mode
+, Google services can operate in a limited mode and collect basic interactions without breaching privacy expectations. With
+basic consent mode
+, without consent, cookielesss pings and basic interactions will not replace tracking.
+Implement Google consent mode v2 manually
+If you use HubSpot's native
+Google Analytics 4
+or
+Google Tag Manager
+integrations, learn how to
+support Google consent mode v2
+.
+You will need to manually integrate Google consent mode v2 if
+either
+of the following scenarios are true:
+You use a HubSpot cookie banner on an externally-hosted website or CMS.
+You use a HubSpot cookie banner on the HubSpot CMS, and you use a code snippet to integrate with either Google Analytics or Google Tag Manager.
+Integrate Google consent mode v2 with Google Analytics 4
+In HubSpot, set up a cookie consent banner
+with an opt-in policy type targeting EEA, EU, and UK visitors.
+On your website, configure on-page consent default, configure consent updates, and install Google Analytics (see below for an example).
+Add your manual implementation immediately after the
+<head>
+element of your HTML.
+Copy code snippet
+// Step 2: This snippet sets a default consent state, instructing Google's technologies how to behave if no consent is present.
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag() {
+dataLayer.push(arguments);
+}
+// Determine actual values based on your own requirements,
+gtag('consent', 'default', {
+'analytics_storage': 'denied',
+'ad_storage': 'denied',
+'ad_user_data': 'denied',
+'ad_personalization': 'denied',
+// Use region, to specifiy where this default should be applied.
+'region': ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR",
+"DE", "GR", "HU", "IS", "IE", "IT", "LV", "LI", "LT", "LU",
+"MT", "NL", "NO", "PL", "PT", "RO", "SK", "SI", "ES", "SE",
+"UK", "CH"
+]
+});
+// Step 3: This snippet sends consent updates from the HubSpot cookie banner to Google's tags using Consent Mode v2
+var _hsp = window._hsp = window._hsp || [];
+_hsp.push(['addPrivacyConsentListener', function(consent) {
+var hasAnalyticsConsent = consent && (consent.allowed || (consent.categories && consent.categories.analytics));
+var hasAdsConsent = consent && (consent.allowed || (consent.categories && consent.categories.advertisement));
+gtag('consent', 'update', {
+'ad_storage': hasAdsConsent ? 'granted' : 'denied',
+'analytics_storage': hasAnalyticsConsent ? 'granted' : 'denied',
+'ad_user_data': hasAdsConsent ? 'granted' : 'denied',
+'ad_personalization': hasAdsConsent ? 'granted' : 'denied'
+});
+}]);
+</script>
+// Step 4: This snippet installs Google Analytics 4
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XXXXXXXXXX');
+</script>
+​
+x
+1
+// Step 2: This snippet sets a default consent state, instructing Google's technologies how to behave if no consent is present.
+2
+​
+3
+<
+script
+>
+4
+window
+.
+dataLayer
+=
+window
+.
+dataLayer
+||
+[];
+5
+function
+gtag
+() {
+6
+dataLayer
+.
+push
+(
+arguments
+);
+7
+}
+8
+​
+9
+​
+10
+// Determine actual values based on your own requirements,
+11
+gtag
+(
+'consent'
+,
+'default'
+, {
+12
+'analytics_storage'
+:
+'denied'
+,
+13
+'ad_storage'
+:
+'denied'
+,
+14
+'ad_user_data'
+:
+'denied'
+,
+15
+'ad_personalization'
+:
+'denied'
+,
+16
+// Use region, to specifiy where this default should be applied.
+17
+'region'
+: [
+"AT"
+,
+"BE"
+,
+"BG"
+,
+"HR"
+,
+"CY"
+,
+"CZ"
+,
+"DK"
+,
+"EE"
+,
+"FI"
+,
+"FR"
+,
+18
+"DE"
+,
+"GR"
+,
+"HU"
+,
+"IS"
+,
+"IE"
+,
+"IT"
+,
+"LV"
+,
+"LI"
+,
+"LT"
+,
+"LU"
+,
+19
+"MT"
+,
+"NL"
+,
+"NO"
+,
+"PL"
+,
+"PT"
+,
+"RO"
+,
+"SK"
+,
+"SI"
+,
+"ES"
+,
+"SE"
+,
+20
+"UK"
+,
+"CH"
+21
+]
+22
+});
+23
+​
+24
+// Step 3: This snippet sends consent updates from the HubSpot cookie banner to Google's tags using Consent Mode v2
+25
+var
+_hsp
+=
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[];
+26
+_hsp
+.
+push
+([
+'addPrivacyConsentListener'
+,
+function
+(
+consent
+) {
+27
+var
+hasAnalyticsConsent
+=
+consent
+&&
+(
+consent
+.
+allowed
+||
+(
+consent
+.
+categories
+&&
+consent
+.
+categories
+.
+analytics
+));
+28
+var
+hasAdsConsent
+=
+consent
+&&
+(
+consent
+.
+allowed
+||
+(
+consent
+.
+categories
+&&
+consent
+.
+categories
+.
+advertisement
+));
+29
+​
+30
+gtag
+(
+'consent'
+,
+'update'
+, {
+31
+'ad_storage'
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+,
+32
+'analytics_storage'
+:
+hasAnalyticsConsent
+?
+'granted'
+:
+'denied'
+,
+33
+'ad_user_data'
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+,
+34
+'ad_personalization'
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+35
+});
+36
+}]);
+37
+<
+/script>
+38
+​
+39
+​
+40
+// Step 4: This snippet installs Google Analytics 4
+41
+​
+42
+<!-- Google tag (gtag.js) -->
+43
+<
+script
+async
+src
+=
+"https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+><
+/script>
+44
+<
+script
+>
+45
+window
+.
+dataLayer
+=
+window
+.
+dataLayer
+||
+[];
+46
+function
+gtag
+(){
+dataLayer
+.
+push
+(
+arguments
+);}
+47
+gtag
+(
+'js'
+,
+new
+Date
+());
+48
+​
+49
+gtag
+(
+'config'
+,
+'G-XXXXXXXXXX'
+);
+50
+<
+/script>
+Follow
+Google’s instructions for installing Google Analytics 4
+when installing Google Analytics. Remember to replace G-XXXXXXXXXX with your Google Measurement ID.
+Integrate Google consent mode v2 with Google Tag Manager
+In HubSpot, set up a cookie consent banner
+with an opt-in policy type targeting EEA, EU, and UK visitors.
+On your website, configure on-page consent default, configure consent updates, and install Google Tag Manager (see below for an example).
+Add this code as high in the
+<head>
+of the page as possible.
+Copy code snippet
+// Step 2: This snippet sets a default consent state, instructing Google's technologies how to behave if no consent is present.
+window.dataLayer = window.dataLayer || [];
+function gtag() {
+dataLayer.push(arguments);
+}
+gtag('consent', 'default', {
+'analytics_storage': 'denied',
+'ad_storage': 'denied',
+'ad_user_data': 'denied',
+'ad_personalization': 'denied',
+'region': ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR",
+"DE", "GR", "HU", "IS", "IE", "IT", "LV", "LI", "LT", "LU",
+"MT", "NL", "NO", "PL", "PT", "RO", "SK", "SI", "ES", "SE",
+"UK", "CH"
+]
+});
+// Step 3: This snippet sends consent updates from the HubSpot cookie banner to Google's tags using Consent Mode v2
+var _hsp = window._hsp = window._hsp || [];
+_hsp.push(['addPrivacyConsentListener', function(consent) {
+var hasAnalyticsConsent = consent && (consent.allowed || (consent.categories && consent.categories.analytics));
+var hasAdsConsent = consent && (consent.allowed || (consent.categories && consent.categories.advertisement));
+gtag('consent', 'update', {
+'ad_storage': hasAdsConsent ? 'granted' : 'denied',
+'analytics_storage': hasAnalyticsConsent ? 'granted' : 'denied',
+'ad_user_data': hasAdsConsent ? 'granted' : 'denied',
+'ad_personalization': hasAdsConsent ? 'granted' : 'denied'
+});
+}]);
+// Step 4: This snippet installs Google Tag Manager
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-XXXXXXXX');</script>
+<!-- End Google Tag Manager -->
+xxxxxxxxxx
+43
+1
+// Step 2: This snippet sets a default consent state, instructing Google's technologies how to behave if no consent is present.
+2
+​
+3
+​
+4
+window
+.
+dataLayer
+=
+window
+.
+dataLayer
+||
+[];
+5
+function
+gtag
+() {
+6
+dataLayer
+.
+push
+(
+arguments
+);
+7
+}
+8
+​
+9
+gtag
+(
+'consent'
+,
+'default'
+, {
+10
+'analytics_storage'
+:
+'denied'
+,
+11
+'ad_storage'
+:
+'denied'
+,
+12
+'ad_user_data'
+:
+'denied'
+,
+13
+'ad_personalization'
+:
+'denied'
+,
+14
+'region'
+: [
+"AT"
+,
+"BE"
+,
+"BG"
+,
+"HR"
+,
+"CY"
+,
+"CZ"
+,
+"DK"
+,
+"EE"
+,
+"FI"
+,
+"FR"
+,
+15
+"DE"
+,
+"GR"
+,
+"HU"
+,
+"IS"
+,
+"IE"
+,
+"IT"
+,
+"LV"
+,
+"LI"
+,
+"LT"
+,
+"LU"
+,
+16
+"MT"
+,
+"NL"
+,
+"NO"
+,
+"PL"
+,
+"PT"
+,
+"RO"
+,
+"SK"
+,
+"SI"
+,
+"ES"
+,
+"SE"
+,
+17
+"UK"
+,
+"CH"
+18
+]
+19
+});
+20
+​
+21
+// Step 3: This snippet sends consent updates from the HubSpot cookie banner to Google's tags using Consent Mode v2
+22
+var
+_hsp
+=
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[];
+23
+_hsp
+.
+push
+([
+'addPrivacyConsentListener'
+,
+function
+(
+consent
+) {
+24
+var
+hasAnalyticsConsent
+=
+consent
+&&
+(
+consent
+.
+allowed
+||
+(
+consent
+.
+categories
+&&
+consent
+.
+categories
+.
+analytics
+));
+25
+var
+hasAdsConsent
+=
+consent
+&&
+(
+consent
+.
+allowed
+||
+(
+consent
+.
+categories
+&&
+consent
+.
+categories
+.
+advertisement
+));
+26
+​
+27
+gtag
+(
+'consent'
+,
+'update'
+, {
+28
+'ad_storage'
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+,
+29
+'analytics_storage'
+:
+hasAnalyticsConsent
+?
+'granted'
+:
+'denied'
+,
+30
+'ad_user_data'
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+,
+31
+'ad_personalization'
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+32
+});
+33
+}]);
+34
+​
+35
+// Step 4: This snippet installs Google Tag Manager
+36
+​
+37
+<!-- Google Tag Manager -->
+38
+<
+script
+>
+(
+function
+(
+w
+,
+d
+,
+s
+,
+l
+,
+i
+){
+w
+[
+l
+]
+=
+w
+[
+l
+]
+||
+[];
+w
+[
+l
+].
+push
+({
+'gtm.start'
+:
+39
+new
+Date
+().
+getTime
+(),
+event
+:
+'gtm.js'
+});
+var
+f
+=
+d
+.
+getElementsByTagName
+(
+s
+)[
+0
+],
+40
+j
+=
+d
+.
+createElement
+(
+s
+),
+dl
+=
+l
+!=
+'dataLayer'
+?
+'&l='
++
+l
+:
+''
+;
+j
+.
+async
+=
+true
+;
+j
+.
+src
+=
+41
+'https://www.googletagmanager.com/gtm.js?id='
++
+i
++
+dl
+;
+f
+.
+parentNode
+.
+insertBefore
+(
+j
+,
+f
+);
+42
+})(
+window
+,
+document
+,
+'script'
+,
+'dataLayer'
+,
+'GTM-XXXXXXXX'
+);
+<
+/script>
+43
+<!-- End Google Tag Manager -->
+Add this code immediately after the opening
+<body>
+tag
+Copy code snippet
+// Step 4 continued: This snippet installs Google Tag Manager
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXXX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+xxxxxxxxxx
+6
+1
+// Step 4 continued: This snippet installs Google Tag Manager
+2
+​
+3
+<!-- Google Tag Manager (noscript) -->
+4
+<
+noscript
+><
+iframe
+src
+=
+"https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXXX"
+5
+height
+=
+"0"
+width
+=
+"0"
+style
+=
+"display:none;visibility:hidden"
+><
+/iframe></
+noscript
+>
+6
+<!-- End Google Tag Manager (noscript) -->
+Follow
+Google’s instructions for installing Google Tag Manager
+when installing Google Tag Manager. Remember to replace
+G-XXXXXXXXXX
+with your Google Measurement ID.
+Implement advanced Google consent mode v2 manually
+This article provides an overview of how Advanced Google Consent Mode works, and how to implement it for Google Tag Manager or Google Analytics 4 using the HubSpot Cookie Banner.
+Note that this article assumes you’re familiar with writing HTML and JavaScript.
+When you implement consent mode on your website or app in advanced mode, Google tags are always loaded. Default consent is set (typically to denied) using the Consent Mode API. While consent is denied, Google tags will send
+cookieless pings
+. When the user interacts with the HubSpot cookie banner, the consent state updates. If consent is granted, Google tags send full measurement data.
+To implement advanced consent mode via the HubSpot cookie banner, you must write a consent mode configuration script and install it along with the base installation code. This script will:
+Set up the default consent state.
+Update the consent state when the user interacts with the HubSpot cookie banner.
+Learn more about the
+types of Google consent mode
+.
+Integrate Google consent mode v2 with Google Tag Manager
+The example code below provides one possible way you could implement advanced consent mode on your website. The code consists of two parts:
+1. Setting up the default consent state:
+this snippet configures the default consent state for consent mode. Each consent category can be set to
+granted
+or
+denied
+. The default can also be targeted to specific regions (identified by their region code). Learn more about
+setting up consent mode
+. Make sure to configure the categories used and the regions based on your specific requirements.
+2. Updating consent when the user interacts with your cookie consent banner:
+this snippet sends consent updates from the HubSpot cookie banner to Google. This code extracts the consent state from the HubSpot cookie banner consent object and updates the corresponding categories in consent mode. These mappings are a suggestion, so make sure to update them to include the categories you require. Learn more about the
+categories available for the HubSpot cookie banner
+and
+consent mode categories.
+Please note:
+The code below is a recommendation and may not meet your regulatory requirements. Make sure to review and update the code to ensure it meets your needs.
+Copy code snippet
+<script>
+// 1. Set up default denied consent
+window.dataLayer = window.dataLayer || [];
+function gtag() {
+dataLayer.push(arguments);
+}
+gtag('consent', 'default', {
+'analytics_storage': 'denied',
+'ad_storage': 'denied',
+'ad_user_data': 'denied',
+'ad_personalization': 'denied',
+'region': ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "UK", "CH"]
+});
+// 2. Send consent updates from the cookie banner to google tags
+var _hsp = window._hsp = window._hsp || [];
+_hsp.push(['addPrivacyConsentListener', function(consent) {
+var hasAnalyticsConsent = consent && (consent.allowed || (consent.categories && consent.categories.analytics));
+var hasAdsConsent = consent && (consent.allowed || (consent.categories && consent.categories.advertisement));
+gtag('consent', 'update', {
+'ad_storage': hasAdsConsent ? 'granted' : 'denied',
+'analytics_storage': hasAnalyticsConsent ? 'granted' : 'denied',
+'ad_user_data': hasAdsConsent ? 'granted' : 'denied',
+'ad_personalization': hasAdsConsent ? 'granted' : 'denied'
+});
+}]);
+</script>
+xxxxxxxxxx
+28
+1
+<
+script
+>
+2
+// 1. Set up default denied consent
+3
+window
+.
+dataLayer
+=
+window
+.
+dataLayer
+||
+[];
+4
+function
+gtag
+() {
+5
+dataLayer
+.
+push
+(
+arguments
+);
+6
+}
+7
+gtag
+(
+'consent'
+,
+'default'
+, {
+8
+'analytics_storage'
+:
+'denied'
+,
+9
+'ad_storage'
+:
+'denied'
+,
+10
+'ad_user_data'
+:
+'denied'
+,
+11
+'ad_personalization'
+:
+'denied'
+,
+12
+'region'
+: [
+"AT"
+,
+"BE"
+,
+"BG"
+,
+"HR"
+,
+"CY"
+,
+"CZ"
+,
+"DK"
+,
+"EE"
+,
+"FI"
+,
+"FR"
+,
+"DE"
+,
+"GR"
+,
+"HU"
+,
+"IS"
+,
+"IE"
+,
+"IT"
+,
+"LV"
+,
+"LI"
+,
+"LT"
+,
+"LU"
+,
+"MT"
+,
+"NL"
+,
+"NO"
+,
+"PL"
+,
+"PT"
+,
+"RO"
+,
+"SK"
+,
+"SI"
+,
+"ES"
+,
+"SE"
+,
+"UK"
+,
+"CH"
+]
+13
+});
+14
+​
+15
+// 2. Send consent updates from the cookie banner to google tags
+16
+var
+_hsp
+=
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[];
+17
+_hsp
+.
+push
+([
+'addPrivacyConsentListener'
+,
+function
+(
+consent
+) {
+18
+var
+hasAnalyticsConsent
+=
+consent
+&&
+(
+consent
+.
+allowed
+||
+(
+consent
+.
+categories
+&&
+consent
+.
+categories
+.
+analytics
+));
+19
+var
+hasAdsConsent
+=
+consent
+&&
+(
+consent
+.
+allowed
+||
+(
+consent
+.
+categories
+&&
+consent
+.
+categories
+.
+advertisement
+));
+20
+​
+21
+gtag
+(
+'consent'
+,
+'update'
+, {
+22
+'ad_storage'
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+,
+23
+'analytics_storage'
+:
+hasAnalyticsConsent
+?
+'granted'
+:
+'denied'
+,
+24
+'ad_user_data'
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+,
+25
+'ad_personalization'
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+26
+});
+27
+}]);
+28
+<
+/script>
+Implement advanced Google consent mode for Google Analytics 4
+First, you need to
+find the installation code for Google Analytics 4 in your Google Analytics account
+.
+This code may change as Google updates its product. Typically, you must paste two scripts in the page’s
+<head>
+html (similar to the scripts below). If copying these scripts, replace
+MEASUREMENT_ID
+with
+your measurement ID
+.
+To implement Advanced Consent Mode, add your consent mode configuration script before the installation code in your
+<head>
+html.
+Copy code snippet
+<script>
+// 1. Set up default denied consent
+window.dataLayer = window.dataLayer || [];
+function gtag() {
+dataLayer.push(arguments);
+}
+gtag('consent', 'default', {
+'analytics_storage': 'denied',
+'ad_storage': 'denied',
+'ad_user_data': 'denied',
+'ad_personalization': 'denied',
+'region': ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "UK", "CH"]
+});
+// 2. Send consent updates from the cookie banner to google tags
+var _hsp = window._hsp = window._hsp || [];
+_hsp.push(['addPrivacyConsentListener', function(consent) {
+var hasAnalyticsConsent = consent && (consent.allowed || (consent.categories && consent.categories.analytics));
+var hasAdsConsent = consent && (consent.allowed || (consent.categories && consent.categories.advertisement));
+gtag('consent', 'update', {
+'ad_storage': hasAdsConsent ? 'granted' : 'denied',
+'analytics_storage': hasAnalyticsConsent ? 'granted' : 'denied',
+'ad_user_data': hasAdsConsent ? 'granted' : 'denied',
+'ad_personalization': hasAdsConsent ? 'granted' : 'denied'
+});
+}]);
+</script>
+// GA4 installation code
+<script async src="https://www.googletagmanager.com/gtag/js?id=MEASUREMENT_ID>"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'MEASUREMENT_ID');
+</script>
+xxxxxxxxxx
+37
+1
+<
+script
+>
+2
+// 1. Set up default denied consent
+3
+window
+.
+dataLayer
+=
+window
+.
+dataLayer
+||
+[];
+4
+function
+gtag
+() {
+5
+dataLayer
+.
+push
+(
+arguments
+);
+6
+}
+7
+gtag
+(
+'consent'
+,
+'default'
+, {
+8
+'analytics_storage'
+:
+'denied'
+,
+9
+'ad_storage'
+:
+'denied'
+,
+10
+'ad_user_data'
+:
+'denied'
+,
+11
+'ad_personalization'
+:
+'denied'
+,
+12
+'region'
+: [
+"AT"
+,
+"BE"
+,
+"BG"
+,
+"HR"
+,
+"CY"
+,
+"CZ"
+,
+"DK"
+,
+"EE"
+,
+"FI"
+,
+"FR"
+,
+"DE"
+,
+"GR"
+,
+"HU"
+,
+"IS"
+,
+"IE"
+,
+"IT"
+,
+"LV"
+,
+"LI"
+,
+"LT"
+,
+"LU"
+,
+"MT"
+,
+"NL"
+,
+"NO"
+,
+"PL"
+,
+"PT"
+,
+"RO"
+,
+"SK"
+,
+"SI"
+,
+"ES"
+,
+"SE"
+,
+"UK"
+,
+"CH"
+]
+13
+});
+14
+​
+15
+// 2. Send consent updates from the cookie banner to google tags
+16
+var
+_hsp
+=
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[];
+17
+_hsp
+.
+push
+([
+'addPrivacyConsentListener'
+,
+function
+(
+consent
+) {
+18
+var
+hasAnalyticsConsent
+=
+consent
+&&
+(
+consent
+.
+allowed
+||
+(
+consent
+.
+categories
+&&
+consent
+.
+categories
+.
+analytics
+));
+19
+var
+hasAdsConsent
+=
+consent
+&&
+(
+consent
+.
+allowed
+||
+(
+consent
+.
+categories
+&&
+consent
+.
+categories
+.
+advertisement
+));
+20
+​
+21
+gtag
+(
+'consent'
+,
+'update'
+, {
+22
+'ad_storage'
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+,
+23
+'analytics_storage'
+:
+hasAnalyticsConsent
+?
+'granted'
+:
+'denied'
+,
+24
+'ad_user_data'
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+,
+25
+'ad_personalization'
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+26
+});
+27
+}]);
+28
+<
+/script>
+29
+// GA4 installation code
+30
+<
+script
+async
+src
+=
+"https://www.googletagmanager.com/gtag/js?id=MEASUREMENT_ID>"
+><
+/script>
+31
+<
+script
+>
+32
+window
+.
+dataLayer
+=
+window
+.
+dataLayer
+||
+[];
+33
+function
+gtag
+(){
+dataLayer
+.
+push
+(
+arguments
+);}
+34
+gtag
+(
+'js'
+,
+new
+Date
+());
+35
+​
+36
+gtag
+(
+'config'
+,
+'MEASUREMENT_ID'
+);
+37
+<
+/script>
+Implement advanced Google consent mode for Google Tag Manager
+The base installation code for Google Tag Manager can be found in your
+Google Tag Manager account
+.
+The Google Tag Manager installation code can change as Google updates its products. Typically, you must install Google Tag Manager with two snippets. If copying these scripts, replace
+CONTAINER_ID
+with
+your container ID
+.
+1. Head code
+: Google instructs that this code be pasted into the
+<head>
+tag.
+Copy code snippet
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','CONTAINER_ID');</script>
+<!-- End Google Tag Manager -->
+xxxxxxxxxx
+7
+1
+<!-- Google Tag Manager -->
+2
+<
+script
+>
+(
+function
+(
+w
+,
+d
+,
+s
+,
+l
+,
+i
+){
+w
+[
+l
+]
+=
+w
+[
+l
+]
+||
+[];
+w
+[
+l
+].
+push
+({
+'gtm.start'
+:
+3
+new
+Date
+().
+getTime
+(),
+event
+:
+'gtm.js'
+});
+var
+f
+=
+d
+.
+getElementsByTagName
+(
+s
+)[
+0
+],
+4
+j
+=
+d
+.
+createElement
+(
+s
+),
+dl
+=
+l
+!=
+'dataLayer'
+?
+'&l='
++
+l
+:
+''
+;
+j
+.
+async
+=
+true
+;
+j
+.
+src
+=
+5
+'https://www.googletagmanager.com/gtm.js?id='
++
+i
++
+dl
+;
+f
+.
+parentNode
+.
+insertBefore
+(
+j
+,
+f
+);
+6
+})(
+window
+,
+document
+,
+'script'
+,
+'dataLayer'
+,
+'CONTAINER_ID'
+);
+<
+/script>
+7
+<!-- End Google Tag Manager -->
+2. Body code
+: Google instructs that this code be pasted into the
+<body>
+tag.
+Copy code snippet
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=CONTAINER_ID"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+xxxxxxxxxx
+4
+1
+<!-- Google Tag Manager (noscript) -->
+2
+<
+noscript
+><
+iframe
+src
+=
+"https://www.googletagmanager.com/ns.html?id=CONTAINER_ID"
+3
+height
+=
+"0"
+width
+=
+"0"
+style
+=
+"display:none;visibility:hidden"
+><
+/iframe></
+noscript
+>
+4
+<!-- End Google Tag Manager (noscript) -->
+Support basic consent mode for tags without built-in consent checks
+If a tag does not feature built-in consent checks, it is not compatible with advanced consent mode, and you must use basic consent mode instead. Under
+basic consent mode
+, tags only fire when they have consent. If a tag does not have consent, it is blocked. You can implement this functionality using Google Tag Manager’s
+Additional Consent Checks
+feature, which allows you to specify consent mode categories that must be granted for the tag to fire.
+This implementation requires you to:
+Send events when consent is updated
+: To properly configure your tags to work with the
+Additional Consent Checks
+feature, you need to fire
+a custom event
+when consent updates. In the next step, you will use this event as a trigger for your tags, ensuring that they fire when consent is updated by the user. To send this custom event, you need to add a new line to your consent mode configuration script, in the consent update section (see below for an example).
+Configure additional consent checks
+: For each of the tags you identified as requiring consent but lacking built-in consent checks, make the following updates to that tag’s settings:
+Configure additional consent checks for that tag
+. Select all the consent categories that apply to your tag.
+Add a custom event trigger to your tag
+. Make sure the event name matches the event name in your consent mode configuration script.
+Copy code snippet
+var _hsp = (window._hsp = window._hsp || []);
+_hsp.push([
+'addPrivacyConsentListener',
+function (consent) {
+var hasAnalyticsConsent =
+consent &&
+(consent.allowed || (consent.categories && consent.categories.analytics));
+var hasAdsConsent =
+consent &&
+(consent.allowed ||
+(consent.categories && consent.categories.advertisement));
+gtag('consent', 'update', {
+ad_storage: hasAdsConsent ? 'granted' : 'denied',
+analytics_storage: hasAnalyticsConsent ? 'granted' : 'denied',
+ad_user_data: hasAdsConsent ? 'granted' : 'denied',
+ad_personalization: hasAdsConsent ? 'granted' : 'denied',
+});
+// Send a custom event when consent updates
+gtag('event', 'hubspotConsentUpdate');
+},
+]);
+xxxxxxxxxx
+23
+1
+var
+_hsp
+=
+(
+window
+.
+_hsp
+=
+window
+.
+_hsp
+||
+[]);
+2
+_hsp
+.
+push
+([
+3
+'addPrivacyConsentListener'
+,
+4
+function
+(
+consent
+) {
+5
+var
+hasAnalyticsConsent
+=
+6
+consent
+&&
+7
+(
+consent
+.
+allowed
+||
+(
+consent
+.
+categories
+&&
+consent
+.
+categories
+.
+analytics
+));
+8
+var
+hasAdsConsent
+=
+9
+consent
+&&
+10
+(
+consent
+.
+allowed
+||
+11
+(
+consent
+.
+categories
+&&
+consent
+.
+categories
+.
+advertisement
+));
+12
+​
+13
+gtag
+(
+'consent'
+,
+'update'
+, {
+14
+ad_storage
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+,
+15
+analytics_storage
+:
+hasAnalyticsConsent
+?
+'granted'
+:
+'denied'
+,
+16
+ad_user_data
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+,
+17
+ad_personalization
+:
+hasAdsConsent
+?
+'granted'
+:
+'denied'
+,
+18
+});
+19
+​
+20
+// Send a custom event when consent updates
+21
+gtag
+(
+'event'
+,
+'hubspotConsentUpdate'
+);
+22
+},
+23
+]);
+The Cookie Banner Consent Listener API, allows scripts running on a webpage to receive consent updates from the Cookie Banner. Learn more about
+how to get privacy consent status
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Endpoints
+Get set up
+Analytics and events
+Custom events
+Email analytics
+Event analytics
+Reporting
+Cookie banner
+Cookie banner API
+Google Consent Mode
+Tracking code
+App management
+Automation
+CMS
+Conversations
+CRM
+Library
+Marketing
+Settings
+Other resources
+Legal
+Deprecated

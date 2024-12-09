@@ -1,0 +1,294 @@
+HubSpot Template Marketplace listing page requirements | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+List a template on the HubSpot Template Marketplace
+Listing Info
+Theme/Module Details
+Category
+Support
+Review
+General imagery requirements
+Other requirements
+CMS Development
+Marketplace
+HubSpot Template Marketplace listing page requirements
+Listing page requirements
+In addition to complying with the
+Theme Provider Branding Guidelines
+, template providers must adhere to the following requirements set by HubSpot when submitting templates and their listing pages to the HubSpot Template Marketplace. These standards apply to all templates on the Marketplace.
+HubSpot reserves the right to change the information on your template listing submission to comply with the following requirements. Learn more about the
+best practices
+for listing a theme or module on the HubSpot Template Marketplace.
+List a template on the HubSpot Template Marketplace
+In your Template Marketplace provider account, navigate to
+Template Marketplace
+>
+Listings
+.
+In the upper right, click
+Create listing
+.
+Select either
+Create theme listing
+or
+Create module listing
+.
+Review the information on the
+Provider Information
+page, then click
+Next
+.
+Review your payment information on the
+Payment Information
+page, then click
+Next
+.
+Select the
+theme or module
+you want to list, then click
+Save and continue
+. You'll be directed to the listing editor.
+Listing Info
+Provide the following information:
+Listing name:
+the name that will appear on your template listing. Use a unique and descriptive name for your template. Please avoid the following:
+The word
+theme
+,
+module
+, or
+section
+to identify the template type. Listings will already be categorized by type. (e.g.
+Example Theme
+or
+Easy Accordion Module
+).
+Your company name (e.g.
+Growth by HubSpot
+or
+Slider | HubSpot
+).
+Version numbers (e.g.
+Growth - 1.21
+or
+Growth v2
+) as the HubSpot Template Marketplace uses its own versioning system for published templates.
+The word
+Hub
+(e.g.
+Hub Growth
+).
+Using the term
+Pro
+when naming a free template. The marketplace can contain both free and paid versions of the same template, and naming a free template
+Pro
+can create confusion. The terms
+Pro
+,
+Plus
+,
+Advanced
+, and other similar terms should only be used for the paid version of templates that have both free and paid versions.
+Price:
+select
+Free
+or
+Paid
+. If you’re listing a paid template, enter a
+price
+. After publishing, you cannot change between
+Free
+and
+Paid
+types.
+Live example link:
+a link to a live version of your template so users can test it. Do not link to an image.
+Thumbnail image:
+the image that appears in search results and on the storefront card.
+This image must showcase your theme or module as the primary focus of the image. At least 75% of the image's content should be your template.
+Images will be removed at the HubSpot Ecosystem Team's discretion if they violate the guidelines below. Images
+must not
+contain any of the following:
+Excessive marketing verbiage, slogans, text, or branding (e.g.
+Over 100 features plus support!!!!
+or superimposing text/branding over the image).
+Imagery of individuals (real or fictitious) posing, pointing, o holding items (e.g. an image of a person holding a computer with your template on the screen).
+Imagery that shows personal or private information.
+Badges or banners containing information related to reviews and installs of your template, or website performance grading. These types of data can fluctuate and have the potential to mislead others. If you’re a HubSpot Partner and would like to display your partner tier or badge, please ensure it’s the most current version.
+Examples of good theme thumbnail images:
+Examples of good module thumbnail images:
+Theme/Module Details
+Provide the following information:
+Demo video (optional):
+the demo video should showcase your template in action and convey proper use cases. While optional, a video is recommended as buyers find them valuable when evaluating a purchase.
+Videos must be in mp4 format.
+It is recommended to use a 4:3 or 16:9 ratio for optimal viewing.
+Theme description/module overview:
+a summary of your template's key selling points. Descriptions should include the following:
+A summary
+Key selling points
+How your template can help buyers achieve their goals
+For theme descriptions, you do not need to include a listing of the modules or templates included in the theme as these are already listed on the template listing page.
+For individual modules, it must be noted in the description if the module requires the use of a 3rd party account. For example, if your module makes use of the Google Maps Platform, include the note:
+The use of this module requires a Google Cloud (Google Maps Platform) account
+.
+Features:
+feature titles are displayed in the Template Marketplace list view and are one of the first things your buyers see.
+You must add a minimum of two and up to five features for a template.
+Use the features section to highlight the following:
+Key features of the template
+Use cases and how it can solve your buyers' problems
+You can also add marketing-based imagery to convey feature sets.
+Client Examples (Themes only):
+examples (i.e. functional websites of your clients) are important for customers to see how other companies are using your template. It allows potential buyers to get an idea of how to use your template and also see how customizable it can be. It's strongly recommended to ensure that you have written permission from your clients to link to their websites. If requested, please make your client’s written permission available for verification.
+Module Images (Modules only):
+up to 20 images of your module to demonstrate how it integrates into a template. Modules must contain, at minimum, the following screenshots:
+How the module will appear on the page to front-end users.
+Screenshots of both content and style settings.
+The page-level editor settings of the module. If
+repeater content
+is used in the module, you must provide a screenshot of one instance of the repeating item settings.
+Category
+Provide the following information:
+Category and attributes:
+add categories and attributes for your themes or modules.
+Themes:
+your business types, pages types, and page features must be relevant to the theme you are submitting.
+Modules:
+your template types and categories must be relevant to your module.
+Search tags:
+add up to 15 keywords for your top features and style attributes.
+A set of default tags are assigned to your theme. If a particular tag isn't available, you can add a new tag.
+Tags must be between 2–3 words long.
+Use tags that accurately show the theme or module listed.
+You may not use tags that contain the following:
+Company names such as
+HubSpot
+or
+Example Company
+.
+Subjective terms such as
+top-rated
+,
+best
+, or
+number one
+.
+Tags that describe the template type such as
+theme
+,
+module
+, or
+email.
+These are implied based on the template type being viewed.
+Profanity or derogatory language.
+If you have more than two business types for your theme, you can add the extra types as tags in your listing.
+Support
+Provide the following information:
+Free support:
+select whether you offer free support to buyers of your template, and what languages you support.
+Support channels:
+all support email addresses must be working email addresses. If you offer Live Chat, Facebook Messenger or Phone support, make sure these are in working order.
+Avoid using
+hubspot@[companyname].com
+as your support email address.
+Self-support support resources:
+the setup documentation URL must link to a live website page with documentation on how to set up and use your template. You cannot use a contact page or a homepage. You can have downloadable documentation as a supplemental option, but live documentation must be present.
+Terms of Service and Privacy Policy:
+all URLs entered must be linked to your website and refer to your company's terms and privacy policies. Do not use HubSpot's terms and privacy links.
+Review
+On the
+Review
+tab, validate your template's code. To preview how your template will look like on the Marketplace, click
+Preview listing
+.
+General imagery requirements
+Images and screenshots will be removed at HubSpot’s discretion if they violate the guidelines above. Templates must
+not
+include images from the
+HubSpot-Shutterstock integration
+.
+Use full-size images of your template to showcase appearance and functionality. The following image dimensions are strongly recommended for the best viewing experience of your template listing:
+Storefront Card thumbnail image:
+Size:
+minimum 480px x 360px (4:3 ratio)
+Formats:
+JPG, JPEG, PNG
+Theme or Module images:
+you must have a minimum of two and up to 20 full-size images of your template.
+Minimum width:
+1160px
+Formats:
+JPG, JPEG, PNG
+Feature images:
+Size:
+minimum 480px × 360px (4:3 ratio)
+Formats:
+JPG, JPEG, PNG
+Client examples
+Size:
+minimum 480px x 360px (4:3 ratio)
+Formats:
+JPG, JPEG, PNG
+Other requirements
+All verbiage, images, media, and default content used in the template must match what is advertised on the template listing page and demo site. For example, if your template listing is geared towards real estate with a working demo, the end user must receive that theme.
+If upon purchase the end user is delivered a theme centered around fitness instead, this would be considered a bait-and-switch, which is unacceptable.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Debugging
+Improve older sites
+Marketplace
+Template marketplace guidelines
+General listing requirements
+Template marketplace policies
+Theme requirements
+List and update templates in the HubSpot Template Marketplace
+Module requirements

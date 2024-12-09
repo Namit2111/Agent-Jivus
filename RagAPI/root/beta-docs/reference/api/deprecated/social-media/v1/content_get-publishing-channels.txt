@@ -1,0 +1,1187 @@
+Social media - v1 | HubSpot API
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Get Publishing Channels
+GET
+Get Broadcast Messages
+GET
+Get a Broadcast Message
+GET
+Create a Broadcast Message
+POST
+Cancel a Broadcast Message
+DEL
+API Endpoints
+Deprecated
+Social media
+Social media
+API Version: v1
+This API is deprecated. It will no longer receive version updates, but is otherwise functional and stable.
+Get Publishing Channels
+GET
+/broadcast/v1/channels/setting/publish/current
+Copy full URL
+Get details on the channels (e.g. Twitter account, Facebook page) connected to this portal that can be published to.
+A "channel" is a specific destination like a Twitter profile, Facebook Page or LinkedIn Group. An account added to HubSpot may contain several channels, such as a Facebook account having access to several Facebook Pages.
+Requirements
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+This endpoint doesn't take any parameters.
+Response
+Copy all
+Example URL requesting JSON:
+https://api.hubapi.com/broadcast/v1/channels/setting/publish/current
+Example JSON output.
+The data map contains values specific to the "type"
+of channel (Facebook Page, Facebook Account, etc.) that come from the associated social network.
+NOTE: The data map is not supported for Twitter channels.
+[
+{
+"channelGuid": "57883b6f-88c7-3050-91ee-c99eb0749d59",
+"portalId": 62515,
+"channelId": "4654321",
+"accountGuid": "10056a5f-7a35-4653-bcce-13307286eca0",
+"createdAt": 1558129620104,
+"updatedAt": 1559643047214,
+"active": true,
+"shared": false,
+"channelKey": "Twitter:4654321",
+"hidden": false,
+"settings": {},
+"channelScopes": [],
+"type": "Twitter",
+/* NOTE: The following fields are deprecated for Twitter channels,
+// and will always be set to null or {}
+"name": null, //
+"displayName": null, //
+"dataMap": {}, //
+"profileUrl": null, //
+"avatarUrl": null, //
+"remoteUserIdForFeed": null, */
+"channelSlug": "twitter",
+"accountType": "Twitter",
+"accountSlug": "twitter",
+"username": null
+},
+{
+"channelGuid": "385412d8-f1ea-39ff-9eb3-c2f1472c41e2",
+"portalId": 62515,
+"channelId": "1080012345608",
+"accountGuid": "31044074-81e8-493f-a315-bbc12153e229",
+"name": "Example Facebook page",
+"createdAt": 1556296960949,
+"updatedAt": 1559643041735,
+"active": true,
+"shared": true,
+"channelKey": "FacebookPage:1080012345608",
+"hidden": false,
+"settings": {},
+"channelScopes": [],
+"type": "FacebookPage",
+"displayName": "Example Facebook page",
+"dataMap": {
+"lastName": "User",
+"pageCategory": "Grocery Store",
+"pictureUrl": "https://scontent.xx.fbcdn.net/v/t1.0-1/c13.0.50.50a/p50x50/13912442_1080012345608_3326688728033556567_n.jpg?",
+"pageNameWithLocationDescriptor": "Example Facebook page",
+"fullName": "Example User",
+"pageId": "1080012345608",
+"userId": "101912106925069",
+"pageName": "Example Facebook page",
+"picture": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=1016543219&height=50&width=50&ext=1562235036&hash=AeS_Mn51xJm2zq6U",
+"facebookPageTasks": "ANALYZE,ADVERTISE,MODERATE,CREATE_CONTENT,MANAGE",
+"firstName": "Example",
+"pageUsername": "examplefacebookpage"
+},
+"profileUrl": "https://www.facebook.com/1080012345608",
+"avatarUrl": "https://scontent.xx.fbcdn.net/v/t1.0-1/c13.0.50.50a/p50x50/13912442_1080012345608_3326688728033556567_n.jpg",
+"channelSlug": "facebookpage",
+"remoteUserIdForFeed": "Page:1080012345608",
+"accountType": "Facebook",
+"accountSlug": "facebook",
+"username": "Example Facebook page"
+}
+]
+​
+x
+75
+1
+Example
+URL
+requesting
+JSON
+:
+2
+https
+:
+//api.hubapi.com/broadcast/v1/channels/setting/publish/current
+3
+​
+4
+Example
+JSON
+output
+.
+5
+The
+data
+map
+contains
+values
+specific
+to
+the
+"type"
+6
+of
+channel
+(
+Facebook
+Page
+,
+Facebook
+Account
+,
+etc
+.)
+that
+come
+from
+the
+associated
+social
+network
+.
+7
+NOTE
+:
+The
+data
+map
+is
+not
+supported
+for
+Twitter
+channels
+.
+8
+​
+9
+[
+10
+{
+11
+"channelGuid"
+:
+"57883b6f-88c7-3050-91ee-c99eb0749d59"
+,
+12
+"portalId"
+:
+62515
+,
+13
+"channelId"
+:
+"4654321"
+,
+14
+"accountGuid"
+:
+"10056a5f-7a35-4653-bcce-13307286eca0"
+,
+15
+"createdAt"
+:
+1558129620104
+,
+16
+"updatedAt"
+:
+1559643047214
+,
+17
+"active"
+:
+true
+,
+18
+"shared"
+:
+false
+,
+19
+"channelKey"
+:
+"Twitter:4654321"
+,
+20
+"hidden"
+:
+false
+,
+21
+"settings"
+: {},
+Show more
+Get Broadcast Messages
+GET
+/broadcast/v1/broadcasts
+Copy full URL
+For a given portal, return details on a set of broadcast messages (e.g. a tweet or Facebook post).
+A "broadcast" is a specific social message posted to a single social network.
+Requirements
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+status
+Query param
+Only include broadcasts in matching state (success, waiting, canceled, error_fatal)
+since
+Query param
+Only include broadcasts created at or more recently than given timestamp (milliseconds from epoch)
+withChannelKeys
+Query param
+Only include broadcasts created on specific channels. To request multiple channels, include the withChannelKeys parameter multiple times
+count
+Query param
+Only include specified number of results
+offset
+Query param
+Used to get the next set of results. Increment the offset by the number your using in the count parameter to get the next set of results.
+Response
+Copy all
+Example GET URL:
+https://api.hubapi.com/broadcast/v1/broadcasts?count=2&status=success&since=1357138314517
+Example JSON output, returns a list of broadcast
+messages that meet the specified criteria:
+[
+{
+"broadcastGuid": "4745142",
+"portalId": 62515,
+"groupGuid": "9e714a24-4973-452b-8622-cfd2e072b0cf",
+"campaignGuid": null,
+"channelKey": "Twitter:403551555",
+"channelGuid": "cd0bccfc-390d-3840-aa77-d413b253c807",
+"clientTag": "SocialUI_clone",
+"createdAt": 1553275615529,
+"userUpdatedAt": 1554967001342,
+"triggerAt": 1563386460000,
+"finishedAt": null,
+"status": "DRAFT",
+"message": null,
+"content": {
+"originalLink": null,
+"charCount": "22",
+"originalBody": "test test a video post",
+"uncompressedLinks": null,
+"hashtagCount": "0",
+"body": "test test a video post",
+"title": "test test a video post",
+"thumbUrl": "https://cdn2.hubspot.com/hubfs/62515/social-suggested-images/2019-video.mp4/thumb.jpg",
+"fileId": "3385520023"
+},
+"foreignId": null,
+"remoteContentId": null,
+"remoteContentType": null,
+"clicks": 0,
+/* NOTE: The following fields are deprecated, and will always be set to null
+"messageUrl": null,  //
+"taskQueueId": null, //
+"linkGuid": null, //
+"linkTaskQueueId": null, //
+// NOTE: The following fields are deprecated, and will always be set to 0
+"replies": 0, //
+"retweets": 0, //
+"likes": 0, //
+"interactionsCount": 0, */
+"createdBy": 546233,
+"updatedBy": 546233,
+"campaignName": null,
+"broadcastMediaType": "VIDEO",
+"wasDraft": true,
+"channel": null,
+"serviceId": null,
+"extraData": {
+"files": [
+{
+"url": "https://cdn2.hubspot.com/hubfs/62515/social-suggested-images/2019-video.mp4",
+"mediaType": "VIDEO",
+"height": 300,
+"width": 600,
+"description": null,
+"id": 3385520023
+}
+],
+"body": "test test a video post",
+"updatedClientTag": "SocialUI_composer"
+},
+"isPending": false,
+"isPublished": false,
+"isFailed": false,
+"isRetry": false,
+"messageText": "test test a video post"
+},
+{
+"broadcastGuid": "4755879",
+"portalId": 62515,
+"groupGuid": "d108c94c-45f3-4f4f-b449-c0b8d87638c7",
+"campaignGuid": null,
+"channelKey": "LinkedInCompanyPage:9285502",
+"channelGuid": "fbc18527-e718-3979-b57b-11c75dc6f18e",
+"clientTag": "SocialUI_composer",
+"createdAt": 1559244927778,
+"userUpdatedAt": 1559244927778,
+"triggerAt": 1559244927778,
+"finishedAt": 1559244991570,
+"status": "SUCCESS",
+"message": "This broadcast is currently executing\n----Appended Message----\nThis broadcast finished without errors",
+"content": {
+"charCount": "52",
+"originalBody": "Publishing a video post which should not be ignored ",
+"uncompressedLinks": null,
+"hashtagCount": "0",
+"body": "Publishing a video post which should not be ignored ",
+"thumbUrl": "https://cdn2.hubspot.com/hubfs/62515/IMG_6679.mov/thumb.jpg",
+"title": "Publishing a video post which should not be ignored ",
+"fileId": "3304976613"
+},
+"foreignId": "urn:li:ugcPost:123456",
+"remoteContentId": null,
+"remoteContentType": null,
+"clicks": 0,
+/* NOTE: The following fields are deprecated, and will always be set to null
+"messageUrl": null, //
+"taskQueueId": null, //
+"linkGuid": null, //
+"linkTaskQueueId": null, //
+// NOTE: The following fields are deprecated, and will always be set to 0
+"replies": 0, //
+"retweets": 0, //
+"likes": 0, //
+"interactionsCount": 0, */
+"createdBy": 546233,
+"updatedBy": null,
+"campaignName": null,
+"broadcastMediaType": "VIDEO",
+"wasDraft": false,
+"channel": null,
+"serviceId": null,
+"extraData": {
+"files": [
+{
+"url": "https://cdn2.hubspot.com/hubfs/62515/IMG_6679.mov",
+"mediaType": "VIDEO",
+"height": 1080,
+"width": 1920,
+"description": null,
+"id": 3304976613
+}
+],
+"body": "Publishing a video post which should not be ignored ",
+"updatedClientTag": null
+},
+"isPending": false,
+"isPublished": true,
+"isFailed": false,
+"isRetry": false,
+"messageText": "Publishing a video post which should not be ignored "
+}
+]
+xxxxxxxxxx
+1
+139
+1
+Example
+GET
+URL
+:
+2
+https
+:
+//api.hubapi.com/broadcast/v1/broadcasts?count=2&status=success&since=1357138314517
+3
+​
+4
+Example
+JSON
+output
+,
+returns
+a
+list
+of
+broadcast
+5
+messages
+that
+meet
+the
+specified
+criteria
+:
+6
+​
+7
+[
+8
+{
+9
+"broadcastGuid"
+:
+"4745142"
+,
+10
+"portalId"
+:
+62515
+,
+11
+"groupGuid"
+:
+"9e714a24-4973-452b-8622-cfd2e072b0cf"
+,
+12
+"campaignGuid"
+:
+null
+,
+13
+"channelKey"
+:
+"Twitter:403551555"
+,
+14
+"channelGuid"
+:
+"cd0bccfc-390d-3840-aa77-d413b253c807"
+,
+15
+"clientTag"
+:
+"SocialUI_clone"
+,
+16
+"createdAt"
+:
+1553275615529
+,
+17
+"userUpdatedAt"
+:
+1554967001342
+,
+18
+"triggerAt"
+:
+1563386460000
+,
+19
+"finishedAt"
+:
+null
+,
+20
+"status"
+:
+"DRAFT"
+,
+21
+"message"
+:
+null
+,
+22
+"content"
+: {
+23
+"originalLink"
+:
+null
+,
+Show more
+Get a Broadcast Message
+GET
+/broadcast/v1/broadcasts/:broadcast_guid
+Copy full URL
+For a given HubID, return details on a specific broadcast (e.g. a tweet or Facebook post).
+A "broadcast" is a specific social message posted to a single social network.
+Requirements
+Scopes
+social
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+broadcast_guid*
+Path param
+Unique identifier for a specific broadcast.
+Response
+Copy all
+Example URL requesting JSON:
+https://api.hubapi.com/broadcast/v1/broadcasts/65cc83ae-f962-452d-8d70-20cbd3204e61?portalId=62515
+Example JSON output. Note the "status" field indicates the state of the message, where it could be "WAITING" if it is scheduled to be published later, "SUCCESS" for successfully published or "ERROR_FATAL" if there was an error publishing the message.
+{
+"broadcastGuid": "4745142",
+"portalId": 62515,
+"groupGuid": "9e714a24-4973-452b-8622-cfd2e072b0cf",
+"campaignGuid": null,
+"channelKey": "Twitter:403551555",
+"channelGuid": "cd0bccfc-390d-3840-aa77-d413b253c807",
+"clientTag": "SocialUI_clone",
+"createdAt": 1553275615529,
+"userUpdatedAt": 1554967001342,
+"triggerAt": 1563386460000,
+"finishedAt": null,
+"status": "DRAFT",
+"message": null,
+"content": {
+"originalLink": null,
+"charCount": "22",
+"originalBody": "test test a video post",
+"uncompressedLinks": null,
+"hashtagCount": "0",
+"body": "test test a video post",
+"title": "test test a video post",
+"thumbUrl": "https://cdn2.hubspot.com/hubfs/62515/social-suggested-images/2019-video.mp4/thumb.jpg",
+"fileId": "3385520023"
+},
+"foreignId": null,
+"remoteContentId": null,
+"remoteContentType": null,
+"clicks": 0,
+/* NOTE: The following fields are deprecated, and will always be set to null
+"messageUrl": null,
+"taskQueueId": null, //
+"linkGuid": null, //
+"linkTaskQueueId": null, //
+// NOTE: The following fields are deprecated, and will always be set to 0
+"replies": 0, //
+"retweets": 0, //
+"likes": 0, //
+"interactionsCount": 0, */
+"createdBy": 546233,
+"updatedBy": 546233,
+"campaignName": null,
+"broadcastMediaType": "VIDEO",
+"wasDraft": true,
+"channel": null,
+"serviceId": null,
+"extraData": {
+"files": [
+{
+"url": "https://cdn2.hubspot.com/hubfs/62515/social-suggested-images/2019-video.mp4",
+"mediaType": "VIDEO",
+"height": 300,
+"width": 600,
+"description": null,
+"id": 3385520023
+}
+],
+"body": "test test a video post",
+"updatedClientTag": "SocialUI_composer"
+},
+"isPending": false,
+"isPublished": false,
+"isFailed": false,
+"isRetry": false,
+"messageText": "test test a video post"
+}
+xxxxxxxxxx
+1
+71
+1
+Example
+URL
+requesting
+JSON
+:
+2
+https
+:
+//api.hubapi.com/broadcast/v1/broadcasts/65cc83ae-f962-452d-8d70-20cbd3204e61?portalId=62515
+3
+​
+4
+Example
+JSON
+output
+.
+Note
+the
+"status"
+field
+indicates
+the
+state
+of
+the
+message
+,
+where
+it
+could
+be
+"WAITING"
+if
+it
+is
+scheduled
+to
+be
+published
+later
+,
+"SUCCESS"
+for
+successfully
+published
+or
+"ERROR_FATAL"
+if
+there
+was
+an
+error
+publishing
+the
+message
+.
+5
+​
+6
+{
+7
+"broadcastGuid"
+:
+"4745142"
+,
+8
+"portalId"
+:
+62515
+,
+9
+"groupGuid"
+:
+"9e714a24-4973-452b-8622-cfd2e072b0cf"
+,
+10
+"campaignGuid"
+:
+null
+,
+11
+"channelKey"
+:
+"Twitter:403551555"
+,
+12
+"channelGuid"
+:
+"cd0bccfc-390d-3840-aa77-d413b253c807"
+,
+13
+"clientTag"
+:
+"SocialUI_clone"
+,
+14
+"createdAt"
+:
+1553275615529
+,
+15
+"userUpdatedAt"
+:
+1554967001342
+,
+16
+"triggerAt"
+:
+1563386460000
+,
+17
+"finishedAt"
+:
+null
+,
+18
+"status"
+:
+"DRAFT"
+,
+19
+"message"
+:
+null
+,
+Show more
+Create a Broadcast Message
+POST
+/broadcast/v1/broadcasts
+Copy full URL
+Create a new broadcast message (e.g. a tweet or Facebook post) to be published. It can be scheduled immediately or at a time in the future.
+Requirements
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+channelGuid*
+Body param
+The GUID of the publishing channel that the message is for. You can get all of the channels for a portal using
+this endpoint.
+tirggerAt
+Body param
+A Unix timestamp in milliseconds of the time that the message should be published to the channel. If this is not included in the request, the message will be published immediately.
+status
+Body param
+Use
+"status": "DRAFT"
+in the request body.  This creates the message as a draft, meaning that it will not be scheduled to publish and can be reviewed and scheduled from within the HubSpot Social Media Publishing app.
+Note
+: If the draft status is set, any triggerAt value will be unset.
+Response
+Copy all
+Example POST URL:
+https://api.hubapi.com/broadcast/v1/broadcasts
+Example request that schedules the message to be published at
+December 20th, 2017 10:09:57 PM, Eastern Time:
+{
+"channelGuid": "7c13e300-e43f-3aa0-a842-93956cb214e9",
+"triggerAt": 1513825797000,
+"content": {
+"body": "A simple message with a link http://blog.hubspot.com"
+}
+}
+Example request that creates a draft message:
+{
+"channelGuid": "7c13e300-e43f-3aa0-a842-93956cb214e9",
+"status": "DRAFT",
+"content" : {
+"body": "I will be saved as a draft."
+}
+}
+Example request that creates a message with an image:
+{
+"channelGuid": "7c13e300-e43f-3aa0-a842-93956cb214e9",
+"triggerAt": 1513825797000,
+"content": {
+"body": "A simple message with a link http://blog.hubspot.com",
+"photoUrl": "http://cdn2.hubspot.net/hubfs/53/sprocket_web-2.png"
+}
+}
+If successful, the HTTP status code will be a 201 Created and the
+response body will include the created broadcast.
+Example JSON response:
+{
+"broadcastGuid": "96198797-77e0-4f71-a8af-36b2d09d5c18",
+"portalId": 62515,
+"groupGuid": "f90ee9d2-f5f9-456c-9950-e15de14d493c",
+"campaignGuid": null,
+"channelKey": "FacebookPage:123456",
+"channelGuid": "7c13e300-e43f-3aa0-a842-93956cb214e9",
+"clientTag": null,
+"createdAt": 1483723438433,
+"userUpdatedAt": 1483723438433,
+"triggerAt": 0,
+"finishedAt": null,
+"status": "DRAFT",
+"message": null,
+"content": {
+"uncompressedLinks": null,
+"body": "I will be saved as a draft.",
+"originalBody": "I will be saved as a draft."
+},
+"foreignId": null,
+"remoteContentId": null,
+"remoteContentType": null,
+"clicks": 0,
+"createdBy": 0,
+"updatedBy": null,
+"campaignName": null,
+"wasDraft": true,
+"channel": null,
+"serviceId": null,
+"isPublished": false,
+"isRetry": false,
+"isPending": false,
+"isFailed": false
+}
+xxxxxxxxxx
+1
+70
+1
+Example
+POST
+URL
+:
+2
+https
+:
+//api.hubapi.com/broadcast/v1/broadcasts
+3
+​
+4
+Example
+request
+that
+schedules
+the
+message
+to
+be
+published
+at
+5
+December
+20
+th
+,
+2017
+10
+:
+09
+:
+57
+PM
+,
+Eastern
+Time
+:
+6
+​
+7
+{
+8
+"channelGuid"
+:
+"7c13e300-e43f-3aa0-a842-93956cb214e9"
+,
+9
+"triggerAt"
+:
+1513825797000
+,
+10
+"content"
+: {
+11
+"body"
+:
+"A simple message with a link http://blog.hubspot.com"
+12
+}
+13
+}
+14
+​
+15
+Example
+request
+that
+creates
+a
+draft
+message
+:
+16
+{
+17
+"channelGuid"
+:
+"7c13e300-e43f-3aa0-a842-93956cb214e9"
+,
+18
+"status"
+:
+"DRAFT"
+,
+19
+"content"
+: {
+20
+"body"
+:
+"I will be saved as a draft."
+21
+}
+22
+}
+23
+​
+Show more
+Cancel a Broadcast Message
+DELETE
+/broadcast/v1/broadcasts/:broadcast_guid
+Copy full URL
+Cancel a scheduled broadcast (e.g. tweet or facebook post).
+Requirements
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+broadcast_guid*
+Path param
+Unique identifier for a specific broadcast.
+Response
+Copy all
+Example URL requesting JSON:
+https://api.hubapi.com/broadcast/v1/broadcasts/65cc83ae-f962-452d-8d70-20cbd3204e61
+Example JSON output. The modified broadcast will be return. If the broadcast was already completed, its status will not be changed.
+{
+"broadcastGuid": "4745142",
+"portalId": 62515,
+"groupGuid": "9e714a24-4973-452b-8622-cfd2e072b0cf",
+"campaignGuid": null,
+"channelKey": "Twitter:403551555",
+"channelGuid": "cd0bccfc-390d-3840-aa77-d413b253c807",
+"clientTag": "SocialUI_clone",
+"createdAt": 1553275615529,
+"userUpdatedAt": 1554967001342,
+"triggerAt": 1563386460000,
+"finishedAt": null,
+"status": "DRAFT",
+"message": null,
+"content": {
+"originalLink": null,
+"charCount": "22",
+"originalBody": "test test a video post",
+"uncompressedLinks": null,
+"hashtagCount": "0",
+"body": "test test a video post",
+"title": "test test a video post",
+"thumbUrl": "https://cdn2.hubspot.com/hubfs/62515/social-suggested-images/2019-video.mp4/thumb.jpg",
+"fileId": "3385520023"
+},
+"foreignId": null,
+"remoteContentId": null,
+"remoteContentType": null,
+"clicks": 0,
+/* NOTE: The following fields are deprecated, and will always be set to null
+"messageUrl": null,
+"taskQueueId": null, //
+"linkGuid": null, //
+"linkTaskQueueId": null, //
+// NOTE: The following fields are deprecated, and will always be set to 0
+"replies": 0, //
+"retweets": 0, //
+"likes": 0, //
+"interactionsCount": 0, */
+"createdBy": 546233,
+"updatedBy": 546233,
+"campaignName": null,
+"broadcastMediaType": "VIDEO",
+"wasDraft": true,
+"channel": null,
+"serviceId": null,
+"extraData": {
+"files": [
+{
+"url": "https://cdn2.hubspot.com/hubfs/62515/social-suggested-images/2019-video.mp4",
+"mediaType": "VIDEO",
+"height": 300,
+"width": 600,
+"description": null,
+"id": 3385520023
+}
+],
+"body": "test test a video post",
+"updatedClientTag": "SocialUI_composer"
+},
+"isPending": false,
+"isPublished": false,
+"isFailed": false,
+"isRetry": false,
+"messageText": "test test a video post"
+}
+xxxxxxxxxx
+1
+71
+1
+Example
+URL
+requesting
+JSON
+:
+2
+https
+:
+//api.hubapi.com/broadcast/v1/broadcasts/65cc83ae-f962-452d-8d70-20cbd3204e61
+3
+​
+4
+Example
+JSON
+output
+.
+The
+modified
+broadcast
+will
+be
+return
+.
+If
+the
+broadcast
+was
+already
+completed
+,
+its
+status
+will
+not
+be
+changed
+.
+5
+​
+6
+{
+7
+"broadcastGuid"
+:
+"4745142"
+,
+8
+"portalId"
+:
+62515
+,
+9
+"groupGuid"
+:
+"9e714a24-4973-452b-8622-cfd2e072b0cf"
+,
+10
+"campaignGuid"
+:
+null
+,
+11
+"channelKey"
+:
+"Twitter:403551555"
+,
+12
+"channelGuid"
+:
+"cd0bccfc-390d-3840-aa77-d413b253c807"
+,
+13
+"clientTag"
+:
+"SocialUI_clone"
+,
+14
+"createdAt"
+:
+1553275615529
+,
+15
+"userUpdatedAt"
+:
+1554967001342
+,
+16
+"triggerAt"
+:
+1563386460000
+,
+17
+"finishedAt"
+:
+null
+,
+18
+"status"
+:
+"DRAFT"
+,
+19
+"message"
+:
+null
+,
+20
+"content"
+: {
+21
+"originalLink"
+:
+null
+,
+Show more
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Endpoints
+Get set up
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+CRM
+Library
+Marketing
+Settings
+Other resources
+Legal
+Deprecated

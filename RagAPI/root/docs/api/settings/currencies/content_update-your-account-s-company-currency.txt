@@ -1,0 +1,399 @@
+Settings API | Currencies | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Supported currencies
+Add account currencies and set exchange rates
+Retrieve account currencies and exchange rates
+Update your account's company currency
+Update currency exchange rates
+Hide a currency
+Limits and scopes
+API Guides
+Settings
+Settings API | Currencies
+Currencies
+With the currencies API, you can manage the currencies used in your HubSpot account, including setting your account's company currency, creating additional currencies, and updating currency exchange rates. Learn more about
+adding and editing currencies within HubSpot.
+Supported currencies
+Only certain currencies are supported for use in HubSpot. To retrieve a list of HubSpot's supported currencies and their codes, make a
+GET
+request to
+/settings/v3/currencies/codes
+.
+You can use any of the returned codes as values for the
+currencyCode
+,
+fromCurrencyCode
+, and
+toCurrencyCode
+properties.
+Add account currencies and set exchange rates
+Depending on your HubSpot subscription, you can add additional currencies for use in your account, and set their exchange rates compared to your company currency. Learn more about the number of currencies you can have in your account in the
+HubSpot Product & Services Catalog.
+To add a currency and set the exchange rate, or add a new exchange rate for an existing currency, make a
+POST
+request to
+/settings/v3/currencies/exchange-rates
+. In your request, the following fields are required:
+fromCurrencyCode
+: the currency code of the currency you want to add to your account. This must be one of HubSpot's supported currency codes.
+conversionRate
+: the exchange rate from the additional currency to your company currency. The value must be greater than 0 and can contain up to 6 decimal values (e.g.,
+1.36
+). Any values with more than 6 decimal places will be rounded (e.g.,
+1.2345678
+becomes
+1.234568
+).
+You can also include a timestamp using the following field:
+effectiveAt
+: the date and time the exchange rate takes effect. Values can be in either
+long date
+or
+ISO 8601
+format.
+For example, your request may look like:
+Copy code snippet
+///Example request
+{
+"fromCurrencyCode": "EUR",
+"conversionRate": "1.3",
+"effectiveAt": "2023-05-08T14:59:19.813Z"
+}
+1
+///Example request
+2
+{
+3
+"fromCurrencyCode"
+:
+"EUR"
+,
+4
+"conversionRate"
+:
+"1.3"
+,
+5
+"effectiveAt"
+:
+"2023-05-08T14:59:19.813Z"
+6
+}
+To add multiple currencies and set their exchange rates in bulk, make a
+POST
+request to
+/settings/v3/currencies/exchange-rates​/batch​/create
+. Your request must include the
+fromCurrencyCode
+and
+conversionRate
+properties for each currency.
+For example, your request may look like:
+Copy code snippet
+///Example request body
+{
+"inputs": [
+{
+"fromCurrencyCode": "USD",
+"conversionRate": 2.7
+},
+{ "fromCurrencyCode": "EUR", "conversionRate": 1.3 }
+]
+}
+xxxxxxxxxx
+10
+1
+///Example request body
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"fromCurrencyCode"
+:
+"USD"
+,
+6
+"conversionRate"
+:
+2.7
+7
+},
+8
+{
+"fromCurrencyCode"
+:
+"EUR"
+,
+"conversionRate"
+:
+1.3
+}
+9
+]
+10
+}
+Retrieve account currencies and exchange rates
+You can view your account's current and historical currencies and exchange rates.
+To view your account's company currency, make a
+GET
+request to
+/settings/v3/currencies/company-currency
+. To view all of your account's current currencies and exchange rates, make a
+GET
+request to
+/settings/v3/currencies/exchange-rates/current
+. When you make a successful request, the response will include the IDs of the exchange rates set in your account.
+To view a specific currency and its exchange rate, make a
+GET
+request to
+/settings/v3/currencies/exchange-rates/{exchangeRateId}
+.
+To view all of your account's currencies and exchange rates, including historical currencies, make a
+GET
+request to
+/settings/v3/currencies/exchange-rates
+. You can filter which currencies and exchange rates are returned using the
+limit
+,
+after
+,
+fromCurrencyCode
+and
+toCurrencyCode
+query parameters in your request.
+Update your account's company currency
+Your account's
+company currency
+is the currency used in deal amount totals, deal reports, and when creating new deals in HubSpot.
+To update your account's company currency, make a
+PUT
+request to
+/settings/v3/currencies/company-currency
+. In your request, include the
+currencyCode
+value for the currency you want to set as your company currency. For example, your request may look like:
+Copy code snippet
+///Example request body
+{
+"currencyCode": "AED"
+}
+xxxxxxxxxx
+4
+1
+///Example request body
+2
+{
+3
+"currencyCode"
+:
+"AED"
+4
+}
+Please note
+: for accounts with multiple currencies, the company currency will have an automatically generated self-referencing rate (e.g., EUR/EUR=1.0). This rate is
+not
+modifiable via API.
+Update currency exchange rates
+Once currencies are set up in your HubSpot account, you can update their exchange rates. To update an individual exchange rate, make a
+PATCH
+request to
+/settings/v3/currencies/exchange-rates/{exchangeRateId}
+. In your request, include the new exchange rate in the
+conversionRate
+property. Your request may look like:
+Copy code snippet
+///Example request body
+{
+"conversionRate": 2
+}
+xxxxxxxxxx
+4
+1
+///Example request body
+2
+{
+3
+"conversionRate"
+:
+2
+4
+}
+To update multiple currencies, make a
+POST
+request to
+/settings/v3/currencies/exchange-rates/batch/update
+. In your request, include the exchange rate IDs and the new
+conversionRate
+values. For example:
+Copy code snippet
+///Example request body
+{
+"inputs": [
+{
+"id": "string",
+"conversionRate": 1.3
+},
+{
+"id": "string",
+"conversionRate": 2
+}
+]
+}
+xxxxxxxxxx
+13
+1
+///Example request body
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"id"
+:
+"string"
+,
+6
+"conversionRate"
+:
+1.3
+7
+},
+8
+{
+9
+"id"
+:
+"string"
+,
+10
+"conversionRate"
+:
+2
+11
+}
+12
+]
+13
+}
+Hide a currency
+You can hide a currency so that it's not visible in your HubSpot account. To hide an existing account currency, make a
+POST
+request to
+/settings/v3/currencies/exchange-rates/update-visibility
+. In your request, include the following:
+fromCurrencyCode
+: the code of the currency you want to hide or show.
+toCurrencyCode
+: the code of your company currency.
+visibleInUI
+: whether or not the currency and its exchange rate are shown in your HubSpot account. To hide a currency, the value should be
+false
+. To show a previously hidden currency, set the value should be set to
+true
+.
+To hide a currency, your request may look like:
+Copy code snippet
+///Example request body
+{
+"fromCurrencyCode": "USD",
+"toCurrencyCode": "AED",
+"visibleInUI": false
+}
+xxxxxxxxxx
+6
+1
+///Example request body
+2
+{
+3
+"fromCurrencyCode"
+:
+"USD"
+,
+4
+"toCurrencyCode"
+:
+"AED"
+,
+5
+"visibleInUI"
+:
+false
+6
+}
+Limits and scopes
+The daily limit for creating exchanges rates is 1000. This is a total limit which includes rates created both individually and in batches.
+There are different scopes that a users needs in order to view or edit currency and exchange rate data:
+multi-currency-read
+: required to retrieve and read currency data.
+multi-currency-write
+: required to edit currency data.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Marketing
+Settings
+Account activity
+Account information
+Business units
+Currencies
+New
+Users
+Legal

@@ -1,0 +1,299 @@
+Calls to Action widget SDK | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Initializing
+Refresh CTAs
+Close a single CTA
+Close all CTAs on a page
+Register an event listener
+Unregister an event listener
+Events
+API Endpoints
+Marketing
+Calls to Action widget SDK
+Calls-to-action JavaScript API
+The Calls-to-action JavaScript API allows you to render HubSpot
+Calls-To-Actions
+on your website. You can use this API to programmatically control when a CTA appears or listen to events triggered when a user interacts with one of your CTAs.
+Initializing
+The API is housed in the
+window.HubSpotCallsToActions
+object, which provides access to all available methods. The object is created by the
+HubSpot tracking code
+, but may not be available immediately on page load. To defer accessing the API until it's initialized, you can use the
+window.hsCallsToActionReady
+helper.
+window.hsCallsToActionReady
+is an optional field you can define on the
+window
+object which enables you to specify code to be executed as soon as the API becomes available. If used, this field should be set to an array of functions. Once the API has been initialized, this event handler will check for the existence of this array and execute the functions in order.
+Copy code snippet
+if (window.HubSpotCallsToActions) {
+console.log('The api is already initialized');
+} else {
+window.hsCallsToActionsReady = [
+() => {
+console.log('Now the api is ready');
+},
+];
+}
+1
+if
+(
+window
+.
+HubSpotCallsToActions
+) {
+2
+console
+.
+log
+(
+'The api is already initialized'
+);
+3
+}
+else
+{
+4
+window
+.
+hsCallsToActionsReady
+=
+[
+5
+()
+=>
+{
+6
+console
+.
+log
+(
+'Now the api is ready'
+);
+7
+},
+8
+];
+9
+}
+Refresh CTAs
+HubSpotCallsToActions.refresh
+Refresh and re-render CTAs, given the current page URL.
+If you're using CTAs in a single-page application, this function can be useful to refresh the CTAs shown based on a route change (i.e., dynamically show a CTA based on a specific route). If HubSpotCallsToActions.refresh is called on a route where there are no CTAs present, any visible CTAs will be removed.
+Copy code snippet
+HubSpotCallsToActions.refresh();
+xxxxxxxxxx
+HubSpotCallsToActions
+.
+refresh
+();
+Close a single CTA
+HubSpotCallsToActions.close
+Closes a specific CTA based on its ID. Display frequency rules will be applied to a CTA once it's closed. Calling this function will have no effect on embedded CTAs.
+Copy code snippet
+// Closes a CTA with an ID of 5000
+HubSpotCallsToActions.close(5000);
+xxxxxxxxxx
+2
+1
+// Closes a CTA with an ID of 5000
+2
+HubSpotCallsToActions
+.
+close
+(
+5000
+);
+Close all CTAs on a page
+HubSpotCallsToActions.closeAll
+Close all CTAs on a page. Calling this function will have no effect on embedded CTAs.
+Copy code snippet
+HubSpotCallsToActions.closeAll();
+xxxxxxxxxx
+HubSpotCallsToActions
+.
+closeAll
+();
+Register an event listener
+HubSpotCallsToActions.on
+Register an event listener that will fire based on two arguments:
+event
+: the name of the event you want to define the handler for, provided as a string.
+handler
+: a function that defines the behavior you want to occur when the
+event
+fires.
+See the example snippet below for an example of defining a handler for the onCallToActionReady event. You can also review a full list of events you can define handlers in the table below.
+Copy code snippet
+HubSpotCallsToActions.on('onCallToActionReady', ({ id }) => {
+console.log('Call To Action rendered with id', id);
+});
+xxxxxxxxxx
+3
+1
+HubSpotCallsToActions
+.
+on
+(
+'onCallToActionReady'
+, ({
+id
+})
+=>
+{
+2
+console
+.
+log
+(
+'Call To Action rendered with id'
+,
+id
+);
+3
+});
+Unregister an event listener
+HubSpotCallsToActions.off
+Unregister a previously registered event listener
+event
+: the name of the event you want to unregister your previously defined handler for.
+handler
+: a function that will fire when successfully unregistered.
+Events
+CTAs will emit various events throughout its lifecycle. These events are defined in the table below. You can define listeners for each of these events using the
+HubSpotCallsToAction.on
+function, as described in the section above.
+Event name
+Description
+onCallToActionReady
+The CTA has finished loading, and has been fully rendered.
+onCallToActionViewed
+The CTA has entered the user's viewport. This event will only fire once.
+onCallToActionNavigated
+A link was clicked within the CTA.
+onCallToActionFormSubmitted
+A form within the CTA was submitted. When triggered, the event payload will include the
+formId
+.
+Events will also be posted to the parent window, which you can define listeners for using window.addEventListener.
+For example, the snippet below defines an event listener that checks for the
+onCallToActionReady
+event being emitted.
+Copy code snippet
+window.addEventListener('message', function handler({ data }) {
+if (
+data.type === 'hsCallsToActionCallback' &&
+data.eventName === 'onCallToActionReady'
+) {
+console.log('Call To Action rendered');
+}
+});
+xxxxxxxxxx
+8
+1
+window
+.
+addEventListener
+(
+'message'
+,
+function
+handler
+({
+data
+}) {
+2
+if
+(
+3
+data
+.
+type
+===
+'hsCallsToActionCallback'
+&&
+4
+data
+.
+eventName
+===
+'onCallToActionReady'
+5
+) {
+6
+console
+.
+log
+(
+'Call To Action rendered'
+);
+7
+}
+8
+});
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Endpoints
+Get set up
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+CRM
+Library
+Marketing
+Calls-to-action JavaScript API
+Campaigns
+Emails
+Forms
+Marketing events
+Subscriptions
+Subscriptions preferences
+Settings
+Other resources
+Legal
+Deprecated

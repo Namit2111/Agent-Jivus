@@ -1,0 +1,652 @@
+Use data from a GraphQL query in your website pages | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Bind a data query to a template
+Bind a data query to a module
+Pass dynamic context into a query
+Create dynamic pages using query data
+Create a query and module for your dynamic pages
+Create a listing page query and module
+Create website pages
+Further reading
+CMS Development
+Content and structure
+Data-driven content
+GraphQL
+Use data from a GraphQL query in your website pages
+Use data from a GraphQL query in your website pages
+Supported products
+Requires one of the following products or higher.
+Content Hub
+-
+Professional
+GraphQL
+allows you to create data queries that access your HubSpot CRM and HubDB data to create personalized and data-driven experiences for your website visitors. Learn more about how GraphQL works and how to create a query
+here
+.
+You can learn more about building data-based pages in HubSpot Academy's
+Data-Driven Content course
+.
+Once you're familiar with how GraphQL works and you've written a query that specifies the data you'll need, you can use the query in your theme.
+Save your query in a file with the .graphql extension. It's recommended you keep GraphQL query files in a separate directory at the root of your theme to keep them organized and make them easier to reference with a relative path.
+Upload a theme that includes the query file
+using the HubSpot CLI tools
+, or
+through the design manager
+in your HubSpot account.
+Once you've uploaded your GraphQL files, you can bind them to a module or template, which will make the query's data available to the rendering context of the module or template.
+Bind a data query to a template
+To bind a GraphQL query to a template so you can reference the data in your code, add a
+dataQueryPath
+template annotation and provide the path to the associated GraphQL query file. You don't need to include the file's
+.graphql
+extension in the path.
+For example, if you want to bind a query file to a template that renders the query's results on the page, the top of your template's code would include the following:
+Copy code snippet
+<!--
+templateType: page
+isAvailableForNewContent: true
+label: Contact profile page - GraphQL
+dataQueryPath: ../data-queries/contact_info
+-->
+1
+<!--
+2
+templateType: page
+3
+isAvailableForNewContent: true
+4
+label: Contact profile page - GraphQL
+5
+dataQueryPath: ../data-queries/contact_info
+6
+-->
+You can then reference the response to the data query in your template and module code from the
+data_query
+variable in HubL. The example below defines a HubL variable to store available roles:
+Copy code snippet
+{% set contactData = data_query.data.CRM.contact %}
+xxxxxxxxxx
+{%
+set
+contactData
+=
+data_query.data.CRM.contact
+%}
+Bind a data query to a module
+You can bind a GraphQL query to a module using the design manager.
+In your HubSpot account, navigate to
+Marketing
+>
+Files and Templates
+>
+Design Tools
+.
+At the top of the finder, click the File dropdown menu and select
+New file
+.
+In the dialog box, click the
+What would you like to build today?
+dropdown menu and select
+GraphQL
+.
+Click
+Next
+.
+Enter a
+file name
+, then confirm the location for your GraphQL file.
+Copy and paste your query into the editor, then click
+Publish changes
+.
+Navigate to the module you want to use with your query. Under
+Linked files
+, click the
+GraphQL file
+dropdown menu, then select your query.
+You can then reference the response of your query in your module code using the
+data_query
+variable. The example below defines a HubL variable to store the queried data for a collection of contacts:
+Copy code snippet
+{% set contactCollectionData = module.data_query.data.CRM.contact_collection %}
+xxxxxxxxxx
+{%
+set
+contactCollectionData
+=
+module.data_query.data.CRM.contact_collection
+%}
+If you're developing locally, you may prefer to bind a GraphQL query directly to a module by including a
+data_query_path
+parameter in your module's meta.json file. It's recommended you define your module within a
+modules
+directory at the root of your theme to make it easier to reference your query with a relative path.
+Using the HubSpot CLI tools,
+fetch
+the module's directory.
+Add the
+data_query_path
+parameter and specify the path to the associated GraphQL query file, relative to the location of the meta.json file. For example, if the query file is in a
+data-queries
+directory at the root of your theme, your meta.json file would include the following:
+Copy code snippet
+// meta.json
+{
+"data_query_path": "../../data-queries/contactsQuery"
+}
+xxxxxxxxxx
+4
+1
+// meta.json
+2
+{
+3
+"data_query_path"
+:
+"../../data-queries/contactsQuery"
+4
+}
+Upload the updated meta.json file to your HubSpot account.
+Pass dynamic context into a query
+If your query requires context that is dynamic to a given request, such as data from a contact who's visiting one of your pages, you can pass
+HubL variables
+in your GraphQL queries.
+First, define the variable in a single line comment at the top of your query using the
+#
+character. The convention for GraphQL variable names is to prefix them with a
+$
+character. For example, to define a variable for the ID of a contact:
+# $contact_id = "{{ request.contact.contact_vid || ''}}"
+Include your variable and its type as a parameter in your query definition. If you want your variable to non-nullable, add an
+!
+after its type. To pass the
+$contact_id
+variable above into a query to show contact info for a given contact, your query definition would begin with:
+query contact_info($contact_id: String!)
+You can then reference your variable and provide it as an argument to any of the filters in your query. Using the
+$contact_id
+variable from above, the query below would provide the first name, last name, and email of a contact visiting a page:
+Copy code snippet
+# label: "Contact info page"
+# description: "Show a contact's name and email"
+# $contact_id: "{{request.contact.contact_vid }}"
+query contact_info($contact_id: String!) {
+CRM {
+contact(uniqueIdentifier: "id", uniqueIdentifierValue: $contact_id) {
+_metadata {
+id
+}
+firstname
+lastname
+email
+}
+}
+}
+xxxxxxxxxx
+15
+1
+# label: "Contact info page"
+2
+# description: "Show a contact's name and email"
+3
+# $contact_id: "{{request.contact.contact_vid }}"
+4
+query
+contact_info
+(
+$contact_id
+:
+String
+!)
+{
+5
+CRM
+{
+6
+contact
+(
+uniqueIdentifier
+:
+"id"
+,
+uniqueIdentifierValue
+:
+$contact_id
+)
+{
+7
+_metadata
+{
+8
+id
+9
+}
+10
+firstname
+11
+lastname
+12
+email
+13
+}
+14
+}
+15
+}
+You can also pass URL query string parameters as arguments to your GraphQL query using the
+request.query_dict
+HubL variable. For example, if you have a page URL that contained
+/contacts?location=Boston&department=marketing
+, and wanted to use the URL query parameters in your GraphQL query to filter contacts by location and department, you could use the following GraphQL query:
+Copy code snippet
+# label: "Contact listing page with filters"
+# description: "Filter contacts by location and department"
+# $location: "{{ request.query_dict.location  || ''}}"
+# $department: "{{ request.query_dict.department || ''}"
+query contact_listing_page($location: String!, department: $String) {
+CRM {
+contact_collection(filter: {location__eq: $location, department_eq: $department) {
+items {
+_metadata {
+id
+}
+firstname
+lastname
+email
+}
+}
+}
+}
+xxxxxxxxxx
+18
+1
+# label: "Contact listing page with filters"
+2
+# description: "Filter contacts by location and department"
+3
+# $location: "{{ request.query_dict.location  || ''}}"
+4
+# $department: "{{ request.query_dict.department || ''}"
+5
+query
+contact_listing_page
+(
+$location
+:
+String
+!
+,
+department:
+$String
+)
+{
+6
+CRM
+{
+7
+contact_collection
+(
+filter
+:
+{
+location__eq
+:
+$location
+,
+department_eq
+:
+$department
+)
+{
+8
+items
+{
+9
+_metadata
+{
+10
+id
+11
+}
+12
+firstname
+13
+lastname
+14
+email
+15
+}
+16
+}
+17
+}
+18
+}
+Create dynamic pages using query data
+You use directives in your GraphQL queries to dynamically generate pages based on certain properties from your CRM data. Each dynamic page will pull its metadata from the directives you annotate in your query. The values you define for each directive should uniquely identify the content of the page to stand out in search results.
+This metadata includes the following directives:
+Dynamic page directive
+Description
+web_page_canonical_url
+The canonical URL of the page
+web_page_featured_image
+The page's featured image, which will appear when the page is shared.
+web_page_meta_description
+The page's meta description
+web_page_title
+The page's title
+In addition to these directives, you'll also need to choose a custom property to use as a unique identifier in your query if you're querying CRM data. This property must be configured with
+"hasUniqueValue": true
+. Existing properties cannot be updated to have this parameter, so you'll need to
+create a new property through the API
+if you don't already have one.
+Create a query and module for your dynamic pages
+To create a query you can use with dynamic pages:
+Include a
+label
+and
+description
+for your query as single line comments at the top of your query. Then add another single line comment for an identifier to associate with the dynamic slug of your page:
+Set the name of your identifier to the
+dynamic_slug
+field provided by the
+request.path_param_dict
+HubL variable.
+For example, if you're creating a query to dynamically create profile pages for your contacts, and you want to use a custom property named
+profile_full_name
+as the slug for each contact's profile page, the following comment would be included above the query definition:
+#$profile_full_name: {{ request.path_param_dict.dynamic_slug }}
+Include an ID field in your query that matches your data source:
+If you're querying
+CRM
+data, include the
+hs_object_id
+field.
+If you're querying data from a
+HUBDB
+table, include the
+hs_id
+field.
+Annotate the fields of your query with the corresponding metadata directive from the table above, prefacing each directive with the
+@
+character. For example, to configure the title, meta description, and featured image for a contact profile page:
+Copy code snippet
+# label: "Contact profile"
+# description: "Contact profile query for showing details for a single contact"
+# $profile_full_name: {{ request.path_param_dict.dynamic_slug }}
+query contact_profile_page($profile_full_name: String!) {
+CRM {
+contact(
+uniqueIdentifier: "profile_full_name"
+uniqueIdentifierValue: $profile_full_name
+) {
+hs_object_id
+email
+profile_full_name @web_page_title
+profile_description @web_page_meta_description
+profile_picture_url @web_page_featured_image
+}
+}
+}
+xxxxxxxxxx
+17
+1
+# label: "Contact profile"
+2
+# description: "Contact profile query for showing details for a single contact"
+3
+# $profile_full_name: {{ request.path_param_dict.dynamic_slug }}
+4
+query
+contact_profile_page
+(
+$profile_full_name
+:
+String
+!)
+{
+5
+CRM
+{
+6
+contact
+(
+7
+uniqueIdentifier
+:
+"profile_full_name"
+8
+uniqueIdentifierValue
+:
+$profile_full_name
+9
+)
+{
+10
+hs_object_id
+11
+email
+12
+profile_full_name
+@web_page_title
+13
+profile_description
+@web_page_meta_description
+14
+profile_picture_url
+@web_page_featured_image
+15
+}
+16
+}
+17
+}
+Save your query in a file with the .graphql extension. As you design your module, you can access the data from your query using the
+data_query
+HubL variable.
+Create a listing page query and module
+Depending on your use case, you may want the dynamic page's root URL to display a listing of your object's records. In the example above, a website visitor who navigated to
+https://website.com/profiles
+would be presented with a listing of all contact profiles. To set up a listing page:
+Create another GraphQL query to retrieve a collection of the associated object records you'll need for the listing page.
+Add a label, description, and any other variables you need to pass to your query as single line comments at the top of your query.
+Include any
+filters
+you might need as arguments to your collection field.
+Copy code snippet
+# label: "Profile listing"
+# description: "Contact profile listing query for showing all profiles with a "hubspot.com" email address"
+query contact_listing {
+CRM {
+contact_collection(filter: { email__contains: "hubspot.com" }) {
+email
+profile_full_name
+}
+}
+}
+xxxxxxxxxx
+10
+1
+# label: "Profile listing"
+2
+# description: "Contact profile listing query for showing all profiles with a "hubspot.com" email address"
+3
+query
+contact_listing
+{
+4
+CRM
+{
+5
+contact_collection
+(
+filter
+:
+{
+email__contains
+:
+"hubspot.com"
+})
+{
+6
+email
+7
+profile_full_name
+8
+}
+9
+}
+10
+}
+Save your listing page query with the .graphql extension, then follow the instructions above to bind your query to a listing page module.
+Create website pages
+Once you've created your queries and bound them to their associated modules, you can use the modules in a listing page and a details page.
+To create a listing page:
+Create a new page, selecting a page template that has a drag and drop area or flexible column.
+In the page editor, click the
+Settings
+tab.
+Enter a
+page title
+.
+Under
+Page URL
+, enter a
+content slug
+that corresponds to the collection that you're retrieving for your dynamic pages. Following the example above, the content slug would be
+/profiles
+.
+Enter a
+meta description
+for the listing page, then click the
+Content
+tab to return to the editor.
+In the left sidebar, in the
+Add
+tab, search for your listing page module, then drag it into the page editor.
+After you're done designing your page, publish it by clicking
+Publish
+in the upper right.
+Next, set up the details page:
+Create a new page
+, selecting a page template that has a drag and drop area or flexible column.
+In the page editor, click the
+Settings
+tab.
+Enter a
+page
+title
+.
+Under
+Page URL
+, click the
+pencil icon
+to edit the page's URL. Set the URL to where you want your listing page to appear. In the example above, the listing page will be at:
+/profiles
+, so the full content slug for the page should be
+/profiles/[:dynamic-slug]
+.
+Click
+Advanced options
+, then scroll to the
+Dynamic pages
+section.
+Under
+Dynamic pages
+, click the
+Data source
+dropdown menu, then select the
+label
+that matches the one you included at the top of your GraphQL query.
+Click the
+Content
+tab at the top of the page to return to the editor.
+In the left sidebar, in the
+Add
+tab, search for your details module and drag it into the page editor.
+When you're ready, publish your page by clicking
+Publish
+in the upper right.
+Further reading
+Learn more about how to construct, test, and refine your GraphQL query
+here
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Templates
+Modules
+Fields
+Data-driven content
+CRM objects
+Dynamic pages
+GraphQL
+Build a recruiting agency using GraphQL
+Beta
+Query HubSpot data using GraphQL
+Use GraphQL data in pages
+Serverless functions
+Emails with programmable content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

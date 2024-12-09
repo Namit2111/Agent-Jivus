@@ -1,0 +1,326 @@
+Extending the CRM | Recordings and transcriptions | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Requirements
+Create an endpoint to provide an authenticated recording URL for a call
+Register your app's endpoint with HubSpot using the calling settings API
+Log a call with your app's endpoint using the engagements API
+Mark a call recording as ready
+Apps
+Extensions
+Calling extensions
+Extending the CRM | Recordings and transcriptions
+Recordings and transcripts
+If you want to make call recordings playable in your HubSpot account, or you want to build on top of HubSpot's
+Conversation Intelligence
+functionality, you can use the endpoints to automatically transcribe calls and log them within HubSpot.
+Requirements
+HubSpot will only transcribe calls associated with
+users with a paid
+Sales
+or
+Services
+hub seat
+.
+Only .WAV, .FLAC, and .MP4 audio files will be transcribed.
+The audio file must be downloadable as an octet-stream.
+In the transcription system, HubSpot splits the audio file into its different channels and treats each channel as a separate speaker. If all of the speakers are on the same audio channel, or if the caller or recipient are on an unexpected channel, HubSpot will
+not
+be able to transcribe the audio recording. Therefore, each speaker in an audio file should be on a separate channel. For calls with two channels, the caller should be on channel 1, and the call recipient should be on channel 2, regardless of whether the call is inbound or outbound.
+If your users want to fast forward or rewind a call recording in the HubSpot app, the recording URL needs to respect the
+range
+header and return a
+206 partial content
+​(not a
+200
+server code).
+Create an endpoint to provide an authenticated recording URL for a call
+To list and transcribe calls on a
+record's timeline
+in HubSpot, create an endpoint that will be invoked to retrieve the authenticated call URLs associated with each engagement.
+Your endpoint should accept the following parameters:
+externalId:
+the unique ID associated with a call URL, provided as a path parameter. This will correspond to the same parameter you include in the metadata of your
+POST
+request to the engagements API, which you can then use in your app's backend to associate with the recording URL.
+externalAccountId:
+a unique ID associated with the HubSpot account that made the call engagement, provided as a query parameter. You can use this parameter along with the externalId to identify the call recording.
+appId:
+the
+ID of your app
+, provided as a query parameter.
+Your endpoint should return a JSON response with a
+authenticatedUrl
+field that provides the recording URL.
+Copy code snippet
+// Response to GET request to your app's endpoint
+{
+"authenticatedUrl": "https://app-test.com/retrieve/authenticated/recordings/test-call-01"
+}
+1
+// Response to GET request to your app's endpoint
+2
+{
+3
+"authenticatedUrl"
+:
+"https://app-test.com/retrieve/authenticated/recordings/test-call-01"
+4
+}
+Register your app's endpoint with HubSpot using the calling settings API
+Once your endpoint is ready, make a
+POST
+request using your app's ID to
+/crm/v3/extensions/calling/{appId}/settings/recording
+and provide the URL of your endpoint with the
+urlToRetrieveAuthedRecording
+parameter in the body of your request.
+Your endpoint's URL must contain the
+%s
+character sequence, which HubSpot will substitute with the
+externalId
+of the engagement when calling your endpoint. The
+%s
+character sequence can be located anywhere in your URL.
+Provide the full path of your endpoint URL in your
+POST
+request, including the
+https://
+prefix.
+For example:
+Copy code snippet
+// Example POST request to configure your app's endpoint
+{
+"urlToRetrieveAuthedRecording": "https://app-test.com/retrieve/authenticated/recordings/%s"
+}
+xxxxxxxxxx
+4
+1
+// Example POST request to configure your app's endpoint
+2
+{
+3
+"urlToRetrieveAuthedRecording"
+:
+"https://app-test.com/retrieve/authenticated/recordings/%s"
+4
+}
+If you change the location of your endpoint, you can make a
+PATCH
+request to the same HubSpot endpoint above and provide an updated value for
+urlToRetrieveAuthedRecording
+.
+Log a call with your app's endpoint using the engagements API
+After you've registered your calling app's endpoint with HubSpot, you can log a call by making a
+POST
+request to the
+/crm/v3/objects/calls
+endpoint
+, and including the engagement data within the properties field in the body of your request.
+The
+hs_call_external_id
+,
+hs_call_external_account_id
+,
+hs_call_app_id
+, and
+hs_call_source
+properties are required to ensure that HubSpot can fetch the authenticated recording URL.
+The body of an example request is shown below:
+Copy code snippet
+// POST request to https://api.hubapi.com/crm/v3/objects/calls
+{
+"properties": {
+"hs_timestamp": "2021-03-17T01:32:44.872Z",
+"hs_call_title": "Test v3 API",
+"hubspot_owner_id": "11526487",
+"hs_call_body": "Decision maker out, will call back tomorrow",
+"hs_call_duration": "3800",
+"hs_call_from_number": "(555) 555 5555",
+"hs_call_to_number": "(555) 555 5555",
+"hs_call_source": "INTEGRATIONS_PLATFORM", // this has to be INTEGRATIONS_PLATFORM
+"hs_call_status": "COMPLETED",
+"hs_call_app_id": "test-app-01",
+"hs_call_external_id": "test-call-01",
+"hs_call_external_account_id": "test-account-01"
+}
+}
+xxxxxxxxxx
+17
+1
+// POST request to https://api.hubapi.com/crm/v3/objects/calls
+2
+{
+3
+"properties"
+: {
+4
+"hs_timestamp"
+:
+"2021-03-17T01:32:44.872Z"
+,
+5
+"hs_call_title"
+:
+"Test v3 API"
+,
+6
+"hubspot_owner_id"
+:
+"11526487"
+,
+7
+"hs_call_body"
+:
+"Decision maker out, will call back tomorrow"
+,
+8
+"hs_call_duration"
+:
+"3800"
+,
+9
+"hs_call_from_number"
+:
+"(555) 555 5555"
+,
+10
+"hs_call_to_number"
+:
+"(555) 555 5555"
+,
+11
+"hs_call_source"
+:
+"INTEGRATIONS_PLATFORM"
+,
+// this has to be INTEGRATIONS_PLATFORM
+12
+"hs_call_status"
+:
+"COMPLETED"
+,
+13
+"hs_call_app_id"
+:
+"test-app-01"
+,
+14
+"hs_call_external_id"
+:
+"test-call-01"
+,
+15
+"hs_call_external_account_id"
+:
+"test-account-01"
+16
+}
+17
+}
+Next, you'll need to
+associate the call with a record type
+to ensure the transcript appears on the record timeline.
+To make this association, make a
+PUT
+request to
+/crm/v3/objects/calls/{callId}/associations/{toObjectType}/{toObjectId}/{associationType}
+.
+For example, if the ID of the logged call you created above is
+17591596434
+, the ID of the contact you wanted to associate it with is
+104901
+, and the ID of the associationType is
+194
+, your request URL would be:
+https://api.hubspot.com/crm/v3/objects/calls/17591596434/associations/contacts/104901/194
+When one of your app's users navigates to the associated record timeline to view the engagement, HubSpot will call the endpoint you configured to serve the authenticated recording URL. For example, to retrieve the recording URL associated with the example engagement above, HubSpot would make a
+GET
+request to:
+https://app-test.com/retrieve/authenticated/recordings/test-call-01?appId=app-101&externalAccountId=test-account-01
+Mark a call recording as ready
+Create the call object as shown
+above
+, and then do the following:
+Make a
+POST
+request to
+/crm/v3/extensions/calling/recordings/ready
+with the
+engagementId
+for the call that was created. This will notify HubSpot that the recording is ready and transcription can begin.
+The body of an example request is shown below:
+Copy code snippet
+// Example POST request to log a recording as being ready for a call
+{
+"engagementId": 17591596434
+}
+xxxxxxxxxx
+4
+1
+// Example POST request to log a recording as being ready for a call
+2
+{
+3
+"engagementId"
+:
+17591596434
+4
+}
+Please note:
+If you're using the legacy approach of logging call recordings without authentication, please update to the authenticated approach before September 2024. After this time, the unauthenticated approach will no longer be supported.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+Apps
+Overview
+Authentication
+Private apps
+Public apps
+Extensions
+Overview
+Calling extensions
+Receive incoming calls
+Recordings & transcripts
+API usage
+Marketplace

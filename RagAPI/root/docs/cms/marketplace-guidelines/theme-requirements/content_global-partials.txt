@@ -1,0 +1,504 @@
+HubSpot Template Marketplace theme requirements | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Theme limits
+Overall theme requirements
+Theme file structure
+Relative local file paths for templates
+Theme performance
+Preview URLs for themes
+Using jQuery
+Theme configuration (Theme.json)
+Theme settings (Fields.json)
+Templates (CSS, Sections, Page Templates, etc.)
+Sections
+Page templates
+Page template naming
+Modules
+Global content
+Global partials
+Multi-Language support
+Mobile and responsive elements
+CMS Development
+Marketplace
+HubSpot Template Marketplace theme requirements
+HubSpot Template Marketplace theme requirements
+Learn more about the requirements a theme must meet for submission to the HubSpot Template Marketplace.
+If you are just starting out on your theme creation journey, we highly recommend using our free CMS theme boilerplate, which can be downloaded from our
+Git Repository
+or
+imported within your account’s design manager UI
+.
+In addition, review the
+template listing page requirements
+when submitting your template to the HubSpot Template Marketplace.
+Theme limits
+Keep in mind the following limits per theme:
+Free
+CMS Hub
+accounts cannot use site search, CTA functionality, or native HubSpot video. Learn more about what's included with
+CMS Hub
+subscriptions in
+HubSpot's Product & Services catalog
+.
+Themes cannot contain more than:
+50 templates
+50 modules
+50 sections
+Themes
+must not
+contain:
+Email templates
+HubDB functionality
+Serverless functions
+CRM object fields
+Flexible columns in templates
+Modules vs. Sections
+Sections are helpful because content creators can only drop them in full-width drop zones on the page, which helps you as a developer guarantee a great finished product.
+In particular, fixed-layout sections, where the content creator cannot move elements within the section around, are a great tool to provide creative formatting and layout that couldn’t otherwise be achieved using the drag-and-drop editor.
+Sections also offer extra usability benefits for the content creator because they can select individual modules inside the section, making it so that their module forms are shorter and more targeted to the element they’re editing.
+Overall theme requirements
+All submitted themes must be distinct and original. For example, the same theme with different copy or placeholder content does not count as a distinct theme.
+Learn more about HubSpot Template Marketplace compliance
+.
+A theme must be built with HTML and HubL templates, and
+dnd_area
+tags.
+Themes must respect a 12-column grid.
+Theme file structure
+All themes should contain a proper folder structure and be grouped under one parent folder, which should describe your product listing. For example, if you build a theme named “SuperAwesome” for the marketplace, your structure should look similar to the image below. Learn more about
+theme file structure
+.
+Relative local file paths for templates
+You
+must
+use relative local file paths when referring to theme assets. The best way to include these is to use the
+get_asset_url function
+, which returns the public URL of an asset, file, or template. You can also
+generate this function
+by either right-clicking a
+file
+and selecting
+Copy public URL
+, or by clicking
+Actions
+, then selecting
+Copy public URL
+.
+For example, a stylesheet referenced by
+require_css
+and
+get_asset_url
+must be formatted as follows:
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{{require_css(get_asset_url('../../css/main.css')) }}
+{{
+require_css(get_asset_url(
+'../../css/main.css'
+))
+}}
+In the video below, review the differences in file structure in your developer account versus files delivered to a marketplace customer:
+Theme performance
+Using Google Lighthouse, a theme must score
+higher
+than the following thresholds:
+Desktop accessibility:
+65
+Desktop best practices:
+80
+Desktop performance:
+70
+Mobile performance:
+40
+Learn how to
+generate a Google Lighthouse report for your theme using the CLI
+.
+Theme files should be able to be minified.
+All image files should be under 1MB in size.
+All image tags should have an
+alt
+attribute (a value of
+""
+is acceptable).
+All image tags should have a
+loading
+attribute (a value of
+""
+is acceptable).
+Preview URLs for themes
+You must use your own domain name when creating preview URLs. You cannot use the HubSpot-provided domain with this URL structure:
+[AccountID].hs-sites.com
+A live website and not an image of the demo site must be used.
+If at any point your live demo becomes inaccessible, HubSpot reserves the right, with notification to the provider, to delist/remove your theme until the live demo becomes accessible again.
+Using jQuery
+jQuery is
+not enabled by default
+in a customer's HubSpot account. If your theme relies on jQuery, a version of the jQuery must be included to ensure the theme works as expected.
+For example, if you include a module that requires jQuery when the rest of the site doesn’t, you need to use the following code to load jQuery:
+Copy code snippet
+{# this checks if the "Include jQuery" option in Settings > CMS > Pages is checked #}
+{% if not site_settings.include_jquery %}
+{{ require_js("../jquery-3.4.1.js", "footer") }}
+{% endif %}
+xxxxxxxxxx
+4
+1
+{#
+this checks if the "Include jQuery" option in Settings > CMS > Pages is checked
+#}
+2
+{%
+if not
+site_settings.include_jquery
+%}
+3
+{{
+require_js(
+"../jquery-3.4.1.js"
+,
+"footer"
+)
+}}
+4
+{%
+endif
+%}
+Theme configuration (Theme.json)
+The
+theme.json
+file must include the following parameters:
+Copy code snippet
+// theme.json
+{
+"label": "Cool Theme",
+"preview_path": "./templates/home-page.html",
+"screenshot_path": "./images/templates/homepage.jpg",
+"enable_domain_stylesheets": false,
+"version": "1.0",
+"author": {
+"name": "Jon McLaren",
+"email": "noreply@hubspot.com",
+"url": "https://theme-provider.com/"
+},
+"documentation_url": "https://theme-provider.com/cool-theme/documentation",
+"license": "./license.txt",
+"example_url": "https://theme-provider.com/cool-theme/demo",
+"is_available_for_new_content": true
+}
+xxxxxxxxxx
+17
+1
+// theme.json
+2
+{
+3
+"label"
+:
+"Cool Theme"
+,
+4
+"preview_path"
+:
+"./templates/home-page.html"
+,
+5
+"screenshot_path"
+:
+"./images/templates/homepage.jpg"
+,
+6
+"enable_domain_stylesheets"
+:
+false
+,
+7
+"version"
+:
+"1.0"
+,
+8
+"author"
+: {
+9
+"name"
+:
+"Jon McLaren"
+,
+10
+"email"
+:
+"noreply@hubspot.com"
+,
+11
+"url"
+:
+"https://theme-provider.com/"
+12
+},
+13
+"documentation_url"
+:
+"https://theme-provider.com/cool-theme/documentation"
+,
+14
+"license"
+:
+"./license.txt"
+,
+15
+"example_url"
+:
+"https://theme-provider.com/cool-theme/demo"
+,
+16
+"is_available_for_new_content"
+:
+true
+17
+}
+Please check your
+theme.json
+file and ensure the following:
+The label name matches the name in your theme listing.
+If you're using HubSpot's free CMS theme boilerplate, boilerplate values must not be present. This includes author information, documentation URL, example URL, etc.
+The documentation URL resolves and has documentation on how to use your theme.
+The preview path is a valid file in your theme.
+The screenshot path is a valid file and is related to your theme.
+The example URL resolves and leads to a demo of your theme. Do not use
+preview.hs-sites.com
+or
+[AccountID].hs-sites.com
+subdomains for the example URL.
+Learn more about
+theme.json parameters
+.
+Theme settings (Fields.json)
+The
+fields.json
+file controls the available fields and fields groups in the theme editor, including style fields. The fields you include will depend on how much control you want content creators to have in the page editor.
+The
+fields.json
+file must contain at least three color fields.
+To ensure compatibility between themes and independent modules, themes must include the following font and color standard naming conventions:
+primary_color
+,
+secondary_color
+,
+heading_font
+, and
+body_font
+. Learn more about
+module-theme compatibility
+.
+If theme fields do not have
+primary_color
+,
+secondary_color
+,
+heading_font
+, or
+body_font
+fields, they can use the
+alternate_names
+field.
+Learn more about these
+fields.json parameters
+and
+review an example fields.json file
+from the HubSpot CMS boilerplate.
+Theme settings must also:
+Not conflict with your editor styles or styles set through a module. For example, do not use
+!important
+in your CSS stylesheet as it makes it difficult for end users to override and would cause a conflict.
+Use descriptive labels for each setting so that content creators know what they're updating.
+Apply to all templates in a theme, unless there's a specific use case for additional styles. For example, changes to the style and size of
+h1
+headings in theme settings must apply across all
+h1
+tags in the theme.
+At a minimum, a theme
+must
+include the following theme fields:
+Typography fields:
+Body text font fields (
+p
+tags)
+h1
+through
+h6
+font fields
+Hyperlink color (
+a
+tags), including hover styling
+Form fields:
+Form background color
+Form border color
+Form label color
+Form field border color
+Form button - this includes settings for button text, background color, and hover styling.
+In addition:
+Fields inside of your theme must be grouped logically where appropriate. For example, multiple fields related to typography should be grouped under a
+Typography
+group.
+Theme fields should have separate color and font controls for buttons and forms, as well as separate color, logo, and font controls for the header and footer.
+A portion of the theme's color and logo fields must inherit from the account's
+brand settings
+:
+At a minimum, two color fields must inherit colors from the account's brand settings. Additional color fields can default to other colors, including black and white.
+If modules within a theme are using logos, at least one logo field must inherit from the account's brand settings. If using an image field to render a logo, the image field does not have to inherit from the brand settings.
+How brand colors impact your theme's aesthetics
+Templates (CSS, Sections, Page Templates, etc.)
+Sections
+You must use
+sections
+wherever applicable. There
+must
+be a minimum of five sections in a theme.
+Sections must have unique and working screenshots.
+Sections and modules should not be redundant.
+Page templates
+At a minimum, a theme
+must
+include the following template types:
+A website page template or landing page template.
+When including multiple-page templates, each template must have a distinct purpose. For example, a home page, an
+About Us
+page, a full-width landing page, and a landing page with a right sidebar.
+It is recommended to include at least eight page templates in a theme.
+Separate blog listing and blog post templates.
+Blog listing template:
+the page that shows all blog posts in a listing format (known as the blogroll). The template title must reflect that it's for the listing page.
+Blog post template:
+the blog post detail page that displays individual blog posts. The template title must reflect that it's for the blog post page.
+In addition, blog comments and blog author boxes must be styled to match the theme.
+The following system page templates:
+404 error template:
+shown when visitors hit a page that doesn't exist.
+500 error template:
+shown when the site encounters an internal error.
+Password prompt template:
+shown when a page is password protected.
+Subscription template:
+a subscription preferences page where email recipients can manage the types of emails they're subscribed to.
+Subscriptions update template:
+a confirmation page that appears when an email recipient updates their email subscription preferences.
+Backup unsubscribe template:
+the page that appears for email recipients who are trying to unsubscribe if HubSpot is unable to determine their email address.
+Search results template:
+displays search results returned when using the
+site search
+. Available for paid
+CMS Hub
+accounts only.
+Page template naming
+If you have templates with similar names, add descriptive words that denote the difference between them.
+Keep capitalization consistent, remove hyphens, and avoid using shorthand (e.g. spell out background instead of using bg).
+Your company name or theme name does not need to be included in the template name.
+Modules
+Learn more about the requirements for theme modules and individual modules
+here
+.
+Global content
+Global partials
+Global partials
+are a type of template built using HTML and HubL to can be reused across your entire website. The most common type of partials are website headers, page sidebars, and website footers. Learn how to
+create global partials
+.
+Themes
+must
+include global partials.
+Global partials
+must
+include usable
+drag and drop areas
+. For example, you cannot hide the drag and drop area with a "hide" class.
+You
+must
+incorporate usable drag-and-drop areas in headers and footers.
+For menus that are used globally throughout a site, users must also be able to
+select a HubSpot navigation menu
+they've created in their account settings.
+Please note
+: avoid including global modules within global partials, as it can create a negative end-user experience.
+Multi-Language support
+Themes
+must
+be able to support multiple language versions and should specify the languages that they support. This can be done by adding the
+language switcher module
+in a global header, which allows customers to easily locate the language options and choose their desired language.
+You
+must
+only display one language at a time. For example, avoid having both English and Spanish in the UI at the same time.
+Avoid using hard-coded text. For example, rather than hard-coding a blog listing button’s text as
+Read More
+, set the text within a field so that the end user can update the text without having to go into the code.
+Mobile and responsive elements
+Themes should be capable of adapting their content to the device it is being viewed on. They should also provide a good user experience across various devices. This includes, but is not limited to:
+Main navigation
+Sliders and tabs
+Large images
+Avoiding horizontal scrolling (unless intentional)
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Debugging
+Improve older sites
+Marketplace
+Template marketplace guidelines
+General listing requirements
+Template marketplace policies
+Theme requirements
+List and update templates in the HubSpot Template Marketplace
+Module requirements

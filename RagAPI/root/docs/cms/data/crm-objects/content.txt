@@ -1,0 +1,473 @@
+CRM objects in CMS pages | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Supported CRM object types
+CRM object data available for all pages
+CRM object data available for private pages
+Display data from a single CRM record with the crm_object function
+Display data from multiple CRM records with the crm_objects function
+Display associated records
+Getting a custom object type's details
+CRM Object Module field
+CRM Object tutorials and resources
+CMS Development
+Content and structure
+Data-driven content
+CRM objects in CMS pages
+Use CRM object data in CMS pages
+You can query CRM objects to use data from the object's records on HubSpot hosted content, allowing data to be shared between your business operations, website, and emails. Using the
+crm_object
+,
+crm_objects
+and
+crm_associations
+HubL functions, you can display and control logic based on your CRM object data.
+Using CRM data on your website means that your sales, marketing, and website data all live in the same place and will always reflect the same information. In addition, because you can associate CRM records with one another, you can also pull in associated data onto your website pages.
+Similarly, you can
+create sets of dynamic pages that automatically generate using CRM object or HubDB data
+.
+You can learn more about building data-based CMS pages in HubSpot Academy's
+CMS Data-Driven Content course
+.
+Example use case
+One example of using CRM object data in pages is a real estate listing page. With a custom object called
+property
+, individual object records can be created for each house that needs to be listed. Real estate agents can then add information to object properties to store details, such as location, number of bedrooms, and asking prices.
+Website pages can then pull in that record data for each property to create a listing page and details pages for each property.
+Check out the GitHub repo
+to view the full example.
+For an overview of this example, check out the
+recording of HubSpot Developer Day 2020
+.
+Supported CRM object types
+Below are the types of CRM objects that you can pull data from for your CMS pages. Whether you can use the data across all pages or only on private pages depends on the object type.
+In the tables below, learn about which object types are available for CMS content along with their object type names and fully qualified names.
+CRM object data available for all pages
+Data from the following CRM objects can be used on any CMS page.
+Object type
+object_type_name
+Fully qualified name
+Products
+product
+PRODUCT
+Marketing events
+marketing_event
+MARKETING_EVENT
+Custom objects
+Content Hub
+Enterprise
+only. You can either use the object's
+fully qualified name
+, or the name that was entered at the time of creation. For example, if you create an object named
+Cars
+, you cannot reference it with
+cars
+or
+Car
+.You must use the
+fully qualified name
+if the custom object shares a name with a standard object. It's also strongly recommended to use the FQN if the object name is fully uppercased to avoid potential conflicts with HubSpot's standard objects.
+CRM object data available for private pages
+Data from the following CRM objects can be used only on pages that require either a
+password
+or a
+membership login.
+Object type
+object_type_name
+Fully qualified name
+Contacts
+contact
+CONTACT
+Companies
+company
+COMPANY
+Deals
+deal
+DEAL
+Tickets
+ticket
+TICKET
+Quotes
+quote
+QUOTE
+Line items
+line_item
+LINE_ITEM
+Display data from a single CRM record with the crm_object function
+Use the
+crm_object
+function to get a single record from the HubSpot CRM by query or by CRM record ID.
+Object records are returned as a dict of properties and values.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{# Render custom object by query #}
+{% set event = crm_object("event", "name=Defensive Health") %}
+{{ event.name }}
+{# Render custom objects specifying the id of the object #}
+{% set event = crm_object("event", 289236) %}
+{{ event.name }}
+​
+x
+1
+{#
+Render custom object by query
+#}
+2
+{%
+set
+event
+=
+crm_object(
+"event"
+,
+"name=Defensive Health"
+)
+%}
+3
+{{
+event.name
+}}
+4
+​
+5
+{#
+Render custom objects specifying the id of the object
+#}
+6
+{%
+set
+event
+=
+crm_object(
+"event"
+,
+289236
+)
+%}
+7
+{{
+event.name
+}}
+If a query returns a collection of records, the function will return the first record in the collection.
+Display data from multiple CRM records with the crm_objects function
+Use the
+crm_objects()
+function to get CRM records by object type from the HubSpot CRM by query or by record ID. Records are returned as a dict of properties and values.
+The record returned contains a
+results
+property that can be looped through to display the information in the record's items.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{# Render custom objects by query #}
+{% set events = crm_objects("event", "limit=3&type=virtual") %}
+<h3>{{events.total}} New Events:<h3>
+<ul>
+{% for event in events.results %}
+<li>Name: {{ event.name }}</li>
+{% endfor %}
+<ul>
+{# Render custom objects by ids #}
+{% set events = crm_objects("event", [289236,289237,289238]) %}
+<h3>{{events.total}} New Events:<h3>
+<ul>
+{% for event in events.results %}
+<li>Name: {{ event.name }}</li>
+{% endfor %}
+<ul>
+xxxxxxxxxx
+17
+1
+{#
+Render custom objects by query
+#}
+2
+{%
+set
+events
+=
+crm_objects(
+"event"
+,
+"limit=3&type=virtual"
+)
+%}
+3
+<
+h3
+>
+{{
+events.total
+}}
+New Events:
+<
+h3
+>
+4
+<
+ul
+>
+5
+{%
+for
+event
+in
+events.results
+%}
+6
+<
+li
+>
+Name:
+{{
+event.name
+}}
+</
+li
+>
+7
+{%
+endfor
+%}
+8
+<
+ul
+>
+9
+​
+10
+{#
+Render custom objects by ids
+#}
+11
+{%
+set
+events
+=
+crm_objects(
+"event"
+, [
+289236
+,289237,289238])
+%}
+12
+<
+h3
+>
+{{
+events.total
+}}
+New Events:
+<
+h3
+>
+13
+<
+ul
+>
+14
+{%
+for
+event
+in
+events.results
+%}
+15
+<
+li
+>
+Name:
+{{
+event.name
+}}
+</
+li
+>
+16
+{%
+endfor
+%}
+17
+<
+ul
+>
+Display associated records
+Use the
+crm_associations
+HubL function to get a list of associated records from the HubSpot CRM based on the given record ID, association category, and association definition ID.
+Records are returned as a dict of properties and values.
+Input
+Output
+Input
+Output
+More
+Copy code snippet
+{% set associated_objects = crm_associations(289236, "USER_DEFINED", 3) %}
+<h3>Contacts Associated With Event</h3>
+<ul>
+{% for contact in associated_objects.results %}
+<li>Name: {{ contact.firstname }} {{ contact.lastname }}</li>
+{% endfor %}
+</ul>
+xxxxxxxxxx
+7
+1
+{%
+set
+associated_objects
+=
+crm_associations(
+289236
+,
+"USER_DEFINED"
+,
+3
+)
+%}
+2
+<
+h3
+>
+Contacts Associated With Event
+</
+h3
+>
+3
+<
+ul
+>
+4
+{%
+for
+contact
+in
+associated_objects.results
+%}
+5
+<
+li
+>
+Name:
+{{
+contact.firstname
+}}
+{{
+contact.lastname
+}}
+</
+li
+>
+6
+{%
+endfor
+%}
+7
+</
+ul
+>
+Getting a custom object type's details
+To get a custom object type's
+name
+,
+id
+,
+fullyQualifiedName
+, association IDs, and other details, you can make a
+GET
+request to the
+CRM Objects schema API
+.
+Please note:
+fullyQualifiedName
+for account-specific object types includes the HubSpot account ID, so it's recommended to avoid using it when developing your code for multiple HubSpot accounts.
+CRM Object Module field
+To provide a way for content creators to select CRM records to display or execute logic, you can build modules that include the
+CRM object field
+.
+For example, you may want to display information from a specific product, contact, company, deal, quote, ticket, or custom object.
+CRM Object tutorials and resources
+Essentials of getting started with Custom Objects
+Think like an architect: Build scalable Custom Objects
+Build Dynamic Pages with CRM Objects
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Templates
+Modules
+Fields
+Data-driven content
+CRM objects
+Dynamic pages
+GraphQL
+Serverless functions
+Emails with programmable content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

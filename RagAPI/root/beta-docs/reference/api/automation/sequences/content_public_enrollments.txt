@@ -1,0 +1,318 @@
+Sequences - v4 | HubSpot API
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Introduction
+Use cases for this API
+Public_Enrollments
+/automation/v4/sequences/enrollments/contact/{contactId}
+GET
+/automation/v4/sequences/enrollments
+POST
+Public_Sequences
+/automation/v4/sequences/
+GET
+/automation/v4/sequences/{sequenceId}
+GET
+API Endpoints
+Automation
+Sequences
+Sequences
+API Version: v4
+Introduction
+Use the Sequences API to Get a list of sequences get a specific sequence, enroll a contact in a sequence, and view a contact’s enrollment status.
+Use cases for this API
+You need to enroll them in a HubSpot sequence using an app you designed to maintain a list of contacts.
+Related guide:
+Sequences Guide
+Supported products
+Requires one of the following products or higher.
+Marketing Hub
+-
+Professional
+Sales Hub
+-
+Professional
+Service Hub
+-
+Professional
+Content Hub
+-
+Professional
+Public_Enrollments
+/automation/v4/sequences/enrollments/contact/{contactId}
+get
+/automation/v4/sequences/enrollments/contact/{contactId}
+Copy full URL
+Requirements
+Scopes
+automation.sequences.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url https://api.hubapi.com/automation/v4/sequences/enrollments/contact/contactId \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+https://api.hubapi.com/automation/v4/sequences/enrollments/contact/contactId \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+/automation/v4/sequences/enrollments
+post
+/automation/v4/sequences/enrollments
+Copy full URL
+Requirements
+Scopes
+automation.sequences.enrollments.write
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request POST \
+--url https://api.hubapi.com/automation/v4/sequences/enrollments \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '{
+"contactId": "string",
+"senderEmail": "string",
+"sequenceId": "string"
+}'
+xxxxxxxxxx
+9
+1
+curl
+--request
+POST \
+2
+--url
+https://api.hubapi.com/automation/v4/sequences/enrollments \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'{
+6
+"contactId": "string",
+7
+"senderEmail": "string",
+8
+"sequenceId": "string"
+9
+}'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Public_Sequences
+/automation/v4/sequences/
+get
+/automation/v4/sequences/
+Copy full URL
+Requirements
+Scopes
+automation.sequences.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url https://api.hubapi.com/automation/v4/sequences/ \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+https://api.hubapi.com/automation/v4/sequences/ \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+/automation/v4/sequences/{sequenceId}
+get
+/automation/v4/sequences/{sequenceId}
+Copy full URL
+Requirements
+Scopes
+automation.sequences.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url https://api.hubapi.com/automation/v4/sequences/sequenceId \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+https://api.hubapi.com/automation/v4/sequences/sequenceId \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Endpoints
+Get set up
+Analytics and events
+App management
+Automation
+Create & manage workflows
+Custom workflow actions
+Custom code actions
+Sequences
+Beta
+CMS
+Conversations
+CRM
+Library
+Marketing
+Settings
+Other resources
+Legal
+Deprecated

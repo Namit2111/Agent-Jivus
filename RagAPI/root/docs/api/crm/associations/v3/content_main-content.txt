@@ -1,0 +1,700 @@
+CRM API | Associations | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Association types
+Retrieve association types
+Create associations
+Retrieve associations
+Remove associations
+API Guides
+CRM
+Associations
+CRM API | Associations
+Associations v3
+The
+new version of the Associations API
+has additional functionality, including creating and managing association labels. Refer to the
+v4 Associations API article
+for more information.
+Associations represent the relationships between objects and activities in the HubSpot CRM. You can use the v3 associations endpoints to create, retrieve, or remove associations in bulk.
+Learn more about objects, records, properties, and associations APIs in the
+Understanding the CRM
+guide. For more general information about objects and records in HubSpot,
+learn how to manage your CRM database
+.
+Association types
+Associations are defined by object and direction. Association types are unidirectional, which means you'll need to use a different definition depending on the starting object type. Each endpoint requires a
+{fromObjectType}
+and
+{toObjectType}
+that tell the direction of the association.
+For example:
+To view all the defined association types from contacts to companies, you'd make a request to
+/crm/v3/associations/contacts/companies/types
+.
+To see all tickets associated with a contact, you'd make a request to
+/crm/v3/associations/Contacts/Tickets/batch/read
+and identify the contact in the request body by its
+objectId
+. In this example, Contacts is the
+fromObjectType
+, and Tickets is the
+toObjectType
+.
+Association types can include unlabeled associations (e.g., contact-to-company), default labeled associations (e.g., contact-to-primary company), and custom labeled associations (e.g.,
+Decision maker
+contact-to-company).
+Retrieve association types
+To view all the defined association types between objects, including default associations and custom association labels, make a
+GET
+request to
+/crm/v3/associations/{fromObjectType}/{toObjectType}/types
+.
+Each type will have a returned numerical
+id
+value and
+name
+that can be used to reference the association type in other requests. For default associations, the numerical ID will be the same for all accounts, but for custom association labels, the ID will be unique to your account.
+For example, your response would look similar to the following:
+JSON
+JSON
+More
+Copy code snippet
+///Example response GET /crm/v3/associations/contacts/companies/types
+{
+"results": [
+{
+"id": "136",
+"name": "franchise_owner_franchise_location"
+},
+{
+"id": "26",
+"name": "manager"
+},
+{
+"id": "1",
+"name": "contact_to_company"
+},
+{
+"id": "279",
+"name": "contact_to_company_unlabeled"
+},
+{
+"id": "32",
+"name": "contractor"
+},
+{
+"id": "37",
+"name": "chef"
+},
+{
+"id": "142",
+"name": "toy_tester"
+},
+{
+"id": "30",
+"name": "decision_maker"
+},
+{
+"id": "28",
+"name": "billing_contact"
+}
+]
+}
+1
+///Example response GET /crm/v3/associations/contacts/companies/types
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"id"
+:
+"136"
+,
+6
+"name"
+:
+"franchise_owner_franchise_location"
+7
+},
+8
+{
+9
+"id"
+:
+"26"
+,
+10
+"name"
+:
+"manager"
+11
+},
+12
+{
+13
+"id"
+:
+"1"
+,
+14
+"name"
+:
+"contact_to_company"
+15
+},
+16
+{
+17
+"id"
+:
+"279"
+,
+18
+"name"
+:
+"contact_to_company_unlabeled"
+19
+},
+20
+{
+21
+"id"
+:
+"32"
+,
+22
+"name"
+:
+"contractor"
+23
+},
+24
+{
+25
+"id"
+:
+"37"
+,
+26
+"name"
+:
+"chef"
+27
+},
+28
+{
+29
+"id"
+:
+"142"
+,
+30
+"name"
+:
+"toy_tester"
+31
+},
+32
+{
+33
+"id"
+:
+"30"
+,
+34
+"name"
+:
+"decision_maker"
+35
+},
+36
+{
+37
+"id"
+:
+"28"
+,
+38
+"name"
+:
+"billing_contact"
+39
+}
+40
+]
+41
+}
+While you can reference custom association types (i.e. labels) with the v3 Associations API, you cannot use the API to create or edit new labels. Learn how to create, update, and delete labels in the
+v4 Associations API article
+.
+Create associations
+To
+associate records
+, make a
+POST
+request to
+/crm/v3/associations/{fromObjectType}/{toObjectType}/batch/create
+. In your request, include the
+id
+values for the records you want to associate, as well as the
+type
+of the association.
+For example, to associate contacts to companies, your request URL would be
+/crm/v3/associations/Contacts/Companies/batch/create
+, and your request would look similar to the following:
+JSON
+JSON
+More
+Copy code snippet
+///Example request body
+{
+"inputs": [
+{
+"from": {
+"id": "53628"
+},
+"to": {
+"id": "12726"
+},
+"type": "contact_to_company"
+}
+]
+}
+xxxxxxxxxx
+14
+1
+///Example request body
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"from"
+: {
+6
+"id"
+:
+"53628"
+7
+},
+8
+"to"
+: {
+9
+"id"
+:
+"12726"
+10
+},
+11
+"type"
+:
+"contact_to_company"
+12
+}
+13
+]
+14
+}
+Retrieve associations
+To retrieve associated records, make a
+POST
+request to
+/crm/v3/associations/{fromObjectType}/{toObjectType}/batch/read
+. In your request, include the
+id
+values of the records whose associations you want to view. This will be for the
+{fromObjectType}
+.
+For example, to retrieve deals associated with companies, your request URL would be
+/crm/v3/associations/Companies/Deals/batch/read
+and the request body would look like the following, with
+id
+values for the companies whose deal associations you want to view:
+Copy code snippet
+///Example request POST /crm/v3/associations/Companies/Deals/batch/read
+{
+"inputs": [
+{
+"id": "5790939450"
+},
+{
+"id": "6108662573"
+}
+]
+}
+xxxxxxxxxx
+11
+1
+///Example request POST /crm/v3/associations/Companies/Deals/batch/read
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"id"
+:
+"5790939450"
+6
+},
+7
+{
+8
+"id"
+:
+"6108662573"
+9
+}
+10
+]
+11
+}
+In your response, you'll receive the
+id
+values of all associated records. For the above example, your response would include the
+id
+values for all associated deals and the association
+type
+. The response would look similar to the following:
+Copy code snippet
+///Example response POST /crm/v3/associations/Companies/Deals/batch/read
+{
+"status": "COMPLETE",
+"results": [
+{
+"from": {
+"id": "5790939450"
+},
+"to": [
+{
+"id": "1467822235",
+"type": "company_to_deal"
+},
+{
+"id": "7213991219",
+"type": "company_to_deal"
+},
+{
+"id": "9993513636",
+"type": "company_to_deal"
+},
+{
+"id": "18731599139",
+"type": "company_to_deal"
+},
+{
+"id": "21678228008",
+"type": "company_to_deal"
+}
+]
+},
+{
+"from": {
+"id": "6108662573"
+},
+"to": [
+{
+"id": "22901690010",
+"type": "company_to_deal"
+}
+]
+}
+],
+"startedAt": "2024-10-21T16:40:47.810Z",
+"completedAt": "2024-10-21T16:40:47.833Z"
+}
+xxxxxxxxxx
+46
+1
+///Example response POST /crm/v3/associations/Companies/Deals/batch/read
+2
+{
+3
+"status"
+:
+"COMPLETE"
+,
+4
+"results"
+: [
+5
+{
+6
+"from"
+: {
+7
+"id"
+:
+"5790939450"
+8
+},
+9
+"to"
+: [
+10
+{
+11
+"id"
+:
+"1467822235"
+,
+12
+"type"
+:
+"company_to_deal"
+13
+},
+14
+{
+15
+"id"
+:
+"7213991219"
+,
+16
+"type"
+:
+"company_to_deal"
+17
+},
+18
+{
+19
+"id"
+:
+"9993513636"
+,
+20
+"type"
+:
+"company_to_deal"
+21
+},
+22
+{
+23
+"id"
+:
+"18731599139"
+,
+24
+"type"
+:
+"company_to_deal"
+25
+},
+26
+{
+27
+"id"
+:
+"21678228008"
+,
+28
+"type"
+:
+"company_to_deal"
+29
+}
+30
+]
+31
+},
+32
+{
+33
+"from"
+: {
+34
+"id"
+:
+"6108662573"
+35
+},
+36
+"to"
+: [
+37
+{
+38
+"id"
+:
+"22901690010"
+,
+39
+"type"
+:
+"company_to_deal"
+40
+}
+41
+]
+42
+}
+43
+],
+44
+"startedAt"
+:
+"2024-10-21T16:40:47.810Z"
+,
+45
+"completedAt"
+:
+"2024-10-21T16:40:47.833Z"
+46
+}
+Please note
+: when retrieving records associated with companies (i.e.
+crm/v3/associations/{fromObjectType}/companies/batch/read
+), only the
+primary associated company
+will be returned. To view all associated companies, use the
+V4 associations API.
+Remove associations
+To remove associations between records, make a
+POST
+request to
+/crm/v3/associations/{fromObjectType}/{toObjectType}/batch/archive
+. In the request body, include the
+id
+values for the from record and the to record, as well as their association type.
+For example, to remove the association between a company and a deal, your request would look like:
+Copy code snippet
+///Example request POST crm/v3/associations/companies/deals/batch/archive
+{
+"inputs": [
+{
+"from": {
+"id": "5790939450"
+},
+"to": {
+"id": "21678228008"
+},
+"type": "company_to_deal"
+}
+]
+}
+xxxxxxxxxx
+14
+1
+///Example request POST crm/v3/associations/companies/deals/batch/archive
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"from"
+: {
+6
+"id"
+:
+"5790939450"
+7
+},
+8
+"to"
+: {
+9
+"id"
+:
+"21678228008"
+10
+},
+11
+"type"
+:
+"company_to_deal"
+12
+}
+13
+]
+14
+}
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Associations v3
+Associations v4
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

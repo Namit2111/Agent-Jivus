@@ -1,0 +1,382 @@
+CRM API | Leads | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create leads
+Properties
+Associations
+Retrieve leads
+Update contacts
+Associate existing leads with records
+Remove an association
+Delete leads
+Limits
+API Guides
+CRM
+Objects
+CRM API | Leads
+Leads
+Leads endpoint reference
+In HubSpot,
+leads
+are contacts or companies that are potential customers who have shown interest in your products or services. The leads endpoints allow you to create and manage lead records in your HubSpot account, as well as sync lead data between HubSpot and other systems.
+Before using the API, be sure leads have been
+set up in your account
+.
+Learn more about objects, records, properties, and associations APIs in the
+Understanding the CRM
+guide. For more general information about objects and records in HubSpot,
+learn how to manage your CRM database
+.
+Create leads
+To create new contacts, make a
+POST
+request to
+/crm/v3/objects/leads
+.
+In the request body, include any details about the lead in a
+properties
+object. Your new lead:
+Must have a lead name, specified using the hs_lead_name property.
+Must be associated with an existing contacts.
+Should only be assigned to a user with a
+seat
+. (Leads can only be worked via the workspace).
+For example, to create a warm lead named “Jane Doe” who has a type of New Business, your request body would resemble the following:
+JSON
+JSON
+More
+Copy code snippet
+// Example POST request to /crm/v3/objects/leads
+"associations": [
+{
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId":578
+}
+],
+"to": {
+"id": "YOUR_CONTACT_ID"
+}
+}
+]
+"properties": {
+"hs_lead_name": "Jane Doe",
+"hs_lead_type": "NEW BUSINESS",
+"hs_lead_label": "WARM"
+}
+1
+// Example POST request to /crm/v3/objects/leads
+2
+"associations"
+: [
+3
+{
+4
+"types"
+: [
+5
+{
+6
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+7
+"associationTypeId"
+:
+578
+8
+}
+9
+],
+10
+"to"
+: {
+11
+"id"
+:
+"YOUR_CONTACT_ID"
+12
+}
+13
+}
+14
+]
+15
+"properties"
+: {
+16
+"hs_lead_name"
+:
+"Jane Doe"
+,
+17
+"hs_lead_type"
+:
+"NEW BUSINESS"
+,
+18
+"hs_lead_label"
+:
+"WARM"
+19
+}
+Properties
+Lead details are stored in lead properties. There are
+default HubSpot lead properties
+, but you can also
+create custom lead properties
+.
+To view all available properties, you can retrieve a list of your account's lead properties by making a
+GET
+request to
+/crm/v3/properties/leads
+. Learn more about the
+properties API
+.
+See the table below for some common properties for leads:
+PROPERTY
+DESCRIPTION
+Lead name
+The full name of the lead.
+Lead type
+A dropdown list of lead types. You can edit or add new labels in your
+lead property settings.
+Lead label
+The current status of the lead. You can edit or add new labels in your
+lead property settings.
+Associations
+When creating a new lead you can also associate the lead with
+existing records
+or
+activities
+in an associations object. For example, to associate a new lead with an existing contact with an ID of 12345, your request would look like the following:
+JSON
+JSON
+More
+Copy code snippet
+// Example POST request to /crm/v3/objects/leads
+"properties": {
+"hs_lead_name": "Jane Doe",
+"hs_lead_type": "NEW BUSINESS",
+"hs_lead_label": "WARM",
+}
+xxxxxxxxxx
+6
+1
+// Example POST request to /crm/v3/objects/leads
+2
+"properties"
+: {
+3
+"hs_lead_name"
+:
+"Jane Doe"
+,
+4
+"hs_lead_type"
+:
+"NEW BUSINESS"
+,
+5
+"hs_lead_label"
+:
+"WARM"
+,
+6
+}
+In the associations object, you should include the following:
+Parameter
+Description
+to
+The record or activity you want to associate with the lead, specified by its unique
+id
+value.
+types
+The type of the association between the lead and the record/activity. Include the
+associationCategory
+and
+associationTypeId
+. Default association type IDs are listed
+here
+, or you can retrieve the value for custom association types (i.e. labels) via the
+associations API
+.
+Retrieve leads
+You can retrieve leads individually or in batches.
+To retrieve an individual lead, make a
+GET
+request to
+/crm/v3/objects/leads/{leadsId}
+.
+To request a list of all leads, make a
+GET
+request to
+/crm/v3/objects/leads
+.
+For these endpoints, you can include the following query parameters in the request URL:
+Parameter
+Description
+properties
+A comma separated list of the properties to be returned in the response. If the requested contact doesn't have a value for a property, it will not appear in the response.
+propertiesWithHistory
+A comma separated list of the current and historical properties to be returned in the response. If the requested contact doesn't have a value for a property, it will not appear in the response.
+associations
+A comma separated list of objects to retrieve associated IDs for. Any specified associations that don't exist will not be returned in the response. Learn more about the
+associations API.
+To retrieve a batch of specific leads by ID, make a
+POST
+request to
+crm/v3/objects/leads/batch/read
+. The batch endpoint
+can't
+retrieve associations. Learn how to batch read associations with the
+associations API
+.
+For the batch read endpoint, you can use the optional
+Property
+parameter to retrieve leads by
+leadID
+or a custom
+unique identifier property
+. By default, the
+id
+values in the request refer to the record ID (
+hs_object_id
+), so the
+idProperty
+parameter isn't required when retrieving by record ID. If you're using a custom unique value property to retrieve leads, you must include the
+idProperty
+parameter.
+Update contacts
+You can update leads individually or in batches. For existing leads, the leads ID is a unique value, so you can use
+leadsId
+to update leads via the API.
+To update an individual lead by its lead ID, make a
+PATCH
+request to
+/crm/v3/objects/leads/{leadsId}
+, and include the data you want to update in the request body.
+Associate existing leads with records
+To associate a lead with other CRM records or an activity, make a
+PUT
+request to
+/crm/v3/objects/leads/{leadsId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}
+.
+To retrieve the
+associationTypeId
+value, refer to
+this list
+of default values, or make a
+GET
+request to
+/crm/v4/associations/{fromObjectType}/{toObjectType}/labels
+.
+Learn more about the
+associations API.
+Remove an association
+To remove an association between a lead and a record or activity, make a
+DELETE
+request to the following URL:
+/crm/v3/objects/leads/{leadsID}/associations/{toObjectType}/{toObjectId}/{associationTypeId}
+.
+If you remove all primary associations to the lead, the lead will automatically be deleted.
+Delete leads
+You can delete contacts individually or in batches, which will add the contact to the recycling bin in HubSpot. You can later
+restore the contact within HubSpot
+.
+To delete an individual contact by its ID, make a
+DELETE
+request to
+/crm/v3/objects/contacts/{contactId}
+.
+Learn more about batch deleting contacts on the
+Endpoints
+tab at the top of this article.
+Limits
+Batch operations for creating, updating, and archiving are limited to batches of 100.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+Custom objects
+Companies
+Contacts
+Deal splits
+Beta
+Deals
+Feedback submissions
+Goals
+New
+Leads
+Line items
+Products
+Tickets
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Object Library
+Marketing
+Settings
+Legal

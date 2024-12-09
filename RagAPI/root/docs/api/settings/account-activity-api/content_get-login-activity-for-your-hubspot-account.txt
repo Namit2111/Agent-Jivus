@@ -1,0 +1,110 @@
+Account Activity API | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Get a centralized audit log of user actions
+Get login activity for your HubSpot account
+Get security activity for your HubSpot account
+API Guides
+Settings
+Account Activity API
+Account activity
+Account activity endpoint reference
+The following endpoints provide information about
+login
+and
+security activity
+in your HubSpot account.
+Get a centralized audit log of user actions
+Use this endpoint to export of a
+centralized audit log
+of user actions across your account (
+Enterprise
+subscriptions only)
+.
+In order to utilize this endpoint, you must first follow the documentation on
+making API calls with your app's access token
+.
+For each centralized audit log, the response body will show:
+user action category (e.g. CRM object, login)
+user action subcategory (e.g. playbook, login succeeded)
+user action (e.g. create, update, perform)
+the ID of the affected object
+the time and date the action occurred
+the user's email address
+Get login activity for your HubSpot account
+Use this endpoint to retrieve the previous 90 days of user login history. This includes login attempts to app.hubspot.com and the HubSpot mobile app. Login history exports contain the following information about each login attempt:
+login timestamp
+user email address
+IP address
+location
+type of login
+user agent (information about the device used for logging in)
+Get security activity for your HubSpot account
+Use this endpoint to export security activity history to see a list of security-related actions that users have taken in the account. For each user action, the response body will show:
+the time of the action
+the type of action
+the user's email address
+the ID of the affected object
+the approximate location
+a link to the URL where the action was taken in the account
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Marketing
+Settings
+Account activity
+Account information
+Business units
+Currencies
+New
+Users
+Legal

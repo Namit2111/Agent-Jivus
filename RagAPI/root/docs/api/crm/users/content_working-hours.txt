@@ -1,0 +1,951 @@
+Account | Users API | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Retrieve users
+Update users
+User properties
+Working hours
+Out of office hours
+Language skills
+API Guides
+Settings
+Users
+Account | Users API
+Users
+User details endpoint reference
+Use this API to fetch information about users in the account, along with updating their working hours, timezone, additional phone number, and job title properties. This API can be especially useful for syncing HubSpot user data with external workforce management tools.
+For example, use these endpoints keep a user's working hours in sync with an external scheduling system.
+Learn more about objects, records, properties, and associations APIs in the
+Understanding the CRM
+guide. For more general information about objects and records in HubSpot,
+learn how to manage your CRM database
+.
+Retrieve users
+Depending on the information you need, there are a few ways to retrieve HubSpot users:
+To retrieve all users, make a
+GET
+request to
+/crm/v3/objects/users/
+.
+To retrieve a specific user, make a
+GET
+request to the above URL and specify a user ID. For example:
+crm/v3/objects/users/207838823235
+.
+To retrieve a batch of users by ID, make a
+POST
+request to
+/crm/v3/objects/users/batch/read
+.
+To retrieve users that meet a specific set of criteria, you can make a
+POST
+request to
+/crm/v3/objects/users/search
+and include search filters in the request body. Learn more about
+searching the CRM
+.
+Please note
+: in a response for the users API,
+id
+and
+hs_object_id
+are the same and represent a user
+only
+in the HubSpot account from which the data was requested. This is different than the
+id
+values in the
+user provisioning API
+(
+hs_internal_user_id
+) which refers to a user across all accounts, and in the
+owners API
+(
+hubspot_owner_id
+) which refers to a user as an owner of records.
+For example, the following response returns users, their unique identifiers within the selected HubSpot account, and information about when they were created or modified:
+Copy code snippet
+// Example response
+{
+"results": [
+{
+"id": "207838823235",
+"properties": {
+"hs_createdate": "2021-01-10T20:36:06.761Z",
+"hs_lastmodifieddate": "2023-08-29T18:17:55.697Z",
+"hs_object_id": "207838823235"
+},
+"createdAt": "2021-01-10T20:36:06.761Z",
+"updatedAt": "2023-08-29T18:17:55.697Z",
+"archived": false
+},
+{
+"id": "207840253600",
+"properties": {
+"hs_createdate": "2017-12-22T12:22:12.212Z",
+"hs_lastmodifieddate": "2023-08-29T18:17:55.697Z",
+"hs_object_id": "207840253600"
+},
+"createdAt": "2017-12-22T12:22:12.212Z",
+"updatedAt": "2023-08-29T18:17:55.697Z",
+"archived": false
+}
+]
+}
+1
+// Example response
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"id"
+:
+"207838823235"
+,
+6
+"properties"
+: {
+7
+"hs_createdate"
+:
+"2021-01-10T20:36:06.761Z"
+,
+8
+"hs_lastmodifieddate"
+:
+"2023-08-29T18:17:55.697Z"
+,
+9
+"hs_object_id"
+:
+"207838823235"
+10
+},
+11
+"createdAt"
+:
+"2021-01-10T20:36:06.761Z"
+,
+12
+"updatedAt"
+:
+"2023-08-29T18:17:55.697Z"
+,
+13
+"archived"
+:
+false
+14
+},
+15
+{
+16
+"id"
+:
+"207840253600"
+,
+17
+"properties"
+: {
+18
+"hs_createdate"
+:
+"2017-12-22T12:22:12.212Z"
+,
+19
+"hs_lastmodifieddate"
+:
+"2023-08-29T18:17:55.697Z"
+,
+20
+"hs_object_id"
+:
+"207840253600"
+21
+},
+22
+"createdAt"
+:
+"2017-12-22T12:22:12.212Z"
+,
+23
+"updatedAt"
+:
+"2023-08-29T18:17:55.697Z"
+,
+24
+"archived"
+:
+false
+25
+}
+26
+]
+27
+}
+To return specific properties, include a
+properties
+query parameter in the request URL along with comma-separated property names. Learn more about
+user properties below
+.
+For example, making a
+GET
+request to the following URL would result in the response below:
+crm/v3/objects/users?properties=hs_job_title,hs_additional_phone
+Copy code snippet
+// Example response
+{
+"results": [
+{
+"id": "207838823235",
+"properties": {
+"hs_additional_phone": "+1123456780",
+"hs_createdate": "2021-01-10T20:36:06.761Z",
+"hs_job_title": "CEO",
+"hs_lastmodifieddate": "2023-08-29T18:17:55.697Z",
+"hs_object_id": "207838823235"
+},
+"createdAt": "2021-01-10T20:36:06.761Z",
+"updatedAt": "2023-08-29T18:17:55.697Z",
+"archived": false
+},
+{
+"id": "207840253600",
+"properties": {
+"hs_additional_phone": "+1238675309",
+"hs_createdate": "2021-01-10T20:36:06.761Z",
+"hs_job_title": "Vice President",
+"hs_lastmodifieddate": "2023-08-29T18:17:55.697Z",
+"hs_object_id": "207838823235"
+},
+"createdAt": "2017-12-22T12:22:12.212Z",
+"updatedAt": "2023-08-29T18:17:55.697Z",
+"archived": false
+}
+]
+}
+xxxxxxxxxx
+31
+1
+// Example response
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"id"
+:
+"207838823235"
+,
+6
+"properties"
+: {
+7
+"hs_additional_phone"
+:
+"+1123456780"
+,
+8
+"hs_createdate"
+:
+"2021-01-10T20:36:06.761Z"
+,
+9
+"hs_job_title"
+:
+"CEO"
+,
+10
+"hs_lastmodifieddate"
+:
+"2023-08-29T18:17:55.697Z"
+,
+11
+"hs_object_id"
+:
+"207838823235"
+12
+},
+13
+"createdAt"
+:
+"2021-01-10T20:36:06.761Z"
+,
+14
+"updatedAt"
+:
+"2023-08-29T18:17:55.697Z"
+,
+15
+"archived"
+:
+false
+16
+},
+17
+{
+18
+"id"
+:
+"207840253600"
+,
+19
+"properties"
+: {
+20
+"hs_additional_phone"
+:
+"+1238675309"
+,
+21
+"hs_createdate"
+:
+"2021-01-10T20:36:06.761Z"
+,
+22
+"hs_job_title"
+:
+"Vice President"
+,
+23
+"hs_lastmodifieddate"
+:
+"2023-08-29T18:17:55.697Z"
+,
+24
+"hs_object_id"
+:
+"207838823235"
+25
+},
+26
+"createdAt"
+:
+"2017-12-22T12:22:12.212Z"
+,
+27
+"updatedAt"
+:
+"2023-08-29T18:17:55.697Z"
+,
+28
+"archived"
+:
+false
+29
+}
+30
+]
+31
+}
+For the batch read endpoint, you can either retrieve users by their ID or by another
+unique identifier property
+by including an
+idProperty
+field.
+For example, to read a batch of users, your request could look like either of the following:
+Copy code snippet
+///Example request body with internal ID
+{
+"properties": ["hs_job_title", "hs_additional_phone"],
+"inputs": [
+{
+"id": "207838823235"
+},
+{
+"id": "207840253600"
+}
+]
+}
+xxxxxxxxxx
+12
+1
+///Example request body with internal ID
+2
+{
+3
+"properties"
+: [
+"hs_job_title"
+,
+"hs_additional_phone"
+],
+4
+"inputs"
+: [
+5
+{
+6
+"id"
+:
+"207838823235"
+7
+},
+8
+{
+9
+"id"
+:
+"207840253600"
+10
+}
+11
+]
+12
+}
+Copy code snippet
+///Example request body with a unique value property
+{
+"properties": ["hs_job_title", "hs_additional_phone"],
+"idProperty": "externalIdProperty",
+"inputs": [
+{
+"id": "0001111"
+},
+{
+"id": "0001112"
+}
+]
+}
+xxxxxxxxxx
+13
+1
+///Example request body with a unique value property
+2
+{
+3
+"properties"
+: [
+"hs_job_title"
+,
+"hs_additional_phone"
+],
+4
+"idProperty"
+:
+"externalIdProperty"
+,
+5
+"inputs"
+: [
+6
+{
+7
+"id"
+:
+"0001111"
+8
+},
+9
+{
+10
+"id"
+:
+"0001112"
+11
+}
+12
+]
+13
+}
+Update users
+You can update users by ID individually or in batches.
+To update an individual user, make a
+PATCH
+request to
+/crm/v3/objects/users/{userId}
+.
+To update a batch of users, make a
+POST
+request to
+/crm/v3/objects/users/batch/update
+, including the user IDs or unique
+idProperty
+in the request body as shown in the section above.
+For each endpoint, you'll need to include a request body that contains the properties you want to update.
+For example, the request body below would update a user's timezone and working hours:
+Copy code snippet
+///Example request body
+{
+"properties": {
+"hs_standard_time_zone": "America/Detroit",
+"hs_working_hours": "[{\"days\":\"SATURDAY\",\"startMinute\":540,\"endMinute\":1020},{\"days\":\"WEDNESDAY\",\"startMinute\":540,\"endMinute\":1020}]"
+}
+}
+xxxxxxxxxx
+7
+1
+///Example request body
+2
+{
+3
+"properties"
+: {
+4
+"hs_standard_time_zone"
+:
+"America/Detroit"
+,
+5
+"hs_working_hours"
+:
+"[{\"days\":\"SATURDAY\",\"startMinute\":540,\"endMinute\":1020},{\"days\":\"WEDNESDAY\",\"startMinute\":540,\"endMinute\":1020}]"
+6
+}
+7
+}
+Only some properties can be set through this API. See the properties section below for a list of the available propeties.
+User properties
+To retrieve a list of all available user properties, you can use the properties API by making a
+GET
+request to
+crm/v3/properties/user
+. Learn more about using the
+properties API
+.
+Below are the user properties that can be set through this API.
+Parameter
+Type
+Description
+hs_additional_phone
+String
+The user's additional phone number. Users can set this in their
+user preferences
+.
+hs_availability_status
+String
+The user's availability status. The value must be either
+"available"
+or
+"away"
+.
+hs_job_title
+String
+The user's job title. Users can set this in their
+user preferences
+.
+hs_main_user_language_skill
+String
+The user's main language skill. The value must match an existing language skill. Learn more about formatting language skills below.
+hs_out_of_office_hours
+String
+The user's out of office hours. Out of office hours must not overlap. Each out of office hours' start time must be later than the previous start time.
+hs_secondary_user_language_skill
+String
+The user's secondary language skill. The value must match an existing language skill. Learn more about formatting language skills below.
+hs_standard_time_zone
+String
+The user's timezone. Timezone values must use standard
+TZ identifiers
+, such as
+"America/New_York"
+or
+"Europe/Dublin"
+. This property must be set before you can set the user's working hours.
+hs_uncategorized_skills
+String
+The user's custom uncategorized skill. This property value must match an existing custom uncatgorized skill in the portal.
+hs_working_hours
+String
+The user's working hours. This property value is formatted as stringified JSON. Learn more about formatting for working hours below.
+Working hours
+hs_working_hours
+accepts a stringified JSON value. It consists of an array with an object for each set of working hours.
+Copy code snippet
+"[{\"days\":\"VALUE\",\"startMinute\":number,\"endMinute\":number}]"
+xxxxxxxxxx
+"[{\"days\":\"VALUE\",\"startMinute\":number,\"endMinute\":number}]"
+Parameter
+Type
+Description
+days
+Stringified JSON
+The days included in a set of working hours. Values include:
+MONDAY_TO_FRIDAY
+SATURDAY_SUNDAY
+EVERY_DAY
+MONDAY
+TUESDAY
+WEDNESDAY
+THURSDAY
+FRIDAY
+SATURDAY
+SUNDAY
+startMinute
+Number
+Working hours start time in minutes. Must be within the range of
+0
+-
+1440
+, where
+0
+represents 12:00AM midnight. For example, a 9:00AM start time would be represented as
+540
+.
+endMinute
+Number
+Working hours end time in minutes. Follows the same rules as
+startMinute
+.For example, 5:00PM is represented as
+1020
+.
+Please note:
+The
+hs_standard_time_zone
+property must be set before you can set working hours.
+Working hours cannot overlap.
+For example, if a user works Monday through Friday, 9:00AM to 5:00PM, you would format that as follows:
+Copy code snippet
+"[{\"days\":\"MONDAY_TO_FRIDAY\",\"startMinute\":540,\"endMinute\":1020}]"
+xxxxxxxxxx
+"[{\"days\":\"MONDAY_TO_FRIDAY\",\"startMinute\":540,\"endMinute\":1020}]"
+If a user works Monday 9:00AM to 5:00PM and Saturday 11:00AM to 2:00PM, the array would contain an object to represent each set of working hours:
+Copy code snippet
+"[{\"days\":\"MONDAY\",\"startMinute\":540,\"endMinute\":1020},{\"days\":\"SATURDAY\",\"startMinute\":660,\"endMinute\":840}]"
+xxxxxxxxxx
+"[{\"days\":\"MONDAY\",\"startMinute\":540,\"endMinute\":1020},{\"days\":\"SATURDAY\",\"startMinute\":660,\"endMinute\":840}]"
+Out of office hours
+If a user will be unavailable due to scheduled time off, you can set any periods during which they'll be out of office using the
+hs_out_of_office_hours
+property:
+The property accepts an array of date ranges, each specified by a
+startTimestamp
+and
+endTimestamp
+.
+The date ranges cannot overlap with one another, and the
+startTimestamp
+of each date range must be later than the previous
+startTimestamp
+.
+For example, if you wanted to specify out-of-office hours during October 31st 2024 9:00 AM to 5:00 PM and November 28 2024 9:00 AM to 5:00 PM, you'd specify the following value for the
+hs_out_of_office_hours
+property for a user:
+Copy code snippet
+"[{\"startTimestamp\": 17303796000,\"endTimestamp\": 17304084000},{\"startTimestamp\": 17328024000,\"endTimestamp\": 17328312000}]"
+xxxxxxxxxx
+"[{\"startTimestamp\": 17303796000,\"endTimestamp\": 17304084000},{\"startTimestamp\": 17328024000,\"endTimestamp\": 17328312000}]"
+Language skills
+hs_main_user_language_skill
+or
+hs_secondary_user_language_skill
+must match an existing language skill. The following JSON array lists all valid options for language skill categories:
+Copy code snippet
+// Full list of valid options for language skill categories:
+[
+{
+"label": "Dansk",
+"value": "da"
+},
+{
+"label": "Deutsch",
+"value": "de"
+},
+{
+"label": "English",
+"value": "en"
+},
+{
+"label": "Español",
+"value": "es"
+},
+{
+"label": "Français",
+"value": "fr"
+},
+{
+"label": "Italiano",
+"value": "it"
+},
+{
+"label": "Nederlands",
+"value": "nl"
+},
+{
+"label": "Norsk",
+"value": "no"
+},
+{
+"label": "Polski",
+"value": "pl"
+},
+{
+"label": "Português",
+"value": "ptbr"
+},
+{
+"label": "Suomi",
+"value": "fi"
+},
+{
+"label": "Svenska",
+"value": "sv"
+},
+{
+"label": "中文 - 繁體",
+"value": "zhtw"
+},
+{
+"label": "日本語",
+"value": "ja"
+}
+]
+xxxxxxxxxx
+59
+1
+// Full list of valid options for language skill categories:
+2
+[
+3
+{
+4
+"label"
+:
+"Dansk"
+,
+5
+"value"
+:
+"da"
+6
+},
+7
+{
+8
+"label"
+:
+"Deutsch"
+,
+9
+"value"
+:
+"de"
+10
+},
+11
+{
+12
+"label"
+:
+"English"
+,
+13
+"value"
+:
+"en"
+14
+},
+15
+{
+16
+"label"
+:
+"Español"
+,
+17
+"value"
+:
+"es"
+18
+},
+19
+{
+20
+"label"
+:
+"Français"
+,
+21
+"value"
+:
+"fr"
+22
+},
+23
+{
+24
+"label"
+:
+"Italiano"
+,
+25
+"value"
+:
+"it"
+26
+},
+27
+{
+28
+"label"
+:
+"Nederlands"
+,
+29
+"value"
+:
+"nl"
+30
+},
+31
+{
+32
+"label"
+:
+"Norsk"
+,
+33
+"value"
+:
+"no"
+34
+},
+35
+{
+36
+"label"
+:
+"Polski"
+,
+37
+"value"
+:
+"pl"
+38
+},
+39
+{
+40
+"label"
+:
+"Português"
+,
+41
+"value"
+:
+"ptbr"
+42
+},
+43
+{
+44
+"label"
+:
+"Suomi"
+,
+45
+"value"
+:
+"fi"
+46
+},
+47
+{
+48
+"label"
+:
+"Svenska"
+,
+49
+"value"
+:
+"sv"
+50
+},
+51
+{
+52
+"label"
+:
+"中文 - 繁體"
+,
+53
+"value"
+:
+"zhtw"
+54
+},
+55
+{
+56
+"label"
+:
+"日本語"
+,
+57
+"value"
+:
+"ja"
+58
+}
+59
+]
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Marketing
+Settings
+Account activity
+Account information
+Business units
+Currencies
+New
+Users
+User details
+User provisioning
+Legal

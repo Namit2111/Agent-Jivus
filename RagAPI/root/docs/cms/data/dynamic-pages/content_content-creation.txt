@@ -1,0 +1,452 @@
+Dynamic pages overview | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+CRM object dynamic pages
+Requirements
+Content creation
+Start building
+More resources
+HubDB dynamic pages
+Prerequisites
+Content creation
+Start building
+More resources
+Creating dynamic referral URLs with query string parameters
+CRM objects
+HubDB table
+CMS Development
+Content and structure
+Data-driven content
+Dynamic pages
+Dynamic pages overview
+Dynamic pages overview
+Dynamic pages are CMS pages that get their content from a structured data source, such as HubDB or CRM objects. Based on how you configure your dynamic page template or modules, HubSpot will use that data to automatically create and populate a set of pages. This includes a listing page that displays summaries of the data, and individual pages for each data source entry (HubDB row or CRM object record).
+Depending on the data source you choose, there are different prerequisites, advantages, and content creation experiences. Below, read about each data source and how to choose which one is best for you.
+You can learn more about building data-based CMS pages in HubSpot Academy's
+CMS Data-Driven Content course
+.
+CRM object dynamic pages
+In HubSpot, CRM objects represent the different types of records and relationships your business has. Standard CRM objects include contacts, companies, deals, and tickets. With an
+Enterprise
+subscription, you can also
+create custom objects
+. Using any of these CRM objects, you can create a listing page and individual details pages for each record of the object type you choose.
+For example, a car dealership could store their inventory as records with a custom
+Car
+object. Then, using CRM object dynamic pages, they could list their inventory online with a unique page automatically created for each car. When a new record is created under the
+Car
+object, a new page will be created automatically, keeping the inventory and website in sync.
+You may want to use CRM objects as your data source if:
+You want to associate records to other CRM objects, such as contacts.
+You want to create automation or personalization based on the object.
+It simplifies your businesses processes and record keeping.
+Requirements
+To build CRM object dynamic pages, you’ll need:
+Content Hub Professional
+or
+Enterprise
+.
+To build using Custom Objects you'll need either
+Content
+Hub
+Enterprise
+, or
+Marketing Hub
+Enterprise
+with
+Content Hub
+Professional
+.
+An understanding of how to
+create custom modules
+.
+A standard or custom object as a data source.
+Please note:
+you can create up to 10 dynamic pages per data source. For CRM object dynamic pages, this means up to 10 dynamic pages per CRM object. For example, you can create up to 10 dynamic pages using the contacts object and 10 dynamic pages using the companies object.
+Content creation
+After you create your dynamic content modules, they can be inserted into any page that includes a
+drag and drop area
+. To edit how the data is displayed, you'll need to update the modules or template you've created. If the template includes any other drag and drop areas, you can edit the page's non-dynamic content within the page editor. Any updates made to the dynamic or non-dynamic content will apply to both the listing page and the details pages, similar to editing a template.
+Because the dynamic page content is coming from
+CRM object records
+, you manage dynamic page content the same way you would manage other CRM records. For example, you can edit dynamic page content by
+editing
+or
+deleting
+individual records in HubSpot. Similarly, you can manage content in bulk by
+importing
+or
+bulk editing records
+.
+The type of pages you can create depends on the object you choose:
+Public pages can be built using the following objects:
+Products
+Marketing events
+Custom objects
+Private pages (
+password protected
+or
+member registration
+) can be built using the following objects:
+Contacts
+Companies
+Deals
+Quotes
+Tickets
+It’s important to be aware of automation that’s set up for the CRM object you choose. For example, if you have a workflow that automatically updates a custom object record’s name based on associated deal stage, your dynamic page content will also be updated any time the record’s name changes.
+Start building
+To start building CRM object dynamic pages, check out the
+developer guide for building CRM object dynamic pages
+.
+If you plan to use custom objects as your data source, learn how to
+create and manage custom objects through HubSpot’s API
+.
+More resources
+How to build dynamic pages using CRM objects
+CRM objects in CMS
+Manage your CRM database
+HubDB dynamic pages
+Using
+HubDB
+, you can generate dynamic pages from the rows of a HubDB table. You can also use child tables to create nested pages that map to separate blogs or listing pages of your website. When you enable a HubDB table as a data source, you can select which columns to use for the meta description, featured image, and canonical URL.
+You may want to use HubDB as the data source for your dynamic pages if:
+You don’t need to associate data from your tables with your CRM data.
+The
+HubDB technical limits
+are not an issue for your use-case.
+Prerequisites
+To build HubDB dynamic pages, you’ll need:
+Content Hub
+Professional
+or
+Enterprise
+.
+An existing HubDB table, or learn how to get started and
+create your first HubDB table
+.
+An understanding of how to
+create custom modules
+.
+Please note:
+you can create up to 10 dynamic pages per data source. For HubDB dynamic pages, this means up to 10 dynamic pages per HubDB table. Learn more about
+HuDB technical limits
+.
+Content creation
+After you create and enable your HubDB table for dynamic page content, you manage the content of your pages by creating, editing, and deleting HubDB rows. You can edit HubDB tables directly in your HubSpot account, or you can edit your schema externally then upload the data via a CSV or through the
+HubDB API
+.
+To edit how the data is displayed, you'll need to update the modules or template you've created. If the template includes any other drag and drop areas, you can edit the page's non-dynamic content within the page editor. Any updates made to the dynamic or non-dynamic content will apply to both the listing page and the details pages, similar to editing a template.
+Start building
+To start building dynamic pages using HubDB,check out the
+developer guide for building HubDB dynamic pages
+.
+More resources
+How to build multi-level dynamic pages with HubDB
+How to add videos to HubDB dynamic pages
+How to join multiple HubDB tables
+Creating dynamic referral URLs with query string parameters
+If you have a setup where you'll need unique versions of each page URL while the content of the page remains the same across all versions, you should use query string parameters instead of dynamic pages.
+When using dynamic pages, instances of your content are generated for every instance of a HubDB table or CRM object, but if the content is identical across all your pages, you will be flagged for duplicate content by search engines. This will lead to a scattered sitemap, a confusing website search experience, and extra entries in your website's page analytics.
+By using query string parameters, you can accomplish the same goal of having a unique URL per referrer. You can even dynamically show unique content on a page if needed, but there won't be a dynamically generated page per instance of a HubDB table or CRM object; instead, there will only be one page with dynamic content that's shown based on the query string parameter.
+Depending on whether you're using a HubDB table or CRM object as your data source, you'll need to use a different HubL function to query for the associated data in your account.
+Consult the code snippets below, which both parse the logo ID from a URL such as
+https://example.com/my-page?logo_identifier=123
+.
+CRM objects
+The HubL code below checks whether a
+logo_identifier
+parameter is present in the query string, then uses the
+crm_object
+HubL function to fetch the data that corresponds to the associated logo record, which was created as a custom object.
+Copy code snippet
+{% if request.query_dict.logo_identifier %}
+<h3> The logo query string is present</h3>
+{% set logo_identifier = request.query_dict.logo_identifier|string %}
+{% set query = "logo_id=" + logo_identifier %}
+{% set logo = crm_object("logos", query, "logo_name, logo_id, logo_url") %}
+Logo data: {{ logo }} <br>
+Logo id: {{ logo.logo }} <br>
+Logo name: {{ logo.name }}
+{% else %}
+<h3>The logo query string is NOT present</h3>
+{% endif %}
+​
+x
+1
+{%
+if
+request.query_dict.logo_identifier
+%}
+2
+<
+h3
+>
+The logo query string is present
+</
+h3
+>
+3
+​
+4
+{%
+set
+logo_identifier
+=
+request.query_dict.logo_identifier
+|
+string
+%}
+5
+{%
+set
+query
+=
+"logo_id="
++
+logo_identifier
+%}
+6
+{%
+set
+logo
+=
+crm_object(
+"logos"
+, query,
+"logo_name, logo_id, logo_url"
+)
+%}
+7
+Logo data:
+{{
+logo
+}}
+<
+br
+>
+8
+Logo id:
+{{
+logo.logo
+}}
+<
+br
+>
+9
+Logo name:
+{{
+logo.name
+}}
+10
+​
+11
+{%
+else
+%}
+12
+<
+h3
+>
+The logo query string is NOT present
+</
+h3
+>
+13
+{%
+endif
+%}
+Learn more about the
+crm_object
+HubL function in
+this article
+.
+HubDB table
+The HubL code below parses the
+logo_identifier
+parameter in the query string, then uses the
+hubdb_table_rows
+HubL function to fetch the logo's URL from the associated HubDB table (e.g., a table with an ID of
+10181541
+) using the logo ID from the query string.
+Copy code snippet
+{# get logo ID from query string#}
+{% set logo_identifier = request.query_dict.logo_identifier|string %}
+{% set query = "identifier=" + logo_identifier %}
+{% set logo_row = hubdb_table_rows(10181541, query)[0] %}
+<img src="{{ logo_row.logo.url }}" style="max-width: 500px;">
+xxxxxxxxxx
+5
+1
+{#
+get logo ID from query string
+#}
+2
+{%
+set
+logo_identifier
+=
+request.query_dict.logo_identifier
+|
+string
+%}
+3
+{%
+set
+query
+=
+"identifier="
++
+logo_identifier
+%}
+4
+{%
+set
+logo_row
+=
+hubdb_table_rows(
+10181541
+, query)[
+0
+]
+%}
+5
+<
+img
+src
+=
+"
+{{
+logo_row.logo.url
+}}
+"
+style
+=
+"max-width: 500px;"
+>
+Or you can also invoke the
+hubdb_table_row
+function, though you'll need to pass the row ID in the query parameter.
+Copy code snippet
+{% set row_id = request.query_dict.logo_identifier|string %}
+{% set logo_row = hubdb_table_row(10181541, row_id) %}
+<img src="{{ logo_row.logo.url }}" style="max-width: 500px;">
+xxxxxxxxxx
+3
+1
+{%
+set
+row_id
+=
+request.query_dict.logo_identifier
+|
+string
+%}
+2
+{%
+set
+logo_row
+=
+hubdb_table_row(
+10181541
+, row_id)
+%}
+3
+<
+img
+src
+=
+"
+{{
+logo_row.logo.url
+}}
+"
+style
+=
+"max-width: 500px;"
+>
+Learn more about the
+hubdb_table_row
+HubL function in
+this article
+.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Templates
+Modules
+Fields
+Data-driven content
+CRM objects
+Dynamic pages
+Overview
+CRM objects
+HubDB
+How to add videos to dynamic pages in HubDB
+How to build a dynamic team member page with HubDB
+Build multi-level dynamic pages with HubDB
+GraphQL
+Serverless functions
+Emails with programmable content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace

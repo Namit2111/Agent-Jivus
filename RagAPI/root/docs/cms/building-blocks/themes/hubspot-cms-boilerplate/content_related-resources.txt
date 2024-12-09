@@ -1,0 +1,353 @@
+The HubSpot CMS Boilerplate | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Why should developers use the HubSpot CMS Boilerplate?
+How to get started using the HubSpot CMS Boilerplate
+HubSpot CMS Boilerplate structure
+jQuery
+Related resources
+CMS Development
+Content and structure
+Themes
+The HubSpot CMS Boilerplate
+The HubSpot CMS Boilerplate
+The HubSpot CMS Boilerplate
+serves as a starting point for helping developers get a website up and running quickly on the HubSpot CMS while illustrating best practices developers can use when building on the HubSpot CMS Platform. The boilerplate is an open-source GitHub project where all are welcome to suggest changes and fork for their own use. If you are new to the HubSpot CMS, and want to get started on a new project based off of the boilerplate, follow the
+quick start guide to developing on the HubSpot CMS
+.
+Watch
+Fork
+Star
+Why should developers use the HubSpot CMS Boilerplate?
+The HubSpot CMS Boilerplate is built and actively maintained by HubSpot. When building the boilerplate, we incorporated best practices that were influenced by how developers created the best website building experience and then applied those to building a website on the HubSpot CMS. This provides developers with a clean,
+performant
+, and ready to modify website that saves developers a significant amount of developmental time. The boilerplate also provides comprehensive CSS for HubSpot related assets such as forms, menu modules, base classes and more. You can view a live demo of the boilerplate in action by visiting
+https://boilerplate.hubspotcms.com/
+How to get started using the HubSpot CMS Boilerplate
+To get started with using the boilerplate in your local development environment, simply follow our
+Getting Started Developing Websites on the HubSpot CMS guide.
+HubSpot CMS Boilerplate structure
+Developers can work with the boilerplate using
+local development tools
+or directly inside of the
+Design Manager
+. The boilerplate uses relative path references for all of the assets which makes it easy to adapt to whatever your project may be. This also allows for the boilerplate to be completely portable between accounts on the HubSpot Platform. Below is a screenshot of the folder structure of the boilerplate’s assets. The boilerplate silos its assets into multiple directories for easy identification of where they reside.
+Having trouble watching this video?
+The HubSpot CMS Boilerplate’s underlying template structure revolves around a
+common base layout
+, located in the
+templates > layouts
+folder, that is then
+{% extends %}
+tag and referencing the
+{% block body %}
+block for its main content. A sample of how the extend tag and blocks are being used can be seen in
+any of the html files inside of the templates directory.
+Learn more about
+blocks and extends
+.
+This is a common method of developing on CMS systems where you have a base (sometimes called a main/parent) template that contains all the main common structural pieces of content on your site. These are often items that are inside of the
+<head>
+element on your site such as common meta properties (ex: Title and Meta Description), Favicon links, CSS links, and 3rd party scripts
+Copy code snippet
+<!doctype html>
+<html lang="{{ html_lang }}" {{ html_lang_dir }}>
+<head>
+<meta charset="utf-8">
+<title>{{ page_meta.html_title }}</title>
+{% if site_settings.favicon_src %}<link rel="shortcut icon" href="{{ site_settings.favicon_src }}" />{% endif %}
+<meta name="description" content="{{ page_meta.meta_description }}">
+{{ require_css(get_asset_url("../../css/layout.css")) }}
+{{ require_css(get_asset_url("../../css/main.css")) }}
+{{ require_css("https://fonts.googleapis.com/css?family=Merriweather:400,700|Lato:400,700&display=swap") }}
+{{ require_js(get_asset_url("../../js/main.js")) }}
+{{ standard_header_includes }}
+</head>
+<body>
+<div class="body-wrapper {{ builtin_body_classes }}">
+{% block header %}
+{% global_partial path="../partials/header.html" %}
+{% endblock header %}
+{% block body %}
+<!-- Nothing to see here -->
+{% endblock body %}
+{% global_partial path="../partials/footer.html" %}
+</div>
+{{ standard_footer_includes }}
+</body>
+</html>
+​
+x
+1
+<!doctype html>
+2
+<
+html
+lang
+=
+"
+{{
+html_lang
+}}
+"
+{{
+html_lang_dir
+}}
+>
+3
+<
+head
+>
+4
+<
+meta
+charset
+=
+"utf-8"
+>
+5
+<
+title
+>
+{{
+page_meta.html_title
+}}
+</
+title
+>
+6
+{%
+if
+site_settings.favicon_src
+%}
+<
+link
+rel
+=
+"shortcut icon"
+href
+=
+"
+{{
+site_settings.favicon_src
+}}
+"
+/>
+{%
+endif
+%}
+7
+<
+meta
+name
+=
+"description"
+content
+=
+"
+{{
+page_meta.meta_description
+}}
+"
+>
+8
+{{
+require_css(get_asset_url(
+"../../css/layout.css"
+))
+}}
+9
+{{
+require_css(get_asset_url(
+"../../css/main.css"
+))
+}}
+10
+{{
+require_css(
+"https://fonts.googleapis.com/css?family=Merriweather:400,700|Lato:400,700&display=swap"
+)
+}}
+11
+{{
+require_js(get_asset_url(
+"../../js/main.js"
+))
+}}
+12
+{{
+standard_header_includes
+}}
+13
+</
+head
+>
+14
+<
+body
+>
+15
+<
+div
+class
+=
+"body-wrapper
+{{
+builtin_body_classes
+}}
+"
+>
+16
+{%
+block
+header
+%}
+17
+{%
+global_partial path
+=
+"../partials/header.html"
+%}
+18
+{%
+endblock
+header
+%}
+19
+​
+20
+{%
+block
+body
+%}
+21
+<!-- Nothing to see here -->
+22
+{%
+endblock
+body
+%}
+23
+​
+24
+{%
+global_partial path
+=
+"../partials/footer.html"
+%}
+25
+</
+div
+>
+26
+{{
+standard_footer_includes
+}}
+27
+</
+body
+>
+28
+</
+html
+>
+Inside of this base layout, there are also calls to our global header and footer partials. This allows us to be able to keep the code for these partials in their own separate files for modularity and, because they are global partials, can then be easily edited using our
+Global Content Editor
+by your content creators.
+For more depth into the assets included in the boilerplate
+check out the boilerplate's wiki on GitHub
+.
+jQuery
+The HubSpot Theme boilerplate doesn't require jQuery in order to function
+. For older HubSpot accounts jQuery is loaded by default. Newer HubSpot accounts have jQuery disabled by default.
+Historically HubSpot scripts required jQuery to function properly, so the domain-wide setting was there to help ensure compatibility. HubSpot scripts no longer use jQuery. Because JQuery is not required, and there are better ways for developers to include libraries that also work with source control. It is advised to disable the jQuery settings for new websites.
+Be aware if disabling jQuery on a domain that has an existing website - any landing pages or existing web pages you may have could break if they depend on jQuery.
+If you wish to use jQuery on your new website it is recommended that you use the latest version of jQuery.
+There are two easy ways to do that:
+Upload the latest version of jQuery to your developer file system and use
+require_js
+to load it where and when you need it.
+Use a CDN you trust, and use
+require_js
+to load jQuery where and when you need it.
+Related resources
+Getting started with themes
+How to optimize your CMS Hub site for performance
+Getting started with accessibility
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+CMS Development
+Overview
+Tools
+Quickstart
+Setup
+Storage
+Content and structure
+Overview
+CDN, security, and performance
+Themes
+Overview
+Getting started
+CMS boilerplate
+Child themes
+Default themes
+Quotes themes
+Responsive breakpoints
+Templates
+Modules
+Fields
+Data-driven content
+Accessibility
+Content search
+Content staging
+Global content (and partials)
+Provide a good editor experience
+Forms
+Memberships
+Menus and navigation
+Multi-language
+Website settings
+Debugging
+Improve older sites
+Marketplace
