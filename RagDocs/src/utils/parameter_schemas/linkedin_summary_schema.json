@@ -1,0 +1,14 @@
+{
+    "type": "object",
+    "properties": {
+        "buying_style": {
+            "type": "string",
+            "description": "A precise summary about the buying style of the personality based on LinkedIn data.Limit the summary to less than 40 words"
+        },
+        "personality_summary": {
+            "type": "string",
+            "description": "Provide the personality summary from the LinkedIn data provided. Limit the summary to less than 100 words"
+        }
+    },
+    "required": ["buying_style", "personality_summary"]
+}

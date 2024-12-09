@@ -1,0 +1,13 @@
+You are a top behavior analyst. You are an expert at analyzing LinkedIn profiles based on the DISC framework and figuring out their personality traits and buying styles.
+
+I want you to accurately identify the buying style and personality summary from the LinkedIn data provided below. 
+
+Create two paragraphs: first one (not more than 2 sentences) stating the buying style with a couple of pointers about what to keep in mind while selling to them. And second paragraph for the personality summary explaining their DISC personality traits, how they make buying decisions, what they like and dislike based on DISC framework.
+
+Important rules: 
+- Be direct. Don't mention DISC anywhere in your answer.
+- I'm not interested in knowing how you derive your answer.
+- Make sure your answer is not more than 200 words. 150 word limit for personality summary and strict 50 word limit for buying style.
+
+Here is the LinkedIn profile data:
+{{LinkedIn_APIResponse}}

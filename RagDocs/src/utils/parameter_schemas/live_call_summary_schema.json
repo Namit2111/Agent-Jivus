@@ -1,0 +1,52 @@
+{
+    "type": "object",
+    "properties": {
+        "callSummary": {
+            "type": "string",
+            "description": "Summarise the entire call in less than 100 words and highlight key talking points discussed during the call. Follow instructions as mentioned in system prompt."
+        },
+        "strengths": {
+            "type": "array",
+            "items": {
+                "type": "string"},
+            "description": "Highlight areas the sales rep handled like a pro and how. Identify key actions or strategies the sales rep did right during the call. Follow instructions as mentioned in system prompt. For example: ['Engaging Questions: Alex started the conversation by asking Mark about his current email writing process, which is an excellent way to gather information and engage the prospect in a discussion.','Listening and Responding: Alex actively listened to Mark's responses and tailored his points accordingly. He acknowledged Mark's emphasis on personalization and quality.']"
+        },
+        "areasToImprove": {
+            "type": "array",
+            "items": {
+                "type": "string"},
+            "description": "As a strict sales coach, accurately pinpoint the areas where your sales rep went wrong or was weak and provide actionable feedback with the goal of improving sales conversions. Using a casual tone, draft example responses of what should have been better answers instead. This has to be list of strings. Follow instructions as mentioned in system prompt."
+        },
+        "skillRating": {
+            "type": "object",
+            "properties": {
+                "Call Opening": {
+                    "type": "number",
+                    "description": "Rate the call out of 10 on Call Opening. For example: 8.5"
+                },
+                "Pain Discovery": {
+                    "type": "number",
+                    "description": "Rate the call out of 10 on Pain Discovery. For example: 8"
+                },
+                "Objection Handling": {
+                    "type": "number",
+                    "description": "Rate the call out of 10 on Objections handling. For example: 9"
+                },
+                "Feature Discussion": {
+                    "type": "number",
+                    "description": "Rate the call out of 10 on Feature Discussion. For example: 10"
+                },
+                "Closing": {
+                    "type": "number",
+                    "description": "Rate the call out of 10 on Closing. For example: 7.5"
+                }
+            },
+            "description": "Rate the call out on these topics: Call Opening, Pain Discovery, Objection handling, feature discussion, and Closing. Under each of these categories, the rating has to be given over a score of 10. The key of the dictionary has to be topic and the value has to be the score. Follow instructions as mentioned in system prompt. For example: {'Call Opening': 7, 'Pain Discovery': 8, 'Handling objections': 9, 'feature discussion': 10, 'Closing': 6}"
+        },
+        "overallRating": {
+            "type": "number",
+            "description": "In the end provide an overall call rating out of 10. For example: 8.5"
+        }
+    },
+    "required": ["callSummary", "strengths", "areasToImprove", "skillRating", "overallRating"]
+}
