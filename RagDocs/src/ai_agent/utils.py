@@ -7,7 +7,7 @@ from openai import OpenAI
 from src.utils.prompts import get_prompt_from_file
 import os
 from src.utils.prompt_formatter import PromptTemplate
-openai = OpenAI(api_key="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")
+openai = OpenAI(api_key="")
 groq = Groq(api_key=GROQ_API)
 def check_linkedin_json(url):
     json_file = "linkedinSummaryAiagent.json"

@@ -41,7 +41,7 @@ Imports necessary libraries for HTTP requests, HTML parsing, JSON handling, Open
 ## <a name="api-key-initialization"></a>API Key Initialization
 
 ```python
-openai = OpenAI(api_key="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")
+openai = OpenAI(api_key="")
 groq = Groq(api_key=GROQ_API)
 ```
 
