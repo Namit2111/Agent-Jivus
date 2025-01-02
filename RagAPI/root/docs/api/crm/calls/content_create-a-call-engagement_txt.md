@@ -1,114 +1,162 @@
-# HubSpot API Guide: Calls
+# HubSpot Calls API Documentation
 
-This document details the HubSpot API endpoints for managing call engagements.  This includes creating, retrieving, updating, associating, and deleting calls.
+This document describes the HubSpot Calls API, allowing you to manage calls within the HubSpot CRM.  The API uses standard HTTP methods (POST, GET, PATCH, DELETE) and JSON for data exchange.  All endpoints are located under the `/crm/v3/objects/calls` base path.
 
-## Calls Endpoint Reference
+## API Endpoints
 
-Use the calls engagement API to log and manage calls on CRM records and on the calls index page. You can log calls either in HubSpot or through the calls API.
+All endpoints below use the base URL: `https://api.hubspot.com/crm/v3/objects/calls`
 
-### Create a Call Engagement
-
-**Method:** `POST`
+### 1. Create a Call Engagement (POST)
 
 **Endpoint:** `/crm/v3/objects/calls`
 
-**Request Body:**
+**Method:** `POST`
 
-The request body should contain a `properties` object and optionally an `associations` object.
+**Request Body:**  JSON object with `properties` and optional `associations` objects.
 
-#### Properties
+**Properties:**
 
-| Field                  | Description                                                                                                                                                                                                  | Required | Data Type       | Example                                      |
-|-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|-----------------|----------------------------------------------|
-| `hs_timestamp`         | Required. Call creation time (Unix timestamp in milliseconds or UTC format).                                                                                                                                 | Yes      | String/Number    | `1679092800000` or `2023-03-17T01:32:44.872Z` |
-| `hs_call_body`         | Call description and notes.                                                                                                                                                                                 | No       | String           | "Resolved issue"                             |
-| `hs_call_callee_object_id` | ID of the HubSpot record associated with the call (recipient for outbound, dialer for inbound).                                                                                                                 | No       | String           | `12345`                                       |
-| `hs_call_callee_object_type` | Type of the associated record (e.g., `contact`, `company`).                                                                                                                                                    | No       | String           | `contact`                                     |
-| `hs_call_direction`    | Call direction from the HubSpot user's perspective (`INBOUND` or `OUTBOUND`).                                                                                                                            | No       | String           | `OUTBOUND`                                   |
-| `hs_call_disposition`  | Call outcome (use internal GUID).  Default values are listed below.  Custom values can be retrieved via the [properties API](link_to_properties_api).                                                        | No       | String           | `9d9162e7-6cf3-4944-bf63-4dff82258764` (Busy) |
-| `hs_call_duration`     | Call duration in milliseconds.                                                                                                                                                                               | No       | Number           | `3800`                                        |
-| `hs_call_from_number`  | Phone number the call originated from.                                                                                                                                                                     | No       | String           | `(857) 829 5489`                            |
-| `hs_call_recording_url` | URL of the call recording (HTTPS URLs for `.mp3` or `.wav` files only).                                                                                                                                | No       | String           | `https://example.com/recording.mp3`          |
-| `hs_call_status`       | Call status (`BUSY`, `CALLING_CRM_USER`, `CANCELED`, `COMPLETED`, `CONNECTING`, `FAILED`, `IN_PROGRESS`, `NO_ANSWER`, `QUEUED`, `RINGING`).                                                            | No       | String           | `COMPLETED`                                    |
-| `hs_call_title`        | Call title.                                                                                                                                                                                              | No       | String           | "Support call"                               |
-| `hs_call_source`       | Call source (required for recording and transcription pipeline; must be `INTEGRATIONS_PLATFORM`).                                                                                                          | No       | String           | `INTEGRATIONS_PLATFORM`                      |
-| `hs_call_to_number`    | Phone number that received the call.                                                                                                                                                                     | No       | String           | `(509) 999 9999`                            |
-| `hubspot_owner_id`     | ID of the call's owner.                                                                                                                                                                                    | No       | String           | `11349275740`                               |
-| `hs_activity_type`     | Type of call (based on call types in your HubSpot account).                                                                                                                                                 | No       | String           | ...                                          |
-| `hs_attachment_ids`    | IDs of call attachments (semicolon-separated).                                                                                                                                                           | No       | String           | `1;2;3`                                        |
-
-
-#### Associations
-
-To associate the call with existing records, include an `associations` array. Each element should have a `to` object specifying the record ID and a `types` array specifying the association type.
-
-| Field          | Description                                                                              |
-|-----------------|------------------------------------------------------------------------------------------|
-| `to.id`         | ID of the record to associate with.                                                    |
-| `types[].associationCategory` | Association category (`HUBSPOT_DEFINED`).                                         |
-| `types[].associationTypeId`   | Association type ID (default IDs are listed [here](link_to_default_ids), custom IDs can be retrieved via the [associations API](link_to_associations_api)). |
+| Field                 | Description                                                                                                                                 | Type             | Required | Example                                     |
+|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------|-----------------|----------|---------------------------------------------|
+| `hs_timestamp`       | Call creation time (Unix timestamp in milliseconds or UTC format). Determines timeline position.                                          | String/Number    | Yes      | `1679000000000` or `"2023-03-15T10:00:00Z"` |
+| `hs_call_body`       | Call description and notes.                                                                                                                | String           | No       | "Discussed project X"                       |
+| `hs_call_callee_object_id` | ID of the HubSpot record associated with the call (recipient for outbound, dialer for inbound).                                            | String           | No       | `12345`                                      |
+| `hs_call_callee_object_type` | Object type of the associated record (e.g., "contact", "company").                                                                      | String           | No       | "contact"                                   |
+| `hs_call_direction`  | Call direction ("INBOUND" or "OUTBOUND").                                                                                                 | String           | No       | "OUTBOUND"                                 |
+| `hs_call_disposition` | Call outcome (use internal GUID; see below for defaults, or use the properties API for custom values).                                      | String           | No       | `"9d9162e7-6cf3-4944-bf63-4dff82258764"` (Busy) |
+| `hs_call_duration`   | Call duration in milliseconds.                                                                                                             | Number           | No       | `360000`                                    |
+| `hs_call_from_number`| Phone number the call originated from.                                                                                                      | String           | No       | "+15551234567"                             |
+| `hs_call_recording_url` | URL of the call recording (HTTPS only, .mp3 or .wav).                                                                                     | String           | No       | "https://example.com/recording.mp3"         |
+| `hs_call_status`     | Call status ("BUSY", "CALLING_CRM_USER", "CANCELED", "COMPLETED", "CONNECTING", "FAILED", "IN_PROGRESS", "NO_ANSWER", "QUEUED", "RINGING"). | String           | No       | "COMPLETED"                                 |
+| `hs_call_title`      | Call title.                                                                                                                            | String           | No       | "Sales Call"                               |
+| `hs_call_source`     | Call source. Required for recording/transcription pipeline; set to "INTEGRATIONS_PLATFORM".                                             | String           | No       | "INTEGRATIONS_PLATFORM"                     |
+| `hs_call_to_number`  | Phone number the call was received by.                                                                                                  | String           | No       | "+15559876543"                             |
+| `hubspot_owner_id`   | ID of the call owner.                                                                                                                      | String           | No       | `1234567`                                   |
+| `hs_activity_type`   | Type of call (based on call types in your HubSpot account).                                                                                  | String           | No       | "Outbound Call"                            |
+| `hs_attachment_ids`  | IDs of attached files (semicolon-separated).                                                                                             | String           | No       | "123;456"                                   |
 
 
-### Retrieve Calls
+**Associations:**
+
+| Field       | Description                                                                                | Type    |
+|-------------|--------------------------------------------------------------------------------------------|---------|
+| `to`        | Object to associate ( `{id: <object_id>}` )                                              | Object  |
+| `types`     | Association type (`{associationCategory: "HUBSPOT_DEFINED", associationTypeId: <id>}`) | Array   |
+
+
+**Example Request:**
+
+```json
+{
+  "properties": {
+    "hs_timestamp": "2024-10-27T12:00:00Z",
+    "hs_call_title": "New Customer Call",
+    "hubspot_owner_id": "12345",
+    "hs_call_to_number": "+15555551212"
+  },
+  "associations": [
+    {
+      "to": {"id": 67890},
+      "types": [{"associationCategory": "HUBSPOT_DEFINED", "associationTypeId": 194}]
+    }
+  ]
+}
+```
+
+**Response:**  Standard HubSpot API response including the newly created call's `id`.
+
+
+### 2. Retrieve Calls (GET)
+
+**Endpoint:** `/crm/v3/objects/calls`  (for all calls) or `/crm/v3/objects/calls/{callId}` (for a single call)
 
 **Method:** `GET`
 
-**Endpoint:** `/crm/v3/objects/calls` (for list) or `/crm/v3/objects/calls/{callId}` (for individual call)
+**Parameters (for all calls):**
 
-**Parameters:**
-
-* **`limit`**: (List endpoint only) Maximum number of results per page.
-* **`properties`**: Comma-separated list of properties to return.
-* **`associations`**: Comma-separated list of object types to retrieve associated IDs for.
-
-
-### Identify Voicemails vs. Recorded Calls
-
-To differentiate between recorded calls and voicemails, check the `hs_call_status` and `hs_call_has_voicemail` properties. A voicemail will have `hs_call_status: missed` and `hs_call_has_voicemail: true`.
+| Parameter | Description                                     | Type    |
+|-----------|-------------------------------------------------|---------|
+| `limit`    | Max results per page.                          | Integer |
+| `properties` | Comma-separated list of properties to return. | String  |
+| `associations` | Comma-separated list of association types to return. | String |
 
 
-### Update Calls
+**Parameters (for a single call):**
+
+| Parameter | Description                                     | Type    |
+|-----------|-------------------------------------------------|---------|
+| `properties` | Comma-separated list of properties to return. | String  |
+| `associations` | Comma-separated list of association types to return. | String |
+
+
+**Response:** JSON array of calls (or a single call object).
+
+
+### 3. Update a Call (PATCH)
+
+**Endpoint:** `/crm/v3/objects/calls/{callId}`
 
 **Method:** `PATCH`
 
-**Endpoint:** `/crm/v3/objects/calls/{callId}`
+**Request Body:** JSON object with the `properties` to update.  Omit properties to leave them unchanged. An empty string (`""`) will clear a property.
 
-**Request Body:**
+**Example Request:**
 
-Include the `properties` object with the fields you want to update.  Empty strings can be used to clear property values.
+```json
+{
+  "properties": {
+    "hs_call_body": "Follow up scheduled"
+  }
+}
+```
+
+**Response:** Standard HubSpot API response.
 
 
-### Associate Existing Calls with Records
+### 4. Associate Existing Calls with Records (PUT)
+
+**Endpoint:** `/crm/v3/objects/calls/{callId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
 
 **Method:** `PUT`
 
-**Endpoint:** `/crm/v3/objects/calls/{callId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
-
 **Parameters:**
 
-* `callId`: Call ID.
-* `toObjectType`: Object type (e.g., `contact`, `company`).
-* `toObjectId`: Record ID.
-* `associationTypeId`: Association type ID.
+* `{callId}`: ID of the call.
+* `{toObjectType}`: Object type to associate (e.g., "contact").
+* `{toObjectId}`: ID of the object to associate.
+* `{associationTypeId}`: Association type ID.
 
 
-### Remove an Association
+**Response:** Standard HubSpot API response.
 
-**Method:** `DELETE`
+
+### 5. Remove an Association (DELETE)
 
 **Endpoint:** `/crm/v3/objects/calls/{callId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
 
-
-### Pin a Call on a Record
-
-To pin a call to a record's timeline, include the call's `id` in the `hs_pinned_engagement_id` field when creating or updating the record via the relevant object API (companies, contacts, deals, tickets, custom objects).
-
-
-### Delete Calls
-
 **Method:** `DELETE`
+
+**Parameters:**  Same as in section 4.
+
+**Response:** Standard HubSpot API response.
+
+
+### 6. Delete a Call (DELETE)
 
 **Endpoint:** `/crm/v3/objects/calls/{callId}`
 
+**Method:** `DELETE`
 
-**Note:**  Remember to replace placeholders like `{callId}`, `{toObjectType}`, `{toObjectId}`, and `{associationTypeId}` with actual values.  Links to related APIs (properties, associations, etc.) should be added where indicated.  The example code snippets should be properly formatted for readability within the markdown.
+**Response:** Standard HubSpot API response.
+
+
+##  Default `hs_call_disposition` GUIDs:
+
+* Busy: `9d9162e7-6cf3-4944-bf63-4dff82258764`
+* Connected: `f240bbac-87c9-4f6e-bf70-924b57d47db7`
+* Left live message: `a4c4c377-d246-4b32-a13b-75a56a4cd0ff`
+* Left voicemail: `b2cf5968-551e-4856-9783-52b3da59a7d0`
+* No answer: `73a0d17f-1163-4015-bdd5-ec830791da20`
+* Wrong number: `17b47fee-58de-441e-a44c-c6300d46f273`
+
+Remember to replace placeholder values (IDs, object types, etc.) with your actual data.  Consult the HubSpot API documentation for details on error handling and authentication.

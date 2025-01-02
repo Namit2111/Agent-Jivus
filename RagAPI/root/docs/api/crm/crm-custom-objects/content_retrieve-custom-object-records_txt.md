@@ -1,6 +1,6 @@
 # HubSpot Custom Objects API Documentation
 
-This document details how to interact with HubSpot's custom objects API.  It covers creating, retrieving, updating, and deleting custom objects, as well as managing their properties and associations.
+This document details the HubSpot API for managing custom objects.  Custom objects extend the standard HubSpot CRM objects (contacts, companies, deals, tickets) to represent your specific business needs.
 
 ## Supported Products
 
@@ -12,116 +12,140 @@ Requires one of the following HubSpot products or higher:
 * Service Hub - Enterprise
 * Operations Hub - Enterprise
 
-## Introduction
 
-In addition to standard CRM objects (contacts, companies, deals, tickets), HubSpot allows you to create custom objects to represent and organize your CRM data. This can be done through the HubSpot UI or using the custom objects API. This documentation focuses on the API approach.
+## Authentication
 
+Use one of the following authentication methods:
 
-## Authentication Methods
+* **OAuth:**  Recommended for most integrations.
+* **Private App Access Tokens:**  Suitable for internal apps and integrations with restricted access.
 
-* OAuth
-* Private app access tokens
-
-**Note:** HubSpot API Keys are deprecated as of November 30, 2022.  Use private app access tokens or OAuth instead.
+**Note:** HubSpot API Keys are deprecated as of November 30, 2022.
 
 
-## Create a Custom Object
+## API Endpoints
 
-To create a custom object, you must define its schema, including:
-
-* **Object Name:**  Must start with a letter, contain only letters, numbers, and underscores.  Once created, the name and label cannot be changed. Long labels may be truncated.
-* **Properties:**  Used to store information on individual custom object records.  A maximum of 10 unique value properties are allowed per custom object.  Properties are defined with `name`, `label`, `type`, and `fieldType`.
-* **Associations:**  Connect the custom object to other HubSpot objects (standard or custom).
+All endpoints are under the base URL: `https://api.hubapi.com/crm/v3/`
 
 
-### Object Schema Request
+### 1. Create a Custom Object
 
-Use a `POST` request to `/crm/v3/schemas`:
+**Endpoint:** `/schemas`
 
-```json
-{
-  "name": "object_name",
-  "description": "Description of the object",
-  "labels": {
-    "singular": "Singular Label",
-    "plural": "Plural Label"
-  },
-  "primaryDisplayProperty": "property_name",
-  "secondaryDisplayProperties": ["property_name1", "property_name2"],
-  "searchableProperties": ["property_name1", "property_name2"],
-  "requiredProperties": ["property_name1", "property_name2"],
-  "properties": [
-    // Array of property definitions (see below)
-  ],
-  "associatedObjects": ["CONTACT", "COMPANY", "objectTypeId"] // Standard objects or custom objectTypeIds
-}
-```
+**Method:** `POST`
 
-### Property Definitions
+**Request Body:**  The request body defines the object schema, including:
 
-| `type`       | Description                                                              | Valid `fieldType` values             |
-|--------------|--------------------------------------------------------------------------|--------------------------------------|
-| `enumeration` | A string representing a set of options, separated by semicolons.          | `booleancheckbox`, `checkbox`, `radio`, `select` |
-| `date`        | ISO 8601 formatted date (YYYY-MM-DD).                                   | `date`                               |
-| `dateTime`    | ISO 8601 formatted date and time. Time is not displayed in the HubSpot app. | `date`                               |
-| `string`      | Plain text string (up to 65,536 characters).                             | `file`, `text`, `textarea`             |
-| `number`      | Numeric value.                                                           | `number`                              |
+* `name`:  Object name (alphanumeric and underscores only, must start with a letter).  Cannot be changed after creation.
+* `description`:  A description of the object.
+* `labels`:  Singular and plural labels for the object.
+* `primaryDisplayProperty`:  The property used to display the object's name.
+* `secondaryDisplayProperties`:  Additional properties displayed on the object record.  The first property here, if it's a `string`, `number`, `enumeration`, `boolean`, or `datetime` type, is added as a fourth filter on the object index page.
+* `searchableProperties`:  Properties indexed for searching.
+* `requiredProperties`: Properties required when creating new records.
+* `properties`: An array of property definitions (see section below).
+* `associatedObjects`: An array of object IDs or names to associate with (e.g., `"CONTACT"`, `"COMPANY"`, `"TICKET"`, `"DEAL"`, or a custom object's `objectTypeId`).
+
+**Example Request Body:** (See complete example in original text)
+
+**Response:**  Returns the created object schema, including its `objectTypeId`.
 
 
-### Field Type Descriptions
+### 2. Properties
 
-| `fieldType`       | Description                                                                                                 |
-|--------------------|-------------------------------------------------------------------------------------------------------------|
-| `booleancheckbox` | Single checkbox (Yes/No).                                                                                   |
-| `checkbox`        | Multiple checkboxes.                                                                                        |
-| `date`            | Date picker.                                                                                               |
-| `file`            | File upload (stored as a URL).                                                                               |
-| `number`          | Numeric input.                                                                                             |
-| `radio`           | Set of radio buttons.                                                                                       |
-| `select`          | Dropdown menu.                                                                                             |
-| `text`            | Single-line text input.                                                                                      |
-| `textarea`        | Multi-line text input.                                                                                       |
+**Defining Properties (during schema creation):** Properties are defined within the `properties` array of the create schema request.  Each property object includes:
+
+* `name`: Property name.
+* `label`: Property label.
+* `type`: Property type (`enumeration`, `date`, `dateTime`, `string`, `number`).
+* `fieldType`:  UI field type (`booleancheckbox`, `checkbox`, `date`, `file`, `number`, `radio`, `select`, `text`, `textarea`).
+* `options` (for `enumeration` type): An array of option objects, each with `label` and `value`.
+* `hasUniqueValue`: (boolean) True if the property must have unique values.
 
 
-## Retrieve Existing Custom Objects
-
-* **All custom objects:** `GET` request to `/crm/v3/schemas`
-* **Specific custom object:** `GET` request to one of the following:
-    * `/crm/v3/schemas/{objectTypeId}`
-    * `/crm/v3/schemas/p_{object_name}`
-    * `/crm/v3/schemas/{fullyQualifiedName}`  (found in the object's schema, derived from `p{portal_id}_{object_name}`)
+**Updating Properties:** Use the properties API (`/crm/v3/properties/{objectTypeId}`) to create, update, and delete properties after the schema is created.
 
 
-## Retrieve Custom Object Records
+### 3. Retrieve Custom Objects
 
-* **Single record:** `GET` request to `/crm/v3/objects/{objectType}/{recordId}`.  Query parameters: `properties`, `propertiesWithHistory`, `associations`.
-* **Multiple records:** `POST` request to `/crm/v3/objects/{objectType}/batch/read`.  This endpoint does *not* support retrieving associations.  Use the `id` (record ID) or a custom `unique identifier property` with the `idProperty` parameter.
+**Endpoint:** `/schemas`
 
-
-## Update Existing Custom Objects
-
-Use a `PATCH` request to `/crm/v3/schemas/{objectTypeId}` to update the object's schema.  Object name and labels cannot be changed.  `requiredProperties`, `searchableProperties`, `primaryDisplayProperty`, and `secondaryDisplayProperties` can be updated.
+**Method:** `GET` (for all objects)  or `GET` `/schemas/{objectTypeId}` or `/schemas/p_{object_name}` or `/schemas/{fullyQualifiedName}` (for a specific object).
 
 
-## Update Associations
-
-Use a `POST` request to `/crm/v3/schemas/{objectTypeId}/associations` to add associations.  Specify custom objects using their `objectTypeId` and standard objects by name.
+**Response:**  Returns an array of custom object schemas (for `GET /schemas`) or a single custom object schema.
 
 
-## Delete a Custom Object
+### 4. Retrieve Custom Object Records
 
-* Delete all instances of the custom object before deleting the object itself.  Use a `DELETE` request to `/crm/v3/schemas/{objectType}`.
-* For a "hard delete" (to recreate an object with the same name), use `/crm/v3/schemas/{objectType}?archived=true`.  This requires deleting all instances, associations, and properties.
+**Endpoint:** `/objects/{objectType}/{recordId}` (single record) or `/objects/{objectType}/batch/read` (multiple records)
+
+**Method:** `GET` (single) or `POST` (batch)
+
+**Query Parameters (single record):**
+
+* `properties`: Comma-separated list of properties to return.
+* `propertiesWithHistory`:  Comma-separated list of properties to return with history.
+* `associations`: Comma-separated list of associated objects to retrieve.
+
+**Request Body (batch):**
+
+* `properties`:  Array of properties to return.
+* `propertiesWithHistory`: Array of properties to return with history.
+* `inputs`:  Array of input objects, each with an `id` (record ID or unique identifier, depending on `idProperty`).
+* `idProperty`: Name of the unique identifier property (if not using record ID).
 
 
-## Custom Object Example (Car Dealership)
+**Example Batch Request Body (record ID):** (See complete example in original text)
 
-This section provides a detailed walkthrough of creating a "Cars" custom object, including properties, associations, and record creation.  See the original document for the complete code examples.
-
-
-## Feedback
-
-[Link to feedback form]
+**Example Batch Request Body (unique value property):** (See complete example in original text)
 
 
-This markdown documentation provides a structured and searchable representation of the original text, improving readability and searchability.  Code blocks are clearly formatted, and information is organized logically for easy understanding.
+**Response:** Returns the requested custom object record(s).
+
+
+### 5. Update Existing Custom Objects
+
+**Endpoint:** `/schemas/{objectTypeId}`
+
+**Method:** `PATCH`
+
+**Request Body:**  Only certain fields can be updated (e.g., `requiredProperties`, `searchableProperties`, `primaryDisplayProperty`, `secondaryDisplayProperties`).  Adding a new property requires first creating it via the properties API.
+
+**Response:** Returns the updated custom object schema.
+
+
+### 6. Update Associations
+
+**Endpoint:** `/schemas/{objectTypeId}/associations`
+
+**Method:** `POST` (to add associations)
+
+**Request Body:**
+
+* `fromObjectTypeId`:  The ID of the custom object.
+* `toObjectTypeId`: The ID or name of the object to associate with.
+* `name`:  The name of the association.
+
+
+**Example Request Body:** (See complete example in original text)
+
+
+**Response:** Returns the created association.
+
+
+### 7. Delete a Custom Object
+
+**Endpoint:** `/schemas/{objectType}` (soft delete) or `/schemas/{objectType}?archived=true` (hard delete)
+
+**Method:** `DELETE`
+
+**Note:** Soft delete requires all object instances, associations, and properties to be deleted first.  Hard delete permanently removes the schema.
+
+
+## Example Walkthrough (Car Dealership)
+
+The provided text contains a detailed walkthrough of creating a "Cars" custom object, including creating the schema, adding records, associating with contacts and tickets, and defining new properties and associations.  This example showcases the API calls and responses for each step. (Refer to the original text for the step-by-step details).
+
+
+This documentation provides a comprehensive overview of the HubSpot Custom Objects API.  Remember to consult the official HubSpot API documentation for the most up-to-date information and details.

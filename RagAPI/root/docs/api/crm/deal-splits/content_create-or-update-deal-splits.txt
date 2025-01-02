@@ -1,0 +1,613 @@
+CRM API | Deal splits | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create or update deal splits
+Retrieve deal splits
+API Guides
+CRM
+Objects
+CRM API | Deal splits
+Deal splits
+If your HubSpot account has a
+Sales Hub
+Enterprise
+subscription, you can set up
+deal splits
+to split credit for deal amounts between multiple users. Once
+deal splits are turned on
+in your HubSpot account, you can use the deal splits API to create new deal splits or view and update existing splits.
+Create or update deal splits
+To add new splits or update existing splits for deals, make a
+POST
+request to
+crm/v3/objects/deals/splits/batch/upsert
+.
+In your request, include the following fields for each deal:
+Field
+Description
+id
+The ID of the deal. You can retrieve this via the
+deals API
+.
+splits
+An array that contains the user to assign a split to, and the percentage of the deal amount to assign. In the array, include the following fields:
+ownerId
+: the
+owner ID
+assigned to the HubSpot user.
+percentage
+: the percentage of the deal amount to assign to the owner.
+When adding deal splits, the deal's owner must be included as a split owner, the split percentages must add up to 1.0, and you must meet the limits for the split user maximum and split percentage minimum set in your
+deal split settings.
+If any deals included in the batch request fail validation for these requirements, the request will result in an error.
+For example, to assign even deal credit to two users on a deal, your request would look like:
+Copy code snippet
+///Example request body
+{
+"inputs": [
+{
+"id": 5315919905,
+"splits": [
+{
+"ownerId": 41629779,
+"percentage": 0.5
+},
+{
+"ownerId": 60158084,
+"percentage": 0.5
+}
+]
+}
+]
+}
+1
+///Example request body
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"id"
+:
+5315919905
+,
+6
+"splits"
+: [
+7
+{
+8
+"ownerId"
+:
+41629779
+,
+9
+"percentage"
+:
+0.5
+10
+},
+11
+{
+12
+"ownerId"
+:
+60158084
+,
+13
+"percentage"
+:
+0.5
+14
+}
+15
+]
+16
+}
+17
+]
+18
+}
+If a deal didn't have existing splits, the splits will appear on the deal record following your request. If the deal had existing splits, they will be replaced by the splits you created in your request.
+Retrieve deal splits
+To view split information for deals, make a
+POST
+request to
+crm/v3/objects/deals/splits/batch/read
+. In your request, include the
+id
+values of the deals with splits you want to view. You can retrieve a deal's
+id
+via the
+deals API
+.
+For example, to retrieve deal splits for two deals, your request could look like:
+Copy code snippet
+///Example request body
+{
+"inputs": [
+{
+"id": "5315919905"
+},
+{
+"id": "17137567105"
+}
+]
+}
+xxxxxxxxxx
+11
+1
+///Example request body
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"id"
+:
+"5315919905"
+6
+},
+7
+{
+8
+"id"
+:
+"17137567105"
+9
+}
+10
+]
+11
+}
+For each deal, the response will include the date and time the splits were created or updated, the IDs of users splitting the deal, and the percentage of the deal amount assigned to each user.
+For two deals, the response would look similar to:
+Copy code snippet
+///Example response
+{
+"status": "COMPLETE",
+"results": [
+{
+"id": "17137567105",
+"splits": [
+{
+"id": "311226010924",
+"properties": {
+"hs_deal_split_percentage": "0.5",
+"hubspot_owner_id": "41629779"
+},
+"createdAt": "2024-03-11T19:55:26.219Z",
+"updatedAt": "2024-03-11T19:55:26.219Z",
+"archived": false
+},
+{
+"id": "311226010925",
+"properties": {
+"hs_deal_split_percentage": "0.25",
+"hubspot_owner_id": "60158084"
+},
+"createdAt": "2024-03-11T19:55:26.219Z",
+"updatedAt": "2024-03-11T19:55:26.219Z",
+"archived": false
+},
+{
+"id": "311226010926",
+"properties": {
+"hs_deal_split_percentage": "0.25",
+"hubspot_owner_id": "61891281"
+},
+"createdAt": "2024-03-11T19:55:26.219Z",
+"updatedAt": "2024-03-11T19:55:26.219Z",
+"archived": false
+}
+]
+},
+{
+"id": "5315919905",
+"splits": [
+{
+"id": "57675010822",
+"properties": {
+"hs_deal_split_percentage": "0.3333",
+"hubspot_owner_id": "81538190"
+},
+"createdAt": "2021-06-16T21:04:09.264Z",
+"updatedAt": "2021-06-16T21:04:09.264Z",
+"archived": false
+},
+{
+"id": "57675010821",
+"properties": {
+"hs_deal_split_percentage": "0.3333",
+"hubspot_owner_id": "81426347"
+},
+"createdAt": "2021-06-16T21:04:09.264Z",
+"updatedAt": "2021-06-16T21:04:09.264Z",
+"archived": false
+},
+{
+"id": "57675010820",
+"properties": {
+"hs_deal_split_percentage": "0.3334",
+"hubspot_owner_id": "60158084"
+},
+"createdAt": "2021-06-16T21:04:09.264Z",
+"updatedAt": "2021-06-16T21:04:09.264Z",
+"archived": false
+}
+]
+}
+],
+"startedAt": "2024-03-11T19:56:42.555Z",
+"completedAt": "2024-03-11T19:56:42.596Z"
+}
+xxxxxxxxxx
+78
+1
+///Example response
+2
+{
+3
+"status"
+:
+"COMPLETE"
+,
+4
+"results"
+: [
+5
+{
+6
+"id"
+:
+"17137567105"
+,
+7
+"splits"
+: [
+8
+{
+9
+"id"
+:
+"311226010924"
+,
+10
+"properties"
+: {
+11
+"hs_deal_split_percentage"
+:
+"0.5"
+,
+12
+"hubspot_owner_id"
+:
+"41629779"
+13
+},
+14
+"createdAt"
+:
+"2024-03-11T19:55:26.219Z"
+,
+15
+"updatedAt"
+:
+"2024-03-11T19:55:26.219Z"
+,
+16
+"archived"
+:
+false
+17
+},
+18
+{
+19
+"id"
+:
+"311226010925"
+,
+20
+"properties"
+: {
+21
+"hs_deal_split_percentage"
+:
+"0.25"
+,
+22
+"hubspot_owner_id"
+:
+"60158084"
+23
+},
+24
+"createdAt"
+:
+"2024-03-11T19:55:26.219Z"
+,
+25
+"updatedAt"
+:
+"2024-03-11T19:55:26.219Z"
+,
+26
+"archived"
+:
+false
+27
+},
+28
+{
+29
+"id"
+:
+"311226010926"
+,
+30
+"properties"
+: {
+31
+"hs_deal_split_percentage"
+:
+"0.25"
+,
+32
+"hubspot_owner_id"
+:
+"61891281"
+33
+},
+34
+"createdAt"
+:
+"2024-03-11T19:55:26.219Z"
+,
+35
+"updatedAt"
+:
+"2024-03-11T19:55:26.219Z"
+,
+36
+"archived"
+:
+false
+37
+}
+38
+]
+39
+},
+40
+{
+41
+"id"
+:
+"5315919905"
+,
+42
+"splits"
+: [
+43
+{
+44
+"id"
+:
+"57675010822"
+,
+45
+"properties"
+: {
+46
+"hs_deal_split_percentage"
+:
+"0.3333"
+,
+47
+"hubspot_owner_id"
+:
+"81538190"
+48
+},
+49
+"createdAt"
+:
+"2021-06-16T21:04:09.264Z"
+,
+50
+"updatedAt"
+:
+"2021-06-16T21:04:09.264Z"
+,
+51
+"archived"
+:
+false
+52
+},
+53
+{
+54
+"id"
+:
+"57675010821"
+,
+55
+"properties"
+: {
+56
+"hs_deal_split_percentage"
+:
+"0.3333"
+,
+57
+"hubspot_owner_id"
+:
+"81426347"
+58
+},
+59
+"createdAt"
+:
+"2021-06-16T21:04:09.264Z"
+,
+60
+"updatedAt"
+:
+"2021-06-16T21:04:09.264Z"
+,
+61
+"archived"
+:
+false
+62
+},
+63
+{
+64
+"id"
+:
+"57675010820"
+,
+65
+"properties"
+: {
+66
+"hs_deal_split_percentage"
+:
+"0.3334"
+,
+67
+"hubspot_owner_id"
+:
+"60158084"
+68
+},
+69
+"createdAt"
+:
+"2021-06-16T21:04:09.264Z"
+,
+70
+"updatedAt"
+:
+"2021-06-16T21:04:09.264Z"
+,
+71
+"archived"
+:
+false
+72
+}
+73
+]
+74
+}
+75
+],
+76
+"startedAt"
+:
+"2024-03-11T19:56:42.555Z"
+,
+77
+"completedAt"
+:
+"2024-03-11T19:56:42.596Z"
+78
+}
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+Custom objects
+Companies
+Contacts
+Deal splits
+Beta
+Deals
+Feedback submissions
+Goals
+New
+Leads
+Line items
+Products
+Tickets
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Limits tracking
+Object library
+Marketing
+Settings
+Legal
+BESbswy
+BESbswy

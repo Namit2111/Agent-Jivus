@@ -1,0 +1,2553 @@
+CRM API |  Associations v4 | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Associate records
+Associate records without a label
+Associate records with a label
+Retrieve associated records
+Update record association labels
+Remove record associations
+Report on high association usage
+Understand association definitions, configurations, and labels
+HubSpot defined associations
+Custom association labels
+Create and manage association types
+Create association labels
+Retrieve association labels
+Update association labels
+Delete association labels
+Set and manage association limits
+Create or update association limits
+Retrieve association limits
+Delete association limits
+Limitations
+Association type ID values
+Company to object
+Contact to object
+Deal to object
+Ticket to object
+Lead to object
+Appointment to object
+Course to object
+Listing to object
+Service to object
+Call to object
+Email to object
+Meeting to object
+Note to object
+Postal mail to object
+Quote to object
+Task to object
+Communication (SMS, WhatsApp, or LinkedIn message) to object
+Order to object
+Cart to object
+v1 associations (legacy)
+API Guides
+CRM
+Associations
+CRM API |  Associations v4
+Associations v4
+For the previous version, please see the documentation for the
+v3 Associations API
+.
+Associations represent the relationships between objects and activities in the HubSpot CRM. Record associations can exist between records of different objects (e.g., Contact to Company), as well as within the same object (e.g., Company to Company).
+The v4 Associations API includes
+Association
+endpoints and
+Association schema
+endpoints:
+Association endpoints
+: create, edit, and remove associations between records.
+Association schema endpoints
+: view your account's association definitions (also known as types), create and manage custom association labels, and set limits for associations. Association labels are supported between contacts, companies, deals, tickets, and custom objects, and can be
+used across HubSpot in tools
+, such as lists and workflows.
+Learn more about objects, records, properties, and associations APIs in the
+Understanding the CRM
+guide.
+Please note
+: the v4 Associations API is supported in Version 9.0.0 or later of the NodeJS HubSpot Client.
+Associate records
+To associate records with records with one another, use the
+Association
+endpoints.
+Please note
+: the number of associations a record can have depends on
+the object and your HubSpot subscription.
+Associate records without a label
+You can create a default unlabeled association between two records, or set up unlabeled associations for records in bulk. To set up an individual default association between two records, make a
+PUT
+request to
+/crm/v4/objects/{fromObjectType}/{fromObjectId}/associations/default/{toObjectType}/{toObjectId}
+In the request URL, include:
+fromObjectType
+:
+the ID of the object you're associating. To find the ID values, refer to this
+list of object type IDs,
+or for contacts, companies, deals, tickets, and notes, you can use the object name (e.g.,
+contact
+,
+company
+).
+fromObjectId
+:
+the ID of the record to associate.
+toObjectType
+:
+the ID of the object you're associating the record to. To find the ID values, refer to this
+list of object type IDs,
+or for contacts, companies, deals, tickets, and notes, you can use the object name (e.g.,
+contact
+,
+company
+).
+toObjectId
+:
+the ID of the record to associate to.
+For example, to associate a contact record whose ID is 12345 with a company record whose ID is
+67891
+, your request URL would be:
+/crm/v4/objects/contact/12345/associations/default/company/67891
+.
+To associate records without a label in bulk, make a
+POST
+request to
+crm/v4/associations/{fromObjectType}/{toObjectType}/batch/associate/default
+. In the request body, include
+objectId
+values for the records you want to associate.
+Associate records with a label
+You can also associate records with labels for individual record pairs or multiple pairs of records in bulk.
+To associate two records and set a label to describe the association, make a
+PUT
+request to
+/crm/v4/objects/{objectType}/{objectId}/associations/{toObjectType}/{toObjectId}
+. In the request URL, include the
+id
+values of the two records you're associating.
+To bulk create labelled associations between records of the same objects, make a
+POST
+request to
+/crm/v4/associations/{fromObjectType}/{toObjectType}/batch/create
+. In the request body, include the
+id
+values of records to associate in addition to the required parameters below.
+In the request body, include the following information to indicate the labeled association you want to create:
+associationCategory
+: either
+HUBSPOT_DEFINED
+(default label) or
+USER_DEFINED
+(custom label).
+associationTypeId
+: the numerical ID value for the label. If using a default label (e.g., Primary company), refer to this
+list of default type IDs.
+If you're using a custom label, you'll need to
+retrieve the labels
+between those objects.
+For each association, depending on your
+association limits
+, you can include multiple labels.
+Please note
+: for cross-object and paired label relationships, ensure you use the
+typeId
+that refers to the correct direction (e.g., Contact to Company vs. Company to Contact, Employee to Manager vs. Manager to Employee).
+For example, to associate a contact with a deal using a custom label:
+1. Make a
+GET
+request to
+/crm/v4/associations/contact/deal/labels
+.
+2. In the response, look at the
+typeId
+and
+category
+values for the label. The ID will be a number (e.g.,
+36
+), and the category will always be
+USER_DEFINED
+for custom labels.
+3. Make a
+PUT
+request to
+/crm/v4/objects/contact/{objectId}/associations/deal/{toObjectId}
+with the following request body:
+Copy code snippet
+/// Example request body
+[
+{
+"associationCategory": "USER_DEFINED",
+"associationTypeId": 36
+}
+]
+1
+/// Example request body
+2
+[
+3
+{
+4
+"associationCategory"
+:
+"USER_DEFINED"
+,
+5
+"associationTypeId"
+:
+36
+6
+}
+7
+]
+A successful response will include the
+id
+values of the two associated records along with the
+label
+for the association. For the example above, the response would look like:
+Copy code snippet
+/// Example response
+{
+"fromObjectTypeId": "0-1",
+"fromObjectId": 29851,
+"toObjectTypeId": "0-3",
+"toObjectId": 21678228008,
+"labels": ["Point of contact"]
+}
+xxxxxxxxxx
+8
+1
+/// Example response
+2
+{
+3
+"fromObjectTypeId"
+:
+"0-1"
+,
+4
+"fromObjectId"
+:
+29851
+,
+5
+"toObjectTypeId"
+:
+"0-3"
+,
+6
+"toObjectId"
+:
+21678228008
+,
+7
+"labels"
+: [
+"Point of contact"
+]
+8
+}
+Retrieve associated records
+You can retrieve a record's associations of a specific object.
+To retrieve an individual record's associations of a specific object, make a
+GET
+request to
+/crm/v4/objects/{fromObjectType}/{objectId}/associations/{toObjectType}
+. In the request URL, include the record's object as the
+fromObjectType
+and its record ID as the
+objectId
+.
+To retrieve a record's associated records of a specific object, make a
+POST
+request to
+/crm/v4/associations/{fromObjectType}/{toObjectType}/batch/read
+. In the request body, include the id values of records whose associated records you want to retrieve.
+For example, to retrieve all company associations for two contacts, make a
+POST
+request to
+/crm/v4/associations/contacts/companies/batch/read
+. Your request would look like the following:
+Copy code snippet
+/// Example request
+{
+"inputs": [
+{
+"id": "33451"
+},
+{
+"id": "29851"
+}
+]
+}
+xxxxxxxxxx
+11
+1
+/// Example request
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"id"
+:
+"33451"
+6
+},
+7
+{
+8
+"id"
+:
+"29851"
+9
+}
+10
+]
+11
+}
+For both the basic and batch endpoints, the record ID values will be returned for each associated record, along with information to describe the association between the record, including the
+label
+,
+category
+, and
+typeId
+. For the example batch request above, the response would be:
+Copy code snippet
+/// Example response
+{
+"status": "COMPLETE",
+"results": [
+{
+"from": {
+"id": "33451"
+},
+"to": [
+{
+"toObjectId": 5790939450,
+"associationTypes": [
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 1,
+"label": "Primary"
+},
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 279,
+"label": null
+},
+{
+"category": "USER_DEFINED",
+"typeId": 28,
+"label": "Billing contact"
+}
+]
+}
+]
+},
+{
+"from": {
+"id": "29851"
+},
+"to": [
+{
+"toObjectId": 5790939450,
+"associationTypes": [
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 1,
+"label": "Primary"
+},
+{
+"category": "USER_DEFINED",
+"typeId": 37,
+"label": "Chef"
+},
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 279,
+"label": null
+}
+]
+},
+{
+"toObjectId": 6675245424,
+"associationTypes": [
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 279,
+"label": null
+}
+]
+},
+{
+"toObjectId": 17705714757,
+"associationTypes": [
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 279,
+"label": null
+},
+{
+"category": "USER_DEFINED",
+"typeId": 30,
+"label": "Decision maker"
+}
+]
+}
+]
+}
+],
+"startedAt": "2024-10-21T20:22:42.152Z",
+"completedAt": "2024-10-21T20:22:42.167Z"
+}
+xxxxxxxxxx
+87
+1
+/// Example response
+2
+{
+3
+"status"
+:
+"COMPLETE"
+,
+4
+"results"
+: [
+5
+{
+6
+"from"
+: {
+7
+"id"
+:
+"33451"
+8
+},
+9
+"to"
+: [
+10
+{
+11
+"toObjectId"
+:
+5790939450
+,
+12
+"associationTypes"
+: [
+13
+{
+14
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+15
+"typeId"
+:
+1
+,
+16
+"label"
+:
+"Primary"
+17
+},
+18
+{
+19
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+20
+"typeId"
+:
+279
+,
+21
+"label"
+:
+null
+22
+},
+23
+{
+24
+"category"
+:
+"USER_DEFINED"
+,
+25
+"typeId"
+:
+28
+,
+26
+"label"
+:
+"Billing contact"
+27
+}
+28
+]
+29
+}
+30
+]
+31
+},
+32
+{
+33
+"from"
+: {
+34
+"id"
+:
+"29851"
+35
+},
+36
+"to"
+: [
+37
+{
+38
+"toObjectId"
+:
+5790939450
+,
+39
+"associationTypes"
+: [
+40
+{
+41
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+42
+"typeId"
+:
+1
+,
+43
+"label"
+:
+"Primary"
+44
+},
+45
+{
+46
+"category"
+:
+"USER_DEFINED"
+,
+47
+"typeId"
+:
+37
+,
+48
+"label"
+:
+"Chef"
+49
+},
+50
+{
+51
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+52
+"typeId"
+:
+279
+,
+53
+"label"
+:
+null
+54
+}
+55
+]
+56
+},
+57
+{
+58
+"toObjectId"
+:
+6675245424
+,
+59
+"associationTypes"
+: [
+60
+{
+61
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+62
+"typeId"
+:
+279
+,
+63
+"label"
+:
+null
+64
+}
+65
+]
+66
+},
+67
+{
+68
+"toObjectId"
+:
+17705714757
+,
+69
+"associationTypes"
+: [
+70
+{
+71
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+72
+"typeId"
+:
+279
+,
+73
+"label"
+:
+null
+74
+},
+75
+{
+76
+"category"
+:
+"USER_DEFINED"
+,
+77
+"typeId"
+:
+30
+,
+78
+"label"
+:
+"Decision maker"
+79
+}
+80
+]
+81
+}
+82
+]
+83
+}
+84
+],
+85
+"startedAt"
+:
+"2024-10-21T20:22:42.152Z"
+,
+86
+"completedAt"
+:
+"2024-10-21T20:22:42.167Z"
+87
+}
+Update record association labels
+For existing associations, to update the association labels, you can use the basic and batch create endpoints. If an existing labeled association exists between two records, to
+replace
+the existing label, only include the new label in the request. If you want to append labels (i.e. add a new label and keep the existing label), include both labels in your request.
+For example, if records are already associated with a label with the
+typeId
+of
+30
+, to keep that label while adding another label, your request would look like:
+Copy code snippet
+/// Example request body
+[
+{
+"associationCategory": "USER_DEFINED",
+"associationTypeId": 30
+},
+{
+"associationCategory": "USER_DEFINED",
+"associationTypeId": 37
+}
+]
+xxxxxxxxxx
+11
+1
+/// Example request body
+2
+[
+3
+{
+4
+"associationCategory"
+:
+"USER_DEFINED"
+,
+5
+"associationTypeId"
+:
+30
+6
+},
+7
+{
+8
+"associationCategory"
+:
+"USER_DEFINED"
+,
+9
+"associationTypeId"
+:
+37
+10
+}
+11
+]
+Remove record associations
+You can delete all associations between records, or delete only associations of specific types (i.e. default or custom labels). When deleting all associations, the records will
+not
+be deleted, but they will no longer be associated with one another. If deleting a specific association type, the records will still be associated but the specified labels will be removed, with the exception of deleting the default unlabelled association type which will remove all other associations.
+To remove all associations:
+To remove all associations between two records, make a
+DELETE
+request to
+/crm/v4/objects/{objectType}/{objectId}/associations/{toObjectType}/{toObjectId}
+.
+To batch remove all associations between records, make a
+POST
+request to
+/crm/v4/associations/{fromObjectType}/{toObjectType}/batch/archive
+. In the request body, include the
+id
+values of records for which you want to remove all of their associations.
+For example, to remove all associations between sets of contacts and companies, your request would look like:
+Copy code snippet
+/// Example request body POST crm/v4/associations/contacts/companies/batch/archive
+[
+{
+"from": {
+"id": "12345"
+},
+"to": [
+{
+"id": "67891"
+}
+]
+},
+{
+"from": {
+"id": "9876"
+},
+"to": [
+{
+"id": "54321"
+}
+]
+}
+]
+}
+xxxxxxxxxx
+24
+1
+/// Example request body POST crm/v4/associations/contacts/companies/batch/archive
+2
+[
+3
+{
+4
+"from"
+: {
+5
+"id"
+:
+"12345"
+6
+},
+7
+"to"
+: [
+8
+{
+9
+"id"
+:
+"67891"
+10
+}
+11
+]
+12
+},
+13
+{
+14
+"from"
+: {
+15
+"id"
+:
+"9876"
+16
+},
+17
+"to"
+: [
+18
+{
+19
+"id"
+:
+"54321"
+20
+}
+21
+]
+22
+}
+23
+]
+24
+}
+To remove specific association labels, make a
+POST
+request to
+/crm/v4/associations/{fromObjectType}/{toObjectType}/batch/labels/archive
+. In the request body, include an array with
+id
+values of the associated records and the
+associationTypeId
+and
+category
+values of label(s) to remove.
+For example, to remove a custom label from an association, but keep the unlabeled association, your request would look like:
+Copy code snippet
+/// Example request body POST crm/v4/associations/contacts/companies/batch/labels/archive
+{
+"inputs": [
+{
+"types": [
+{
+"associationCategory": "USER_DEFINED",
+"associationTypeId": 37
+}
+],
+"from": {
+"id": "29851"
+},
+"to": {
+"id": "5790939450"
+}
+}
+]
+}
+xxxxxxxxxx
+19
+1
+/// Example request body POST crm/v4/associations/contacts/companies/batch/labels/archive
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"types"
+: [
+6
+{
+7
+"associationCategory"
+:
+"USER_DEFINED"
+,
+8
+"associationTypeId"
+:
+37
+9
+}
+10
+],
+11
+"from"
+: {
+12
+"id"
+:
+"29851"
+13
+},
+14
+"to"
+: {
+15
+"id"
+:
+"5790939450"
+16
+}
+17
+}
+18
+]
+19
+}
+If you then retrieve that contact's company associations, now only the unlabelled association type will be returned for the above associated company:
+Copy code snippet
+/// Example response GET crm/v4/objects/contacts/29851/associations/companies
+{
+"results": [
+{
+"toObjectId": 5790939450,
+"associationTypes": [
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 279,
+"label": null
+}
+]
+},
+{
+"toObjectId": 6675245424,
+"associationTypes": [
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 279,
+"label": null
+}
+]
+},
+{
+"toObjectId": 17705714757,
+"associationTypes": [
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 279,
+"label": null
+},
+{
+"category": "USER_DEFINED",
+"typeId": 30,
+"label": "Decision maker"
+}
+]
+}
+]
+}
+xxxxxxxxxx
+40
+1
+/// Example response GET crm/v4/objects/contacts/29851/associations/companies
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"toObjectId"
+:
+5790939450
+,
+6
+"associationTypes"
+: [
+7
+{
+8
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+9
+"typeId"
+:
+279
+,
+10
+"label"
+:
+null
+11
+}
+12
+]
+13
+},
+14
+{
+15
+"toObjectId"
+:
+6675245424
+,
+16
+"associationTypes"
+: [
+17
+{
+18
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+19
+"typeId"
+:
+279
+,
+20
+"label"
+:
+null
+21
+}
+22
+]
+23
+},
+24
+{
+25
+"toObjectId"
+:
+17705714757
+,
+26
+"associationTypes"
+: [
+27
+{
+28
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+29
+"typeId"
+:
+279
+,
+30
+"label"
+:
+null
+31
+},
+32
+{
+33
+"category"
+:
+"USER_DEFINED"
+,
+34
+"typeId"
+:
+30
+,
+35
+"label"
+:
+"Decision maker"
+36
+}
+37
+]
+38
+}
+39
+]
+40
+}
+Report on high association usage
+There are technical
+limits to the number of associations a record can have
+. You can use the associations API to retrieve a report of records that are either approaching or have hit the maximum limit for associations.
+To retrieve the report, make a
+POST
+request to
+crm/v4/associations/usage/high-usage-report/{userID}
+. The file includes records using 80% or more of their association limit. For example, if a company can be associated with up to 50,000 contacts, the company will be included in the file if it has 40,000 or more associated contacts. The file will be sent to the email of the user whose ID was included in the request URL. Learn how to retrieve user IDs with the
+users API
+.
+Understand association definitions, configurations, and labels
+To manage association definition (a.k.a association type) configurations and labels, use the
+Association schema
+endpoints. These endpoints include configuration endpoints and label endpoints. You should use the endpoints for the following goals:
+Association definitions (labels)
+: create and manage association types, including creating, editing, and deleting custom association labels. For example, create a
+Billing contact
+label between contacts and deals or a
+Manager
+and
+Employee
+paired label between contacts.
+Association definition configurations
+: set and manage limits for how many associations can exist per association type. For example, allow up to five associated deals per company or only one associated contact with the
+Decision maker
+label per company.
+HubSpot defined associations
+HubSpot provides a set of predefined association types (e.g., unlabeled contact to company), but account admins can
+define their own association labels
+to provide additional context for record relationships (e.g., manager and employee). There are two HubSpot-defined association types:
+Primary:
+the main company that the other record is associated with. Primary associations can be used in HubSpot tools such as
+lists and workflows
+. For records with multiple associated companies, this API supports changing which company is considered the primary.
+Unlabeled:
+an association added when any contact, company, deal, ticket, or custom object record is associated. This type denotes that an association exists, and will always
+returned
+in responses with a
+label
+value of
+null
+. When a record has a primary association or a custom association label, those types will be
+listed alongside the unlabeled association type
+.
+You can view all of the HubSpot-defined association types in
+this section
+.
+Custom association labels
+You can create association labels to further define record associations. For example, you could create a
+Decision maker
+label to indicate which contacts at a company are responsible for making purchasing decisions.
+Learn more about
+creating association labels below
+.
+Create and manage association types
+Use the definitions endpoints to create custom labeled association types and review or manage existing types.
+Create association labels
+You can create custom labeled association types
+in HubSpot
+or through the association schema API endpoint. You can create up to 10 association labels between each object pairing (e.g. contacts and companies, contacts and contacts).
+There are two types of
+association labels
+you can use to describe the relationships between records:
+Single:
+one label that applies to both records in the relationship. For example,
+Friend
+or
+Colleague
+.
+Paired
+: a pair of labels for when different words are used to describe each side of the associated records' relationship. For example,
+Parent
+and
+Child
+or
+Employer
+and
+Employee
+. To create paired labels, you must include the
+inverseLabel
+field in your request to name the second label in the pair.
+To create a labeled association type, make a
+POST
+request to
+/crm/v4/associations/{fromObjectType}/{toObjectType}/labels
+and include the following in your request:
+name
+: the internal name of the association type. This value
+cannot
+include hyphens or begin with a numerical character.
+label
+: the name of the
+association label as shown in HubSpot
+.
+inverseLabel
+(paired labels only): the name of the second label in the pair of labels.
+For example, your request could look similar to the following:
+Copy code snippet
+///Example request body - Single label
+{
+"label": "Partner",
+"name": "partner"
+}
+xxxxxxxxxx
+5
+1
+///Example request body - Single label
+2
+{
+3
+"label"
+:
+"Partner"
+,
+4
+"name"
+:
+"partner"
+5
+}
+Copy code snippet
+///Example request body - Paired labels
+{
+"label": "Manager",
+"inverseLabel": "Employee",
+"name": "manager_employee"
+}
+xxxxxxxxxx
+6
+1
+///Example request body - Paired labels
+2
+{
+3
+"label"
+:
+"Manager"
+,
+4
+"inverseLabel"
+:
+"Employee"
+,
+5
+"name"
+:
+"manager_employee"
+6
+}
+In the response, the new association label's
+category
+and unique
+typeId
+will be returned, which you can use to retrieve, update, or delete the label moving forward. For paired labels, there'll be a value for each direction of the association (e.g.,
+550
+for contact to company and
+551
+for company to contact). For example, for the paired label request above, the response would look like:
+Copy code snippet
+///Example response
+{
+"results": [
+{
+"category": "USER_DEFINED",
+"typeId": 145,
+"label": "Employee"
+},
+{
+"category": "USER_DEFINED",
+"typeId": 144,
+"label": "Manager"
+}
+]
+}
+xxxxxxxxxx
+15
+1
+///Example response
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"category"
+:
+"USER_DEFINED"
+,
+6
+"typeId"
+:
+145
+,
+7
+"label"
+:
+"Employee"
+8
+},
+9
+{
+10
+"category"
+:
+"USER_DEFINED"
+,
+11
+"typeId"
+:
+144
+,
+12
+"label"
+:
+"Manager"
+13
+}
+14
+]
+15
+}
+Once created, you can now add the label when
+associating records
+.
+Retrieve association labels
+To view the association types between specific objects, make a
+GET
+request to
+/crm/v4/associations/{fromObjectType}/{toObjectType}/labels
+.
+You'll receive an array, each item containing:
+category
+:
+whether the association type was created by HubSpot (
+HUBSPOT_DEFINED
+) or by a user (
+USER_DEFINED
+).
+typeId
+:
+the numeric ID for that association type. This is used to
+set a label when associating records
+. Refer to
+this list
+for all the HubSpot defined
+typeId
+values.
+label
+:
+the alphanumeric label. This will be
+null
+for the unlabeled association type.
+You can also find these values in HubSpot
+in your association settings
+.
+For example, to view all association types from contacts to companies, make a
+GET
+request to
+/crm/v4/associations/contacts/companies/labels
+. Your response would look similar to the following:
+Copy code snippet
+///Example response
+{
+"results": [
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 1,
+"label": "Primary"
+},
+{
+"category": "USER_DEFINED",
+"typeId": 28,
+"label": "Billing contact"
+},
+{
+"category": "USER_DEFINED",
+"typeId": 142,
+"label": "Toy Tester"
+},
+{
+"category": "USER_DEFINED",
+"typeId": 26,
+"label": "Manager"
+},
+{
+"category": "USER_DEFINED",
+"typeId": 30,
+"label": "Decision maker"
+},
+{
+"category": "USER_DEFINED",
+"typeId": 37,
+"label": "Chef"
+},
+{
+"category": "USER_DEFINED",
+"typeId": 32,
+"label": "Contractor"
+},
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 279,
+"label": null
+}
+]
+}
+]
+}
+xxxxxxxxxx
+47
+1
+///Example response
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+6
+"typeId"
+:
+1
+,
+7
+"label"
+:
+"Primary"
+8
+},
+9
+{
+10
+"category"
+:
+"USER_DEFINED"
+,
+11
+"typeId"
+:
+28
+,
+12
+"label"
+:
+"Billing contact"
+13
+},
+14
+{
+15
+"category"
+:
+"USER_DEFINED"
+,
+16
+"typeId"
+:
+142
+,
+17
+"label"
+:
+"Toy Tester"
+18
+},
+19
+{
+20
+"category"
+:
+"USER_DEFINED"
+,
+21
+"typeId"
+:
+26
+,
+22
+"label"
+:
+"Manager"
+23
+},
+24
+{
+25
+"category"
+:
+"USER_DEFINED"
+,
+26
+"typeId"
+:
+30
+,
+27
+"label"
+:
+"Decision maker"
+28
+},
+29
+{
+30
+"category"
+:
+"USER_DEFINED"
+,
+31
+"typeId"
+:
+37
+,
+32
+"label"
+:
+"Chef"
+33
+},
+34
+{
+35
+"category"
+:
+"USER_DEFINED"
+,
+36
+"typeId"
+:
+32
+,
+37
+"label"
+:
+"Contractor"
+38
+},
+39
+{
+40
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+41
+"typeId"
+:
+279
+,
+42
+"label"
+:
+null
+43
+}
+44
+]
+45
+}
+46
+]
+47
+}
+Update association labels
+You can edit the
+label
+field for association types, which updates the name as it appears in HubSpot in your settings and on records. You
+cannot
+change the internal
+name
+or
+typeId
+.
+To update a label, make a
+PUT
+request to
+/crm/v4/associations/{fromObjectType}/{toObjectType}/labels
+. In the request body, including the
+associationTypeId
+and a new value for
+label
+. If editing a paired label, you can also include a new value for
+inverseLabel
+.
+Using the example in the section above, to update the label
+Contractor
+to
+Contract worker
+, your request would look like:
+Copy code snippet
+///Example request
+{
+"associationTypeId": 32,
+"label": "Contract worker"
+}
+xxxxxxxxxx
+5
+1
+///Example request
+2
+{
+3
+"associationTypeId"
+:
+32
+,
+4
+"label"
+:
+"Contract worker"
+5
+}
+Delete association labels
+You can delete custom association labels if they're no longer in use. If a label is used to describe associated records, you'll need to
+remove the label
+from associations before deleting. Default association types, including the
+Primary company
+label,
+cannot
+be deleted.
+To delete an association label, make a
+DELETE
+request to
+/crm/v4/associations/{fromObjectType}/{toObjectType}/labels/{associationTypeId}
+. You'll no longer be able to use this label when associating records.
+Set and manage association limits
+Use the definition configuration endpoints to set up
+limits
+for the number of associated records between objects, or how often a label can be used to describe associations. There are also
+technical limits and limits based on your HubSpot subscription
+.
+Create or update association limits
+You can create new or update existing association limits between objects.
+To create limits, make a
+POST
+request to
+crm/v4/associations/definitions/configurations/{fromObjectType}/{toObjectType}/batch/create
+.
+To update existing limits, make a
+POST
+request to
+crm/v4/associations/definitions/configurations/{fromObjectType}/{toObjectType}/batch/update
+.
+In the request body, include
+inputs
+with the following:
+Parameter
+Description
+category
+The category of the association you're setting a limit for, either
+HUBSPOT_DEFINED
+or
+USER_DEFINED
+.
+typeId
+The numeric ID for the association type you want to set a limit for. Refer to
+this list
+of default
+typeId
+values or
+retrieve the value
+for custom labels.
+maxToObjectIds
+The maximum number of associations allowed for the association type.
+For example, to set limits that a deal can be associated with a maximum of five contacts with only one contact labelled
+Point of contact
+for a deal, your request would look like the following:
+Copy code snippet
+///Example request POST crm/v4/associations/definitions/configurations/deal/contact/batch/create
+{
+"inputs": [
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 3,
+"maxToObjectIds": 5
+},
+{
+"category": "USER_DEFINED",
+"typeId": 35,
+"maxToObjectIds": 1
+}
+]
+}
+xxxxxxxxxx
+15
+1
+///Example request POST crm/v4/associations/definitions/configurations/deal/contact/batch/create
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+6
+"typeId"
+:
+3
+,
+7
+"maxToObjectIds"
+:
+5
+8
+},
+9
+{
+10
+"category"
+:
+"USER_DEFINED"
+,
+11
+"typeId"
+:
+35
+,
+12
+"maxToObjectIds"
+:
+1
+13
+}
+14
+]
+15
+}
+Retrieve association limits
+To read all defined association limits, make a
+GET
+request to
+/crm/v4/associations/definitions/configurations/all
+. This will return custom association limits defined across all objects.
+To read association limits between two specific objects, make a
+GET
+request to
+/crm/v4/associations/definitions/configurations/{fromObjectType}/{toObjectType}
+.
+For both requests, the response will return the associations' values for
+category
+,
+typeId
+,
+maxToObjectIds
+, and
+label
+. For example, if retrieving limits between deals and contacts, the response would look similar to:
+Copy code snippet
+///Example response GET crm/v4/associations/definitions/configurations/deal/contact
+{
+"results": [
+{
+"category": "HUBSPOT_DEFINED",
+"typeId": 3,
+"userEnforcedMaxToObjectIds": 5,
+"label": null
+}
+]
+}
+xxxxxxxxxx
+11
+1
+///Example response GET crm/v4/associations/definitions/configurations/deal/contact
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"category"
+:
+"HUBSPOT_DEFINED"
+,
+6
+"typeId"
+:
+3
+,
+7
+"userEnforcedMaxToObjectIds"
+:
+5
+,
+8
+"label"
+:
+null
+9
+}
+10
+]
+11
+}
+Delete association limits
+To delete specific association limits, make a
+POST
+request to
+/crm/v4/associations/definitions/configurations/{fromObjectType}/{toObjectType}/batch/purge
+. In the request body, include the
+category
+and
+typeId
+values of the association types for which you want to remove limits.
+For example, to remove the
+Point of contact
+limit between deals and contacts, the request would look like:
+Copy code snippet
+///Example request POST crm/v4/associations/definitions/configurations/deal/contact/batch/purge
+{
+"inputs": [
+{
+"category": "USER_DEFINED",
+"typeId": 35
+}
+]
+}
+xxxxxxxxxx
+9
+1
+///Example request POST crm/v4/associations/definitions/configurations/deal/contact/batch/purge
+2
+{
+3
+"inputs"
+: [
+4
+{
+5
+"category"
+:
+"USER_DEFINED"
+,
+6
+"typeId"
+:
+35
+7
+}
+8
+]
+9
+}
+If successful, you'll receive a 204 response and the included limit will return to the system default (i.e. Many contacts can have the label
+Point of contact
+).
+Limitations
+The association API endpoints are subject to the following limits based on your account subscription:
+Daily limits:
+Professional
+accounts:
+500,000 requests
+Enterprise
+accounts:
+500,000 requests
+You can purchase an
+API limit increase
+, you can make a maximum of 1,000,000 requests per day. This maximum will
+not
+increase for association API requests if you purchase an additional API limit increase.
+Burst limits:
+Free
+and
+Starter
+accounts:
+100 requests per 10 seconds
+Professional
+and
+Enterprise
+accounts:
+150 requests per 10 seconds
+If you purchase the
+API limit increase
+, you can make a maximum of 200 requests per 10 seconds. This maximum will
+not
+increase for association API requests if you purchase an additional API limit increase.
+Learn more about API limits in
+this article
+.
+Association type ID values
+The following tables include the HubSpot-defined
+associationTypeId
+values that specify the type of association. Association types vary depending on the included objects and the direction of the association (e.g., Contact to Company is different from Company to Contact). If you create custom objects or custom association labels, the related association types will have unique
+typeId
+values that you'll need to
+retrieve
+or locate in your
+association settings in HubSpot
+.
+Please note
+: default company association types include an unlabeled association type and a primary association type. If a record has more than one associated company, only one can be the primary company. The other associations can either be unlabelled or have custom association labels.
+Company to object
+TYPE ID
+Association type
+450
+Company to company
+14
+Child to parent company
+13
+Parent to child company
+280
+Company to contact
+2
+Company to contact (Primary)
+342
+Company to deal
+6
+Company to deal (Primary)
+340
+Company to ticket
+25
+Company to ticket (Primary)
+181
+Company to call
+185
+Company to email
+187
+Company to meeting
+189
+Company to note
+191
+Company to task
+88
+Company to communication (SMS, WhatsApp, or LinkedIn message)
+460
+Company to postal mail
+180
+Company to invoice
+510
+Company to order
+390
+Company to payment
+298
+Company to subscription
+909
+Company to appointment
+939
+Company to course
+885
+Company to listing
+793
+Company to service
+Contact to object
+TYPE ID
+Association type
+449
+Contact to contact
+279
+Contact to company
+1
+Contact to company (Primary)
+4
+Contact to deal
+15
+Contact to ticket
+193
+Contact to call
+197
+Contact to email
+199
+Contact to meeting
+201
+Contact to note
+203
+Contact to task
+82
+Contact to communication (SMS, WhatsApp, or LinkedIn message)
+454
+Contact to postal mail
+587
+Contact to cart
+508
+Contact to order
+178
+Contact to invoice
+388
+Contact to payment
+296
+Contact to subscription
+907
+Contact to appointment
+861
+Contact to course
+883
+Contact to listing
+799
+Contact to service
+Deal to object
+TYPE ID
+Association type
+451
+Deal to deal
+3
+Deal to contact
+341
+Deal to company
+5
+Deal to company (Primary)
+27
+Deal to ticket
+205
+Deal to call
+209
+Deal to email
+211
+Deal to meeting
+213
+Deal to note
+215
+Deal to task
+86
+Deal to communication (SMS, WhatsApp, or LinkedIn message)
+458
+Deal to postal mail
+313
+Deal to deal split
+19
+Deal to line item
+176
+Deal to invoice
+511
+Deal to order
+392
+Deal to payment
+63
+Deal to quote
+300
+Deal to subscription
+945
+Deal to appointment
+863
+Deal to course
+887
+Deal to listing
+795
+Deal to service
+Ticket to object
+TYPE ID
+Association type
+452
+Ticket to ticket
+16
+Ticket to contact
+339
+Ticket to company
+26
+Ticket to company (Primary)
+28
+Ticket to deal
+219
+Ticket to call
+223
+Ticket to email
+225
+Ticket to meeting
+227
+Ticket to note
+229
+Ticket to task
+84
+Ticket to communication (SMS, WhatsApp, or LinkedIn message)
+456
+Ticket to postal mail
+32
+Ticket to thread
+278
+Ticket to conversation
+526
+Ticket to order
+947
+Ticket to appointment
+941
+Ticket to course
+943
+Ticket to listing
+797
+Ticket to service
+Lead to object
+TYPE ID
+Association type
+578
+Lead to primary contact
+608
+Lead to contact
+610
+Lead to company
+596
+Lead to call
+598
+Lead to email
+600
+Lead to meeting
+854
+Lead to note
+646
+Lead to task
+602
+Lead to communication (SMS, WhatsApp, or LinkedIn message)
+Appointment to object
+TYPE ID
+Association type
+966
+Appointment to contact
+908
+Appointment to company
+944
+Appointment to deal
+946
+Appointment to ticket
+912
+Appointment to call
+916
+Appointment to email
+918
+Appointment to meeting
+920
+Appointment to note
+922
+Appointment to task
+924
+Appointment to communication (SMS, WhatsApp, or LinkedIn message)
+926
+Appointment to postal mail
+Course to object
+TYPE ID
+Association type
+860
+Course to contact
+938
+Course to company
+862
+Course to deal
+940
+Course to ticket
+866
+Course to call
+870
+Course to email
+872
+Course to meeting
+874
+Course to note
+876
+Course to task
+878
+Course to communication (SMS, WhatsApp, or LinkedIn message)
+880
+Course to postal mail
+Listing to object
+TYPE ID
+Association type
+882
+Listing to contact
+884
+Listing to company
+886
+Listing to deal
+942
+Listing to ticket
+890
+Listing to call
+894
+Listing to email
+896
+Listing to meeting
+898
+Listing to note
+900
+Listing to task
+902
+Listing to communication (SMS, WhatsApp, or LinkedIn message)
+904
+Listing to postal mail
+Service to object
+TYPE ID
+Association type
+798
+Service to contact
+792
+Service to company
+794
+Service to deal
+796
+Service to ticket
+840
+Service to call
+842
+Service to email
+838
+Service to meeting
+836
+Service to note
+852
+Service to task
+846
+Service to communication (SMS, WhatsApp, or LinkedIn message)
+848
+Service to postal mail
+Call to object
+TYPE ID
+Association type
+194
+Call to contact
+182
+Call to company
+206
+Call to deal
+220
+Call to ticket
+913
+Call to appointment
+867
+Call to course
+891
+Call to listing
+841
+Call to service
+Email to object
+TYPE ID
+Association type
+198
+Email to contact
+186
+Email to company
+210
+Email to deal
+224
+Email to ticket
+917
+Email to appointment
+871
+Email to course
+895
+Email to listing
+843
+Email to service
+Meeting to object
+TYPE ID
+Association type
+200
+Meeting to contact
+188
+Meeting to company
+212
+Meeting to deal
+226
+Meeting to ticket
+919
+Meeting to appointment
+873
+Meeting to course
+897
+Meeting to listing
+839
+Meeting to service
+Note to object
+TYPE ID
+Association type
+202
+Note to contact
+190
+Note to company
+214
+Note to deal
+228
+Note to ticket
+921
+Note to appointment
+875
+Note to course
+899
+Note to listing
+837
+Note to service
+Postal mail to object
+TYPE ID
+Association type
+453
+Postal mail to contact
+459
+Postal mail to company
+457
+Postal mail to deal
+455
+Postal mail to ticket
+927
+Postal mail to appointment
+881
+Postal mail to course
+905
+Postal mail to listing
+849
+Postal mail to service
+Quote to object
+TYPE ID
+Association type
+69
+Quote to contact
+71
+Quote to company
+64
+Quote to deal
+67
+Quote to line item
+286
+Quote to quote template
+362
+Quote to discount
+364
+Quote to fee
+366
+Quote to tax
+702
+Contact signer (for e-signatures)
+733
+Quote to cart
+408
+Quote to invoice
+731
+Quote to order
+398
+Quote to payment
+304
+Quote to subscription
+Task to object
+TYPE ID
+Association type
+204
+Task to contact
+192
+Task to company
+216
+Task to deal
+230
+Task to ticket
+923
+Task to appointment
+877
+Task to course
+901
+Task to listing
+853
+Task to service
+Communication (SMS, WhatsApp, or LinkedIn message) to object
+TYPE ID
+Association type
+81
+Communication (SMS, WhatsApp, or LinkedIn Message) to contact
+87
+Communication (SMS, WhatsApp, or LinkedIn Message) to company
+85
+Communication (SMS, WhatsApp, or LinkedIn Message) to deal
+83
+Communication (SMS, WhatsApp, or LinkedIn Message) to ticket
+925
+Communication (SMS, WhatsApp, or LinkedIn Message) to appointment
+879
+Communication (SMS, WhatsApp, or LinkedIn Message) to course
+903
+Communication (SMS, WhatsApp, or LinkedIn Message) to listing
+847
+Communication (SMS, WhatsApp, or LinkedIn Message) to service
+Order to object
+TYPE ID
+Association type
+593
+Order to cart
+507
+Order to contact
+509
+Order to company
+512
+Order to deal
+519
+Order to discount
+521
+Order to discount code
+518
+Order to invoice
+513
+Order to line item
+523
+Order to payment
+730
+Order to quote
+516
+Order to subscription
+726
+Order to task
+525
+Order to ticket
+Cart to object
+TYPE ID
+Association type
+586
+Cart to contact
+588
+Cart to discount
+590
+Cart to line item
+592
+Cart to order
+732
+Cart to quote
+728
+Cart to task
+594
+Cart to ticket
+v1 associations (legacy)
+If you're using the v1 associations API, view the table below for information about IDs to use when associating records.
+Association type
+ID
+Contact to company
+1
+Company to contact (default)
+2
+Company to contact (all labels)
+280
+Deal to contact
+3
+Contact to deal
+4
+Deal to company
+5
+Company to deal
+6
+Company to engagement
+7
+Engagement to company
+8
+Contact to engagement
+9
+Engagement to contact
+10
+Deal to engagement
+11
+Engagement to deal
+12
+Parent company to child company
+13
+Child company to parent company
+14
+Contact to ticket
+15
+Ticket to contact
+16
+Ticket to engagement
+17
+Engagement to ticket
+18
+Deal to line item
+19
+Line item to deal
+20
+Company to ticket
+25
+Ticket to company
+26
+Deal to ticket
+27
+Ticket to deal
+28
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Associations v3
+Associations v4
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Limits tracking
+Object library
+Marketing
+Settings
+Legal
+BESbswy
+BESbswy

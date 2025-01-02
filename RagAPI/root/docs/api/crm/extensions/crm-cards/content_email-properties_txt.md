@@ -1,46 +1,24 @@
-# HubSpot CRM API: CRM Cards
+# HubSpot CRM Cards API Documentation
 
-This document details how to create and manage custom CRM cards within HubSpot's public apps using their API.  These cards allow you to display information from external systems directly on HubSpot contact, company, deal, and ticket records.  Note that these CRM cards differ from custom cards created as UI extensions using projects.  UI extensions offer greater flexibility and interactivity.
+This document details the HubSpot CRM Cards API, allowing developers to create custom cards displaying information from external systems within HubSpot contact, company, deal, and ticket records.  This differs from UI extensions; CRM cards are specifically for public apps.
 
+## Scope Requirements
 
-## Overview
-
-CRM cards enhance HubSpot records by displaying data from your integrated app.  Your app defines the card's appearance and functionality, including actions users can perform.  HubSpot fetches data from your app when a user views a relevant record.
-
-
-##  Key Differences from UI Extensions
-
-* **Target Audience:** CRM cards are designed for public apps, while UI extensions are more suitable for private apps or situations needing greater customizability.
-* **Functionality:** UI extensions offer more advanced interactivity and design options.  CRM cards provide a simpler, more streamlined integration.
-* **Toolset:** UI extensions utilize a modern toolset (likely React-based), while CRM cards rely on a different, less modern approach.
-
-
-## Getting Started: Scope Requirements
-
-To create CRM cards, your app needs the necessary OAuth scopes.  For example, displaying a card on contact records requires `crm.objects.contacts.read` and `crm.objects.contacts.write` scopes.  Removing these scopes necessitates deleting all associated cards.  Refer to HubSpot's OAuth documentation for detailed information on scopes and authorization URLs.
+To create CRM cards, your app needs the necessary OAuth scopes to read and write to the relevant CRM objects. For example, a card on contact records requires `crm.objects.contacts.read` and `crm.objects.contacts.write` scopes.  Removing these scopes necessitates deleting all associated cards.  See HubSpot's OAuth documentation for details.
 
 
 ## Creating a CRM Card
 
-CRM cards can be created via the HubSpot API or through the HubSpot developer account UI.
+Cards are created either via the API or through the HubSpot developer account UI.  The UI approach involves:
 
-**Using the HubSpot UI:**
-
-1. Navigate to **Apps** in your HubSpot developer account.
-2. Select the app where you want to add the card.
-3. Choose **CRM cards** from the left sidebar.
-4. Click **Create CRM card**.
-5. Configure the card using the provided tabs.
-
+1. Navigating to **Apps** in the HubSpot developer account.
+2. Selecting the target app.
+3. Choosing **CRM cards** from the sidebar.
+4. Clicking **Create CRM card**.
 
 ## Data Request
 
-When a user views a record, HubSpot sends a data fetch request to your app's specified URL. This request includes default parameters and custom parameters based on the card's settings.
-
-**Data Fetch URL:** This URL (the `targetUrl` in the API) is where HubSpot will fetch data.
-
-**Target Record Types & Properties Sent from HubSpot:**  Specify the CRM record types (contacts, companies, deals, tickets) where the card will appear and select the HubSpot properties to send as query parameters.  These are defined within the `objectTypes` array in the API.
-
+When a user views a CRM record, HubSpot sends a data fetch request to the app's specified `targetUrl`. This request includes default query parameters and custom parameters based on the card's settings.
 
 **Example Data Fetch Configuration (JSON):**
 
@@ -52,20 +30,14 @@ When a user views a record, HubSpot sends a data fetch request to your app's spe
     "objectTypes": [
       {
         "name": "contacts",
-        "propertiesToSend": [
-          "firstname",
-          "email",
-          "lastname"
-        ]
+        "propertiesToSend": ["firstname", "email", "lastname"]
       }
     ]
   }
 }
 ```
 
-**Example Request:**
-
-A `GET` request might look like this:
+**Example Request URL:**
 
 ```
 https://www.example.com/demo-fetch?userId=12345&userEmail=loggedinuser@hubspot.com&associatedObjectId=53701&associatedObjectType=CONTACT&portalId=987654&firstname=Tim&email=timrobinson@itysl.com&lastname=Robinson
@@ -73,20 +45,22 @@ https://www.example.com/demo-fetch?userId=12345&userEmail=loggedinuser@hubspot.c
 
 **Request Parameters:**
 
-| Parameter             | Type    | Description                                                                        |
-|-----------------------|---------|------------------------------------------------------------------------------------|
-| `userId`              | Default | HubSpot user ID.                                                                  |
-| `userEmail`           | Default | Email of the user viewing the record.                                             |
-| `associatedObjectId`   | Default | ID of the CRM record.                                                              |
-| `associatedObjectType` | Default | Type of CRM record (e.g., CONTACT, COMPANY).                                      |
-| `portalId`            | Default | HubSpot account ID.                                                               |
-| `firstname`, `email`, `lastname` | Custom  | Contact properties (example; determined by `propertiesToSend`).                   |
+| Parameter             | Type    | Description                                                                     |
+|-----------------------|---------|---------------------------------------------------------------------------------|
+| `userId`              | Default | HubSpot user ID who loaded the record.                                           |
+| `userEmail`           | Default | Email address of the user.                                                      |
+| `associatedObjectId`  | Default | ID of the CRM record.                                                           |
+| `associatedObjectType` | Default | Type of CRM record (e.g., CONTACT, COMPANY).                                     |
+| `portalId`            | Default | ID of the HubSpot account.                                                      |
+| `firstname`, `email`, `lastname` | Custom | HubSpot properties specified in `propertiesToSend`; vary based on object type. |
 
 
-**Important:** Requests timeout after 5 seconds; connection must be established within 3 seconds.
+**Important:** Requests timeout after 5 seconds (connection within 3 seconds).
 
 
 ## Example Response (JSON)
+
+The app should respond with a JSON payload like this:
 
 ```json
 {
@@ -97,65 +71,87 @@ https://www.example.com/demo-fetch?userId=12345&userEmail=loggedinuser@hubspot.c
       "link": "http://example.com/1",
       "created": "2016-09-15",
       "priority": "HIGH",
-      // ... other properties
-      "actions": [
-        // ... action objects
-      ]
-    }
+      "project": "API",
+      "description": "...",
+      "actions": [...]
+    },
+    // ... more results
   ],
-  "settingsAction": { /* ... */ },
-  "primaryAction": { /* ... */ },
-  "secondaryActions": [ /* ... */ ]
+  "settingsAction": { ... },
+  "primaryAction": { ... }
 }
 ```
 
 **Response Fields:**
 
-* `results`: Array of objects (up to 5), each representing a data item.
-* `objectId`: Unique ID for the object.
-* `title`: Title of the object.
-* `link`: URL for more details (optional; use `null` if no links).
-* `created`, `priority`: Example custom properties (defined in card settings).
-* `actions`: Array of action objects.
-* `properties`: Array of additional custom properties not defined in the card settings.
-* `settingsAction`, `primaryAction`, `secondaryActions`: Action objects for specific functionalities.
+* `results`: Array of card objects (max 5).  Each object can have:
+    * `objectId`: Unique ID.
+    * `title`: Title of the object.
+    * `link`: URL for more details (optional; use `null` if no links).
+    * `created`, `priority`, etc.: Custom properties defined in card settings.
+    * `properties`: Array of additional custom properties not defined in settings.
+    * `actions`: Array of available actions.
+* `settingsAction`: Iframe action for app settings.
+* `primaryAction`: Primary action for the record type.
 
 
 ## Request Signatures
 
-HubSpot includes an `X-HubSpot-Signature` header to verify requests.  To validate:
-
-1. Concatenate your app secret, HTTP method, URL, and request body.
-2. Create a SHA-256 hash of this string.
-3. Compare the hash to the signature in the header.
+HubSpot includes an `X-HubSpot-Signature` header to verify request authenticity.  This header is a base64 encoded SHA-256 hash of: `<app secret>+<HTTP method>+<URL>+<request body>`.
 
 
 ## Card Properties
 
-Define custom properties to display on the card.  Add properties via the UI, specifying name, label, and data type (CURRENCY, DATE, DATETIME, EMAIL, LINK, NUMERIC, STATUS, STRING).  These are defined in the `results` array of your response.
+Custom properties are defined on the **Card Properties** tab.  The response must include values for these properties.  Supported data types: `CURRENCY`, `DATE`, `DATETIME`, `EMAIL`, `LINK`, `NUMERIC`, `STATUS`, `STRING`.
 
+**Example Custom Property (CURRENCY):**
 
-## Property Types
+```json
+{
+  "label": "Resolution impact",
+  "dataType": "CURRENCY",
+  "value": "94.34",
+  "currencyCode": "GBP"
+}
+```
 
-* **CURRENCY:** Requires `currencyCode` (ISO 4217).
-* **DATE:** `yyyy-mm-dd` format.
-* **DATETIME:** Milliseconds since epoch.
-* **EMAIL:** Displays as a mailto link.
-* **LINK:** Displays a hyperlink; optional `linkLabel`.
-* **NUMERIC:** Displays numbers.
-* **STATUS:** Displays colored indicators (DEFAULT, SUCCESS, WARNING, DANGER, INFO). Requires `optionType`.
-* **STRING:** Displays text.
+Specific formatting is required for each type (see detailed examples in the original text for DATE, DATETIME, EMAIL, LINK, NUMERIC, STATUS, STRING).
 
 
 ## Custom Actions
 
-Define action URLs for buttons on the card.  Actions can be:
+Custom actions define URLs triggered by user clicks.  Actions include:
 
-* **IFRAME:** Opens a modal with an iframe. Uses `window.postMessage` to signal completion (`{"action": "DONE"}` or `{"action": "CANCEL"}`).
-* **ACTION_HOOK:** Sends a server-side request (GET, POST, PUT, DELETE, PATCH); includes `X-HubSpot-Signature`.
-* **CONFIRMATION_ACTION_HOOK:**  Like ACTION_HOOK, but prompts for confirmation. Includes `X-HubSpot-Signature`.
+* **IFRAME Actions:** Open a modal with an iframe.  Uses `window.postMessage` to communicate with the CRM (`{"action": "DONE"}` or `{"action": "CANCEL"}`).
+
+* **ACTION_HOOK Actions:** Send a server-side request (GET, POST, PUT, DELETE, PATCH).  Includes `X-HubSpot-Signature`.
+
+* **CONFIRMATION_ACTION_HOOK Actions:** Similar to `ACTION_HOOK`, but with a confirmation dialog.  Includes `X-HubSpot-Signature`.
 
 
-## Conclusion
+**Example Iframe Action (JSON):**
 
-By following these guidelines, you can effectively integrate custom CRM cards into your HubSpot public app, enhancing the user experience and providing valuable data integration within the HubSpot platform. Remember to consult HubSpot's official documentation for the most up-to-date information and best practices.
+```json
+{
+  "type": "IFRAME",
+  "width": 890,
+  "height": 748,
+  "uri": "https://example.com/iframe-contents",
+  "label": "Edit",
+  "associatedObjectProperties": ["some_crm_property"]
+}
+```
+
+**Example ACTION_HOOK Action (JSON):**
+
+```json
+{
+  "type": "ACTION_HOOK",
+  "httpMethod": "POST",
+  "uri": "https://example.com/action-hook",
+  "label": "Example action",
+  "associatedObjectProperties": ["some_crm_property"]
+}
+```
+
+Remember to handle `X-HubSpot-Signature` verification for action hooks and confirmation actions.  Consult HubSpot's documentation for details on request validation and other aspects not fully covered here.

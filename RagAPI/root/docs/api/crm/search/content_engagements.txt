@@ -1,0 +1,2055 @@
+CRM API | Search | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Make a search request
+Searchable CRM objects and engagements
+Objects
+Engagements
+Search default searchable properties
+Filter search results
+Search through associations
+Sort search results
+Paging through results
+Limitations
+API Guides
+CRM
+CRM API | Search
+Search
+Use the CRM search endpoints to filter, sort, and search objects, records, and engagements
+across your CRM. For example, use the endpoints to get a list of contacts in your
+account, or a list of all open deals.To use these endpoints from an app, a CRM scope
+is required. Refer to this
+list of available scopes
+to learn which granular CRM scopes can be used to accomplish your goal.
+Make a search request
+To search your CRM, make a
+POST
+request to the object's search endpoint. CRM search endpoints are constructed using the following format:
+/crm/v3/objects/{object}/search
+. In the request body, you'll include
+filters
+to narrow your search by CRM property values.For example, the code snippet below would retrieve a list of all contacts that have a specific company email address.
+Copy code snippet
+// Example POST request to /crm/v3/objects/contacts/search
+{
+"filterGroups": [
+{
+"filters": [
+{
+"propertyName": "email",
+"operator": "CONTAINS_TOKEN",
+"value": "*@hubspot.com"
+}
+]
+}
+]
+}
+1
+// Example POST request to /crm/v3/objects/contacts/search
+2
+{
+3
+"filterGroups"
+: [
+4
+{
+5
+"filters"
+: [
+6
+{
+7
+"propertyName"
+:
+"email"
+,
+8
+"operator"
+:
+"CONTAINS_TOKEN"
+,
+9
+"value"
+:
+"*@hubspot.com"
+10
+}
+11
+]
+12
+}
+13
+]
+14
+}
+Each object that you search will include a set of
+default properties
+that gets returned. For example, a contacts search will return
+createdate
+,
+email
+,
+firstname
+,
+hs_object_id
+,
+lastmodifieddate
+, and
+lastname
+. To return a specific set of properties, include a
+properties
+array in the request body.For example, the above request would return the following response:
+Copy code snippet
+// Example response
+{
+"total": 2,
+"results": [
+{
+"id": "100451",
+"properties": {
+"createdate": "2024-01-17T19:55:04.281Z",
+"email": "testperson@hubspot.com",
+"firstname": "Test",
+"hs_object_id": "100451",
+"lastmodifieddate": "2024-09-11T13:27:39.356Z",
+"lastname": "Person"
+},
+"createdAt": "2024-01-17T19:55:04.281Z",
+"updatedAt": "2024-09-11T13:27:39.356Z",
+"archived": false
+},
+{
+"id": "57156923994",
+"properties": {
+"createdate": "2024-09-11T18:21:50.012Z",
+"email": "emailmaria@hubspot.com",
+"firstname": "Maria",
+"hs_object_id": "57156923994",
+"lastmodifieddate": "2024-10-21T21:36:02.961Z",
+"lastname": "Johnson (Sample Contact)"
+},
+"createdAt": "2024-09-11T18:21:50.012Z",
+"updatedAt": "2024-10-21T21:36:02.961Z",
+"archived": false
+}
+]
+}
+xxxxxxxxxx
+34
+1
+// Example response
+2
+{
+3
+"total"
+:
+2
+,
+4
+"results"
+: [
+5
+{
+6
+"id"
+:
+"100451"
+,
+7
+"properties"
+: {
+8
+"createdate"
+:
+"2024-01-17T19:55:04.281Z"
+,
+9
+"email"
+:
+"testperson@hubspot.com"
+,
+10
+"firstname"
+:
+"Test"
+,
+11
+"hs_object_id"
+:
+"100451"
+,
+12
+"lastmodifieddate"
+:
+"2024-09-11T13:27:39.356Z"
+,
+13
+"lastname"
+:
+"Person"
+14
+},
+15
+"createdAt"
+:
+"2024-01-17T19:55:04.281Z"
+,
+16
+"updatedAt"
+:
+"2024-09-11T13:27:39.356Z"
+,
+17
+"archived"
+:
+false
+18
+},
+19
+{
+20
+"id"
+:
+"57156923994"
+,
+21
+"properties"
+: {
+22
+"createdate"
+:
+"2024-09-11T18:21:50.012Z"
+,
+23
+"email"
+:
+"emailmaria@hubspot.com"
+,
+24
+"firstname"
+:
+"Maria"
+,
+25
+"hs_object_id"
+:
+"57156923994"
+,
+26
+"lastmodifieddate"
+:
+"2024-10-21T21:36:02.961Z"
+,
+27
+"lastname"
+:
+"Johnson (Sample Contact)"
+28
+},
+29
+"createdAt"
+:
+"2024-09-11T18:21:50.012Z"
+,
+30
+"updatedAt"
+:
+"2024-10-21T21:36:02.961Z"
+,
+31
+"archived"
+:
+false
+32
+}
+33
+]
+34
+}
+To return a specific set of properties, include a
+properties
+array in the request body. For example:
+Copy code snippet
+// Example POST request to /crm/v3/objects/companies/search
+{
+"filterGroups": [
+{
+"filters": [
+{
+"propertyName": "annualrevenue",
+"operator": "GT",
+"value": "10000000"
+}
+]
+}
+],
+"properties": ["annualrevenue", "name"]
+}
+xxxxxxxxxx
+15
+1
+// Example POST request to /crm/v3/objects/companies/search
+2
+{
+3
+"filterGroups"
+: [
+4
+{
+5
+"filters"
+: [
+6
+{
+7
+"propertyName"
+:
+"annualrevenue"
+,
+8
+"operator"
+:
+"GT"
+,
+9
+"value"
+:
+"10000000"
+10
+}
+11
+]
+12
+}
+13
+],
+14
+"properties"
+: [
+"annualrevenue"
+,
+"name"
+]
+15
+}
+The response for the above request would look like:
+Copy code snippet
+// Example response
+{
+"total": 38,
+"results": [
+{
+"id": "2810868468",
+"properties": {
+"annualrevenue": "1000000000",
+"createdate": "2020-01-09T20:11:27.309Z",
+"hs_lastmodifieddate": "2024-09-13T20:23:03.333Z",
+"hs_object_id": "2810868468",
+"name": "Google"
+},
+"createdAt": "2020-01-09T20:11:27.309Z",
+"updatedAt": "2024-09-13T20:23:03.333Z",
+"archived": false
+},
+{
+"id": "2823023532",
+"properties": {
+"annualrevenue": "10000000000",
+"createdate": "2020-01-13T16:21:08.270Z",
+"hs_lastmodifieddate": "2024-09-13T20:23:03.064Z",
+"hs_object_id": "2823023532",
+"name": "Pepsi"
+},
+"createdAt": "2020-01-13T16:21:08.270Z",
+"updatedAt": "2024-09-13T20:23:03.064Z",
+"archived": false
+},
+{
+"id": "5281147580",
+"properties": {
+"annualrevenue": "50000000",
+"createdate": "2021-02-01T21:17:12.250Z",
+"hs_lastmodifieddate": "2024-09-13T20:23:03.332Z",
+"hs_object_id": "5281147580",
+"name": "CORKCICLE"
+},
+"createdAt": "2021-02-01T21:17:12.250Z",
+"updatedAt": "2024-09-13T20:23:03.332Z",
+"archived": false
+},
+{
+"id": "5281147581",
+"properties": {
+"annualrevenue": "1000000000",
+"createdate": "2021-02-01T21:17:12.250Z",
+"hs_lastmodifieddate": "2024-09-13T20:23:03.064Z",
+"hs_object_id": "5281147581",
+"name": "Ulta Beauty"
+},
+"createdAt": "2021-02-01T21:17:12.250Z",
+"updatedAt": "2024-09-13T20:23:03.064Z",
+"archived": false
+},
+{
+"id": "5281147583",
+"properties": {
+"annualrevenue": "50000000",
+"createdate": "2021-02-01T21:17:12.251Z",
+"hs_lastmodifieddate": "2024-09-13T20:23:03.332Z",
+"hs_object_id": "5281147583",
+"name": "Narvar"
+},
+"createdAt": "2021-02-01T21:17:12.251Z",
+"updatedAt": "2024-09-13T20:23:03.332Z",
+"archived": false
+},
+{
+"id": "5281496154",
+"properties": {
+"annualrevenue": "1000000000",
+"createdate": "2021-02-01T21:17:12.267Z",
+"hs_lastmodifieddate": "2024-09-13T20:23:03.332Z",
+"hs_object_id": "5281496154",
+"name": "Etsy Inc"
+},
+"createdAt": "2021-02-01T21:17:12.267Z",
+"updatedAt": "2024-09-13T20:23:03.332Z",
+"archived": false
+},
+{
+"id": "5281496155",
+"properties": {
+"annualrevenue": "1000000000",
+"createdate": "2021-02-01T21:17:12.267Z",
+"hs_lastmodifieddate": "2024-09-13T20:23:03.069Z",
+"hs_object_id": "5281496155",
+"name": "grubhub"
+},
+"createdAt": "2021-02-01T21:17:12.267Z",
+"updatedAt": "2024-09-13T20:23:03.069Z",
+"archived": false
+},
+{
+"id": "5281496157",
+"properties": {
+"annualrevenue": "1000000000",
+"createdate": "2021-02-01T21:17:12.267Z",
+"hs_lastmodifieddate": "2024-09-13T20:23:03.332Z",
+"hs_object_id": "5281496157",
+"name": "discover"
+},
+"createdAt": "2021-02-01T21:17:12.267Z",
+"updatedAt": "2024-09-13T20:23:03.332Z",
+"archived": false
+},
+{
+"id": "5281496158",
+"properties": {
+"annualrevenue": "50000000",
+"createdate": "2021-02-01T21:17:12.268Z",
+"hs_lastmodifieddate": "2024-09-13T20:23:03.064Z",
+"hs_object_id": "5281496158",
+"name": "Soludos"
+},
+"createdAt": "2021-02-01T21:17:12.268Z",
+"updatedAt": "2024-09-13T20:23:03.064Z",
+"archived": false
+},
+{
+"id": "5281499282",
+"properties": {
+"annualrevenue": "1000000000",
+"createdate": "2021-02-01T21:17:12.285Z",
+"hs_lastmodifieddate": "2024-09-13T20:23:03.066Z",
+"hs_object_id": "5281499282",
+"name": "AEO Management Co."
+},
+"createdAt": "2021-02-01T21:17:12.285Z",
+"updatedAt": "2024-09-13T20:23:03.066Z",
+"archived": false
+}
+],
+"paging": {
+"next": {
+"after": "10"
+}
+}
+}
+xxxxxxxxxx
+141
+1
+// Example response
+2
+{
+3
+"total"
+:
+38
+,
+4
+"results"
+: [
+5
+{
+6
+"id"
+:
+"2810868468"
+,
+7
+"properties"
+: {
+8
+"annualrevenue"
+:
+"1000000000"
+,
+9
+"createdate"
+:
+"2020-01-09T20:11:27.309Z"
+,
+10
+"hs_lastmodifieddate"
+:
+"2024-09-13T20:23:03.333Z"
+,
+11
+"hs_object_id"
+:
+"2810868468"
+,
+12
+"name"
+:
+"Google"
+13
+},
+14
+"createdAt"
+:
+"2020-01-09T20:11:27.309Z"
+,
+15
+"updatedAt"
+:
+"2024-09-13T20:23:03.333Z"
+,
+16
+"archived"
+:
+false
+17
+},
+18
+{
+19
+"id"
+:
+"2823023532"
+,
+20
+"properties"
+: {
+21
+"annualrevenue"
+:
+"10000000000"
+,
+22
+"createdate"
+:
+"2020-01-13T16:21:08.270Z"
+,
+23
+"hs_lastmodifieddate"
+:
+"2024-09-13T20:23:03.064Z"
+,
+24
+"hs_object_id"
+:
+"2823023532"
+,
+25
+"name"
+:
+"Pepsi"
+26
+},
+27
+"createdAt"
+:
+"2020-01-13T16:21:08.270Z"
+,
+28
+"updatedAt"
+:
+"2024-09-13T20:23:03.064Z"
+,
+29
+"archived"
+:
+false
+30
+},
+31
+{
+32
+"id"
+:
+"5281147580"
+,
+33
+"properties"
+: {
+34
+"annualrevenue"
+:
+"50000000"
+,
+35
+"createdate"
+:
+"2021-02-01T21:17:12.250Z"
+,
+36
+"hs_lastmodifieddate"
+:
+"2024-09-13T20:23:03.332Z"
+,
+37
+"hs_object_id"
+:
+"5281147580"
+,
+38
+"name"
+:
+"CORKCICLE"
+39
+},
+40
+"createdAt"
+:
+"2021-02-01T21:17:12.250Z"
+,
+41
+"updatedAt"
+:
+"2024-09-13T20:23:03.332Z"
+,
+42
+"archived"
+:
+false
+43
+},
+44
+{
+45
+"id"
+:
+"5281147581"
+,
+46
+"properties"
+: {
+47
+"annualrevenue"
+:
+"1000000000"
+,
+48
+"createdate"
+:
+"2021-02-01T21:17:12.250Z"
+,
+49
+"hs_lastmodifieddate"
+:
+"2024-09-13T20:23:03.064Z"
+,
+50
+"hs_object_id"
+:
+"5281147581"
+,
+51
+"name"
+:
+"Ulta Beauty"
+52
+},
+53
+"createdAt"
+:
+"2021-02-01T21:17:12.250Z"
+,
+54
+"updatedAt"
+:
+"2024-09-13T20:23:03.064Z"
+,
+55
+"archived"
+:
+false
+56
+},
+57
+{
+58
+"id"
+:
+"5281147583"
+,
+59
+"properties"
+: {
+60
+"annualrevenue"
+:
+"50000000"
+,
+61
+"createdate"
+:
+"2021-02-01T21:17:12.251Z"
+,
+62
+"hs_lastmodifieddate"
+:
+"2024-09-13T20:23:03.332Z"
+,
+63
+"hs_object_id"
+:
+"5281147583"
+,
+64
+"name"
+:
+"Narvar"
+65
+},
+66
+"createdAt"
+:
+"2021-02-01T21:17:12.251Z"
+,
+67
+"updatedAt"
+:
+"2024-09-13T20:23:03.332Z"
+,
+68
+"archived"
+:
+false
+69
+},
+70
+{
+71
+"id"
+:
+"5281496154"
+,
+72
+"properties"
+: {
+73
+"annualrevenue"
+:
+"1000000000"
+,
+74
+"createdate"
+:
+"2021-02-01T21:17:12.267Z"
+,
+75
+"hs_lastmodifieddate"
+:
+"2024-09-13T20:23:03.332Z"
+,
+76
+"hs_object_id"
+:
+"5281496154"
+,
+77
+"name"
+:
+"Etsy Inc"
+78
+},
+79
+"createdAt"
+:
+"2021-02-01T21:17:12.267Z"
+,
+80
+"updatedAt"
+:
+"2024-09-13T20:23:03.332Z"
+,
+81
+"archived"
+:
+false
+82
+},
+83
+{
+84
+"id"
+:
+"5281496155"
+,
+85
+"properties"
+: {
+86
+"annualrevenue"
+:
+"1000000000"
+,
+87
+"createdate"
+:
+"2021-02-01T21:17:12.267Z"
+,
+88
+"hs_lastmodifieddate"
+:
+"2024-09-13T20:23:03.069Z"
+,
+89
+"hs_object_id"
+:
+"5281496155"
+,
+90
+"name"
+:
+"grubhub"
+91
+},
+92
+"createdAt"
+:
+"2021-02-01T21:17:12.267Z"
+,
+93
+"updatedAt"
+:
+"2024-09-13T20:23:03.069Z"
+,
+94
+"archived"
+:
+false
+95
+},
+96
+{
+97
+"id"
+:
+"5281496157"
+,
+98
+"properties"
+: {
+99
+"annualrevenue"
+:
+"1000000000"
+,
+100
+"createdate"
+:
+"2021-02-01T21:17:12.267Z"
+,
+101
+"hs_lastmodifieddate"
+:
+"2024-09-13T20:23:03.332Z"
+,
+102
+"hs_object_id"
+:
+"5281496157"
+,
+103
+"name"
+:
+"discover"
+104
+},
+105
+"createdAt"
+:
+"2021-02-01T21:17:12.267Z"
+,
+106
+"updatedAt"
+:
+"2024-09-13T20:23:03.332Z"
+,
+107
+"archived"
+:
+false
+108
+},
+109
+{
+110
+"id"
+:
+"5281496158"
+,
+111
+"properties"
+: {
+112
+"annualrevenue"
+:
+"50000000"
+,
+113
+"createdate"
+:
+"2021-02-01T21:17:12.268Z"
+,
+114
+"hs_lastmodifieddate"
+:
+"2024-09-13T20:23:03.064Z"
+,
+115
+"hs_object_id"
+:
+"5281496158"
+,
+116
+"name"
+:
+"Soludos"
+117
+},
+118
+"createdAt"
+:
+"2021-02-01T21:17:12.268Z"
+,
+119
+"updatedAt"
+:
+"2024-09-13T20:23:03.064Z"
+,
+120
+"archived"
+:
+false
+121
+},
+122
+{
+123
+"id"
+:
+"5281499282"
+,
+124
+"properties"
+: {
+125
+"annualrevenue"
+:
+"1000000000"
+,
+126
+"createdate"
+:
+"2021-02-01T21:17:12.285Z"
+,
+127
+"hs_lastmodifieddate"
+:
+"2024-09-13T20:23:03.066Z"
+,
+128
+"hs_object_id"
+:
+"5281499282"
+,
+129
+"name"
+:
+"AEO Management Co."
+130
+},
+131
+"createdAt"
+:
+"2021-02-01T21:17:12.285Z"
+,
+132
+"updatedAt"
+:
+"2024-09-13T20:23:03.066Z"
+,
+133
+"archived"
+:
+false
+134
+}
+135
+],
+136
+"paging"
+: {
+137
+"next"
+: {
+138
+"after"
+:
+"10"
+139
+}
+140
+}
+141
+}
+Searchable CRM objects and engagements
+Objects
+The tables below contain the object search endpoints, the objects they refer to, and the properties that are returned by default.
+Search endpoint
+Object
+Default returned properties
+/crm/v3/objects/carts/search
+Carts
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/companies/search
+Companies
+name
+,
+domain
+,
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/contacts/search
+Contacts
+firstname
+,
+lastname
+,
+email
+,
+lastmodifieddate
+,
+hs_object_id
+,
+createdate
+/crm/v3/objects/deals/search
+Deals
+dealname
+,
+amount
+,
+closedate,``pipeline
+,
+dealstage
+,
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/deal_split/search
+Deal splits
+hs_createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/discounts/search
+Discounts
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/feedback_submissions/search
+Feedback submissions
+hs_createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/fees/search
+Fees
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/invoices/search
+Invoices
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/leads/search
+Leads
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/line_items/search
+Line items
+quantity
+,
+amount
+,
+price
+,
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/orders/search
+Orders
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/commerce_payments/search
+Payments
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/products/search
+Products
+name
+,
+description
+,
+price
+,
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/quotes/search
+Quotes
+hs_expiration_date
+,
+hs_public_url_key
+,
+hs_status
+,
+hs_title
+,
+hs_createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/subscriptions/search
+Subscriptions (Commerce)
+hs_createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/taxes/search
+Taxes
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/tickets/search
+Tickets
+content
+,
+hs_pipeline
+,
+hs_pipeline_stage
+,
+hs_ticket_category
+,
+hs_ticket_priority
+,
+subject
+,
+createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+Engagements
+The table below contains the engagement search endpoints, the engagements they refer to, and the properties that are returned by default.
+Search endpoint
+Engagement
+Default returned properties
+/crm/v3/objects/calls/search
+Calls
+hs_createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/emails/search
+Emails
+hs_createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/meetings/search
+Meetings
+hs_createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/notes/search
+Notes
+hs_createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+/crm/v3/objects/tasks/search
+Tasks
+hs_createdate
+,
+hs_lastmodifieddate
+,
+hs_object_id
+Search default searchable properties
+Search all default text properties in records of the specified object to find all records that have a value containing the specified string. By default, the results will be returned in order of object creation (oldest first), but you can override this with
+sorting
+.For example, the request below searches for all contacts with a default text property value containing the letter
+X
+.
+Copy code snippet
+curl https://api.hubapi.com/crm/v3/objects/contacts/search \
+--request POST \
+--header "Content-Type: application/json" \
+--header "authorization: Bearer YOUR_ACCESS_TOKEN" \
+--data '{
+"query": "x"
+}'
+xxxxxxxxxx
+7
+1
+curl
+https://api.hubapi.com/crm/v3/objects/contacts/search \
+2
+--request
+POST \
+3
+--header
+"Content-Type: application/json"
+\
+4
+--header
+"authorization: Bearer YOUR_ACCESS_TOKEN"
+\
+5
+--data
+'{
+6
+"query": "x"
+7
+}'
+Below are the properties that are searched by default through the above method:
+Search endpoint
+Object
+Default searchable properties
+/crm/v3/objects/calls/search
+Calls
+hs_call_title
+,
+hs_body_preview
+/crm/v3/objects/companies/search
+Companies
+website
+,
+phone
+,
+name
+,
+domain
+/crm/v3/objects/contacts/search
+Contacts
+firstname
+,
+lastname
+,
+email
+,
+phone
+,
+hs_additional_emails
+,
+fax
+,
+mobilephone
+,
+company
+,
+hs_marketable_until_renewal
+/crm/v3/objects/{objectType}/search
+Custom objects
+Up to 20 selected properties.
+/crm/v3/objects/deals/search
+Deals
+dealname
+,
+pipeline
+,
+dealstage
+,
+description
+,
+dealtype
+/crm/v3/objects/emails/search
+Emails
+hs_email_subject
+/crm/v3/objects/feedback_submissions/search
+Feedback submissions
+hs_submission_name
+,
+hs_content
+/crm/v3/objects/meetings/search
+Meetings
+hs_meeting_title
+,
+hs_meeting_body
+/crm/v3/objects/notes/search
+Notes
+hs_note_body
+/crm/v3/objects/products/search
+Products
+name
+,
+description
+,
+price
+,
+hs_sku
+/crm/v3/objects/quotes/search
+Quotes
+hs_sender_firstname
+,
+hs_sender_lastname
+,
+hs_proposal_slug
+,
+hs_title
+,
+hs_sender_company_name
+,
+hs_sender_email
+,
+hs_quote_number
+,
+hs_public_url_key
+/crm/v3/objects/tasks/search
+Tasks
+hs_task_body
+,
+hs_task_subject
+/crm/v3/objects/tickets/search
+Tickets
+subject
+,
+content
+,
+hs_pipeline_stage
+,
+hs_ticket_category
+,
+hs_ticket_id
+Filter search results
+Use filters in the request body to limit the results to only records with matching property values. For example, the request below searches for all contacts with a first name of
+Alice.
+Please note
+: when filtering search results for calls, conversations, emails, meetings, notes, or tasks, the property
+hs_body_preview_html
+is not supported. For emails, the properties
+hs_email_html
+and
+hs_body_preview
+are also not supported.
+Copy code snippet
+curl https://api.hubapi.com/crm/v3/objects/contacts/search \
+--request POST \
+--header "Content-Type: application/json" \
+--header "authorization: Bearer YOUR_ACCESS_TOKEN" \
+--data '{
+"filterGroups":[
+{
+"filters":[
+{
+"propertyName": "firstname",
+"operator": "EQ",
+"value": "Alice"
+}
+]
+}
+]
+}'
+​
+x
+1
+curl
+https://api.hubapi.com/crm/v3/objects/contacts/search \
+2
+--request
+POST \
+3
+--header
+"Content-Type: application/json"
+\
+4
+--header
+"authorization: Bearer YOUR_ACCESS_TOKEN"
+\
+5
+​
+6
+--data
+'{
+7
+"filterGroups":[
+8
+{
+9
+"filters":[
+10
+{
+11
+"propertyName": "firstname",
+12
+"operator": "EQ",
+13
+"value": "Alice"
+14
+}
+15
+]
+16
+}
+17
+]
+18
+}'
+To include multiple filter criteria, you can group
+filters
+within
+filterGroups
+:
+To apply
+AND
+logic, include a comma-separated list of conditions within one set of
+filters
+.
+To apply
+OR
+logic, include multiple
+filters
+within a
+filterGroup
+.You can include a maximum of five
+filterGroups
+with up to 6
+filters
+in each group, with a maximum of 18 filters in total. If you've included too many groups or filters, you'll receive a
+VALIDATION_ERROR
+error response. For example, the request below searches for contacts with the first name
+Alice
+AND a last name other than
+Smith
+,
+OR contacts that don't have a value for the property
+email
+.
+Copy code snippet
+curl https://api.hubapi.com/crm/v3/objects/contacts/search \
+--request POST \
+--header "Content-Type: application/json" \
+--header "authorization: Bearer YOUR_ACCESS_TOKEN" \
+--data '{
+"filterGroups": [
+{
+"filters": [
+{
+"propertyName": "firstname",
+"operator": "EQ",
+"value": "Alice"
+},
+{
+"propertyName": "lastname",
+"operator": "NEQ",
+"value": "Smith"
+}
+]
+},
+{
+"filters": [
+{
+"propertyName": "email",
+"operator": "NOT_HAS_PROPERTY"
+}
+]
+}
+]
+}'
+xxxxxxxxxx
+30
+1
+curl
+https://api.hubapi.com/crm/v3/objects/contacts/search \
+2
+--request
+POST \
+3
+--header
+"Content-Type: application/json"
+\
+4
+--header
+"authorization: Bearer YOUR_ACCESS_TOKEN"
+\
+5
+--data
+'{
+6
+"filterGroups": [
+7
+{
+8
+"filters": [
+9
+{
+10
+"propertyName": "firstname",
+11
+"operator": "EQ",
+12
+"value": "Alice"
+13
+},
+14
+{
+15
+"propertyName": "lastname",
+16
+"operator": "NEQ",
+17
+"value": "Smith"
+18
+}
+19
+]
+20
+},
+21
+{
+22
+"filters": [
+23
+{
+24
+"propertyName": "email",
+25
+"operator": "NOT_HAS_PROPERTY"
+26
+}
+27
+]
+28
+}
+29
+]
+30
+}'
+You can use operators in filters to specify which records should be returned. Values in filters are case-insensitive, with the following two exceptions:
+When filtering for an enumeration property, search is case-sensitive for all filter operators.
+When filtering for a string property using
+IN
+and
+NOT_IN
+operators, the searched values must be lowercase.Below are the available filter operators:
+Operator
+Description
+LT
+Less than the specified value.
+LTE
+Less than or equal to the specified value.
+GT
+Greater than the specified value.
+GTE
+Greater than or equal to the specified value.
+EQ
+Equal to the specified value.
+NEQ
+Not equal to the specified value.
+BETWEEN
+Within the specified range. In your request, use key-value pairs to set
+highValue
+and
+value
+.Refer to
+the example below
+.
+IN
+Included within the specified list. Searches by exact match. In your request, include the list values in a
+values
+array. When searching a string property with this operator, values must be lowercase.Refer to
+the example below
+.
+NOT_IN
+Not included within the specified list. In your request, include the list values in a
+values
+array. When searching a string property with this operator, values must be lowercase.
+HAS_PROPERTY
+Has a value for the specified property.
+NOT_HAS_PROPERTY
+Doesn't have a value for the specified property.
+CONTAINS_TOKEN
+Contains a token. In your request, you can use wildcards (*) to complete a partial search. For example, use the value
+*@hubspot.com
+to retrieve contacts with a HubSpot email address.
+NOT_CONTAINS_TOKEN
+Doesn't contain a token.
+For example, you can use the
+BETWEEN
+operator to search for all tasks that were last modified within a specific time range:
+Copy code snippet
+curl https://api.hubapi.com/crm/v3/objects/tasks/search \
+--request POST \
+--header "Content-Type: application/json" \
+--header "authorization: Bearer YOUR_ACCESS_TOKEN" \
+--data '{
+"filterGroups":[{
+"filters":[
+{
+"propertyName":"hs_lastmodifieddate",
+"operator":"BETWEEN",
+"highValue": "1642672800000",
+"value":"1579514400000"
+}
+]
+}]
+}'
+xxxxxxxxxx
+16
+1
+curl
+https://api.hubapi.com/crm/v3/objects/tasks/search \
+2
+--request
+POST \
+3
+--header
+"Content-Type: application/json"
+\
+4
+--header
+"authorization: Bearer YOUR_ACCESS_TOKEN"
+\
+5
+--data
+'{
+6
+"filterGroups":[{
+7
+"filters":[
+8
+{
+9
+"propertyName":"hs_lastmodifieddate",
+10
+"operator":"BETWEEN",
+11
+"highValue": "1642672800000",
+12
+"value":"1579514400000"
+13
+}
+14
+]
+15
+}]
+16
+}'
+For another example, you can use the
+IN
+operator to search for companies that have specified values selected in a dropdown property.
+Copy code snippet
+curl https://api.hubapi.com/crm/v3/objects/companies/search \
+--request POST \
+--header "Content-Type: application/json" \
+--header "authorization: Bearer YOUR_ACCESS_TOKEN" \
+--data '{
+"filterGroups":[
+{
+"filters":[
+{
+"propertyName":"enumeration_property",
+"operator":"IN",
+"values": ["value_1", "value_2"]
+}
+]
+}
+],
+"properties": ["annualrevenue", "enumeration_property", "name"]
+}'
+xxxxxxxxxx
+18
+1
+curl
+https://api.hubapi.com/crm/v3/objects/companies/search \
+2
+--request
+POST \
+3
+--header
+"Content-Type: application/json"
+\
+4
+--header
+"authorization: Bearer YOUR_ACCESS_TOKEN"
+\
+5
+--data
+'{
+6
+"filterGroups":[
+7
+{
+8
+"filters":[
+9
+{
+10
+"propertyName":"enumeration_property",
+11
+"operator":"IN",
+12
+"values": ["value_1", "value_2"]
+13
+}
+14
+]
+15
+}
+16
+],
+17
+"properties": ["annualrevenue", "enumeration_property", "name"]
+18
+}'
+Search through associations
+Search for records that are associated with other specific records by using the pseudo-property
+associations.{objectType}
+.For example, the request below searches for all tickets associated with a contact that has the contact ID of
+123
+:
+Copy code snippet
+curl https://api.hubapi.com/crm/v3/objects/tickets/search \
+--request POST \
+--header "Content-Type: application/json" \
+--header "authorization: Bearer YOUR_ACCESS_TOKEN" \
+--data '{
+"filters": [
+{
+"propertyName": "associations.contact",
+"operator": "EQ",
+"value": "123"
+}
+]
+}'
+xxxxxxxxxx
+13
+1
+curl
+https://api.hubapi.com/crm/v3/objects/tickets/search \
+2
+--request
+POST \
+3
+--header
+"Content-Type: application/json"
+\
+4
+--header
+"authorization: Bearer YOUR_ACCESS_TOKEN"
+\
+5
+--data
+'{
+6
+"filters": [
+7
+{
+8
+"propertyName": "associations.contact",
+9
+"operator": "EQ",
+10
+"value": "123"
+11
+}
+12
+]
+13
+}'
+Please note:
+the option to search through custom object associations is not currently supported via search endpoints. To find custom object associations, you can use the
+associations API
+.
+Sort search results
+Use a sorting rule in the request body to list results in ascending or descending order. Only one sorting rule can be applied to any search.For example, the request below sorts returned contacts with most recently created first:
+Copy code snippet
+curl https://api.hubapi.com/crm/v3/objects/contacts/search \
+--request POST \
+--header "Content-Type: application/json" \
+--header "authorization: Bearer YOUR_ACCESS_TOKEN" \
+--data '{
+"sorts": [
+{
+"propertyName": "createdate",
+"direction": "DESCENDING"
+}
+]
+}'
+xxxxxxxxxx
+12
+1
+curl
+https://api.hubapi.com/crm/v3/objects/contacts/search \
+2
+--request
+POST \
+3
+--header
+"Content-Type: application/json"
+\
+4
+--header
+"authorization: Bearer YOUR_ACCESS_TOKEN"
+\
+5
+--data
+'{
+6
+"sorts": [
+7
+{
+8
+"propertyName": "createdate",
+9
+"direction": "DESCENDING"
+10
+}
+11
+]
+12
+}'
+Paging through results
+By default, the search endpoints will return pages of 10 records at a time. This can be changed by setting the
+limit
+parameter in the request body. The maximum number of supported objects per page is 200.For example, the request below would return pages containing 20 results each.
+Copy code snippet
+curl https://api.hubapi.com/crm/v3/objects/contacts/search \
+--request POST \
+--header "Content-Type: application/json" \
+--header "authorization: Bearer YOUR_ACCESS_TOKEN" \
+--data '{
+"limit": 20
+}'
+xxxxxxxxxx
+7
+1
+curl
+https://api.hubapi.com/crm/v3/objects/contacts/search \
+2
+--request
+POST \
+3
+--header
+"Content-Type: application/json"
+\
+4
+--header
+"authorization: Bearer YOUR_ACCESS_TOKEN"
+\
+5
+--data
+'{
+6
+"limit": 20
+7
+}'
+To access the next page of results, you must pass an
+after
+parameter provided in the
+paging.next.after
+property of the previous response. If the
+paging.next.after
+property isn’t provided, there are no additional results to display. You must format the value in the
+after
+parameter as an integer.For example, the request below would return the next page of results:
+Copy code snippet
+curl https://api.hubapi.com/crm/v3/objects/contacts/search \
+--request POST \
+--header "Content-Type: application/json" \
+--header "authorization: Bearer YOUR_ACCESS_TOKEN" \
+--data '{
+"after": "20"
+}'
+xxxxxxxxxx
+7
+1
+curl
+https://api.hubapi.com/crm/v3/objects/contacts/search \
+2
+--request
+POST \
+3
+--header
+"Content-Type: application/json"
+\
+4
+--header
+"authorization: Bearer YOUR_ACCESS_TOKEN"
+\
+5
+--data
+'{
+6
+"after": "20"
+7
+}'
+Limitations
+It may take a few moments for newly created or updated CRM objects to appear in search results.
+Archived CRM objects won’t appear in any search results.
+The search endpoints are
+rate limited
+to
+five
+requests per second.
+The maximum number of supported objects per page is 200.
+A query can contain a maximum of 3,000 characters. If the body of your request exceeds 3,000 characters, a 400 error will be returned.
+The search endpoints are limited to 10,000 total results for any given query. Attempting to page beyond 10,000 will result in a 400 error.
+When
+filtering
+, you can include a maximum of 5
+filterGroups
+with up to 6
+filters
+in each group, with a maximum of 18 filters in total.
+When searching for phone numbers, HubSpot uses special calculated properties to standardize the format. These properties all start with
+hs_searchable_calculated_*
+. As a part of this standardization, HubSpot only uses the area code and local number. You should refrain from including the country code in your search or filter criteria.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Limits tracking
+Object library
+Marketing
+Settings
+Legal
+BESbswy
+BESbswy

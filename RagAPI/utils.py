@@ -35,7 +35,9 @@ def read_file(file_path):
 
 
 def generate_documentation(file_content):
-    response = model.generate_content(f"Given file content of a python file, write a documentation in markdown format: {file_content}")
+    response = model.generate_content(f"""Given file content of a python file, write a documentation in markdown format
+    doncumentation should be precise and concise including examples and response and api and call and other required to understand the code
+    : {file_content}""")
     return response.text
 
 

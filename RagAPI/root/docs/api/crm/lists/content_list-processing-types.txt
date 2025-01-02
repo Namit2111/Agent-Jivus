@@ -54,6 +54,7 @@ CRM
 Lists
 Lists API
 Lists
+Overview endpoint reference
 Lists are a collection of records of the same object type that can be used for record segmentation, filtering, and grouping to serve your business needs. You can create contact, company, deal, or custom object lists. The v3 Lists API allows you to create, edit, and fetch lists.
 A list consists of a list definition and list memberships:
 List definition: stores essential information about the list.
@@ -981,7 +982,8 @@ Owners
 Pipelines
 Properties
 Search
-Object Library
+Limits tracking
+Object library
 Marketing
 Settings
 Legal

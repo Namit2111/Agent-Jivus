@@ -1,188 +1,149 @@
-# HubSpot CRM API: Calling Extensions SDK
+# HubSpot Calling Extensions SDK Documentation
 
-This document details the HubSpot Calling Extensions SDK, allowing developers to integrate custom calling options into HubSpot CRM records.
+This document details the HubSpot Calling Extensions SDK, allowing developers to integrate custom calling functionality into HubSpot CRM.
 
 ## Overview
 
-The Calling Extensions SDK enables apps to provide a custom calling experience directly from CRM records.  It consists of three main parts:
+The Calling Extensions SDK facilitates communication between your calling application and HubSpot.  It enables users to initiate calls directly from HubSpot records (Contacts, Companies, and potentially custom objects).  The integration comprises three key parts:
 
-* **Calling Extensions SDK (JavaScript):** Facilitates communication between your app and HubSpot.
-* **Calling Settings Endpoints:** Used to configure your app's settings for each connected HubSpot account.
-* **Calling IFrame:**  The interface your app presents to HubSpot users, configured via the settings endpoints.
+1. **Calling Extensions SDK (JavaScript):**  The core SDK enabling message exchange between your app and HubSpot.
+2. **Calling Settings Endpoints (API):**  Used to configure your app's settings for each connected HubSpot account.
+3. **Calling iFrame:**  The user interface displayed within HubSpot, configured via the settings endpoints.
 
-**Note:** Only outgoing calls are currently supported.  HubSpot now handles call engagement creation and updates automatically; manual management is no longer required.  For more on the in-app calling experience, see [this knowledge base article](LINK_TO_KNOWLEDGE_BASE_ARTICLE).
+
+**Note:** Currently, only outgoing calls are supported.
 
 
 ## Getting Started
 
-### Demo Apps
+### 1. Install the Demo App (Optional):
 
-Two demo apps are available for testing:
+This section describes how to install and run the provided demo apps to test the SDK.  These are not fully functional calling apps but provide examples.
 
-* **`demo-minimal-js`:** A minimal JavaScript, HTML, and CSS implementation.  SDK instantiation is shown in `index.js`.
-* **`demo-react-ts`:** A more realistic implementation using React, TypeScript, and Styled Components. SDK instantiation is in `useCti.ts`.
+**Prerequisites:** Node.js and npm (or yarn)
 
-**Note:** These demos use mock data and are not fully functional calling apps.
+**Installation:**
 
-
-### Installing the Demo App
-
-1. Install Node.js.
-2. Clone, fork, or download the ZIP of the repository.
-3. Navigate to the project's root directory.
-4. Run one of the following commands:
-
-   * **`demo-minimal-js`:**  `cd demos/demo-minimal-js && npm i && npm start`
-   * **`demo-react-ts`:** `cd demos/demo-react-ts && npm i && npm start`
-
-   This installs dependencies and starts the app, opening a browser tab at `https://localhost:9025/` (you may need to bypass a security warning).
+1. Clone the repository (or download the ZIP).
+2. Navigate to the demo app directory:
+    * `demo-minimal-js`: `cd demos/demo-minimal-js && npm i && npm start`
+    * `demo-react-ts`: `cd demos/demo-react-ts && npm i && npm start`
+3. The app will launch in your browser at `https://localhost:9025/`.  You may need to bypass a security warning.
 
 
-### Launching the Demo App from HubSpot
+### 2. Launch the Demo App from HubSpot:
 
-1. Navigate to HubSpot records (Contacts > Contacts or Contacts > Companies).
-2. Open your browser's developer console and run one of the following commands:
+1. Navigate to HubSpot Contacts or Companies.
+2. Open your browser's developer console.
+3. Set the `localStorage` item to indicate which demo app to load:
+    * **Installed Demo (demo-minimal-js or demo-react-ts):**  `localStorage.setItem('LocalSettings:Calling:installDemoWidget', 'local');`
+    * **Uninstalled demo-minimal-js:** `localStorage.setItem('LocalSettings:Calling:installDemoWidget', 'app:js');`
+    * **Uninstalled demo-react-ts:** `localStorage.setItem('LocalSettings:Calling:installDemoWidget', 'app');`
+4. Refresh the page.
+5. Click the "Call" icon, select the demo app from the dropdown, and initiate a call.  The console will display events.
 
-   * **Installed Demo:** `localStorage.setItem('LocalSettings:Calling:installDemoWidget', 'local');`
-   * **`demo-minimal-js` (uninstalled):** `localStorage.setItem('LocalSettings:Calling:installDemoWidget', 'app:js');`
-   * **`demo-react-ts` (uninstalled):** `localStorage.setItem('LocalSettings:Calling:installDemoWidget', 'app');`
+### 3. Install the Calling Extensions SDK:
 
-3. Refresh the page, click the "Call" icon, select the demo app from the "Call from" dropdown, and click "Call".
-
-
-### Installing the Calling Extensions SDK
-
-Add the SDK as a dependency:
+Add the SDK to your project using npm or yarn:
 
 * **npm:** `npm i --save @hubspot/calling-extensions-sdk`
 * **yarn:** `yarn add @hubspot/calling-extensions-sdk`
 
+## Using the SDK
 
-## Using the Calling Extensions SDK
+The SDK uses events for communication.  Your app sends messages to HubSpot using methods provided by the `CallingExtensions` object, and receives messages via event handlers.
 
-The SDK uses events for communication.  See the "Events" section for a complete list.
-
-### SDK Initialization
-
-Create a `CallingExtensions` object, defining behavior with an options object, including `eventHandlers`:
+### API: `CallingExtensions` Object
 
 ```javascript
 import CallingExtensions from "@hubspot/calling-extensions-sdk";
 
 const options = {
-  debugMode: boolean, // Log debug messages to the console
+  debugMode: true, // Optional: Log debug messages to the console
   eventHandlers: {
     onReady: () => { /* HubSpot is ready */ },
-    onDialNumber: event => { /* Dial number received from HubSpot */ },
-    onCreateEngagementSucceeded: event => { /* Engagement created successfully */ },
-    onEngagementCreatedFailed: event => { /* Engagement creation failed */ },
-    onUpdateEngagementSucceeded: event => { /* Engagement updated successfully */ },
-    onUpdateEngagementFailed: event => { /* Engagement update failed */ },
-    onVisibilityChanged: event => { /* Widget visibility changed */ }
+    onDialNumber: (event) => { /* Outbound call initiated */ },
+    onCreateEngagementSucceeded: (event) => { /* Engagement created successfully */ },
+    onCreateEngagementFailed: (event) => { /* Engagement creation failed */ },
+    onUpdateEngagementSucceeded: (event) => { /* Engagement updated successfully */ },
+    onUpdateEngagementFailed: (event) => { /* Engagement update failed */ },
+    onVisibilityChanged: (event) => { /* Widget visibility changed */ },
+    // ... other event handlers
   }
 };
 
 const extensions = new CallingExtensions(options);
 ```
 
-### Testing Your App
+### Events
 
-To launch the calling extensions iFrame, provide these parameters to HubSpot:
+#### Sending Messages to HubSpot
 
-```json
-{
-  "name": "string", // App name
-  "url": "string", // App URL
-  "width": number, // IFrame width
-  "height": number, // IFrame height
-  "isReady": boolean, // Ready for production (false during testing)
-  "supportsCustomObjects": true // Whether calls can originate from custom objects
-}
-```
+* `initialized(payload)`:  Signals the app's readiness.  `payload`: `{ isLoggedIn: boolean, engagementId: number }`
+* `userLoggedIn()`: User logged in.
+* `userLoggedOut()`: User logged out.
+* `outgoingCall(callInfo)`: Outgoing call initiated. `callInfo`: `{ phoneNumber: string, callStartTime: number, createEngagement: boolean, toNumber: string, fromNumber: string }`
+* `callAnswered(payload)`: Call answered. `payload`: `{ externalCallId: string }`
+* `callEnded(payload)`: Call ended. `payload`: `{ externalCallID: string, engagementId: number, callEndStatus: EndStatus }`  `EndStatus` is an enum (see documentation).
+* `callCompleted(data)`: Call completed. `data`: `{ engagementId: number, hideWidget: boolean, engagementProperties: { [key: string]: string }, externalCallId: number }`
+* `sendError(data)`: Error encountered. `data`: `{ message: string }`
+* `resizeWidget(data)`: Resize the widget. `data`: `{ height: number, width: number }`
 
-### Using the Calling Settings Endpoint
+#### Receiving Messages from HubSpot
 
-Use the API (e.g., Postman) to manage settings.  Replace `APP_ID` and `DEVELOPER_ACCOUNT_API_KEY` with your values.  `isReady: false` during testing.
+* `onReady(data)`: HubSpot is ready.  `data` includes `engagementId`, `iframeLocation`, `ownerId`, `portalId`, and `userId`.
+* `onDialNumber(data)`: Outbound call initiated by HubSpot.  `data` includes phone number, owner ID, object details, etc.
+* `onCreateEngagementSucceeded(event)`: Engagement created successfully.
+* `onCreateEngagementFailed(event)`: Engagement creation failed.
+* `onUpdateEngagementSucceeded(event)`: Engagement updated successfully.
+* `onUpdateEngagementFailed(event)`: Engagement update failed.
+* `onNavigateToRecordFailed(data)`: Navigation to a record failed. `data`: `{ engagementId: number, objectCoordinates: object }`
+* `onPublishToChannelSucceeded(data)`: Publishing to a channel succeeded.  `data`: `{ engagementId: number, externalCallId: string }`
+* `onPublishToChannelFailed(data)`: Publishing to a channel failed.  `data`: `{ engagementId: number, externalCallId: string }`
+* `onCallerIdMatchSucceeded(event)`: Caller ID match succeeded.
+* `onCallerIdMatchFailed(event)`: Caller ID match failed.
+* `onVisibilityChanged(data)`: Widget visibility changed. `data`: `{ isMinimized: boolean, isHidden: boolean }`
+* `defaultEventHandler(event)`: Default handler for unhandled events.
+
+
+### Calling Settings Endpoint (API)
+
+Use this API endpoint to configure your app's settings:
 
 ```bash
 curl --request POST \
---url 'https://api.hubapi.com/crm/v3/extensions/calling/APP_ID/settings?hapikey=DEVELOPER_ACCOUNT_API_KEY' \
---header 'accept: application/json' \
---header 'content-type: application/json' \
---data '{"name":"demo widget","url":"https://mywidget.com/widget","height":600,"width":400,"isReady":false}'
+  --url 'https://api.hubapi.com/crm/v3/extensions/calling/APP_ID/settings?hapikey=DEVELOPER_ACCOUNT_API_KEY' \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json' \
+  --data '{"name":"My App","url":"https://my-app.com","height":600,"width":400,"isReady":false}'
 ```
 
-This endpoint also supports PATCH, GET, and DELETE.
+Replace `APP_ID` and `DEVELOPER_ACCOUNT_API_KEY` with your app's ID and API key.  The `isReady` flag should be `false` during development and `true` for production.  The endpoint also supports `PATCH`, `GET`, and `DELETE` methods.
 
 
-### Overriding Extension Settings (localStorage)
+### LocalStorage Override (for testing)
 
-For testing, override settings in the browser's developer console:
+You can override settings during testing using localStorage:
 
 ```javascript
 const myExtensionSettings = {
   isReady: true,
-  name: 'My app name',
-  url: 'My local/qa/prod URL'
+  name: 'My App',
+  url: 'http://localhost:3000',
 };
 localStorage.setItem('LocalSettings:Calling:CallingExtensions', JSON.stringify(myExtensionSettings));
 ```
 
-### Preparing for Production
 
-Set `isReady` to `true` using the PATCH endpoint.
+## Production Deployment
 
-
-### Publishing to the HubSpot Marketplace
-
-Once ready, publish your app to the HubSpot Marketplace.  Details are available [here](LINK_TO_MARKETPLACE_DETAILS).
+1. Set `isReady` to `true` via the API.
+2. Publish your app to the HubSpot Marketplace (optional).
 
 
-## Events
+## Frequently Asked Questions (FAQ)
 
-### Sending Messages to HubSpot
-
-* `initialized`:  Soft phone ready.  Payload: `{ isLoggedIn: boolean, engagementId: number }`
-* `userLoggedIn`: User logged in.
-* `userLoggedOut`: User logged out.
-* `outgoingCall`: Outgoing call started.  Payload: `{ phoneNumber: string, callStartTime: number, createEngagement: boolean, toNumber: string, fromNumber: string }`
-* `callAnswered`: Call answered.  Payload: `{ externalCallId: string }`
-* `callEnded`: Call ended. Payload: `{ externalCallID: string, engagementId: number, callEndStatus: EndStatus }`
-* `callCompleted`: Call completed. Payload: `{ engagementId: number, hideWidget: boolean, engagementProperties: { [key: string]: string }, externalCallId: number }`
-* `sendError`: Error encountered. Payload: `{ message: string }`
-* `resizeWidget`: Resize the widget. Payload: `{ height: number, width: number }`
+Refer to the original document for the FAQ section.
 
 
-### Receiving Messages from HubSpot
-
-* `onReady`: HubSpot is ready.
-* `onDialNumber`: Outbound call initiated in HubSpot.
-* `onEngagementCreated`: (Deprecated; use `onCreateEngagementSucceeded`) Engagement created.
-* `onNavigateToRecordFailed`: Navigation to record failed.
-* `onPublishToChannelSucceeded`: Publishing to channel succeeded.
-* `onPublishToChannelFailed`: Publishing to channel failed.
-* `onCallerIdMatchSucceeded`: Caller ID match succeeded.
-* `onCallerIdMatchFailed`: Caller ID match failed.
-* `onCreateEngagementSucceeded`: Engagement creation succeeded.
-* `onCreateEngagementFailed`: Engagement creation failed.
-* `onVisibilityChanged`: Widget visibility changed.
-* `defaultEventHandler`: Default event handler.
-
-
-## Frequently Asked Questions
-
-* **Authentication:** Handled by the calling app.
-* **CDN Hosting:** Yes, via jsDeliver (example: `https://cdn.jsdelivr.net/npm/@hubspot/calling-extensions-sdk@0.2.2/dist/main.js`).
-* **Engagement Creation vs. Update:** HubSpot creates engagements for calls initiated within the HubSpot UI; apps update them.  Apps create engagements for calls outside the HubSpot UI.
-* **Required Scopes:** `contacts` and `timeline`.
-* **Existing Apps:**  Functionality can be added to existing marketplace apps.
-* **Integrating Existing Softphones:** Easily integrable.
-* **Multiple Integrations:** Yes, users can use multiple integrations simultaneously.
-* **Free User Installation:** Yes.
-* **Automatic Integration Appearance:** Yes, for updated apps.
-* **User Installation/Uninstallation:** Only users with necessary permissions.
-* **Custom Calling Properties:** Yes, via the properties API.
-* **Calls from Custom Objects:** Yes, if using the SDK to create calls and setting `createEngagement: true` in the `outgoingCall` event.
-
-
-This markdown documentation provides a comprehensive overview of the HubSpot CRM API Calling Extensions SDK, including setup, usage, event handling, and frequently asked questions.  Remember to replace placeholder links (`LINK_TO_KNOWLEDGE_BASE_ARTICLE`, `LINK_TO_MARKETPLACE_DETAILS`, etc.) with the actual URLs.
+This markdown documentation provides a more structured and easier-to-read version of the provided text, emphasizing clarity and ease of use for developers.  Remember to always refer to the official HubSpot documentation for the most up-to-date information.

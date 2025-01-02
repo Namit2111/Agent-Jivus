@@ -54,14 +54,20 @@ engagements APIs.
 You can also
 import records and activities using the guided import tool in HubSpot
 .
-Before starting your import, learn more about the
-objects and activities that can be imported, as well as file and property requirements.
+Before starting your import, learn more about:
+File requirements
+Required properties for record and activity imports
+Required properties for marketing event participant imports
+Please note
+: to create custom events or associate events with records, use the
+custom events API
+instead of importing.
 Start an import
 You can start an import by making a
 POST
 request to
 /crm/v3/imports
-with a request body that specifies how to map the columns of your import file to the associated CRM properties in HubSpot.
+with a request body that specifies how to map the columns of your import file to the associated properties in HubSpot.
 API imports are sent as form-data type requests, with the request body containing following fields:
 importRequest
 : a text field that contains the request JSON.
@@ -74,7 +80,7 @@ multipart/form-data
 .
 The screenshot below shows what your request might look like when using an application like Postman:
 Format the importRequest data
-In the request JSON, define the import file details, including mapping the spreadsheet's columns to HubSpot data. Your request JSON should include the following fields:
+In your request, define the import file details, including mapping the spreadsheet's columns to HubSpot data. Your request should include the following fields:
 name
 : the name of the import. In HubSpot, this is the name
 displayed in the imports tool
@@ -163,8 +169,8 @@ toColumnObjectTypeId
 field is used.
 columnType:
 used to specify that a column contains a
-unique identifier property
-.-,Unique%20identifier,-%3A%20a%20property) Depending on the property and goal of the import, use one of the following values:
+unique identifier property.
+Depending on the property and goal of the import, use one of the following values:
 HUBSPOT_OBJECT_ID:
 the ID of a record. For example, your contact import file might contain a
 Record ID
@@ -404,6 +410,317 @@ true
 36
 ]
 37
+}
+Below is another example, importing one file to create and update marketing event partcipants:
+JSON
+JSON
+More
+Copy code snippet
+// Example POST to https://api.hubspot.com/crm/v3/imports
+// Content-Type header set to multipart/form-data
+{
+"name": "Marketing Events Import Example",
+"marketingEventObjectId": 377224141223,
+"importOperations": {
+"0-1": "UPSERT",
+"0-54": "CREATE"
+},
+"dateFormat": "YEAR_MONTH_DAY",
+"timeZone": "America/New_York",
+"files": [
+{
+"fileName": "Marketing Events Import Example.csv",
+"fileFormat": "CSV",
+"fileImportPage": {
+"hasHeader": true,
+"columnMappings": [
+{
+"columnName": "First Name",
+"columnObjectTypeId": "0-1",
+"propertyName": "firstname",
+"columnType": "STANDARD"
+},
+{
+"columnName": "Last Name",
+"columnObjectTypeId": "0-1",
+"propertyName": "lastname",
+"columnType": "STANDARD"
+},
+{
+"columnName": "Email",
+"columnObjectTypeId": "0-1",
+"propertyName": "email",
+"columnType": "HUBSPOT_ALTERNATE_ID"
+},
+{
+"columnName": "Registered",
+"columnObjectTypeId": "0-54",
+"columnType": "EVENT_TIMESTAMP",
+"marketingEventSubmissionType": "REGISTERED"
+},
+{
+"columnName": "Attended",
+"columnObjectTypeId": "0-54",
+"columnType": "EVENT_TIMESTAMP",
+"marketingEventSubmissionType": "JOINED"
+},
+{
+"columnName": "Left",
+"columnObjectTypeId": "0-54",
+"columnType": "EVENT_TIMESTAMP",
+"marketingEventSubmissionType": "LEFT"
+},
+{
+"columnName": "Cancelled",
+"columnObjectTypeId": "0-54",
+"columnType": "EVENT_TIMESTAMP",
+"marketingEventSubmissionType": "CANCELLED"
+}
+]
+}
+}
+]
+}
+xxxxxxxxxx
+66
+1
+// Example POST to https://api.hubspot.com/crm/v3/imports
+2
+// Content-Type header set to multipart/form-data
+3
+​
+4
+{
+5
+"name"
+:
+"Marketing Events Import Example"
+,
+6
+"marketingEventObjectId"
+:
+377224141223
+,
+7
+"importOperations"
+: {
+8
+"0-1"
+:
+"UPSERT"
+,
+9
+"0-54"
+:
+"CREATE"
+10
+},
+11
+"dateFormat"
+:
+"YEAR_MONTH_DAY"
+,
+12
+"timeZone"
+:
+"America/New_York"
+,
+13
+"files"
+: [
+14
+{
+15
+"fileName"
+:
+"Marketing Events Import Example.csv"
+,
+16
+"fileFormat"
+:
+"CSV"
+,
+17
+"fileImportPage"
+: {
+18
+"hasHeader"
+:
+true
+,
+19
+"columnMappings"
+: [
+20
+{
+21
+"columnName"
+:
+"First Name"
+,
+22
+"columnObjectTypeId"
+:
+"0-1"
+,
+23
+"propertyName"
+:
+"firstname"
+,
+24
+"columnType"
+:
+"STANDARD"
+25
+},
+26
+{
+27
+"columnName"
+:
+"Last Name"
+,
+28
+"columnObjectTypeId"
+:
+"0-1"
+,
+29
+"propertyName"
+:
+"lastname"
+,
+30
+"columnType"
+:
+"STANDARD"
+31
+},
+32
+{
+33
+"columnName"
+:
+"Email"
+,
+34
+"columnObjectTypeId"
+:
+"0-1"
+,
+35
+"propertyName"
+:
+"email"
+,
+36
+"columnType"
+:
+"HUBSPOT_ALTERNATE_ID"
+37
+},
+38
+{
+39
+"columnName"
+:
+"Registered"
+,
+40
+"columnObjectTypeId"
+:
+"0-54"
+,
+41
+"columnType"
+:
+"EVENT_TIMESTAMP"
+,
+42
+"marketingEventSubmissionType"
+:
+"REGISTERED"
+43
+},
+44
+{
+45
+"columnName"
+:
+"Attended"
+,
+46
+"columnObjectTypeId"
+:
+"0-54"
+,
+47
+"columnType"
+:
+"EVENT_TIMESTAMP"
+,
+48
+"marketingEventSubmissionType"
+:
+"JOINED"
+49
+},
+50
+{
+51
+"columnName"
+:
+"Left"
+,
+52
+"columnObjectTypeId"
+:
+"0-54"
+,
+53
+"columnType"
+:
+"EVENT_TIMESTAMP"
+,
+54
+"marketingEventSubmissionType"
+:
+"LEFT"
+55
+},
+56
+{
+57
+"columnName"
+:
+"Cancelled"
+,
+58
+"columnObjectTypeId"
+:
+"0-54"
+,
+59
+"columnType"
+:
+"EVENT_TIMESTAMP"
+,
+60
+"marketingEventSubmissionType"
+:
+"CANCELLED"
+61
+}
+62
+]
+63
+}
+64
+}
+65
+]
+66
 }
 Import one file with multiple objects
 Below is an example request body of importing and associating contacts and companies in one file with association labels:
@@ -890,8 +1207,8 @@ states.
 DEFERRED
 : The maximum number of imports (three) are processing at the same time. The import will start once one of the other imports finishes processing.
 Learn more about paging and limiting results in the
-Endpoints
-tab at the top of this article.
+reference documentation
+.
 Please note
 : when retrieving imports using a private app access token, the response will only include imports performed by that private app. Imports completed in HubSpot or via another private app will not be returned.
 Cancel an import
@@ -1268,7 +1585,8 @@ Owners
 Pipelines
 Properties
 Search
-Object Library
+Limits tracking
+Object library
 Marketing
 Settings
 Legal

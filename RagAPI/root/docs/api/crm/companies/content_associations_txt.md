@@ -1,55 +1,31 @@
 # HubSpot CRM API: Companies
 
-This document details the HubSpot API endpoints for managing company records.  Companies in HubSpot store information about organizations that interact with your business.  These endpoints allow you to create, manage, and synchronize company data between HubSpot and other systems.
+This document details the HubSpot CRM API endpoints for managing companies.  Companies in HubSpot store information about organizations interacting with your business.  This API allows creation, management, and synchronization of company data between HubSpot and external systems.
+
 
 ## Understanding the CRM
 
-For a comprehensive understanding of objects, records, properties, and associations within the HubSpot CRM API, refer to the [Understanding the CRM](link-to-understanding-crm-guide) guide.  For general information on managing your CRM database, see [Managing your CRM database](link-to-managing-crm-database).
+For a comprehensive understanding of HubSpot's object, record, property, and association APIs, refer to the [Understanding the CRM](link_to_understanding_crm_guide) guide.  For general CRM database management, see [Managing your CRM database](link_to_crm_management_guide).
 
 
-## Create Companies
+## API Endpoints
 
-To create new companies, send a `POST` request to `/crm/v3/objects/companies`.
-
-Include your company data within a `properties` object. You can also include an `associations` object to associate the new company with existing records (e.g., contacts, deals) or activities (e.g., meetings, notes).
-
-### Properties
-
-Company details are stored in properties.  HubSpot provides [default company properties](link-to-default-properties), but you can also [create custom properties](link-to-creating-custom-properties).
-
-When creating a company, include at least one of the following properties:
-
-* `name`
-* `domain`
-
-It's strongly recommended to always include `domain` as it's the primary unique identifier, preventing duplicate companies.  For companies with multiple domains, use the `hs_additional_domains` field, separating domains with semicolons (e.g., `"hs_additional_domains": "domain.com;domain2.com;domain3.com"`).
-
-To view all available properties, send a `GET` request to `/crm/v3/properties/companies`.  Learn more about the [properties API](link-to-properties-api).
-
-**Note:** If including `lifecyclestage`, use the internal name (not the label).  Internal names for default stages are text values (e.g., `"subscriber"`, `"marketingqualifiedlead"`); custom stage internal names are numeric values. Find a stage's internal ID in your [lifecycle stage settings](link-to-lifecycle-stage-settings) or by retrieving the lifecycle stage property via the API.
+All endpoints are under the `/crm/v3/objects/companies` base path unless otherwise specified.
 
 
-**Example Request Body (JSON):**
+### 1. Create Companies
 
-```json
-{
-  "properties": {
-    "name": "HubSpot",
-    "domain": "hubspot.com",
-    "city": "Cambridge",
-    "industry": "Technology",
-    "phone": "555-555-555",
-    "state": "Massachusetts",
-    "lifecyclestage": "51439524"
-  }
-}
-```
+**Endpoint:** `/crm/v3/objects/companies`
 
-### Associations
+**Method:** `POST`
 
-When creating a company, associate it with existing records or activities using the `associations` object.
+**Request Body:** JSON
 
-**Example Request Body (JSON):**
+This endpoint creates new company records.  The request body must include a `properties` object containing company details.  An optional `associations` object can be included to associate the new company with existing records (contacts, deals) or activities (meetings, notes).
+
+**Required Properties:** At least one of `name` or `domain` is required.  `domain` is strongly recommended as the primary unique identifier to prevent duplicates. Multiple domains can be added using the `hs_additional_domains` property (e.g., `"hs_additional_domains": "domain.com;domain2.com"`).
+
+**Example Request Body (with associations):**
 
 ```json
 {
@@ -89,95 +65,123 @@ When creating a company, associate it with existing records or activities using 
 }
 ```
 
-* **`to`:** The record or activity ID to associate.
-* **`types`:** The association type. Includes `associationCategory` and `associationTypeId`.  See [default association type IDs](link-to-default-association-types) or use the [associations API](link-to-associations-api) for custom types.
+**Response:**  A JSON object containing the newly created company's details, including its ID.
 
 
-## Retrieve Companies
+### 2. Retrieve Companies
 
-Retrieve companies individually or in batches.
+**Individual Company:**
 
-* **Individual Company:** `GET /crm/v3/objects/companies/{companyId}`
-* **List of Companies:** `GET /crm/v3/objects/companies`
-* **Batch Read:** `POST /crm/v3/objects/companies/batch/read` (cannot retrieve associations)
+**Endpoint:** `/crm/v3/objects/companies/{companyId}`
 
+**Method:** `GET`
 
 **Query Parameters:**
 
-* **`properties`:** Comma-separated list of properties to return.
-* **`propertiesWithHistory`:** Comma-separated list of properties to return, including historical values.
-* **`associations`:** Comma-separated list of associated objects to retrieve IDs for.
-* **`idProperty` (Batch Read Only):**  Use a custom unique identifier property instead of the record ID (`hs_object_id`).
+* `properties`: Comma-separated list of properties to return.
+* `propertiesWithHistory`: Comma-separated list of properties to return, including historical values.
+* `associations`: Comma-separated list of associated objects to retrieve IDs for.
 
 
-**Example Batch Read Request Body (JSON - using record IDs):**
+**Batch Companies:**
+
+**Endpoint:** `/crm/v3/objects/companies/batch/read`
+
+**Method:** `POST`
+
+**Request Body:** JSON
+
+This endpoint allows retrieving multiple companies by record ID or a custom unique identifier property.  Associations cannot be retrieved using this endpoint.
+
+**Request Body Parameters:**
+
+* `properties`: Comma-separated list of properties to return.
+* `propertiesWithHistory`: Comma-separated list of properties to return, including historical values.
+* `inputs`: Array of objects, each with an `id` property representing the company ID or custom unique identifier.
+* `idProperty`: (Optional) The name of the custom unique identifier property to use for lookup.  Defaults to `hs_object_id` (record ID).
+
+
+**Example Request Body (Batch, with record IDs):**
 
 ```json
 {
   "properties": ["name", "domain"],
   "inputs": [
-    { "id": "56789" },
-    { "id": "23456" }
+    {"id": "56789"},
+    {"id": "23456"}
   ]
 }
 ```
 
-**Example Batch Read Request Body (JSON - using a custom unique property):**
+**Example Request Body (Batch, with custom unique identifier):**
 
 ```json
 {
   "properties": ["name", "domain"],
   "idProperty": "uniquepropertyexample",
   "inputs": [
-    { "id": "abc" },
-    { "id": "def" }
+    {"id": "abc"},
+    {"id": "def"}
   ]
 }
 ```
 
-**Example Batch Read Request Body (JSON - current and historical values):**
+**Response:**  A JSON object containing an array of company details.
+
+
+### 3. Update Companies
+
+**Endpoint:** `/crm/v3/objects/companies/{companyId}`
+
+**Method:** `PATCH`
+
+**Request Body:** JSON
+
+Updates an existing company. Include only the properties you wish to modify.  Note the restrictions on updating `lifecyclestage`.
+
+
+**Example Request Body:**
 
 ```json
 {
-  "propertiesWithHistory": ["name"],
-  "inputs": [
-    { "id": "56789" },
-    { "id": "23456" }
-  ]
+  "properties": {
+    "name": "Updated Company Name",
+    "city": "New City"
+  }
 }
 ```
 
-
-## Update Companies
-
-Update companies individually or in batches. Use the company's record ID for updates.
-
-* **Individual Company:** `PATCH /crm/v3/objects/companies/{companyId}`
-
-**Note:** When updating `lifecyclestage`, you can only move *forward* in the stage order. To move backward, clear the existing value manually, via a workflow, or through an integration.
+**Response:** A JSON object containing the updated company's details.
 
 
-## Associate Existing Companies
+### 4. Associate Existing Companies
 
-Associate a company with other CRM records or activities:
+**Endpoint:** `/crm/v3/objects/companies/{companyId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
 
-`PUT /crm/v3/objects/companies/{companyId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
+**Method:** `PUT`
 
-Retrieve `associationTypeId` from [default values](link-to-default-association-types) or via `GET /crm/v4/associations/{fromObjectType}/{toObjectType}/labels`.  Learn more in the [associations API](link-to-associations-api).
-
-
-## Remove an Association
-
-Remove an association:
-
-`DELETE /crm/v3/objects/companies/{companyId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
+Associates an existing company with other CRM records or activities.  `associationTypeId` can be found in the [list of default values](link_to_association_type_ids) or retrieved via the associations API.
 
 
-## Pin an Activity
+### 5. Remove Association
 
-Pin an activity to a company record using the `hs_pinned_engagement_id` property (requires the activity ID from the [engagements APIs](link-to-engagements-api)).  Only one activity can be pinned per record; the activity must already be associated with the company.
+**Endpoint:** `/crm/v3/objects/companies/{companyId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
 
-**Example Request Body (JSON - PATCH request to update):**
+**Method:** `DELETE`
+
+Removes an association between a company and another record or activity.
+
+
+### 6. Pin an Activity
+
+**Endpoint:** `/crm/v3/objects/companies/{companyId}`
+
+**Method:** `PATCH`
+
+Pins an activity to a company record using the `hs_pinned_engagement_id` property.  The activity ID must be obtained via the engagements APIs and must already be associated with the company.
+
+
+**Example Request Body:**
 
 ```json
 {
@@ -187,37 +191,29 @@ Pin an activity to a company record using the `hs_pinned_engagement_id` property
 }
 ```
 
-**Example Request Body (JSON - POST request to create and pin):**
 
-```json
-{
-  "properties": {
-    "domain": "example.com",
-    "name": "Example Company",
-    "hs_pinned_engagement_id": 123456789
-  },
-  "associations": [
-    {
-      "to": { "id": 123456789 },
-      "types": [
-        {
-          "associationCategory": "HUBSPOT_DEFINED",
-          "associationTypeId": 189
-        }
-      ]
-    }
-  ]
-}
-```
+### 7. Delete Companies
+
+**Endpoint:** `/crm/v3/objects/companies/{companyId}`
+
+**Method:** `DELETE`
+
+Deletes a company (moves it to the recycling bin).  See reference documentation for batch deletion.
 
 
-## Delete Companies
+## Properties API
 
-Delete companies individually or in batches (moves them to the recycling bin).  You can later [restore the company](link-to-restoring-companies) within HubSpot.
-
-* **Individual Company:** `DELETE /crm/v3/objects/companies/{companyId}`
-
-See the [reference documentation](link-to-batch-delete-docs) for batch deletion.
+Retrieve a list of available company properties using a `GET` request to `/crm/v3/properties/companies`.  See the [properties API documentation](link_to_properties_api) for more details.
 
 
-**(Remember to replace placeholder links like `link-to-understanding-crm-guide` with the actual links.)**
+## Associations API
+
+For more information on associations, refer to the [associations API documentation](link_to_associations_api).
+
+
+##  Error Handling
+
+The API responses will include standard HTTP status codes and JSON error messages indicating success or failure.  Refer to the HubSpot API documentation for detailed error codes and handling.
+
+
+**Note:** Replace placeholders like `{companyId}`, `{toObjectType}`, `{toObjectId}`, and `{associationTypeId}` with actual values.  Remember to include your HubSpot API key in the request headers.  Links to referenced guides and API documentation need to be replaced with the actual URLs.

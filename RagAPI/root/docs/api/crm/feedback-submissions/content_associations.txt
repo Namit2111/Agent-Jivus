@@ -1,0 +1,149 @@
+CRM API | Feedback Submissions | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Retrieve feedback survey submissions
+Feedback submission properties
+Associations
+API Guides
+CRM
+Objects
+CRM API | Feedback Submissions
+Please note:
+this API is currently under development and is subject to change based on testing and feedback. By using these endpoints you agree to adhere to HubSpot's
+Developer Terms
+&
+Developer Beta Terms
+. You also acknowledge and understand the risk associated with testing an unstable API.
+Feedback Submissions (BETA)
+Feedback submissions endpoint reference
+In HubSpot, feedback submissions store information submitted to a feedback survey. Surveys in HubSpot include
+Net Promoter Score (NPS)
+,
+Customer Satisfaction (CSAT)
+,
+Customer Effort Score (CES)
+, and
+custom surveys
+. Using the feedback submission endpoints, you can retrieve submission data about your feedback surveys.
+Learn more about objects, properties, and associations APIs in the
+Understanding the CRM
+guide.
+Please note
+: the feedback submissions endpoints are currently read only. Feedback submissions cannot be submitted or edited through the API.
+Retrieve feedback survey submissions
+To view details about your feedback survey submissions, you can retrieve submission data in bulk for multiple surveys, or for an individual survey. For example, you can use the API to see all survey responses for a specific NPS survey.
+To retrieve submissions, make a
+GET
+request to
+/crm/v3/objects/feedback_submissions/{feedbackSubmissionId}
+. By default, the following properties are returned for each submission:
+hs_createdate
+,
+hs_lastmodifieddate
+, and
+hs_object_id
+, but you also can retrieve additional
+properties
+.
+For example, to retrieve survey submissions with the source and sentiment of the submissions, your request URL would look like:
+https://api.hubspot.com/crm/v3/objects/feedback_submissions?properties=hs_sentiment,hs_survey_channel
+.
+Feedback submission properties
+Feedback submissions have
+default properties
+that contain information about the survey, submission answers, and the date the survey was submitted. You can also
+create custom submissions properties
+.
+Feedback submissions properties
+cannot
+be created or edited via API. You can only create properties in the
+feedback surveys tool within HubSpot
+, and the properties cannot be edited after creation.
+Associations
+Feedback submissions can be associated with contact and ticket records. Learn how to associate objects with the
+associations API.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+Custom objects
+Companies
+Contacts
+Deal splits
+Beta
+Deals
+Feedback submissions
+Goals
+New
+Leads
+Line items
+Products
+Tickets
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Limits tracking
+Object library
+Marketing
+Settings
+Legal

@@ -1,0 +1,1520 @@
+CRM API | Quotes | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Overview
+Create a quote
+Quote owner
+Enable e-signatures
+Enable payments
+Adding associations
+Retrieving IDs for associations
+Creating associations
+Associating quote signers
+Create a quote with associations (single request)
+Update quote state
+Retrieve quotes
+Properties set by quote state
+Scopes
+API Guides
+CRM
+Commerce
+CRM API | Quotes
+Quotes
+Quotes endpoint reference
+Use the quotes API to create, manage, and retrieve sales quotes for sharing pricing information with potential buyers. Once configured, a quote can be shared with a buyer either at a specified URL or through PDF. Users can also
+manage quotes in HubSpot
+to add details, update associations, and more.
+If you’ve set up either
+HubSpot payments
+or
+Stripe payment processing
+, you can configure a quote to be payable through this API. Learn more about
+payable quotes
+.
+Example use case:
+You need to create a contract proposal for a customer who is interested in purchasing one of your annual SEO auditing service packages.
+Below, learn how to create a quote through the API and configure its various properties, associations, states, and more.
+Overview
+The quote creation process can be broken up into the following steps:
+Create a quote:
+create a quote with a few details, such as name and expiration date. You can also configure the quote to
+enable e-signatures
+and
+payments
+.
+Set up associations:
+associate the quote with other types of CRM objects, such as line items, a quote template, a deal, and more. During the next step, the quote will inherit property values from some of these associated records as well as the account's settings.
+Set the quote state:
+set the quote's state to reflect its readiness to be shared with buyers. When you set the quote's state, such as making it an editable draft or fully published and publicly accessible quote, it will
+inherit certain properties
+from its associated CRM records and account settings.
+Share the quote:
+once a quote has been published, you can share it with your buyers.
+Create a quote
+To create a quote, you'll first configure its basic details by making a
+POST
+request to
+/crm/v3/objects/quotes
+. Later, you'll make a separate call to associate the quote with other objects, such as the quote template, line items, or a deal.
+Depending on your preferred workflow, you can instead
+create a quote with associations through one POST request
+.
+In the post body, include the following required properties to configure its basic details.
+hs_title
+string
+(required)
+The name of the quote.
+hs_expiration_date
+string
+(required)
+The date that the quote expires.
+The above are just the minimum required properties to get a quote started but
+other properties
+are required to publish a quote. To see all available quote properties, make a
+GET
+request to
+crm/v3/properties/quotes
+. Learn more about the
+properties API
+.
+Copy code snippet
+// example POST request body
+{
+"properties": {
+"hs_title": "CustomerName - annual SEO audit",
+"hs_expiration_date": "2023-12-10"
+}
+}
+1
+// example POST request body
+2
+{
+3
+"properties"
+: {
+4
+"hs_title"
+:
+"CustomerName - annual SEO audit"
+,
+5
+"hs_expiration_date"
+:
+"2023-12-10"
+6
+}
+7
+}
+The response will include an
+id
+, which you'll use to continue configuring the quote. You can update quote properties at any time by making a
+PATCH
+request to
+/crm/v3/objects/quotes/{quoteId}
+.
+Quote owner
+Setting the
+hubspot_owner_id
+property manually isn't possible due to it being a calculated property, and any values will be overridden. When using quotes, the property works as follows:
+If a
+deal is associated with the quote
+, the
+hubspot_owner_id
+property will reflect the
+hs_associated_deal_owner_id
+property (
+hs_associated_deal_owner_id
+is a calculated property).
+If a deal isn't associated with the quote, the
+hubspot_owner_id
+property will reflect the
+hs_quote_owner_id
+property.
+Enable e-signatures
+To enable e-signatures on the quote, include the
+hs_esign_enabled
+boolean property in your request body with a value of
+true
+. Note that you will not be able to add countersigners through the API, so those will need to be added in HubSpot before publishing the quote. You also cannot publish a quote with e-sign enabled if you've
+exceeded your monthly e-signature limit
+.
+Copy code snippet
+// example POST request body
+{
+"properties": {
+"hs_title": "CustomerName - annual SEO audit",
+"hs_expiration_date": "2023-12-10",
+"hs_esign_enabled": "true"
+}
+}
+xxxxxxxxxx
+8
+1
+// example POST request body
+2
+{
+3
+"properties"
+: {
+4
+"hs_title"
+:
+"CustomerName - annual SEO audit"
+,
+5
+"hs_expiration_date"
+:
+"2023-12-10"
+,
+6
+"hs_esign_enabled"
+:
+"true"
+7
+}
+8
+}
+Later, you'll need to associate the quote with the quote signers. While the contacts signing the quote exist as contacts in HubSpot, they're stored as a separate association type from contacts. Learn more about
+associating quotes with quote signers
+.
+Enable payments
+To turn on payments on a quote, include the
+hs_payment_enabled
+boolean property in your request body with a value of
+true
+. Depending on your payment processor and accepted payment methods, you’ll also need to set
+hs_payment_type
+and
+hs_allowed_payment_methods
+.
+Please note:
+the HubSpot account must have either
+HubSpot payments
+or
+Stripe payment processing
+set up before using this capability.
+Parameter
+Type
+Description
+hs_payment_enabled
+Boolean
+When set to
+true
+, enables the quote to collect payment using either HubSpot payments or Stripe payment processing. Default is
+false
+.
+hs_payment_type
+Enumeration
+Determines which payment processor to use. Value can be either
+HUBSPOT
+or
+BYO_STRIPE
+.
+hs_allowed_payment_methods
+Enumeration
+The payment methods to be used (e.g., credit card).
+hs_collect_billing_address
+Boolean
+When set to
+true
+, allows the buyer to enter their billing address during checkout.
+hs_collect_shipping_address
+Boolean
+When set to
+true
+, allows the buyer to enter their shipping address during checkout.
+For example, to create a quote and enable HubSpot payments via credit/debit card or ACH, your request would look like:
+Copy code snippet
+// example POST request body
+{
+"properties": {
+"hs_title": "CustomerName - annual SEO audit",
+"hs_expiration_date": "2023-12-10",
+"hs_payment_enabled": "true",
+"hs_payment_type": "HUBSPOT",
+"hs_allowed_payment_methods": "CREDIT_OR_DEBIT_CARD;ACH"
+}
+}
+xxxxxxxxxx
+10
+1
+// example POST request body
+2
+{
+3
+"properties"
+: {
+4
+"hs_title"
+:
+"CustomerName - annual SEO audit"
+,
+5
+"hs_expiration_date"
+:
+"2023-12-10"
+,
+6
+"hs_payment_enabled"
+:
+"true"
+,
+7
+"hs_payment_type"
+:
+"HUBSPOT"
+,
+8
+"hs_allowed_payment_methods"
+:
+"CREDIT_OR_DEBIT_CARD;ACH"
+9
+}
+10
+}
+To track payment, HubSpot will automatically update the
+hs_payment_status
+and
+hs_payment_date
+properties:
+When you publish a quote with payments enabled, HubSpot will automatically set the
+hs_payment_status
+property to
+PENDING
+.
+If using ACH, when the payment is processed, HubSpot will automatically set the
+hs_payment_status
+property to
+PROCESSING
+.
+When the payment is confirmed, HubSpot will automatically set the
+hs_payment_status
+property to
+PAID
+.
+Once the quote is paid, HubSpot will automatically set
+hs_payment_date
+to the date and time that the payment was confirmed.
+Once payment is confirmed, the payment is automatically associated to the quote. If you would like to retrieve more information about the payment, refer to the
+Payments API
+.
+Adding associations
+To create a complete quote, you'll need to associate it with other CRM records, such as line items, using the
+associations API
+. The table below shows which CRM record associations are required for a complete quote, and which are optional. Continue reading to learn more about retrieving IDs and using them to create the needed associations.
+Object type
+Required
+Description
+Line items
+Yes
+The goods and/or services being sold through the quote. You can create line items from
+products in your product library
+or create custom standalone line items.
+Quote template
+Yes
+The template that renders the quote, along with providing some default configuration settings for the quote, such as language. Each quote can be associated with one template.
+Deal
+Yes
+The deal record for tracking revenue and sales lifecycle. A quote inherits values from the associated deal, including the owner and currency. Each quote can be associated with one deal.
+Contact
+No
+Specific buyers that you're addressing in the quote.
+Company
+No
+A specific company that you're addressing in the quote. Each quote can be associated with one company.
+Discounts
+,
+fees
+, and
+taxes
+No
+Any discounts, fees, and taxes to be applied at checkout. When determining the total quote amount, HubSpot first applies discounts, followed by fees, then taxes. You can use the
+hs_sort_order
+field to reorder objects of the same type. Can be set to fixed values or percentages by setting
+hs_type
+to either
+FIXED
+or
+PERCENT
+.
+Retrieving IDs for associations
+To make each association, you'll first need to retrieve the ID of each object you want to associate. To retrieve each ID, you'll make a
+GET
+request to the relevant object endpoint, which follows the same pattern across each CRM object. When making each request, you can also include a
+properties
+query parameter to return specific properties when needed. Below are example
+GET
+requests for each type of object.
+HubL
+Shell script
+HubL
+Shell script
+More
+Copy code snippet
+GET request for line items
+/crm/v3/objects/line_items?properties=name
+GET request for quote templates
+/crm/v3/objects/quote_template?properties=hs_name
+GET request for deals
+/crm/v3/objects/deals?properties=dealname
+GET request for contacts
+/crm/v3/objects/contacts?properties=email
+GET request for companies
+/crm/v3/objects/companies?properties=name
+GET request for discounts
+crm/v3/objects/discounts?properties=hs_type,hs_value
+GET request for fees
+crm/v3/objects/fees?properties=hs_type,hs_value
+GET request for taxes
+crm/v3/objects/taxes?properties=hs_type,hs_value
+​
+x
+1
+GET request for line items
+2
+/crm/v3/objects/line_items?properties=name
+3
+​
+4
+GET request for quote templates
+5
+/crm/v3/objects/quote_template?properties=hs_name
+6
+​
+7
+GET request for deals
+8
+/crm/v3/objects/deals?properties=dealname
+9
+​
+10
+GET request for contacts
+11
+/crm/v3/objects/contacts?properties=email
+12
+​
+13
+GET request for companies
+14
+/crm/v3/objects/companies?properties=name
+15
+​
+16
+GET request for discounts
+17
+crm/v3/objects/discounts?properties=hs_type,hs_value
+18
+​
+19
+GET request for fees
+20
+crm/v3/objects/fees?properties=hs_type,hs_value
+21
+​
+22
+GET request for taxes
+23
+crm/v3/objects/taxes?properties=hs_type,hs_value
+Each successful call will return a
+200
+response with details for each fetched object type. You'll use the value in the
+id
+field to set associations in the next step.
+Copy code snippet
+// Example quote template GET response
+{
+"results": [
+{
+"id": "235425923863",
+"properties": {
+"hs_createdate": "2023-06-12T16:27:32.794Z",
+"hs_lastmodifieddate": "2023-06-12T16:27:32.794Z",
+"hs_name": "Default Basic",
+"hs_object_id": "235425923863"
+},
+"createdAt": "2023-06-12T16:27:32.794Z",
+"updatedAt": "2023-06-12T16:27:32.794Z",
+"archived": false
+},
+{
+"id": "235425923864",
+"properties": {
+"hs_createdate": "2023-06-12T16:27:32.794Z",
+"hs_lastmodifieddate": "2023-06-12T16:27:32.794Z",
+"hs_name": "Default Modern",
+"hs_object_id": "235425923864"
+},
+"createdAt": "2023-06-12T16:27:32.794Z",
+"updatedAt": "2023-06-12T16:27:32.794Z",
+"archived": false
+},
+{
+"id": "235425923865",
+"properties": {
+"hs_createdate": "2023-06-12T16:27:32.794Z",
+"hs_lastmodifieddate": "2023-06-12T16:27:32.794Z",
+"hs_name": "Default Original",
+"hs_object_id": "235425923865"
+},
+"createdAt": "2023-06-12T16:27:32.794Z",
+"updatedAt": "2023-06-12T16:27:32.794Z",
+"archived": false
+}
+]
+}
+xxxxxxxxxx
+41
+1
+// Example quote template GET response
+2
+{
+3
+"results"
+: [
+4
+{
+5
+"id"
+:
+"235425923863"
+,
+6
+"properties"
+: {
+7
+"hs_createdate"
+:
+"2023-06-12T16:27:32.794Z"
+,
+8
+"hs_lastmodifieddate"
+:
+"2023-06-12T16:27:32.794Z"
+,
+9
+"hs_name"
+:
+"Default Basic"
+,
+10
+"hs_object_id"
+:
+"235425923863"
+11
+},
+12
+"createdAt"
+:
+"2023-06-12T16:27:32.794Z"
+,
+13
+"updatedAt"
+:
+"2023-06-12T16:27:32.794Z"
+,
+14
+"archived"
+:
+false
+15
+},
+16
+{
+17
+"id"
+:
+"235425923864"
+,
+18
+"properties"
+: {
+19
+"hs_createdate"
+:
+"2023-06-12T16:27:32.794Z"
+,
+20
+"hs_lastmodifieddate"
+:
+"2023-06-12T16:27:32.794Z"
+,
+21
+"hs_name"
+:
+"Default Modern"
+,
+22
+"hs_object_id"
+:
+"235425923864"
+23
+},
+24
+"createdAt"
+:
+"2023-06-12T16:27:32.794Z"
+,
+25
+"updatedAt"
+:
+"2023-06-12T16:27:32.794Z"
+,
+26
+"archived"
+:
+false
+27
+},
+28
+{
+29
+"id"
+:
+"235425923865"
+,
+30
+"properties"
+: {
+31
+"hs_createdate"
+:
+"2023-06-12T16:27:32.794Z"
+,
+32
+"hs_lastmodifieddate"
+:
+"2023-06-12T16:27:32.794Z"
+,
+33
+"hs_name"
+:
+"Default Original"
+,
+34
+"hs_object_id"
+:
+"235425923865"
+35
+},
+36
+"createdAt"
+:
+"2023-06-12T16:27:32.794Z"
+,
+37
+"updatedAt"
+:
+"2023-06-12T16:27:32.794Z"
+,
+38
+"archived"
+:
+false
+39
+}
+40
+]
+41
+}
+Creating associations
+With your IDs retrieved, you can now make calls to the
+associations API
+to create associations.
+For each type of object you want to associate with a quote, you'll need to make a separate call by making a
+PUT
+request using the URL structure below:
+/crm/v4/objects/quotes/{fromObjectId}/associations/default/{toObjectType}/{toObjectId}
+Parameter
+Description
+fromObjectId
+The ID of the quote.
+toObjectType
+The type of object you're associating with. For example,
+line_items
+,
+deals
+, and
+quote_template
+.
+toObjectId
+The ID of the object you're associating the quote with.
+Below are example
+PUT
+requests for each type of object.
+HubL
+Shell script
+HubL
+Shell script
+More
+Copy code snippet
+PUT request to associate a line item
+/crm/v4/objects/quotes/{quoteId}/associations/default/line_items/{lineItemId}
+PUT request to associate a quote template
+/crm/v4/objects/quotes/{quoteId}/associations/default/quote_template/{quoteTemplateId}
+PUT request to associate a deal
+/crm/v4/objects/quotes/{quoteId}/associations/default/deals/{dealId}
+PUT request to associate contacts
+/crm/v4/objects/quotes/{quoteId}/associations/default/contacts/{contactId}
+PUT request to associate companies
+/crm/v4/objects/quotes/{quoteId}/associations/default/companies/{companyId}
+PUT request to associate discounts
+/crm/v4/objects/quotes/{quoteId}/associations/default/discounts/{discountId}
+PUT request to associate fees
+/crm/v4/objects/quotes/{quoteId}/associations/default/fees/{feeId}
+PUT request to associate taxes
+/crm/v4/objects/quotes/{quoteId}/associations/default/taxes/{taxId}
+xxxxxxxxxx
+23
+1
+PUT request to associate a line item
+2
+/crm/v4/objects/quotes/{quoteId}/associations/default/line_items/{lineItemId}
+3
+​
+4
+PUT request to associate a quote template
+5
+/crm/v4/objects/quotes/{quoteId}/associations/default/quote_template/{quoteTemplateId}
+6
+​
+7
+PUT request to associate a deal
+8
+/crm/v4/objects/quotes/{quoteId}/associations/default/deals/{dealId}
+9
+​
+10
+PUT request to associate contacts
+11
+/crm/v4/objects/quotes/{quoteId}/associations/default/contacts/{contactId}
+12
+​
+13
+PUT request to associate companies
+14
+/crm/v4/objects/quotes/{quoteId}/associations/default/companies/{companyId}
+15
+​
+16
+PUT request to associate discounts
+17
+/crm/v4/objects/quotes/{quoteId}/associations/default/discounts/{discountId}
+18
+​
+19
+PUT request to associate fees
+20
+/crm/v4/objects/quotes/{quoteId}/associations/default/fees/{feeId}
+21
+​
+22
+PUT request to associate taxes
+23
+/crm/v4/objects/quotes/{quoteId}/associations/default/taxes/{taxId}
+As an example, if your quote has an ID of
+123456
+, the requests to associate the quote might include the following:
+Line items (IDs:
+55555
+,
+66666
+):
+/crm/v4/objects/quotes/123456/associations/default/line_items/55555
+/crm/v4/objects/quotes/123456/associations/default/line_items/66666
+Quote template (ID:
+987654
+):
+/crm/v4/objects/quotes/123456/associations/default/quote_template/987654
+Deal (ID:
+345345
+):
+/crm/v4/objects/quotes/123456/associations/default/deals/345345
+Each successful association will return a
+200
+response with details about the association. The above calls will associate the objects in both directions, with each direction have its own ID. For example, if you associate the quote with a quote template, the response will describe the association from both ends. In the example response below,
+286
+is the quote-to-quote-template association type ID, and
+285
+is the quote-template-to-quote association type ID.
+Copy code snippet
+// Example response
+{
+"status": "COMPLETE",
+"results": [
+{
+"from": {
+"id": "115045534742"
+},
+"to": {
+"id": "102848290"
+},
+"associationSpec": {
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 285
+}
+},
+{
+"from": {
+"id": "102848290"
+},
+"to": {
+"id": "115045534742"
+},
+"associationSpec": {
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 286
+}
+}
+],
+"startedAt": "2023-10-12T16:48:40.624Z",
+"completedAt": "2023-10-12T16:48:40.712Z"
+}
+xxxxxxxxxx
+32
+1
+// Example response
+2
+{
+3
+"status"
+:
+"COMPLETE"
+,
+4
+"results"
+: [
+5
+{
+6
+"from"
+: {
+7
+"id"
+:
+"115045534742"
+8
+},
+9
+"to"
+: {
+10
+"id"
+:
+"102848290"
+11
+},
+12
+"associationSpec"
+: {
+13
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+14
+"associationTypeId"
+:
+285
+15
+}
+16
+},
+17
+{
+18
+"from"
+: {
+19
+"id"
+:
+"102848290"
+20
+},
+21
+"to"
+: {
+22
+"id"
+:
+"115045534742"
+23
+},
+24
+"associationSpec"
+: {
+25
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+26
+"associationTypeId"
+:
+286
+27
+}
+28
+}
+29
+],
+30
+"startedAt"
+:
+"2023-10-12T16:48:40.624Z"
+,
+31
+"completedAt"
+:
+"2023-10-12T16:48:40.712Z"
+32
+}
+Please note:
+when associating a quote with a quote template, keep in mind the following limits:
+Quote templates must be
+created
+before they can be associated with a quote.
+A quote can only be associated with on quote template.
+This API does not support legacy or proposal quotes. Only the
+CUSTOMIZABLE_QUOTE_TEMPLATE
+template type can be used.
+Associating quote signers
+If you're
+enabling the quote for e-signatures
+, you'll also need to create an association between the quote and the contacts who are signing by using a specific quote-to-contact
+association label
+.
+Rather than using the default association endpoints shown above, you'll need to make a
+PUT
+request to the following URL:
+/crm/v4/objects/quote/{quoteId}/associations/contact/{contactId}
+In the request body, you'll need to specify the
+associationCategory
+and
+associationTypeId
+, as shown below:
+Copy code snippet
+// Example request body
+[
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 702
+}
+]
+xxxxxxxxxx
+7
+1
+// Example request body
+2
+[
+3
+{
+4
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+5
+"associationTypeId"
+:
+702
+6
+}
+7
+]
+Copy code snippet
+// Example request body
+[
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 702
+}
+]
+xxxxxxxxxx
+7
+1
+// Example request body
+2
+[
+3
+{
+4
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+5
+"associationTypeId"
+:
+702
+6
+}
+7
+]
+Create a quote with associations (single request)
+The following request body will create a new quote with associations to a quote template, a deal, two line items, and a contact.
+POST
+/crm/v3/objects/quote
+properties
+object
+Quote details, which can be retrieved through the
+properties API
+. Required properties are:
+hs_title
+and
+hs_expiration_date
+.
+⮑
+hs_title
+string
+(required)
+The name of the quote.
+⮑
+hs_expiration_date
+string
+(required)
+The date that the quote expires.
+⮑
+hs_status
+string
+The
+quote status
+. Omitting this property on create will prevent users from being able to edit the quote in HubSpot.
+associations
+array
+The quote's associated records. For a quote to be publishable, it must have an associated deal and quote template. The line items should be created separately from the line items on the associated deal.
+To set each association, include a separate object in the associations array with the following fields:
+to: the ID of the record to associate with the quote.
+associationCategory: the
+type of association
+. Can be HUBSPOT_DEFINED or USER_DEFINED.
+associationTypeId: the ID of the type of association being made:
+286: quote to quote template
+64: quote to deal
+67: quote to line item
+Learn more about
+association type IDs
+.
+Copy code snippet
+// POST request to https://api.hubapi.com/crm/v3/objects/quote
+{
+"properties": {
+"hs_title": "CustomerName - annual SEO audit",
+"hs_expiration_date": "2023-09-30"
+},
+"associations": [
+{
+"to": {
+"id": 115045534742
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 286
+}
+]
+},
+{
+"to": {
+"id": 14795354663
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 64
+}
+]
+},
+{
+"to": {
+"id": 75895447
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 67
+}
+]
+},
+{
+"to": {
+"id": 256143985
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 67
+}
+]
+}
+]
+}
+xxxxxxxxxx
+53
+1
+// POST request to https://api.hubapi.com/crm/v3/objects/quote
+2
+{
+3
+"properties"
+: {
+4
+"hs_title"
+:
+"CustomerName - annual SEO audit"
+,
+5
+"hs_expiration_date"
+:
+"2023-09-30"
+6
+},
+7
+"associations"
+: [
+8
+{
+9
+"to"
+: {
+10
+"id"
+:
+115045534742
+11
+},
+12
+"types"
+: [
+13
+{
+14
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+15
+"associationTypeId"
+:
+286
+16
+}
+17
+]
+18
+},
+19
+{
+20
+"to"
+: {
+21
+"id"
+:
+14795354663
+22
+},
+23
+"types"
+: [
+24
+{
+25
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+26
+"associationTypeId"
+:
+64
+27
+}
+28
+]
+29
+},
+30
+{
+31
+"to"
+: {
+32
+"id"
+:
+75895447
+33
+},
+34
+"types"
+: [
+35
+{
+36
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+37
+"associationTypeId"
+:
+67
+38
+}
+39
+]
+40
+},
+41
+{
+42
+"to"
+: {
+43
+"id"
+:
+256143985
+44
+},
+45
+"types"
+: [
+46
+{
+47
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+48
+"associationTypeId"
+:
+67
+49
+}
+50
+]
+51
+}
+52
+]
+53
+}
+Please note:
+these line items should be different to line items on other objects, even if they are associated (e.g., associating a quote to a deal). See the
+line items API documentation
+for more information.
+Update quote state
+A quote's state describes how far along it is in the creation process, from initial set up to being published and publicly accessible. Quote state can also reflect the
+quote approval process
+, if quote approvals are enabled for the account. When setting a quote's state, HubSpot will
+automatically fill in certain properties
+.
+You can update a quote's state by making a
+PATCH
+request to
+/crm/v3/objects/quote/{quoteId}
+.
+A quote's state is based on the
+hs_status
+field. Certain quote states allow users to edit, publish, and use the quote in quote approval workflows. Below are the available quote states.
+No state:
+if no value is provided for the
+hs_status
+field, the quote will be in a
+Minimal
+state. The quote will appear on the index page of the quotes tool, but cannot be edited directly. Quotes in this state can still be used in automation, such as the sequences tool, and are also available to analyze within the reporting tool.
+DRAFT
+: enables the quote to be edited in HubSpot. This state can be useful for when the quote isn't fully configured or if you'd rather enable sales reps to complete the quote configuration process in HubSpot.
+APPROVAL_NOT_NEEDED
+: publishes the quote at a publicly accessible URL (
+hs_quote_link
+) without needing to be
+approved
+.
+PENDING_APPROVAL
+: indicates that the quote is
+waiting to be approved
+before it can be published.
+APPROVED
+: the quote has been
+approved
+and is now published at a publicly accessible URL (
+hs_quote_link
+).
+REJECTED
+: indicates that the quote has been set up but has not been
+approved
+for publishing, and must be edited before it can be submitted for approval again.
+Please note:
+if you're
+enabling e-signatures
+on the quote, you won't be able to publish the quote if you've exceeded your
+monthly e-signature limit
+.
+For example, the following request would publish the quote at a publicly accessible URL.
+Copy code snippet
+// PATCH request to https://api.hubapi.com/crm/v3/objects/quote/{QUOTE_ID}
+{
+"properties": {
+"hs_status": "APPROVAL_NOT_NEEDED"
+}
+}
+xxxxxxxxxx
+6
+1
+// PATCH request to https://api.hubapi.com/crm/v3/objects/quote/{QUOTE_ID}
+2
+{
+3
+"properties"
+: {
+4
+"hs_status"
+:
+"APPROVAL_NOT_NEEDED"
+5
+}
+6
+}
+Please note:
+by default, HubSpot will set the quote's
+hs_template_type
+property to
+CUSTOMIZABLE_QUOTE_TEMPLATE
+after you
+update the quote's state
+. This template type is supported by the v3 API, whereas the following template types are legacy templates that are no longer supported:
+QUOTE
+PROPOSAL
+Retrieve quotes
+You can retrieve quotes individually or in batches.
+To retrieve an individual quote, make a
+GET
+request to
+/crm/v3/objects/quotes/{quoteID}
+.
+To request a list of all quotes, make a
+GET
+request to
+/crm/v3/objects/quotes
+.
+For these endpoints, you can include the following query parameters in the request URL:
+Parameter
+Description
+properties
+A comma separated list of the properties to be returned in the response. If the requested quotecontact doesn't have a value for a property, it will not appear in the response.
+propertiesWithHistory
+A comma separated list of the current and historical properties to be returned in the response. If the requested quote doesn't have a value for a property, it will not appear in the response.
+associations
+A comma separated list of objects to retrieve associated IDs for. Any specified associations that don't exist will not be returned in the response. Learn more about the
+associations API.
+To retrieve a batch of specific quotes by their IDs, make a
+POST
+request to
+crm/v3/objects/quotes/batch/read
+and include the IDs in the request body. You can also include a
+properties
+array to specify which properties to return. The batch endpoint cannot retrieve associations. Learn how to batch read associations with the
+associations API
+.
+Copy code snippet
+// Example request body
+{
+"inputs": [
+{"id": "342007287"},
+{"id":"81204505203"}
+],
+"properties": [
+"hs_content", "hs_sentiment",
+"hs_submission_timestamp"
+xxxxxxxxxx
+9
+1
+// Example request body
+2
+{
+3
+"inputs"
+: [
+4
+{
+"id"
+:
+"342007287"
+},
+5
+{
+"id"
+:
+"81204505203"
+}
+6
+],
+7
+"properties"
+: [
+8
+"hs_content"
+,
+"hs_sentiment"
+,
+9
+"hs_submission_timestamp"
+Properties set by quote state
+Updating the quote's state will update the following properties:
+hs_quote_amount
+: calculated based on any associated line items, taxes, discounts, and fees.
+hs_domain
+: set from the associated quote template.
+hs_slug
+: randomly generated if one is not explicitly provided.
+hs_quote_total_preference
+: set based on your account settings. If you haven't configured this setting, it will default to the value of the total_first_payment field.
+hs_timezone
+: defaults to your HubSpot account's timezone.
+hs_locale
+: set from the associated quote template.
+hs_quote_number
+: set based on the current date and time, unless one is provided.
+hs_language
+: set from the associated quote template.
+hs_currency
+: set based on the associated deal. If you haven't associated a deal with the quote, it will default to your HubSpot account's default currency.
+Additionally, the properties below will be calculated when the quote is set to a published state:
+hs_pdf_download_link
+: populated with a URL of a PDF for the quote.
+hs_locked
+: set to
+true
+. To modify any properties after you've published a quote, you must first update the
+hs_status
+of the quote back to
+DRAFT
+,
+PENDING_APPROVAL
+, or
+REJECTED
+.
+hs_quote_link
+: the quote's publicly accessible URL. This is a read-only property and cannot be set through the API after publishing.
+hs_esign_num_signers_required
+: if you've
+enabled e-signatures
+, displays the number of signatures required.
+hs_payment_status
+: the status of payment collection, if you’ve enabled payments. Upon publishing with payments enabled, this property will be set to PENDING. Once the buyer submits payment through the quote, the status will automatically update accordingly. Learn more about
+enabling payments
+.
+Scopes
+The following scopes are required for an app to create a valid publishable quote:
+crm.objects.quotes.write
+,
+crm.objects.quotes.read
+,
+crm.objects.line_items.write
+,
+crm.objects.line_items.read
+,
+crm.objects.owners.read
+,
+crm.objects.contacts.write
+,
+crm.objects.contacts.read
+,
+crm.objects.deals.write
+,
+crm.objects.deals.read
+,
+crm.objects.companies.write
+,
+crm.objects.companies.read
+crm.schemas.quote.read
+,
+crm.schemas.line_items.read
+,
+crm.schemas.contacts.read
+,
+crm.schemas.deals.read
+,
+crm.schemas.companies.read
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Carts
+Discounts
+Fees
+Invoices
+Orders
+Quotes
+Taxes
+Payments
+Subscriptions
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Limits tracking
+Object library
+Marketing
+Settings
+Legal

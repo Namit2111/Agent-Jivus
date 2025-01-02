@@ -1,0 +1,342 @@
+CRM API | Line items | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Create a line item
+Retrieve a line item
+Update a line item
+Delete a line item
+Line item properties
+API Guides
+CRM
+Objects
+CRM API | Line items
+Line Items
+Line items endpoint reference
+In HubSpot, line items are individual instances of
+products
+. When a product is attached to a deal, it becomes a line item. You can create line items that are unique to an individual quote, but they will not be added to your product library. The line items endpoints allow you to manage this data and sync it between HubSpot and other systems.
+Example use case:
+when creating a set of
+quotes
+for sales reps to send to potential buyers, you can use this API to create standalone line items per quote, as well as line items that are attached to existing products.
+Create a line item
+To create a line item, make a
+POST
+request to
+/crm/v3/objects/line_items
+. In the post body, include the line item's details, such as name, quantity, and price.
+To create a line item based on an existing product (created through the
+products API
+or
+in HubSpot
+), include
+hs_product_id
+in the post body.
+You can also associate the line item with deals, quotes, invoices, payment links or subscriptions, by including an
+associations
+array in the post body. For example, the post body below would create a line item named "New standalone line item" that's associated with a deal (ID:
+12345
+).
+Copy code snippet
+// Example POST request body to https://api.hubapi.com/crm/v3/objects/line_item
+{
+"properties": {
+"price": 10,
+"quantity": 1,
+"name": "New standalone line item"
+},
+"associations": [
+{
+"to": {
+"id": 12345
+},
+"types": [
+{
+"associationCategory": "HUBSPOT_DEFINED",
+"associationTypeId": 20
+}
+]
+}
+]
+}
+1
+// Example POST request body to https://api.hubapi.com/crm/v3/objects/line_item
+2
+{
+3
+"properties"
+: {
+4
+"price"
+:
+10
+,
+5
+"quantity"
+:
+1
+,
+6
+"name"
+:
+"New standalone line item"
+7
+},
+8
+"associations"
+: [
+9
+{
+10
+"to"
+: {
+11
+"id"
+:
+12345
+12
+},
+13
+"types"
+: [
+14
+{
+15
+"associationCategory"
+:
+"HUBSPOT_DEFINED"
+,
+16
+"associationTypeId"
+:
+20
+17
+}
+18
+]
+19
+}
+20
+]
+21
+}
+Please note:
+Line items belong to one single parent object. If associating objects, line items should be individual to each object. For example, if you're creating a deal and a quote, you should create one set of line items for the deal, and another set for the quote. This will help streamline CRM data across objects and prevent unexpected data loss when needing to modify line items (e.g., deleting a quote will delete the quote's line items, and if those line items are associated with a deal, the deals line items will also be deleted).
+The
+price
+specified within the
+properties
+field
+cannot
+be negative.
+The line items
+Term
+property (
+hs_recurring_billing_period
+) accepts
+ISO-8601 period formats
+of PnYnMnD and PnW.
+Retrieve a line item
+You can retrieve line items individually or in bulk.
+To retrieve a specific line item, make a
+GET
+request to
+/crm/v3/objects/line_items/{lineItemId}
+where
+lineItemId
+is the ID of the line item.
+To retrieve all line items, make a
+GET
+request to
+/crm/v3/objects/line_items
+.
+In the request URL, you can include the following parameters:
+Parameter
+Description
+properties
+A comma separated list of the properties to be returned in the response. If any of the specified properties are not present on the requested object(s), they will be ignored.
+propertiesWithHistory
+A comma separated list of the properties to be returned along with their history of previous values. If any of the specified properties are not present on the requested object(s), they will be ignored.
+Update a line item
+To update a line item, make a
+PATCH
+request to
+/crm/v3/objects/line_items/{lineItemId}
+, where
+lineItemId
+is the ID of the line item.
+In the post body, include the property values that you want to update. You
+cannot
+update associations through this method. Instead you'll need to use the
+associations API
+.
+For example, your request body might look similar to the following:
+Copy code snippet
+// PATCH request to https://api.hubapi.com/crm/v3/objects/line_item/{lineItemId}
+{
+"properties": {
+"price": 25,
+"quantity": 3,
+"name": "Updated line item"
+}
+xxxxxxxxxx
+7
+1
+// PATCH request to https://api.hubapi.com/crm/v3/objects/line_item/{lineItemId}
+2
+{
+3
+"properties"
+: {
+4
+"price"
+:
+25
+,
+5
+"quantity"
+:
+3
+,
+6
+"name"
+:
+"Updated line item"
+7
+}
+Delete a line item
+To delete a line item, make a
+DELETE
+request to
+/crm/v3/objects/line_items/{lineItemId}
+, where
+lineItemId
+is the ID of the line item.
+Line item properties
+When managing your line item data, you may want to use some of the common properties in the table below. To get all line item properties, make a
+GET
+request to
+/crm/v3/properties/line_item
+. Learn more about using the
+properties API
+.
+Property name
+Label in UI
+Description
+name
+Name
+The name of the line item.
+description
+Description
+Full description of the product
+hs_sku
+SKU
+Unique product identifier
+hs_recurring_billing_start_date
+Billing start date
+Recurring billing start date for a line item
+hs_recurring_billing_end_date
+Billing end date
+Recurring billing end date for a line item
+recurringbillingfrequency
+Billing frequency
+How often a line item with recurring billing is billed. It informs the pricing calculation for deals and quotes. Line items with one-time billing aren't included.
+quantity
+Quantity
+How many units of a product are included in this line item
+price
+Unit price
+The cost of the product
+amount
+Net price
+The total cost of the line item (i.e., the quantity times the unit price).
+currency
+Currency
+Currency code for the line item
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Export CRM data
+Import CRM data
+Lists
+Objects
+Custom objects
+Companies
+Contacts
+Deal splits
+Beta
+Deals
+Feedback submissions
+Goals
+New
+Leads
+Line items
+Products
+Tickets
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Limits tracking
+Object library
+Marketing
+Settings
+Legal
+BESbswy
+BESbswy

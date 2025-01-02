@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 SITEMAP_URL = "https://developers.hubspot.com/sitemap.xml"
 
 # Base URL to filter out relevant docs pages
-DOCS_BASE_URL = "https://developers.hubspot.com/docs/"
+DOCS_BASE_URL = "https://developers.hubspot.com/docs/api/crm"
 
 # Set of already visited URLs to avoid re-crawling
 visited_urls = set()

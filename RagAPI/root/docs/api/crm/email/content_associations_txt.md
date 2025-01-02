@@ -1,49 +1,66 @@
 # HubSpot Email Engagement API Documentation
 
-This document details the HubSpot API endpoints for managing email engagements.  You can log email activities directly within HubSpot or via the Email API.
+This document details the HubSpot Email Engagement API, allowing you to log and manage emails associated with CRM records.  You can interact with the API using standard HTTP requests.
 
-## Creating an Email Engagement
+## API Endpoints Base URL:
 
-To create an email engagement, send a `POST` request to `/crm/v3/objects/emails`.
+`/crm/v3/objects/emails`
 
-**Request Body:**
+## 1. Create an Email
 
-The request body requires a `properties` object containing email details and optionally an `associations` object to link the email to existing records (e.g., contacts, companies).
+**Method:** `POST /crm/v3/objects/emails`
 
-### Properties Object:
+**Request Body:**  JSON object with `properties` and optional `associations` objects.
 
-| Field                 | Description                                                                                                                                        | Required | Data Type    |
-|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------------|
-| `hs_timestamp`        | Required. Email creation timestamp (Unix timestamp in milliseconds or UTC format). Determines timeline position.                                   | Yes      | String/Number |
-| `hubspot_owner_id`    | ID of the email's owner (user listed as creator on the record timeline).                                                                            | No       | String        |
-| `hs_email_direction` | Email direction (`EMAIL`, `INCOMING_EMAIL`, `FORWARDED_EMAIL`).                                                                                     | No       | String        |
-| `hs_email_html`       | Body of the email (if sent from a CRM record).                                                                                                      | No       | String        |
-| `hs_email_status`     | Send status (`BOUNCED`, `FAILED`, `SCHEDULED`, `SENDING`, `SENT`).                                                                               | No       | String        |
-| `hs_email_subject`    | Email subject line.                                                                                                                               | No       | String        |
-| `hs_email_text`       | Email body.                                                                                                                                       | No       | String        |
-| `hs_attachment_ids`   | IDs of email attachments (semicolon-separated).                                                                                                  | No       | String        |
-| `hs_email_headers`    | Email headers (JSON escaped string; automatically populates read-only properties; see "Set Email Headers" below).                               | No       | String        |
+**Properties Object:**
 
-
-### Read-Only Properties:
-
-These properties are automatically populated by HubSpot from the `hs_email_headers` value.
-
-| Field                 | Description                                           |
-|----------------------|-------------------------------------------------------|
-| `hs_email_from_email` | Sender's email address.                               |
-| `hs_email_from_firstname` | Sender's first name.                                  |
-| `hs_email_from_lastname`  | Sender's last name.                                   |
-| `hs_email_to_email`    | Recipient email addresses.                             |
-| `hs_email_to_firstname` | Recipients' first names.                              |
-| `hs_email_to_lastname`  | Recipients' last names.                               |
+| Field             | Description                                                                                     | Type             | Required | Example                               |
+|----------------------|-------------------------------------------------------------------------------------------------|--------------------|----------|---------------------------------------|
+| `hs_timestamp`      | Email creation time (Unix timestamp in milliseconds or UTC format).                            | String/Number    | Yes      | `1678886400000` or `"2023-03-15T12:00:00Z"` |
+| `hubspot_owner_id`   | ID of the email owner (HubSpot user).                                                           | String            | No       | `47550177`                             |
+| `hs_email_direction` | Email direction (`EMAIL`, `INCOMING_EMAIL`, `FORWARDED_EMAIL`).                               | String            | No       | `"EMAIL"`                              |
+| `hs_email_html`     | Email body (HTML) - sent from a CRM record.                                                    | String            | No       | `<html>...</html>`                    |
+| `hs_email_status`   | Email send status (`BOUNCED`, `FAILED`, `SCHEDULED`, `SENDING`, `SENT`).                      | String            | No       | `"SENT"`                               |
+| `hs_email_subject`  | Email subject.                                                                                  | String            | No       | `"Let's talk"`                         |
+| `hs_email_text`     | Email body (plain text).                                                                       | String            | No       | `Thanks for your email`                |
+| `hs_attachment_ids` | IDs of attached files (semicolon-separated).                                                  | String            | No       | `"123;456"`                             |
+| `hs_email_headers`  | JSON-escaped string containing email headers (see "Set Email Headers" section).               | String            | No       | `{\"from\":{\"email\":\"...\"}, ...}` |
 
 
-**Note:**  The `From` and `Sender` headers may differ (e.g., email alias vs. actual address).
+**Associations Object:** (Optional, for associating with existing records)
 
-### Set Email Headers:
+| Field             | Description                                                           | Type      | Required | Example                                    |
+|----------------------|-----------------------------------------------------------------------|-----------|----------|---------------------------------------------|
+| `to`                | ID of the record to associate with (e.g., contact, deal).            | Object    | Yes      | `{"id": 601}`                             |
+| `types`             | Association type (see "Association Types" below).                  | Array     | Yes      | `[{"associationCategory": "HUBSPOT_DEFINED", "associationTypeId": 210}]` |
 
-`hs_email_headers` should be a JSON escaped string with the following structure:
+
+**Example Request (with associations):**
+
+```json
+{
+  "properties": {
+    "hs_timestamp": "2024-03-15T12:00:00Z",
+    "hubspot_owner_id": "12345",
+    "hs_email_direction": "EMAIL",
+    "hs_email_subject": "Test Email",
+    "hs_email_text": "This is a test email."
+  },
+  "associations": [
+    {
+      "to": {"id": 601},
+      "types": [{"associationCategory": "HUBSPOT_DEFINED", "associationTypeId": 210}]
+    }
+  ]
+}
+```
+
+**Response:**  JSON object representing the created email, including its ID.
+
+
+## 2. Set Email Headers
+
+The `hs_email_headers` property accepts a JSON-escaped string.  This string should contain the following structure:
 
 ```json
 {
@@ -54,7 +71,7 @@ These properties are automatically populated by HubSpot from the `hs_email_heade
   },
   "to": [
     {
-      "email": "ToFirst ToLast<to@test.com>",
+      "email": "to@domain.com",
       "firstName": "ToFirst",
       "lastName": "ToLast"
     }
@@ -64,49 +81,88 @@ These properties are automatically populated by HubSpot from the `hs_email_heade
 }
 ```
 
-### Associations Object:
-
-To associate the email with records, include an `associations` array in the request body.
-
-| Field          | Description                                                                          |
-|-----------------|--------------------------------------------------------------------------------------|
-| `to.id`         | ID of the record to associate with.                                                  |
-| `types`         | Association type (array of objects).                                                  |
-| `types[].associationCategory` | Association category (`HUBSPOT_DEFINED`).                                          |
-| `types[].associationTypeId`  | Association type ID (retrieve via the Associations API or use default IDs). |
+This populates read-only properties like `hs_email_from_email`, `hs_email_to_email`, etc.
 
 
-## Retrieving Emails
+## 3. Read-Only Properties
 
-Retrieve individual emails via a `GET` request to `/crm/v3/objects/emails/{emailId}`.  Retrieve all emails with a `GET` request to `/crm/v3/objects/emails`.  Use parameters `properties` (comma-separated list) and `associations` (comma-separated list of object types) to control the returned data.  `limit` parameter is available for listing emails.
+Several properties are automatically populated by HubSpot from the `hs_email_headers`:
 
-## Updating Emails
-
-Update individual emails via a `PATCH` request to `/crm/v3/objects/emails/{emailId}`.  The request body should contain the properties to update.  Read-only properties are ignored.  An empty string clears a property value.
-
-## Associating Existing Emails with Records
-
-Associate an email with a record using a `PUT` request to `/crm/v3/objects/emails/{emailId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`.
-
-| Field          | Description                                                                 |
-|-----------------|-----------------------------------------------------------------------------|
-| `emailId`       | ID of the email.                                                            |
-| `toObjectType`  | Object type (e.g., `contact`, `company`).                                     |
-| `toObjectId`    | ID of the record.                                                           |
-| `associationTypeId` | Association type ID (retrieve via Associations API or use default IDs). |
+| Field                 | Description                               |
+|-------------------------|-------------------------------------------|
+| `hs_email_from_email`   | Sender's email address.                  |
+| `hs_email_from_firstname`| Sender's first name.                      |
+| `hs_email_from_lastname` | Sender's last name.                       |
+| `hs_email_to_email`     | Recipient's email address(es).            |
+| `hs_email_to_firstname` | Recipient's first name(s).               |
+| `hs_email_to_lastname`  | Recipient's last name(s).                |
 
 
-## Removing an Association
+## 4. Retrieve Emails
 
-Remove an association using a `DELETE` request to the same URL as above.
+**Method:** `GET /crm/v3/objects/emails` (for all emails) or `GET /crm/v3/objects/emails/{emailId}` (for a single email)
 
-## Pinning an Email
+**Parameters:**
 
-Pin an email to a record's timeline using the `hs_pinned_engagement_id` field when creating or updating the record via the object APIs (Companies, Contacts, Deals, Tickets, Custom Objects).
+* `limit`: Maximum number of results per page (for GET all emails).
+* `properties`: Comma-separated list of properties to return.
+* `associations`: Comma-separated list of object types to retrieve associated IDs for.
 
-## Deleting Emails
-
-Delete emails permanently via a `DELETE` request to `/crm/v3/objects/emails/{emailId}`.  Deleted emails cannot be restored.
+**Response:** JSON object(s) representing the requested email(s).
 
 
-This documentation provides a summary. Refer to the HubSpot API documentation for complete details and endpoint specifications.
+## 5. Update Emails
+
+**Method:** `PATCH /crm/v3/objects/emails/{emailId}`
+
+**Request Body:** JSON object containing the properties to update.  HubSpot ignores read-only and non-existent properties.  Use an empty string to clear a property value.
+
+**Example Request:**
+
+```json
+{
+  "properties": {
+    "hs_email_subject": "Updated Subject"
+  }
+}
+```
+
+**Response:** JSON object representing the updated email.
+
+
+## 6. Associate Existing Emails with Records
+
+**Method:** `PUT /crm/v3/objects/emails/{emailId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
+
+* `{emailId}`: Email ID.
+* `{toObjectType}`: Object type (e.g., `contact`, `company`).
+* `{toObjectId}`: Object ID.
+* `{associationTypeId}`: Association type ID (obtainable via the Associations API).
+
+
+## 7. Remove an Association
+
+**Method:** `DELETE /crm/v3/objects/emails/{emailId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
+
+Uses the same URL structure as associating emails.
+
+
+## 8. Pin an Email on a Record
+
+To pin an email, include its ID in the `hs_pinned_engagement_id` field when creating or updating a record via other HubSpot object APIs (Contacts, Companies, Deals, etc.).
+
+
+## 9. Delete Emails
+
+**Method:** `DELETE /crm/v3/objects/emails/{emailId}`
+
+Permanently deletes the specified email.
+
+
+
+## Association Types
+
+Default association type IDs can be found in the HubSpot documentation.  Custom association types can be retrieved using the HubSpot Associations API.
+
+
+This markdown provides a comprehensive overview of the HubSpot Email Engagement API.  Remember to consult the official HubSpot API documentation for the most up-to-date information and detailed specifications.

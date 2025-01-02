@@ -1,0 +1,344 @@
+CRM API | Set up third-party calling in help desk (BETA) | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Webhook details
+Request
+Expected response schema
+Manage the webhook settings for channel connection
+Create channel connection settings
+Fetch existing channel connection settings
+Update channel connections settings
+Delete existing channel connection settings
+Understand the isReady flag
+User experience
+API Guides
+CRM
+Extensions
+CRM API | Set up third-party calling in help desk (BETA)
+Set up third-party calling in help desk (BETA)
+Please note:
+developers must have completed the
+SDK setup
+and
+inbound calling API
+steps to proceed.
+To support connecting a phone number as a channel to your help desk, you’ll need to tell HubSpot how to fetch available numbers to be connected. To do this, register a webhook that'll return available numbers for the user. Whenever a HubSpot user wants to connect a device number from your extension to the help desk workspace, HubSpot will make a request to the registered webhook to get a list of available numbers that the user can select from.
+Check out the
+Channel connection settings
+endpoints
+in the calling SDK reference documentation for additional details on available parameters for each endpoint, along with example requests and responses.
+Webhook details
+Request
+To get the phone numbers available for channel connection, HubSpot will send a
+POST
+request to your registered webhook with the following request body parameters:
+Parameter
+Type
+Description
+appId
+Integer
+The ID of the app for which this request was made.
+portalId
+Integer
+The ID of the HubSpot portal where the request originated from.
+userId
+Integer
+The ID of the HubSpot user making the request.
+The request will also include HubSpot signature headers to prove that the request came from HubSpot. Learn how to
+validate requests
+.
+Expected response schema
+The endpoint that you provide to HubSpot should return a JSON-formatted response that provides a list of available phone numbers. Each phone number in the list should include the following fields:
+Parameter
+Type
+Description
+e164PhoneNumber
+String
+The phone number, which will be in E.164 format (e.g., +18001231234).
+extension
+String
+While the webhook response schema accepts phone numbers with extensions, phone numbers with extensions aren't connected to the help desk at this time. Any phone numbers with extensions won't be selectable by the user (e.g., "1").
+friendlyName
+String
+HubSpot enforces a 24-character limit for friendly names for phone numbers. Any friendly name that's longer than 24 characters will be truncated to the first 24 characters by HubSpot.
+For example, if your phone number is 18001231234, your extension is 1, and you want to label this number “My cell phone number”, the response you send back to HubSpot should be:
+Copy code snippet
+{
+"phoneNumbers": [
+{
+"e164PhoneNumber": "+18001231234",
+"extension": "1",
+"friendlyName": "My cell phone number"
+}
+]
+}
+1
+{
+2
+"phoneNumbers"
+: [
+3
+{
+4
+"e164PhoneNumber"
+:
+"+18001231234"
+,
+5
+"extension"
+:
+"1"
+,
+6
+"friendlyName"
+:
+"My cell phone number"
+7
+}
+8
+]
+9
+}
+Manage the webhook settings for channel connection
+The following endpoints are available to specify the webhook URL for your channel connection settings, as well as specify whether your webhook is ready to be released to users via the
+isReady
+flag.
+Check out the reference documentation and locate the
+/channel-connection
+endpoints for a full list of available parameters and expected responses.
+Create channel connection settings
+To create channel connections settings, use the appId of your public app to make a
+POST
+request to
+crm/v3/extensions/calling/{appId}/settings/channel-connection
+, and include the following in your request body:
+Parameter
+Type
+Description
+url
+String
+The target URL for this webhook.
+isReady
+Boolean
+Determines whether this webhook is ready to be released to users of this extension. Learn more about
+isReady
+.
+For example, if your endpoint URL was
+https://example.com/my-help-desk-service
+and you wanted to make it available immediately for HubSpot to call, the request body would be:
+Copy code snippet
+{
+"url": "https://example.com/my-help-desk-service",
+"isReady": true
+}
+xxxxxxxxxx
+4
+1
+{
+2
+"url"
+:
+"https://example.com/my-help-desk-service"
+,
+3
+"isReady"
+:
+true
+4
+}
+Fetch existing channel connection settings
+To fetch existing channel connection settings, use the appId of your public app to make a
+GET
+request to
+crm/v3/extensions/calling/{appId}/settings/channel-connection
+If your channel connection settings were already set up correctly, the response will resemble the following:
+Copy code snippet
+{
+"url": "https://example.com/my-help-desk-service",
+"createdAt": "2024-04-30 12:01",
+"updatedAt": "2024-04-30 12:01",
+"isReady": true
+}
+xxxxxxxxxx
+6
+1
+{
+2
+"url"
+:
+"https://example.com/my-help-desk-service"
+,
+3
+"createdAt"
+:
+"2024-04-30 12:01"
+,
+4
+"updatedAt"
+:
+"2024-04-30 12:01"
+,
+5
+"isReady"
+:
+true
+6
+}
+Update channel connections settings
+To update channel connections settings, make a
+PATCH
+request to
+crm/v3/extensions/calling/{appId}/settings/channel-connection
+, and include one or both of the following fields in your request body:
+Parameter
+Type
+Description
+url
+String
+The target URL for this webhook.
+isReady
+Boolean
+Determines whether this webhook is ready to be released to users of this extension. Learn more about
+isReady
+.
+Delete existing channel connection settings
+To delete existing channel connection settings, use the appId of your public app to make a
+DELETE
+request to
+crm/v3/extensions/calling/{appId}/settings/channel-connection
+A successful
+DELETE
+call will result in a
+204 No Content
+success status response code.
+Understand the isReady flag
+A third-party calling app is considered to support channel connection when the app has a webhook registered that's marked with
+isReady=true
+. If your app supports third-party connections, all users who have this app installed will have the option to select the app when they connect a number to their help desk. Registering your webhook with
+isReady=false
+at first allows you to register the webhook and test it out without releasing it to all the users of your application immediately. To test your webhook’s help desk channel connection, you can override the isReady flag in-browser by setting local storage flag
+LocalSettings:Calling:supportsChannelConnection=true
+(see below). Once you have determined that the webhook’s help desk channel connection is working properly and you're ready for users to use your webhook, you can send a
+PATCH
+request to update the
+isReady
+flag to
+true
+and release the functionality to users.
+Copy code snippet
+// To unlock your webhook for in-browser help desk channel connection testing, run this
+// command in your browser's dev tools console
+window.localStorage.setItem(
+'LocalSettings:Calling:supportsChannelConnection',
+true
+);
+xxxxxxxxxx
+6
+1
+// To unlock your webhook for in-browser help desk channel connection testing, run this
+2
+// command in your browser's dev tools console
+3
+window
+.
+localStorage
+.
+setItem
+(
+4
+'LocalSettings:Calling:supportsChannelConnection'
+,
+5
+true
+6
+);
+User experience
+Below are some examples of the user experience when choosing a calling provider for help desk. Learn more about the user experience.
+If
+isReady=false
+and local storage flag is
+false
+: the app will appear greyed out for users when choosing a calling provider.
+If
+isReady=true
+or local storage flag is
+true
+, the users will be able to select the app when choosing a calling provider.
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Calling SDK
+CRM cards
+Timeline events
+Third-party calling
+Beta
+Video conferencing extension
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Limits tracking
+Object library
+Marketing
+Settings
+Legal

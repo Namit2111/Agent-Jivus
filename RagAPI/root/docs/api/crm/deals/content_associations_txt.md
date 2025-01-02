@@ -1,23 +1,23 @@
 # HubSpot CRM API: Deals
 
-This document details the HubSpot CRM API endpoints for managing deals. Deals in HubSpot represent transactions with contacts or companies, tracked through pipeline stages until won or lost.  These endpoints allow for creating, managing, and syncing deal data between HubSpot and external systems.
+This document details the HubSpot CRM API endpoints for managing deals.  Deals represent transactions with contacts or companies, tracked through pipeline stages until won or lost.  These endpoints allow creating, managing, and syncing deal data.
 
-For a broader understanding of objects, records, properties, and associations APIs, refer to the [Understanding the CRM](<link_to_understanding_crm_guide>) guide.  For general information on managing your CRM database, see [Managing your CRM Database](<link_to_crm_database_management>).
+## Understanding the CRM (Recommended Reading)
+
+Before using these APIs, review the [HubSpot Understanding the CRM guide](link_to_guide_here). This guide explains objects, records, properties, and associations within the HubSpot CRM.  Also, learn how to [manage your CRM database](link_to_database_management_here).
 
 
-## Create Deals
+## 1. Create Deals
 
-To create new deals, send a `POST` request to `/crm/v3/objects/deals`.
+**Endpoint:** `POST /crm/v3/objects/deals`
 
-The request body should include a `properties` object containing deal data.  An optional `associations` object can be included to associate the new deal with existing records (contacts, companies) or activities (meetings, notes).
+**Method:** `POST`
 
-**Required Properties:**
+**Request Body:** JSON containing `properties` and optionally `associations`.
 
-* `dealname`: (String) Name of the deal.
-* `dealstage`: (String) Stage of the deal. Use the internal ID (obtained from deal pipeline settings).
-* `pipeline`: (String, Optional) Pipeline the deal belongs to.  If omitted, the default pipeline is used. Use the internal ID (obtained from deal pipeline settings).
+**Properties:** Deal details are stored in properties.  There are default HubSpot properties and the ability to create custom ones.  For creation, these are required: `dealname`, `dealstage`, and `pipeline` (if multiple pipelines exist; otherwise, the default pipeline is used).  Retrieve all available properties using: `GET /crm/v3/properties/deals`.
 
-**Example Request Body:**
+**Example Request Body (with properties only):**
 
 ```json
 {
@@ -25,21 +25,16 @@ The request body should include a `properties` object containing deal data.  An 
     "amount": "1500.00",
     "closedate": "2019-12-07T16:50:06.678Z",
     "dealname": "New deal",
-    "pipeline": "default", // Replace 'default' with the actual pipeline ID
-    "dealstage": "contractsent", // Replace 'contractsent' with the actual deal stage ID
+    "pipeline": "default",
+    "dealstage": "contractsent",
     "hubspot_owner_id": "910901"
   }
 }
 ```
 
-**Note:**  Use internal IDs for deal stages and pipelines.  These IDs are found in your deal pipeline settings.  You can retrieve a list of available properties via a `GET` request to `/crm/v3/properties/deals`.  Learn more about the [properties API](<link_to_properties_api>).
+**Associations:**  Associate the new deal with existing records (contacts, companies) or activities (meetings, notes) using the `associations` object.
 
-
-## Associations
-
-When creating a deal, associate it with existing records or activities using the `associations` object.
-
-**Example Request Body (with Associations):**
+**Example Request Body (with properties and associations):**
 
 ```json
 {
@@ -47,8 +42,8 @@ When creating a deal, associate it with existing records or activities using the
     "amount": "1500.00",
     "closedate": "2019-12-07T16:50:06.678Z",
     "dealname": "New deal",
-    "pipeline": "default", // Replace 'default' with the actual pipeline ID
-    "dealstage": "contractsent", // Replace 'contractsent' with the actual deal stage ID
+    "pipeline": "default",
+    "dealstage": "contractsent",
     "hubspot_owner_id": "910901"
   },
   "associations": [
@@ -78,34 +73,40 @@ When creating a deal, associate it with existing records or activities using the
 }
 ```
 
-* **`to.id`**:  Unique ID of the record or activity.
-* **`types`**: Array defining the association type.  `associationCategory` and `associationTypeId` are required.  See the [list of default association type IDs](<link_to_association_type_ids>) or use the [associations API](<link_to_associations_api>) for custom types.
+**Note:** Use internal IDs for deal stages and pipelines (found in deal pipeline settings).
 
 
-## Retrieve Deals
+## 2. Retrieve Deals
 
-Deals can be retrieved individually or in batches.
+**Individual Deal:**
 
-* **Individual Deal:**  `GET /crm/v3/objects/deals/{dealId}`
-* **List of Deals:** `GET /crm/v3/objects/deals`
-* **Batch Read:** `POST /crm/v3/objects/deals/batch/read`
+**Endpoint:** `GET /crm/v3/objects/deals/{dealId}`
 
-**Query Parameters (for individual and list retrieval):**
+**Method:** `GET`
+
+**Query Parameters:**
 
 * `properties`: Comma-separated list of properties to return.
 * `propertiesWithHistory`: Comma-separated list of properties to return, including historical values.
 * `associations`: Comma-separated list of associated objects to retrieve IDs for.
 
 
-**Batch Read Parameters:**
+**All Deals:**
 
-* `properties`:  Comma-separated list of properties to return.
-* `propertiesWithHistory`: Comma-separated list of properties to return, including historical values.
-* `idProperty`: (Optional)  Name of a custom unique identifier property to use for retrieving deals instead of the record ID (`hs_object_id`).
-* `inputs`: Array of objects, each with an `id` property representing the deal ID (or custom ID if `idProperty` is specified).
+**Endpoint:** `GET /crm/v3/objects/deals`
+
+**Method:** `GET`
+
+**Query Parameters:**  Same as individual deal retrieval.
 
 
-**Example Batch Read Request (with record ID):**
+**Batch Deal Retrieval:**
+
+**Endpoint:** `POST /crm/v3/objects/deals/batch/read`
+
+**Method:** `POST`
+
+**Request Body:**
 
 ```json
 {
@@ -117,7 +118,10 @@ Deals can be retrieved individually or in batches.
 }
 ```
 
-**Example Batch Read Request (with custom unique identifier property):**
+* `properties`:  List of properties to return.
+* `inputs`: Array of deal IDs.  Use `idProperty` for custom unique identifier properties.  (e.g., `"idProperty": "uniqueordernumber"`).  If not specified, `id` refers to `hs_object_id`.
+
+**Example with Custom Unique Identifier:**
 
 ```json
 {
@@ -130,38 +134,106 @@ Deals can be retrieved individually or in batches.
 }
 ```
 
-The batch endpoint does *not* retrieve associations. Use the [associations API](<link_to_associations_api>) for batch association retrieval.
+**Note:** Batch retrieval cannot retrieve associations.
 
 
-## Update Deals
+## 3. Update Deals
 
-Deals can be updated individually or in batches.
+**Individual Deal:**
 
-* **Individual Deal:** `PATCH /crm/v3/objects/deals/{dealId}`
-* **Batch Update:** `POST /crm/v3/objects/deals/batch/update`
+**Endpoint:** `PATCH /crm/v3/objects/deals/{dealId}`
 
+**Method:** `PATCH`
 
-## Associate Existing Deals
-
-Associate a deal with other CRM records or activities: `PUT /crm/v3/objects/deals/{dealId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`.  Obtain the `associationTypeId` from the [list of default values](<link_to_association_type_ids>) or via a `GET` request to `/crm/v4/associations/{fromObjectType}/{toObjectType}/labels`. Learn more in the [associations API](<link_to_associations_api>).
+**Request Body:** JSON containing properties to update.
 
 
-## Remove an Association
+**Batch Deal Update:**
 
-Remove an association: `DELETE /crm/v3/objects/deals/{dealId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`.
+**Endpoint:** `POST /crm/v3/objects/deals/batch/update`
 
+**Method:** `POST`
 
-## Pin an Activity
-
-Pin an activity to a deal record by including the `hs_pinned_engagement_id` property (the activity's ID) in a `PATCH` request to `/crm/v3/objects/deals/{dealId}`.  Activity IDs are retrieved via the [engagements APIs](<link_to_engagements_api>). Only one activity can be pinned per deal, and the activity must already be associated with the deal.
-
-
-## Delete Deals
-
-Delete deals individually or in batches (moves them to the recycling bin):
-
-* **Individual Deal:** `DELETE /crm/v3/objects/deals/{dealId}`
-* **Batch Delete:**  (See the Endpoints tab in the original document for batch delete details).  Deals can be restored from the recycling bin within HubSpot.
+**Request Body:**  Array of deals to update, each with identifiers and properties to update.
 
 
-**Remember to replace placeholder IDs and values with your actual data.**  Ensure you have the necessary API keys and authentication set up.  All links marked `<link_to_...>` need to be replaced with the appropriate HubSpot documentation URLs.
+## 4. Associate Existing Deals
+
+**Endpoint:** `PUT /crm/v3/objects/deals/{dealId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
+
+**Method:** `PUT`
+
+Retrieve `associationTypeId` from the list of default values or via `GET /crm/v4/associations/{fromObjectType}/{toObjectType}/labels`.
+
+
+## 5. Remove Association
+
+**Endpoint:** `DELETE /crm/v3/objects/deals/{dealId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
+
+**Method:** `DELETE`
+
+
+## 6. Pin an Activity
+
+**Update existing deal:**
+
+**Endpoint:** `PATCH /crm/v3/objects/deals/{dealId}`
+
+**Method:** `PATCH`
+
+**Request Body:**
+
+```json
+{
+  "properties": {
+    "hs_pinned_engagement_id": 123456789
+  }
+}
+```
+
+**Create and Pin in single request:**
+
+**Endpoint:** `POST /crm/v3/objects/deals`
+
+**Method:** `POST`
+
+**Request Body:** (Example combining creation, association, and pinning)
+
+
+```json
+{
+  "properties": {
+    "dealname": "New deal",
+    "pipeline": "default",
+    "dealstage": "contractsent",
+    "hs_pinned_engagement_id": 123456789
+  },
+  "associations": [
+    {
+      "to": {
+        "id": 123456789
+      },
+      "types": [
+        {
+          "associationCategory": "HUBSPOT_DEFINED",
+          "associationTypeId": 213
+        }
+      ]
+    }
+  ]
+}
+```
+
+
+## 7. Delete Deals
+
+**Individual Deal:**
+
+**Endpoint:** `DELETE /crm/v3/objects/deals/{dealId}`
+
+**Method:** `DELETE`
+
+**Batch Deal Deletion:**  Refer to the "Endpoints" tab (link provided in original text) for batch deletion information.
+
+
+This markdown provides a comprehensive overview of the HubSpot CRM Deals API. Remember to replace placeholder URLs and IDs with your actual values.  Always consult the official HubSpot API documentation for the most up-to-date information.

@@ -1,17 +1,26 @@
 # HubSpot CRM API: Contacts
 
-This document describes the HubSpot CRM API endpoints for managing contacts.  Contacts in HubSpot store information about individuals interacting with your business. These endpoints allow you to create, manage, and sync contact data between HubSpot and other systems.
+This document details the HubSpot CRM API endpoints for managing contacts.  Contacts store information about individuals interacting with your business.  These endpoints allow creation, management, and synchronization of contact data.
 
-For a broader understanding of objects, records, properties, and associations within the HubSpot API, refer to the [Understanding the CRM](LINK_TO_UNDERSTANDING_CRM_GUIDE) guide. For general CRM database management, see [Managing your CRM database](LINK_TO_CRM_DATABASE_MANAGEMENT).
+## Understanding the CRM (Overview)
 
+Before using the API, familiarize yourself with HubSpot's [CRM object model](LINK_TO_HUBSPOT_DOC_ON_CRM_OBJECT_MODEL). This includes understanding objects, records, properties, and associations.
 
-## Create Contacts
+## API Endpoints
 
-Use a `POST` request to `/crm/v3/objects/contacts` to create new contacts.  The request body should include a `properties` object containing contact data. An optional `associations` object can associate the new contact with existing records (e.g., companies, deals) or activities (e.g., meetings, notes).
+All endpoints are under the `/crm/v3/objects/contacts` base path unless otherwise specified.  Requests require proper authentication (API key).  Responses are typically in JSON format.
 
-**Required Properties:** At least one of `email`, `firstname`, or `lastname` is required.  Using `email` is strongly recommended as it's the primary unique identifier to prevent duplicates.
+### 1. Create Contacts
 
-**Example Request Body:**
+**Endpoint:** `POST /crm/v3/objects/contacts`
+
+**Request Body:** JSON payload with `properties` object (at least one of `email`, `firstname`, or `lastname` required; `email` highly recommended).  Optionally includes `associations` object.
+
+**Properties:**  Contact details.  Use [default HubSpot properties](LINK_TO_HUBSPOT_DOC_ON_DEFAULT_CONTACT_PROPERTIES) or create [custom properties](LINK_TO_HUBSPOT_DOC_ON_CUSTOM_CONTACT_PROPERTIES).  `lifecyclestage` values must be internal names (e.g., `"marketingqualifiedlead"`).
+
+**Associations:**  Associate with existing records (companies, deals) or activities (meetings, notes).  Requires `to` (ID of the record/activity) and `types` (includes `associationCategory` and `associationTypeId`).  See [associations API documentation](LINK_TO_HUBSPOT_DOC_ON_ASSOCIATIONS_API) for details.
+
+**Example Request (Create Contact with Associations):**
 
 ```json
 {
@@ -23,156 +32,141 @@ Use a `POST` request to `/crm/v3/objects/contacts` to create new contacts.  The 
     "company": "HubSpot",
     "website": "hubspot.com",
     "lifecyclestage": "marketingqualifiedlead"
-  }
-}
-```
-
-**`lifecyclestage` Note:** If included, use the internal name (not the label).  Default stages use text values (e.g., `subscriber`, `marketingqualifiedlead`), while custom stages use numeric values. Find the internal ID in your lifecycle stage settings or via the lifecycle stage property API.
-
-
-## Properties
-
-Contact details are stored in properties.  HubSpot provides default properties, and you can create custom ones.  To view all available properties, use a `GET` request to `/crm/v3/properties/contacts`.  Learn more about the [properties API](LINK_TO_PROPERTIES_API).
-
-
-## Associations
-
-Associate contacts with existing records or activities using the `associations` object in your `POST` request when creating a contact.
-
-**Example Request Body (with Associations):**
-
-```json
-{
-  "properties": {
-    "email": "example@hubspot.com",
-    "firstname": "Jane",
-    "lastname": "Doe"
   },
   "associations": [
     {
-      "to": {
-        "id": 123456
-      },
-      "types": [
-        {
-          "associationCategory": "HUBSPOT_DEFINED",
-          "associationTypeId": 279
-        }
-      ]
+      "to": {"id": 123456},
+      "types": [{"associationCategory": "HUBSPOT_DEFINED", "associationTypeId": 279}]
     },
     {
-      "to": {
-        "id": 556677
-      },
-      "types": [
-        {
-          "associationCategory": "HUBSPOT_DEFINED",
-          "associationTypeId": 197
-        }
-      ]
+      "to": {"id": 556677},
+      "types": [{"associationCategory": "HUBSPOT_DEFINED", "associationTypeId": 197}]
     }
   ]
 }
 ```
 
-* **`to.id`:** The ID of the record or activity.
-* **`types`:**  The association type. Use the provided list of default `associationTypeId` values or retrieve custom types via the [associations API](LINK_TO_ASSOCIATIONS_API).
+**Example Response (Success):**  JSON object representing the created contact, including its ID.
 
 
-## Retrieve Contacts
+### 2. Retrieve Contacts
 
-Contacts can be retrieved individually or in batches.
+**Individual Contact:**
 
-* **Individual Contact (by ID):** `GET /crm/v3/objects/contacts/{contactId}`
-* **Individual Contact (by Email):** `GET /crm/v3/objects/contacts/{email}?idProperty=email`
-* **All Contacts:** `GET /crm/v3/objects/contacts`
-* **Batch Read:** `POST /crm/v3/objects/contacts/batch/read` (cannot retrieve associations).
+* **Endpoint (by ID):** `GET /crm/v3/objects/contacts/{contactId}`
+* **Endpoint (by email):** `GET /crm/v3/objects/contacts/{email}?idProperty=email`
 
+**Batch Contact (by ID, email, or custom unique property):**
+
+* **Endpoint:** `POST /crm/v3/objects/contacts/batch/read`
+* Requires `inputs` array (each object with `id`).
+* Use `idProperty` parameter for email or custom unique identifier.
 
 **Query Parameters:**
 
 * `properties`: Comma-separated list of properties to return.
-* `propertiesWithHistory`: Comma-separated list of current and historical properties.
+* `propertiesWithHistory`:  For current and historical property values.
 * `associations`: Comma-separated list of associated objects to retrieve.
 
-**Batch Read (using `idProperty` for email or custom unique identifiers):**
-
-
-**Example Request Body (Batch Read by Record ID):**
+**Example Request (Batch Read by ID):**
 
 ```json
 {
   "properties": ["email", "lifecyclestage", "jobtitle"],
+  "inputs": [{"id": "1234567"}, {"id": "987456"}]
+}
+```
+
+**Example Response (Success):** JSON array of contact objects.
+
+
+### 3. Update Contacts
+
+**Individual Contact:**
+
+* **Endpoint (by ID):** `PATCH /crm/v3/objects/contacts/{contactId}`
+* **Endpoint (by email):** `PATCH /crm/v3/objects/contacts/{email}?idProperty=email`
+
+**Batch Update:**
+
+* **Endpoint:** `POST /crm/v3/objects/contacts/batch/update`
+* Requires `inputs` array (each object with `id` and `properties`).
+
+**Example Request (Individual Update by ID):**
+
+```json
+{
+  "properties": {
+    "favorite_food": "burger",
+    "jobtitle": "Manager",
+    "lifecyclestage": "Customer"
+  }
+}
+```
+
+**Example Response (Success):** JSON object representing updated contact.  Note that `lifecyclestage` can only be updated forward in the stage order.
+
+
+### 4. Upsert Contacts
+
+**Endpoint:** `POST /crm/v3/objects/contacts/batch/upsert`
+
+Creates or updates contacts in batches using `email` or a custom unique identifier.
+
+* Requires `inputs` array (each object with `id`, `idProperty`, and `properties`).
+
+**Example Request (Upsert by email):**
+
+```json
+{
   "inputs": [
     {
-      "id": "1234567"
-    },
-    {
-      "id": "987456"
+      "properties": {"phone": "5555555555"},
+      "id": "test@test.com",
+      "idProperty": "email"
     }
   ]
 }
 ```
 
-**Example Request Body (Batch Read by Email):**
-
-```json
-{
-  "properties": ["email", "lifecyclestage", "jobtitle"],
-  "idProperty": "email",
-  "inputs": [
-    {
-      "id": "lgilmore@thedragonfly.com"
-    },
-    {
-      "id": "sstjames@thedragonfly.com"
-    }
-  ]
-}
-```
+**Example Response (Success):** JSON array with results for each input.
 
 
-## Update Contacts
+### 5. Associate/Dissociate Contacts
 
-Contacts can be updated individually or in batches.
+**Associate:**
 
-* **Individual Update (by ID):** `PATCH /crm/v3/objects/contacts/{contactId}`
-* **Individual Update (by Email):** `PATCH /crm/v3/objects/contacts/{email}?idProperty=email`
-* **Batch Update:** `POST /crm/v3/objects/contacts/batch/update` (uses record IDs).
+* **Endpoint:** `PUT /crm/v3/objects/contacts/{contactId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
 
-**`lifecyclestage` Update Note:**  You can only update `lifecyclestage` forward in the stage order. To move backward, clear the existing value manually or via a workflow/integration.
+**Dissociate:**
 
+* **Endpoint:** `DELETE /crm/v3/objects/contacts/{contactId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
 
-## Upsert Contacts
-
-Batch create and update contacts simultaneously using `POST /crm/v3/objects/contacts/batch/upsert`.  Use `idProperty` to specify whether you're using `email` or a custom unique identifier.
+Requires `associationTypeId` (from [default list](LINK_TO_DEFAULT_ASSOCIATION_TYPE_IDS) or [associations API](LINK_TO_HUBSPOT_DOC_ON_ASSOCIATIONS_API)).
 
 
-## Associate/Remove Associations
+### 6. Pin an Activity
 
-* **Associate:** `PUT /crm/v3/objects/contacts/{contactId}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
-* **Remove:** `DELETE /crm/v3/objects/contacts/{contactID}/associations/{toObjectType}/{toObjectId}/{associationTypeId}`
-
-Retrieve `associationTypeId` from the default list or via a `GET` request to `/crm/v4/associations/{fromObjectType}/{toObjectType}/labels`.
+Updates the `hs_pinned_engagement_id` property to pin an activity to a contact record.  Requires the activity ID.
 
 
-## Pin an Activity
+### 7. Delete Contacts
 
-Pin an activity to a contact record using the `hs_pinned_engagement_id` property (containing the activity ID).  You can only pin one activity per record, and it must already be associated with the contact.
+**Individual Contact:**
 
+* **Endpoint:** `DELETE /crm/v3/objects/contacts/{contactId}`
 
-## Delete Contacts
-
-Delete contacts individually (`DELETE /crm/v3/objects/contacts/{contactId}`) or in batches (see reference documentation for batch delete).  Deleted contacts are moved to the recycling bin and can be restored.
-
-
-## Secondary Emails
-
-Manage secondary emails using the `hs_additional_emails` property (semicolon-separated).  These are unique identifiers.  For V1 APIs, see [this reference guide](LINK_TO_V1_SECONDARY_EMAIL_GUIDE).
+Batch deletion is also available (see [reference documentation](LINK_TO_BATCH_DELETE_DOC)).
 
 
-## Limits
+### 8. Secondary Emails
 
-Batch operations are limited to 100 records per request.  See documentation for limits on contacts and form submissions.
+Manage secondary emails using the `hs_additional_emails` property (semicolon-separated for multiple).
 
-**(Remember to replace placeholder links like `LINK_TO_UNDERSTANDING_CRM_GUIDE` with actual links.)**
+
+### 9. Limits
+
+Batch operations are limited to 100 records.  See [contacts and form submissions limits](LINK_TO_LIMITS_DOC).
+
+
+**Note:** Replace placeholders like `{contactId}`, `{email}`, `{toObjectType}`, `{toObjectId}`, and `{associationTypeId}` with actual values.  All examples assume you have the necessary authentication and authorization. Remember to replace the placeholder links with actual links to the relevant HubSpot documentation.

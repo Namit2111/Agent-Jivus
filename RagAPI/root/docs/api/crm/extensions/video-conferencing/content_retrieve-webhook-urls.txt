@@ -1,0 +1,552 @@
+Video conference extension | HubSpot
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API & Reference
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+Search
+Select a language
+English
+My account
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+On this page
+Prerequisites
+Configure webhook URLs
+Retrieve webhook URLs
+Webhook payloads
+Create meeting webhook
+Update meeting webhook
+Deleted meeting webhook
+User verification webhook
+API Guides
+CRM
+Extensions
+Video conference extension
+Video conference extension
+Video conferencing extension endpoint reference
+Using the video conference API, you can configure a
+public app
+to give HubSpot users the ability to add a video conference link when
+creating a meeting
+, similar to the
+Google Meet
+and
+Zoom
+integration. Using this API will involve:
+Setting up your public app with video conference extension webhooks. You'll configure your app with the URIs that HubSpot will use to notify you when meetings are being created, updated, or deleted.
+Setting up a custom back-end to handle meeting creation and update webhooks.
+If needed, setting up your back-end to handle user identify verification webhooks.
+All requests to the video conferencing API must be authenticated using your developer account's developer API key. You can include the key in a
+hapikey
+query parameter at the end of the request URL. You can
+find your developer API key
+in your developer account.
+Prerequisites
+Before getting started, ensure you've created a
+developer account
+and a
+public app
+within it.
+Configure webhook URLs
+So that HubSpot knows where to send notifications when meetings are created, updated, or deleted, you'll first configure the extension's webhook URLs.
+To do so, make a
+PUT
+request to
+/crm/v3/extensions/videoconferencing/settings/{appId}?hapikey=YOUR_HUBSPOT_DEVELOPER_API_KEY
+.
+In the request body, you'll need to include the
+createMeetingUrl
+field to set the URL that HubSpot will send meeting creation webhook payloads. You can optionally include additional webhook URLs. These values can be updated later using the same request URL.
+Copy code snippet
+// Example request
+{
+"createMeetingUrl": "https://example.com/create-meeting",
+"updateMeetingUrl": "https://example.com/update-meeting",
+"deleteMeetingUrl": "https://example.com/delete-meeting"
+}
+​
+x
+1
+// Example request
+2
+​
+3
+{
+4
+"createMeetingUrl"
+:
+"https://example.com/create-meeting"
+,
+5
+"updateMeetingUrl"
+:
+"https://example.com/update-meeting"
+,
+6
+"deleteMeetingUrl"
+:
+"https://example.com/delete-meeting"
+7
+}
+Field
+Type
+Description
+createMeetingUrl
+Required
+String
+The URL that HubSpot will notify when a new meeting has been created. This will include a JSON payload with the meeting details. The URL must use
+https
+protocol.
+updateMeetingUrl
+String
+The URL that HubSpot will notify when an existing meeting has been updated. This will include a JSON payload with the updated meeting details. The URL must use
+https
+protocol.
+deleteMeetingUrl
+String
+The URL that HubSpot will notify when an existing meeting has been deleted. This will include a
+conferenceId
+of the deleted meeting. The URL must use
+https
+protocol.
+userVerifyUrl
+String
+The URL that HubSpot will use to verify that the user exists in the external video conferencing system.
+Example Response:
+Copy code snippet
+// Example 200 response
+{
+"createMeetingUrl": "https://example.com/create-meeting",
+"updateMeetingUrl": "https://example.com/update-meeting",
+"deleteMeetingUrl": "https://example.com/delete-meeting"
+}
+xxxxxxxxxx
+6
+1
+// Example 200 response
+2
+{
+3
+"createMeetingUrl"
+:
+"https://example.com/create-meeting"
+,
+4
+"updateMeetingUrl"
+:
+"https://example.com/update-meeting"
+,
+5
+"deleteMeetingUrl"
+:
+"https://example.com/delete-meeting"
+6
+}
+Retrieve webhook URLs
+To retrieve webhook URLs configured for an existing app, make a
+GET
+request to
+/crm/v3/extensions/videoconferencing/settings/{appId}
+.
+The response will include the currently configured webhook URLs.
+Copy code snippet
+// Example 200 response
+{
+"createMeetingUrl": "https://example.com/create-meeting",
+"updateMeetingUrl": "https://example.com/update- meeting",
+"deleteMeetingUrl": "https://example.com/delete-meeting",
+"userVerifyUrl": "https://example.com/user-verify"
+}
+xxxxxxxxxx
+7
+1
+// Example 200 response
+2
+{
+3
+"createMeetingUrl"
+:
+"https://example.com/create-meeting"
+,
+4
+"updateMeetingUrl"
+:
+"https://example.com/update- meeting"
+,
+5
+"deleteMeetingUrl"
+:
+"https://example.com/delete-meeting"
+,
+6
+"userVerifyUrl"
+:
+"https://example.com/user-verify"
+7
+}
+Webhook payloads
+Once webhook URLs are configured, HubSpot will send payloads to those URLs when a meeting create, update, or delete event occurs.
+All webhooks sent by HubSpot are HMAC signed using your app's secret. You can learn more about this in the
+webhooks security documentation
+(the rest of the page does not apply to these video conference extension webhooks).
+Create meeting webhook
+When a meeting is created, HubSpot will send a request to the URL specified in the
+createMeetingUrl
+field. The request payload includes information about the HubSpot account, associated HubSpot user, and meeting details.
+Copy code snippet
+// Example payload
+{
+"portalId": 123123,
+"userId": 123,
+"userEmail": "test.user@example.com",
+"topic": "A Test Meeting",
+"source": "MEETINGS",
+"startTime": 1534197600000,
+"endTime": 1534201200000
+}
+xxxxxxxxxx
+10
+1
+// Example payload
+2
+{
+3
+"portalId"
+:
+123123
+,
+4
+"userId"
+:
+123
+,
+5
+"userEmail"
+:
+"test.user@example.com"
+,
+6
+"topic"
+:
+"A Test Meeting"
+,
+7
+"source"
+:
+"MEETINGS"
+,
+8
+"startTime"
+:
+1534197600000
+,
+9
+"endTime"
+:
+1534201200000
+10
+}
+Field
+Type
+Description
+portalId
+Number
+The ID of the HubSpot account that the request is coming from.
+userId
+Number
+The ID of the HubSpot user that is assigned to the meeting.
+userEmail
+String
+The email address of the HubSpot user assigned to the meeting.
+topic
+String
+The title of the meeting.
+source
+String
+Indicates where the meeting was created. Can be either:
+MEETINGS
+: the meeting was creating from a
+meeting scheduling page
+.
+MANUAL
+: the meeting was created manually from a CRM record.
+startTime
+Number
+The start time of the meeting in epoch milliseconds.
+endTime
+Number
+The end time of the meeting in epoch milliseconds.
+To successfully handle this webhook, you should generate a video conference for this meeting (or link it to an existing conference line), and respond with information about this conference. The fields expected in the response are:
+conferenceId
+: a unique ID associated with the conference on this event. This ID needs to be globally unique within your system. HubSpot will return this ID back to you in the update webhook.
+conferenceUrl:
+the URL that users can use to join the conference.
+conferenceDetails
+: plain text invitation information. This should describe how attendees of the event can access the video conference for this event. Newlines will be maintained in representations of this text, but no other formatting is supported.
+For example, your response might look like the following:
+Copy code snippet
+//example response
+{
+"conferenceId": "some-unique-id",
+"conferenceUrl": "https://example.com/join",
+"conferenceDetails": "Click here to join: https://example.com/join"
+}
+xxxxxxxxxx
+6
+1
+//example response
+2
+{
+3
+"conferenceId"
+:
+"some-unique-id"
+,
+4
+"conferenceUrl"
+:
+"https://example.com/join"
+,
+5
+"conferenceDetails"
+:
+"Click here to join: https://example.com/join"
+6
+}
+Update meeting webhook
+If you've specified a
+updateMeetingUrl
+, HubSpot will send this URI a request whenever a meeting's relevant details have changed. This notification is necessary if you need to maintain the most up-to date topic or times for a video conference. The request payload includes information about the HubSpot account, associated HubSpot user, and meeting details.
+Copy code snippet
+//example request
+{
+"conferenceId": "some-unique-id",
+"userId": 123,
+"userEmail": "test.user@example.com",
+"portalId": 123123,
+"topic": "A Test Meeting (updated)",
+"startTime": 1534197600000,
+"endTime": 1534201200000
+}
+xxxxxxxxxx
+10
+1
+//example request
+2
+{
+3
+"conferenceId"
+:
+"some-unique-id"
+,
+4
+"userId"
+:
+123
+,
+5
+"userEmail"
+:
+"test.user@example.com"
+,
+6
+"portalId"
+:
+123123
+,
+7
+"topic"
+:
+"A Test Meeting (updated)"
+,
+8
+"startTime"
+:
+1534197600000
+,
+9
+"endTime"
+:
+1534201200000
+10
+}
+Field
+Type
+Description
+conferenceId
+String
+The unique identifier for the conference provided by your integration in the response to the create meeting webhook.
+userId
+Number
+The ID of the HubSpot user that is assigned to the meeting. This will always be the same user as the one in the meeting creation payload.
+userEmail
+String
+The email address of the HubSpot user assigned to the meeting. This will always be the same user as the one in the meeting creation payload.
+portalId
+Number
+The ID of the HubSpot account that the request is coming from.
+topic
+String
+The title of the meeting.
+startTime
+Number
+The start time of the meeting in epoch milliseconds.
+endTime
+Number
+The end time of the meeting in epoch milliseconds.
+No response body is required when responding to these requests. Only a
+200
+or
+204
+response code is required to let HubSpot know that this webhook was been received successfully.
+Deleted meeting webhook
+When a meeting is deleted in HubSpot, a request will be sent to the URL specified in the
+deleteMeetingUrl
+field. The payload will include the
+conferenceId
+of the deleted meeting.
+Copy code snippet
+// Example payload
+{
+"conferenceId": "some-unique-id"
+}
+xxxxxxxxxx
+4
+1
+// Example payload
+2
+{
+3
+"conferenceId"
+:
+"some-unique-id"
+4
+}
+No response body is required when responding to these requests. Only a
+200
+or
+204
+response code is required to let HubSpot know that this webhook was been received successfully.
+User verification webhook
+HubSpot's systems will always communicate with you about its users in terms of their HubSpot user ID and their HubSpot account email address. There is a chance that a user in HubSpot's system may exist in your system with a different email address or identifier.
+Before HubSpot makes a call to your system to create, update, or delete a video conference link, it will first check the app's settings for a
+userVerifyUrl
+field. If that URL has been set, HubSpot will make a call to it to retrieve your native user identifier. It will then send that identifier as the user's email address in the subsequent call. If you do not configure this URL, HubSpot will always assume that the user's identity is verified.
+This setting is optional and is up to you to determine if it's needed. If you need to maintain a user mapping within your system, you may wish to simply map the HubSpot user ID or email to your internal user ID on each call.
+The payload for this webhook contains the HubSpot account ID and the user's email address.
+Copy code snippet
+//example request
+{
+"portalId": 123123,
+"userEmail": "test.user@example.com"
+}
+xxxxxxxxxx
+5
+1
+//example request
+2
+{
+3
+"portalId"
+:
+123123
+,
+4
+"userEmail"
+:
+"test.user@example.com"
+5
+}
+You can return a
+200
+response or any error code (
+404
+would be appropriate). If you return a
+200
+, you should return a payload containing the new ID that we should use in place of the email address:
+Copy code snippet
+//example response
+{
+"id": "any-string-id"
+}
+xxxxxxxxxx
+4
+1
+//example response
+2
+{
+3
+"id"
+:
+"any-string-id"
+4
+}
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Guides
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+Library
+CRM
+Understanding the CRM
+Using object APIs
+Associations
+Commerce
+Engagements
+Extensions
+Calling SDK
+CRM cards
+Timeline events
+Third-party calling
+Beta
+Video conferencing extension
+Export CRM data
+Import CRM data
+Lists
+Objects
+CRM embed
+Owners
+Pipelines
+Properties
+Search
+Limits tracking
+Object library
+Marketing
+Settings
+Legal

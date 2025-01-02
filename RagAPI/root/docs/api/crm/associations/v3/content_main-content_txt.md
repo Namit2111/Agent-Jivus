@@ -1,40 +1,45 @@
-# HubSpot CRM API: Associations v3
+# HubSpot CRM API v3: Associations
 
-This document describes the HubSpot CRM API v3 for managing associations between objects.  Note that a newer v4 API with enhanced functionality, including association label management, is available.  Refer to the [v4 Associations API article](link-to-v4-article-here) for more details.
+This document details the HubSpot CRM API v3 endpoints for managing associations between objects.  Note that a newer v4 API exists with enhanced functionality, including label creation and management.  Refer to the v4 documentation for those features.
 
-## Overview
+## Understanding Associations
 
-Associations in the HubSpot CRM represent relationships between objects and activities.  The v3 API allows for bulk creation, retrieval, and removal of these associations.  For a comprehensive understanding of objects, records, properties, and associations APIs, consult the [Understanding the CRM guide](link-to-understanding-crm-guide-here).  For general CRM database management information, see [how to manage your CRM database](link-to-crm-management-guide-here).
+Associations represent relationships between objects (e.g., Contacts, Companies, Deals) and activities within the HubSpot CRM. The v3 API allows bulk creation, retrieval, and removal of these associations.  Associations are unidirectional; you need separate definitions based on the starting object type (`fromObjectType`).
 
-## Association Types
+Each association is defined by:
 
-Associations are defined by object and direction. They are unidirectional, meaning the definition varies depending on the starting object type.  Each endpoint requires a `{fromObjectType}` and `{toObjectType}` specifying the association direction.
-
-**Example:**
-
-* To get association types from contacts to companies: `/crm/v3/associations/contacts/companies/types`
-* To get tickets associated with a contact: `/crm/v3/associations/Contacts/Tickets/batch/read` (Contact is `fromObjectType`, Tickets is `toObjectType`)
-
-Association types include:
-
-* Unlabeled associations (e.g., contact-to-company)
-* Default labeled associations (e.g., contact-to-primary company)
-* Custom labeled associations (e.g., `Decision maker` contact-to-company)
-
-While you can use custom association types (labels) with the v3 API, you cannot create or edit them.  Use the v4 API for label creation, updates, and deletion.
-
+* **`fromObjectType`**: The starting object type.
+* **`toObjectType`**: The ending object type.
+* **`type`**: The type of association (can be unlabeled, default labeled, or custom labeled).  Custom labeled associations cannot be created or modified via v3.
 
 ## API Endpoints
 
-### Retrieve Association Types
+All endpoints are under the base URL `/crm/v3/associations`.
 
-**Method:** `GET`
+### 1. Retrieve Association Types
 
-**Endpoint:** `/crm/v3/associations/{fromObjectType}/{toObjectType}/types`
+**Endpoint:** `GET /crm/v3/associations/{fromObjectType}/{toObjectType}/types`
 
-This endpoint retrieves all defined association types between two objects, including default and custom association labels.  Each type has an `id` and `name`.  Default association IDs are consistent across accounts, while custom label IDs are account-specific.
+**Description:** Retrieves all defined association types between two specified objects. This includes default and custom association labels.
 
-**Example Response:**
+**Parameters:**
+
+* `{fromObjectType}`:  The starting object type (e.g., `contacts`, `companies`).
+* `{toObjectType}`: The ending object type (e.g., `companies`, `deals`).
+
+**Response:**
+
+A JSON object with a `results` array containing objects, each with:
+
+* `id`:  A numerical ID representing the association type.  For default associations, this is consistent across accounts; for custom labels, it's account-specific.
+* `name`: The name of the association type.
+
+
+**Example:**
+
+**Request:** `GET /crm/v3/associations/contacts/companies/types`
+
+**Response:**
 
 ```json
 {
@@ -44,118 +49,120 @@ This endpoint retrieves all defined association types between two objects, inclu
       "name": "franchise_owner_franchise_location"
     },
     {
-      "id": "26",
-      "name": "manager"
-    },
-    {
       "id": "1",
       "name": "contact_to_company"
     },
+    {
+      "id": "30",
+      "name": "decision_maker"
+    }
     // ... more association types
   ]
 }
 ```
 
-### Create Associations
+### 2. Create Associations
 
-**Method:** `POST`
+**Endpoint:** `POST /crm/v3/associations/{fromObjectType}/{toObjectType}/batch/create`
 
-**Endpoint:** `/crm/v3/associations/{fromObjectType}/{toObjectType}/batch/create`
+**Description:** Creates multiple associations between records.
 
-Associates records. The request body includes the `id` values of the records to associate and the association `type`.
+**Request Body:**
 
-**Example Request Body:**
+A JSON object with an `inputs` array. Each element in the array should be an object with:
+
+* `from`: An object with an `id` property specifying the ID of the from record.
+* `to`: An object with an `id` property specifying the ID of the to record.
+* `type`: The ID of the association type (obtained from the `/types` endpoint).
+
+**Example:**
+
+**Request:** `POST /crm/v3/associations/Contacts/Companies/batch/create`
+
+**Request Body:**
 
 ```json
 {
   "inputs": [
     {
-      "from": {
-        "id": "53628"
-      },
-      "to": {
-        "id": "12726"
-      },
+      "from": { "id": "53628" },
+      "to": { "id": "12726" },
       "type": "contact_to_company"
     }
   ]
 }
 ```
 
-### Retrieve Associations
+### 3. Retrieve Associations
 
-**Method:** `POST`
+**Endpoint:** `POST /crm/v3/associations/{fromObjectType}/{toObjectType}/batch/read`
 
-**Endpoint:** `/crm/v3/associations/{fromObjectType}/{toObjectType}/batch/read`
+**Description:** Retrieves associations for a batch of records.
 
-Retrieves associated records. The request body includes the `id` values of the records (`{fromObjectType}`) whose associations are to be retrieved.
+**Request Body:**
 
-**Example Request Body:**
+A JSON object with an `inputs` array. Each element contains an `id` property for the record from which to retrieve associations.
+
+**Example:**
+
+**Request:** `POST /crm/v3/associations/Companies/Deals/batch/read`
+
+**Request Body:**
 
 ```json
 {
   "inputs": [
-    {
-      "id": "5790939450"
-    },
-    {
-      "id": "6108662573"
-    }
+    { "id": "5790939450" },
+    { "id": "6108662573" }
   ]
 }
 ```
 
-**Example Response:**
+**Response:**
 
-```json
-{
-  "status": "COMPLETE",
-  "results": [
-    {
-      "from": {
-        "id": "5790939450"
-      },
-      "to": [
-        {
-          "id": "1467822235",
-          "type": "company_to_deal"
-        },
-        // ... more associated records
-      ]
-    },
-    // ... more results for other input IDs
-  ],
-  "startedAt": "2024-10-21T16:40:47.810Z",
-  "completedAt": "2024-10-21T16:40:47.833Z"
-}
-```
+A JSON object with a `results` array. Each element contains:
 
-**Note:** When retrieving associations with companies (`crm/v3/associations/{fromObjectType}/companies/batch/read`), only the primary associated company is returned. Use the v4 API for all associated companies.
+* `from`: An object with the `id` of the starting record.
+* `to`: An array of associated records, each with an `id` and `type`.
 
-### Remove Associations
+**Important Note:** When retrieving associations with `companies` as the `fromObjectType`, only the *primary* associated company will be returned.
 
-**Method:** `POST`
 
-**Endpoint:** `/crm/v3/associations/{fromObjectType}/{toObjectType}/batch/archive`
+### 4. Remove Associations
 
-Removes associations between records. The request body includes the `id` values for the `from` and `to` records and their association `type`.
+**Endpoint:** `POST /crm/v3/associations/{fromObjectType}/{toObjectType}/batch/archive`
 
-**Example Request Body:**
+**Description:** Removes multiple associations between records.
+
+**Request Body:**
+
+A JSON object with an `inputs` array. Each element should be an object with:
+
+* `from`: An object with an `id` property specifying the ID of the from record.
+* `to`: An object with an `id` property specifying the ID of the to record.
+* `type`: The ID of the association type.
+
+**Example:**
+
+**Request:** `POST /crm/v3/associations/companies/deals/batch/archive`
+
+**Request Body:**
 
 ```json
 {
   "inputs": [
     {
-      "from": {
-        "id": "5790939450"
-      },
-      "to": {
-        "id": "21678228008"
-      },
+      "from": { "id": "5790939450" },
+      "to": { "id": "21678228008" },
       "type": "company_to_deal"
     }
   ]
 }
 ```
 
-Remember to replace placeholders like `{fromObjectType}` and `{toObjectType}` with the actual object types (e.g., "contacts", "companies", "deals").  Always refer to the official HubSpot API documentation for the most up-to-date information and details.
+##  Error Handling
+
+The API responses will include standard HTTP status codes and error messages in the JSON response body to indicate success or failure.  Consult the HubSpot API documentation for details on error codes.
+
+
+This markdown provides a comprehensive overview of the HubSpot CRM v3 Associations API. Remember to consult the official HubSpot documentation for the most up-to-date information and detailed error handling.

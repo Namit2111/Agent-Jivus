@@ -1,0 +1,1818 @@
+Lists - v3 | HubSpot API
+×
+close
+We use cookies to improve HubSpot’s site. Some cookies are necessary for our website and services to function properly. Other cookies are optional and help personalize your experience, including advertising and analytics. You can consent to all cookies, decline all optional cookies, or manage optional cookies. Without a selection, our default cookie settings will apply. You can change your preferences at any time. To learn more, check out our
+Cookie Policy
+.
+Accept all
+Decline all
+Manage cookies
+Skip to main content
+HubSpot logo
+Open site navigation
+Getting Started
+Overview
+What to build
+Tools to help you build
+Account types
+Guides
+API Guides
+Apps
+CMS Development
+UI Customization
+(Beta)
+API & Reference
+Search
+Select a language
+English
+My account
+API Endpoints
+CMS Reference
+UI Components
+(Beta)
+On this page
+Introduction
+Use cases for this API
+Lists
+Fetch List by ID
+GET
+Fetch List by Name
+GET
+Fetch Multiple Lists
+GET
+Create List
+POST
+Search Lists
+POST
+Restore a List
+PUT
+Update List Filter Definition
+PUT
+Update List Name
+PUT
+Delete a List
+DEL
+Memberships
+Fetch List Memberships Ordered by Added to List Date
+GET
+Fetch List Memberships Ordered by ID
+GET
+Get lists record is member of
+GET
+Add All Records from a Source List to a Destination List
+PUT
+Add and/or Remove Records from a List
+PUT
+Add Records to a List
+PUT
+Remove Records from a List
+PUT
+Delete All Records from a List
+DEL
+Folders
+Retrieves a folder.
+GET
+Creates a folder
+POST
+Moves a folder
+PUT
+Moves a list to a given folder
+PUT
+Rename a folder
+PUT
+Deletes a folder
+DEL
+Mapping
+Translate Legacy List Id to Modern List Id
+GET
+Translate Legacy List Id to Modern List Id in Batch
+POST
+API Endpoints
+CRM
+Lists
+Lists
+API Version: v3
+Introduction
+Use the lists API to manage list memberships for object lists.
+Use cases for this API
+You want to bulk add contacts to a particular list, or remove company records from a company list.
+Related guide:
+Lists Guide
+Supported products
+Requires one of the following products or higher.
+Marketing Hub
+-
+Starter
+Content Hub
+-
+Starter
+Lists
+Fetch List by ID
+get
+/crm/v3/lists/{listId}
+Copy full URL
+Fetch a single list by
+ILS list ID
+.
+Requirements
+Scopes
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/crm/v3/lists/listId?includeFilters=false' \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/crm/v3/lists/listId?includeFilters=false'
+\
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Fetch List by Name
+get
+/crm/v3/lists/object-type-id/{objectTypeId}/name/{listName}
+Copy full URL
+Fetch a single list by list name and object type.
+Requirements
+Scopes
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/crm/v3/lists/object-type-id/objectTypeId/name/listName?includeFilters=false' \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/crm/v3/lists/object-type-id/objectTypeId/name/listName?includeFilters=false'
+\
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Fetch Multiple Lists
+get
+/crm/v3/lists/
+Copy full URL
+Fetch multiple lists in a single request by
+ILS list ID
+. The response will include the definitions of all lists that exist for the
+listIds
+provided.
+Requirements
+Scopes
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/crm/v3/lists/?includeFilters=false' \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/crm/v3/lists/?includeFilters=false'
+\
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Create List
+post
+/crm/v3/lists/
+Copy full URL
+Create a new list with the provided object list definition.
+Requirements
+Scopes
+cms.membership.access_groups.write
+or
+crm.lists.write
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request POST \
+--url https://api.hubapi.com/crm/v3/lists/ \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '{
+"objectTypeId": "string",
+"processingType": "string",
+"customProperties": {
+"additionalProp1": "string",
+"additionalProp2": "string",
+"additionalProp3": "string"
+},
+"listFolderId": 0,
+"name": "string",
+"filterBranch": {
+"filterBranchType": "OR",
+"filterBranchOperator": "string"
+}
+}'
+xxxxxxxxxx
+19
+1
+curl
+--request
+POST \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/ \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'{
+6
+"objectTypeId": "string",
+7
+"processingType": "string",
+8
+"customProperties": {
+9
+"additionalProp1": "string",
+10
+"additionalProp2": "string",
+11
+"additionalProp3": "string"
+12
+},
+13
+"listFolderId": 0,
+14
+"name": "string",
+15
+"filterBranch": {
+16
+"filterBranchType": "OR",
+17
+"filterBranchOperator": "string"
+18
+}
+19
+}'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Search Lists
+post
+/crm/v3/lists/search
+Copy full URL
+Search lists by list name or page through all lists by providing an empty
+query
+value.
+Requirements
+Scopes
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request POST \
+--url https://api.hubapi.com/crm/v3/lists/search \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '{
+"listIds": [
+"string"
+],
+"offset": 0,
+"query": "string",
+"count": 0,
+"processingTypes": [
+"string"
+],
+"additionalProperties": [
+"string"
+],
+"sort": "string"
+}'
+xxxxxxxxxx
+19
+1
+curl
+--request
+POST \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/search \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'{
+6
+"listIds": [
+7
+"string"
+8
+],
+9
+"offset": 0,
+10
+"query": "string",
+11
+"count": 0,
+12
+"processingTypes": [
+13
+"string"
+14
+],
+15
+"additionalProperties": [
+16
+"string"
+17
+],
+18
+"sort": "string"
+19
+}'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Restore a List
+put
+/crm/v3/lists/{listId}/restore
+Copy full URL
+Restore a previously deleted list by
+ILS list ID
+. Deleted lists are eligible to be restored up-to 90-days after the list has been deleted.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PUT \
+--url https://api.hubapi.com/crm/v3/lists/listId/restore \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+PUT \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/listId/restore \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 204
+No content
+Update List Filter Definition
+put
+/crm/v3/lists/{listId}/update-list-filters
+Copy full URL
+Update the filter branch definition of a
+DYNAMIC
+list. Once updated, the list memberships will be re-evaluated and updated to match the new definition.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PUT \
+--url 'https://api.hubapi.com/crm/v3/lists/listId/update-list-filters?enrollObjectsInWorkflows=false' \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '{
+"filterBranch": {
+"filterBranchType": "OR",
+"filterBranchOperator": "string"
+}
+}'
+xxxxxxxxxx
+10
+1
+curl
+--request
+PUT \
+2
+--url
+'https://api.hubapi.com/crm/v3/lists/listId/update-list-filters?enrollObjectsInWorkflows=false'
+\
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'{
+6
+"filterBranch": {
+7
+"filterBranchType": "OR",
+8
+"filterBranchOperator": "string"
+9
+}
+10
+}'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Update List Name
+put
+/crm/v3/lists/{listId}/update-list-name
+Copy full URL
+Update the name of a list. The name must be globally unique relative to all other public lists in the portal.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PUT \
+--url 'https://api.hubapi.com/crm/v3/lists/listId/update-list-name?includeFilters=false' \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+PUT \
+2
+--url
+'https://api.hubapi.com/crm/v3/lists/listId/update-list-name?includeFilters=false'
+\
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Delete a List
+delete
+/crm/v3/lists/{listId}
+Copy full URL
+Delete a list by
+ILS list ID
+. Lists deleted through this endpoint can be restored up to 90-days following the delete. After 90-days, the list is purged and can no longer be restored.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request DELETE \
+--url https://api.hubapi.com/crm/v3/lists/listId \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+DELETE \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/listId \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 204
+No content
+Memberships
+Fetch List Memberships Ordered by Added to List Date
+get
+/crm/v3/lists/{listId}/memberships/join-order
+Copy full URL
+Fetch the memberships of a list in order sorted by the time the records were added to the list.
+The
+recordId
+s are sorted in
+ascending
+order if an
+after
+offset or no offset is provided. If only a
+before
+offset is provided, then the records are sorted in
+descending
+order.
+The
+after
+offset parameter will take precedence over the
+before
+offset in a case where both are provided.
+Requirements
+Scopes
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/crm/v3/lists/listId/memberships/join-order?limit=100' \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/crm/v3/lists/listId/memberships/join-order?limit=100'
+\
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Fetch List Memberships Ordered by ID
+get
+/crm/v3/lists/{listId}/memberships
+Copy full URL
+Fetch the memberships of a list in order sorted by the
+recordId
+of the records in the list.
+The
+recordId
+s are sorted in
+ascending
+order if an
+after
+offset or no offset is provided. If only a
+before
+offset is provided, then the records are sorted in
+descending
+order.
+The
+after
+offset parameter will take precedence over the
+before
+offset in a case where both are provided.
+Requirements
+Scopes
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/crm/v3/lists/listId/memberships?limit=100' \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/crm/v3/lists/listId/memberships?limit=100'
+\
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Get lists record is member of
+get
+/crm/v3/lists/records/{objectTypeId}/{recordId}/memberships
+Copy full URL
+For given record provide lists this record is member of.
+Requirements
+Scopes
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url https://api.hubapi.com/crm/v3/lists/records/objectTypeId/recordId/memberships \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/records/objectTypeId/recordId/memberships \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Add All Records from a Source List to a Destination List
+put
+/crm/v3/lists/{listId}/memberships/add-from/{sourceListId}
+Copy full URL
+Add all of the records from a
+source list
+(specified by the
+sourceListId
+) to a
+destination list
+(specified by the
+listId
+). Records that are already members of the
+destination list
+will be ignored. The
+destination
+and
+source list
+IDs must be different. The
+destination
+and
+source lists
+must contain records of the same type (e.g. contacts, companies, etc.).
+This endpoint only works for
+destination lists
+that have a
+processingType
+of
+MANUAL
+or
+SNAPSHOT
+. The
+source list
+can have any
+processingType
+.
+This endpoint only supports a
+sourceListId
+for lists with less than 100,000 memberships.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PUT \
+--url https://api.hubapi.com/crm/v3/lists/listId/memberships/add-from/sourceListId \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+PUT \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/listId/memberships/add-from/sourceListId \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 204
+No content
+Add and/or Remove Records from a List
+put
+/crm/v3/lists/{listId}/memberships/add-and-remove
+Copy full URL
+Add and/or remove records that have already been created in the system to and/or from a list.
+This endpoint only works for lists that have a
+processingType
+of
+MANUAL
+or
+SNAPSHOT
+.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PUT \
+--url https://api.hubapi.com/crm/v3/lists/listId/memberships/add-and-remove \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '{
+"recordIdsToRemove": [
+654
+],
+"recordIdsToAdd": [
+123,
+456,
+789
+]
+}'
+xxxxxxxxxx
+14
+1
+curl
+--request
+PUT \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/listId/memberships/add-and-remove \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'{
+6
+"recordIdsToRemove": [
+7
+654
+8
+],
+9
+"recordIdsToAdd": [
+10
+123,
+11
+456,
+12
+789
+13
+]
+14
+}'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Add Records to a List
+put
+/crm/v3/lists/{listId}/memberships/add
+Copy full URL
+Add the records provided to the list. Records that do not exist or that are already members of the list are ignored.
+This endpoint only works for lists that have a
+processingType
+of
+MANUAL
+or
+SNAPSHOT
+.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PUT \
+--url https://api.hubapi.com/crm/v3/lists/listId/memberships/add \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '[
+"string"
+]'
+xxxxxxxxxx
+7
+1
+curl
+--request
+PUT \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/listId/memberships/add \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'[
+6
+"string"
+7
+]'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Remove Records from a List
+put
+/crm/v3/lists/{listId}/memberships/remove
+Copy full URL
+Remove the records provided from the list. Records that do not exist or that are not members of the list are ignored.
+This endpoint only works for lists that have a
+processingType
+of
+MANUAL
+or
+SNAPSHOT
+.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PUT \
+--url https://api.hubapi.com/crm/v3/lists/listId/memberships/remove \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '[
+"string"
+]'
+xxxxxxxxxx
+7
+1
+curl
+--request
+PUT \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/listId/memberships/remove \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'[
+6
+"string"
+7
+]'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Delete All Records from a List
+delete
+/crm/v3/lists/{listId}/memberships
+Copy full URL
+Remove
+all
+of the records from a list.
+Note:
+The list is not deleted.
+This endpoint only works for lists that have a
+processingType
+of
+MANUAL
+or
+SNAPSHOT
+.
+This endpoint only supports lists that have less than 100,000 memberships.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request DELETE \
+--url https://api.hubapi.com/crm/v3/lists/listId/memberships \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+DELETE \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/listId/memberships \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 204
+No content
+Folders
+Retrieves a folder.
+get
+/crm/v3/lists/folders
+Copy full URL
+Retrieves a folder and recursively includes all folders via the childNodes attribute.  The child lists field will be empty in all child nodes. Only the folder retrieved will include the child lists in that folder.
+Requirements
+Scopes
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url 'https://api.hubapi.com/crm/v3/lists/folders?folderId=0' \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+'https://api.hubapi.com/crm/v3/lists/folders?folderId=0'
+\
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Creates a folder
+post
+/crm/v3/lists/folders
+Copy full URL
+Creates a folder with the given information.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request POST \
+--url https://api.hubapi.com/crm/v3/lists/folders \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '{
+"parentFolderId": "string",
+"name": "string"
+}'
+xxxxxxxxxx
+8
+1
+curl
+--request
+POST \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/folders \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'{
+6
+"parentFolderId": "string",
+7
+"name": "string"
+8
+}'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Moves a folder
+put
+/crm/v3/lists/folders/{folderId}/move/{newParentFolderId}
+Copy full URL
+This moves the folder from its current location to a new location. It updates the parent of this folder to the new Id given.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PUT \
+--url https://api.hubapi.com/crm/v3/lists/folders/folderId/move/newParentFolderId \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+PUT \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/folders/folderId/move/newParentFolderId \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Moves a list to a given folder
+put
+/crm/v3/lists/folders/move-list
+Copy full URL
+Given a list and a folder, the list will be moved to that folder.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PUT \
+--url https://api.hubapi.com/crm/v3/lists/folders/move-list \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '{
+"listId": "string",
+"newFolderId": "string"
+}'
+xxxxxxxxxx
+8
+1
+curl
+--request
+PUT \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/folders/move-list \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'{
+6
+"listId": "string",
+7
+"newFolderId": "string"
+8
+}'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 204
+No content
+Rename a folder
+put
+/crm/v3/lists/folders/{folderId}/rename
+Copy full URL
+Renames the given folderId with a new name.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request PUT \
+--url https://api.hubapi.com/crm/v3/lists/folders/folderId/rename \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+PUT \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/folders/folderId/rename \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Deletes a folder
+delete
+/crm/v3/lists/folders/{folderId}
+Copy full URL
+Deletes the folder with the given Id.
+Requirements
+Scopes
+cms.membership.access_groups.write
+crm.lists.read
+or
+crm.lists.write
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request DELETE \
+--url https://api.hubapi.com/crm/v3/lists/folders/folderId \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+DELETE \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/folders/folderId \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 204
+No content
+Mapping
+Translate Legacy List Id to Modern List Id
+get
+/crm/v3/lists/idmapping
+Copy full URL
+This API allows translation of legacy list id to list id. This is a temporary API allowed for mapping old id's to new id's and will expire on May 30th, 2025.
+Requirements
+Scopes
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request GET \
+--url https://api.hubapi.com/crm/v3/lists/idmapping \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN'
+xxxxxxxxxx
+3
+1
+curl
+--request
+GET \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/idmapping \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Translate Legacy List Id to Modern List Id in Batch
+post
+/crm/v3/lists/idmapping
+Copy full URL
+This API allows translation of a batch of legacy list id's to list id's. This allows for a maximum of 10,000 id's. This is a temporary API allowed for mapping old id's to new id's and will expire on May 30th, 2025.
+Requirements
+Scopes
+crm.lists.read
+Limits
+Standard API rate limits
+Auth Methods
+Private apps
+OAuth
+Parameters
+Loading
+Request
+Test call
+Loading
+Set authentication details
+cURL
+Node
+PHP
+Ruby
+Python
+C#
+Copy all
+curl --request POST \
+--url https://api.hubapi.com/crm/v3/lists/idmapping \
+--header 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+--header 'content-type: application/json' \
+--data '[
+"string"
+]'
+xxxxxxxxxx
+7
+1
+curl
+--request
+POST \
+2
+--url
+https://api.hubapi.com/crm/v3/lists/idmapping \
+3
+--header
+'authorization: Bearer YOUR_ACCESS_TOKEN'
+\
+4
+--header
+'content-type: application/json'
+\
+5
+--data
+'[
+6
+"string"
+7
+]'
+Response
+Example
+Schema
+Example
+Schema
+More
+HTTP 200
+Loading
+Share your feedback
+Was this article helpful?
+Yes
+No
+This form is used for documentation feedback only. Learn how to
+get help with HubSpot
+Developer Home
+HubSpot Developer Documentation home
+Copyright © 2024 HubSpot, Inc.
+Legal Stuff
+Privacy Policy
+Manage Cookies
+Toggle menu
+API Endpoints
+Overview
+Analytics and events
+App management
+Automation
+CMS
+Conversations
+CRM
+Associations
+Commerce
+Engagements
+Extensions
+Contacts timeline embed
+Export CRM data
+Import CRM data
+Lists
+Beta
+Objects
+Owners
+Pipelines
+Properties
+Sensitive Data
+Limits tracking
+Library
+Marketing
+Settings
+Other resources
+Legal
+Deprecated
+BESbswy
+BESbswy
+BESbswy
+BESbswy
+add
+add

@@ -1,32 +1,69 @@
 # HubSpot CRM Exports API Documentation
 
-This document details the HubSpot CRM Exports API, allowing you to export records and property data from your HubSpot account.  You can retrieve download URLs for export files and monitor export status.  This API complements the in-HubSpot export functionality.
+This document describes the HubSpot CRM Exports API, allowing you to export data from your HubSpot account.  The API allows for exporting records and property data, retrieving download URLs, and checking export status.
+
+## API Endpoints
+
+**1. Start an Export (POST):**
+
+`/crm/v3/exports/export/async`
+
+This endpoint initiates an asynchronous export job.  The response includes the `id` of the export task.
+
+**Request Method:** `POST`
+
+**Request Body (JSON):**
+
+The request body requires several parameters, depending on the `exportType`.  See sections below for details on `VIEW` and `LIST` exports.
 
 
-## Starting an Export
+**Common Parameters:**
 
-To initiate an export, send a `POST` request to `/crm/v3/exports/export/async`.  The request body must specify details like file format, objects, properties, and export type (view or list). You can also filter exported data using operators.
-
-
-### Request Parameters
-
-| Parameter                | Description                                                                                                                                 |
-|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| `exportType`             | Export type: `VIEW` (for object index page views) or `LIST` (for lists).                                                                     |
-| `format`                 | File format: `XLSX`, `CSV`, or `XLS`.                                                                                                      |
-| `exportName`             | Name of the export.                                                                                                                          |
-| `language`               | Export file language: `DE`, `EN`, `ES`, `FI`, `FR`, `IT`, `JA`, `NL`, `PL`, `PT`, or `SV`.  See supported languages for more details. |
-| `objectType`             | Object name or ID (use `objectTypeId` for custom objects; retrieve using a `GET` request to `/crm/v3/schemas`).                               |
-| `associatedObjectType`   | Associated object name or ID (only one allowed per request).  Includes associated record IDs and primary display property values.          |
-| `objectProperties`       | List of properties to include.  Default is human-readable labels; use `exportInternalValuesOptions` for internal names/values.          |
-| `exportInternalValuesOptions` | Array: `NAMES` (for internal property names), `VALUES` (for internal property values), or both.                                            |
-| `publicCrmSearchRequest` | (For `VIEW` exports only) Object containing filters, sorts, and query parameters for refining exported data.                             |
-    * `filters`: Array of filter objects (up to three `filterGroups` with three `filters` each).  Each filter object requires `value`, `propertyName`, and `operator`.
-    * `sorts`: Array of sort objects. Each sort object requires `propertyName` and `order` (`ASC` or `DES`).
-    * `query`: Search string.
+| Parameter             | Description                                                                                                | Example                  |
+|----------------------|------------------------------------------------------------------------------------------------------------|--------------------------|
+| `exportType`         | `VIEW` (for views) or `LIST` (for lists)                                                                     | `"VIEW"`                  |
+| `format`             | File format: `XLSX`, `CSV`, `XLS`                                                                           | `"XLSX"`                  |
+| `exportName`         | Name of the export                                                                                           | `"My Contact Export"`     |
+| `language`           | Language of the export file (e.g., `DE`, `EN`, `ES`, `FI`, `FR`, `IT`, `JA`, `NL`, `PL`, `PT`, `SV`) | `"EN"`                    |
+| `objectType`         | Object type to export (e.g., `CONTACT`, or `objectTypeId` for custom objects)                              | `"CONTACT"`               |
+| `associatedObjectType` | (Optional) Associated object type to include                                                               | `"COMPANY"`               |
+| `objectProperties`    | List of properties to export                                                                                | `["email", "firstname"]` |
+| `exportInternalValuesOptions` | (Optional) Array to export internal names and/or values (`NAMES`, `VALUES`)                                | `["NAMES", "VALUES"]`     |
 
 
-### Example Request Body (View Export)
+**2. Export a View (POST - using `/crm/v3/exports/export/async`):**
+
+For `exportType: "VIEW"`, add the following to the request body:
+
+| Parameter            | Description                                                                                                  | Example                                      |
+|-----------------------|--------------------------------------------------------------------------------------------------------------|----------------------------------------------|
+| `publicCrmSearchRequest` | Object containing filters, sorts, and query parameters for refining the exported data.                       | See Example below                            |
+| `publicCrmSearchRequest.filters` | Array of filter objects. Each filter object contains `propertyName`, `operator` (`EQ`, `NE`, etc.), and `value`. | `[{"propertyName": "email", "operator": "EQ", "value": "test@example.com"}]` |
+| `publicCrmSearchRequest.sorts`  | Array of sort objects. Each sort object contains `propertyName` and `order` (`ASC` or `DES`).                  | `[{"propertyName": "createdAt", "order": "DES"}]` |
+| `publicCrmSearchRequest.query`  | Search query string.                                                                                       | `"test"`                                      |
+
+
+**3. Export a List (POST - using `/crm/v3/exports/export/async`):**
+
+For `exportType: "LIST"`, add the following to the request body:
+
+| Parameter | Description                                                                    | Example     |
+|-----------|--------------------------------------------------------------------------------|-------------|
+| `listId`  | The ILS List ID of the list to export.                                          | `1234567`  |
+
+
+
+**4. Retrieve Export Status (GET):**
+
+`/crm/v3/exports/export/async/tasks/{exportId}/status`
+
+**Request Method:** `GET`
+
+**Response (JSON):**  Contains the `status` (`COMPLETE`, `PENDING`, `PROCESSING`, `CANCELED`), and if `COMPLETE`, a download URL.  This URL expires after 5 minutes.
+
+## Examples
+
+**Example 1: Exporting a View of Contacts with Filters and Internal Values**
 
 ```json
 {
@@ -57,7 +94,7 @@ To initiate an export, send a `POST` request to `/crm/v3/exports/export/async`. 
 }
 ```
 
-### Example Request Body (List Export)
+**Example 2: Exporting a List**
 
 ```json
 {
@@ -70,23 +107,14 @@ To initiate an export, send a `POST` request to `/crm/v3/exports/export/async`. 
   "objectProperties": ["email"]
 }
 ```
-Note:  The `listId` is the ILS List ID, found in HubSpot under Contacts > Lists.
-
-
-## Retrieving Exports
-
-After a successful export, the API returns an `id`.  Retrieve export status using a `GET` request to `/crm/v3/exports/export/async/tasks/{exportId}/status`.
-
-Possible statuses: `COMPLETE`, `PENDING`, `PROCESSING`, `CANCELED`.  A `COMPLETE` status includes a download URL (expires after 5 minutes).
-
 
 ## Limits
 
-* Maximum of three `filterGroups` (each with up to three `filters`) for export filtering.
-* Up to 30 exports within a 24-hour rolling window, one at a time.  Additional exports are queued.
+* Maximum 3 `filterGroups` with up to 3 `filters` each.
+* Maximum 30 exports within a 24-hour rolling window, one at a time.
 * CSV files larger than 2MB are automatically zipped.
 
 
-## Security Note
+## Error Handling
 
-Download URLs for completed exports are accessible without additional authorization before expiration.  Exercise caution when sharing these URLs or integrating via this API.
+The API will return standard HTTP status codes to indicate success or failure.  Specific error details will be included in the response body as JSON.  Refer to the HubSpot API documentation for detailed error codes and their meanings.
